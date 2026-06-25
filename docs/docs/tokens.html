@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Design Tokens</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="tokens">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow">Foundations</div>
+          <div class="docs-hero-title">Design Tokens</div>
+          <div class="docs-hero-sub">All visual values are CSS custom properties defined in <code>agency-theme.css</code>. Every component consumes tokens — never hardcoded values. Override any token in that file to retheme the entire library.</div>
+        </div>
+
+        <!-- ── Color Palette ─────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Color Palette</div>
+
+          <div class="docs-subsection-title">Brand Colors</div>
+          <div class="docs-swatch-grid">
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-10)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Primary</span><span class="docs-swatch-var">--color-10</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-30)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Surface</span><span class="docs-swatch-var">--color-30</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-60)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Background</span><span class="docs-swatch-var">--color-60</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-on-accent)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">On Accent</span><span class="docs-swatch-var">--color-on-accent</span></div></div>
+          </div>
+          <div class="wui-callout info">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title">--color-on-accent is always white</div>
+              It does NOT follow color-30 in dark mode. Always use it for text/icons on solid accent fills (primary, danger, success, info).
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Semantic Colors</div>
+          <div class="docs-swatch-grid">
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-success)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Success</span><span class="docs-swatch-var">--color-success</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-warning)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Warning</span><span class="docs-swatch-var">--color-warning</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-danger)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Danger</span><span class="docs-swatch-var">--color-danger</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-info)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Info</span><span class="docs-swatch-var">--color-info</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-secondary)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Secondary</span><span class="docs-swatch-var">--color-secondary</span></div></div>
+          </div>
+
+          <div class="docs-subsection-title">Each semantic color has 5 sub-tokens</div>
+          <table class="docs-token-table">
+            <thead><tr><th>Token pattern</th><th>Example (success)</th><th>Usage</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">--color-{variant}</span></td><td><span class="docs-token-name">--color-success</span></td><td>Solid fill / border</td></tr>
+              <tr><td><span class="docs-token-name">--color-{variant}-glow</span></td><td><span class="docs-token-name">--color-success-glow</span></td><td>Box-shadow / focus ring</td></tr>
+              <tr><td><span class="docs-token-name">--color-{variant}-light</span></td><td><span class="docs-token-name">--color-success-light</span></td><td>Soft background tint</td></tr>
+              <tr><td><span class="docs-token-name">--color-{variant}-muted</span></td><td><span class="docs-token-name">--color-success-muted</span></td><td>Subtle / disabled state</td></tr>
+              <tr><td><span class="docs-token-name">--color-{variant}-text</span></td><td><span class="docs-token-name">--color-success-text</span></td><td>Text on light background</td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title">EOC Tier Colors</div>
+          <div class="docs-swatch-grid">
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-1-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 1 — Normal</span><span class="docs-swatch-var">--tier-1-color</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-2-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 2 — Elevated</span><span class="docs-swatch-var">--tier-2-color</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-3-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 3 — High</span><span class="docs-swatch-var">--tier-3-color</span></div></div>
+            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-4-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 4 — Critical</span><span class="docs-swatch-var">--tier-4-color</span></div></div>
+          </div>
+          <p class="docs-desc">Tier colors follow the same 5-token pattern: <code>--tier-N-color / -glow / -light / -muted / -text</code>. Both light and dark values are defined in <code>agency-theme.css</code>.</p>
+
+          <div class="docs-subsection-title">Interaction Tokens</div>
+          <table class="docs-token-table">
+            <thead><tr><th>Token</th><th>Light value</th><th>Dark value</th><th>Usage</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">--color-hover</span></td><td>rgba(128,128,128,0.06)</td><td>rgba(255,255,255,0.06)</td><td>Generic hover background (buttons, rows)</td></tr>
+              <tr><td><span class="docs-token-name">--color-overlay</span></td><td>rgba(0,0,0,0.45)</td><td>rgba(0,0,0,0.45)</td><td>Modal / drawer backdrop</td></tr>
+              <tr><td><span class="docs-token-name">--color-switch-thumb</span></td><td>var(--color-on-accent)</td><td>var(--color-on-accent)</td><td>Toggle switch thumb fill</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Spacing Scale ─────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">space_bar</span>Spacing Scale</div>
+          <p class="docs-desc">Numeric tokens from <code>--space-0</code> to <code>--space-12</code> cover 0–8rem. Semantic aliases map commonly-used steps to readable names.</p>
+          <div class="docs-space-grid">
+            <div class="docs-space-row"><span class="docs-space-label">--space-0</span><div class="docs-space-bar" style="width:2px"></div><span class="docs-space-value">0</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-1</span><div class="docs-space-bar" style="width:4px"></div><span class="docs-space-value">0.25rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-2</span><div class="docs-space-bar" style="width:8px"></div><span class="docs-space-value">0.5rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-3</span><div class="docs-space-bar" style="width:12px"></div><span class="docs-space-value">0.75rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-4</span><div class="docs-space-bar" style="width:16px"></div><span class="docs-space-value">1rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-5</span><div class="docs-space-bar" style="width:24px"></div><span class="docs-space-value">1.5rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-6</span><div class="docs-space-bar" style="width:32px"></div><span class="docs-space-value">2rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-7</span><div class="docs-space-bar" style="width:40px"></div><span class="docs-space-value">2.5rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-8</span><div class="docs-space-bar" style="width:48px"></div><span class="docs-space-value">3rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-9</span><div class="docs-space-bar" style="width:64px"></div><span class="docs-space-value">4rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-10</span><div class="docs-space-bar" style="width:80px"></div><span class="docs-space-value">5rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-11</span><div class="docs-space-bar" style="width:96px"></div><span class="docs-space-value">6rem</span></div>
+            <div class="docs-space-row"><span class="docs-space-label">--space-12</span><div class="docs-space-bar" style="width:128px"></div><span class="docs-space-value">8rem</span></div>
+          </div>
+          <div class="docs-subsection-title">Semantic Aliases</div>
+          <table class="docs-token-table">
+            <thead><tr><th>Alias</th><th>Maps to</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">--space-xs</span></td><td><span class="docs-token-name">--space-1</span></td><td>0.25rem</td></tr>
+              <tr><td><span class="docs-token-name">--space-sm</span></td><td><span class="docs-token-name">--space-2</span></td><td>0.5rem</td></tr>
+              <tr><td><span class="docs-token-name">--space-md</span></td><td><span class="docs-token-name">--space-4</span></td><td>1rem</td></tr>
+              <tr><td><span class="docs-token-name">--space-lg</span></td><td><span class="docs-token-name">--space-6</span></td><td>2rem</td></tr>
+              <tr><td><span class="docs-token-name">--space-xl</span></td><td><span class="docs-token-name">--space-8</span></td><td>3rem</td></tr>
+              <tr><td><span class="docs-token-name">--space-2xl</span></td><td><span class="docs-token-name">--space-10</span></td><td>5rem</td></tr>
+              <tr><td><span class="docs-token-name">--space-3xl</span></td><td><span class="docs-token-name">--space-12</span></td><td>8rem</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Border Radius ─────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">rounded_corner</span>Border Radius</div>
+          <div class="docs-radius-grid">
+            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-none)"></div><span class="docs-radius-label">--radius-none<br>0</span></div>
+            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-2xs)"></div><span class="docs-radius-label">--radius-2xs<br>0.125rem</span></div>
+            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-xs)"></div><span class="docs-radius-label">--radius-xs<br>0.25rem</span></div>
+            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-sm)"></div><span class="docs-radius-label">--radius-sm<br>0.375rem</span></div>
+            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--border-radius)"></div><span class="docs-radius-label">--border-radius<br>0.5rem (base)</span></div>
+            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-lg)"></div><span class="docs-radius-label">--radius-lg<br>0.75rem</span></div>
+            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-xl)"></div><span class="docs-radius-label">--radius-xl<br>1rem</span></div>
+            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-2xl)"></div><span class="docs-radius-label">--radius-2xl<br>1.5rem</span></div>
+            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-pill)"></div><span class="docs-radius-label">--radius-pill<br>9999px</span></div>
+          </div>
+          <p class="docs-desc"><code>--radius-md</code> is an alias for <code>--border-radius</code> (the agency's base corner radius). Change <code>--border-radius</code> to retheme all standard corners at once.</p>
+        </div>
+
+        <!-- ── Border Thickness ──────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">line_weight</span>Border Thickness</div>
+          <p class="docs-desc">Border width tokens in rem — use instead of raw <code>px</code> values on borders, outlines, and scrollbar widths.</p>
+          <table class="docs-token-table">
+            <thead><tr><th>Token</th><th>Value</th><th>px equiv</th><th>Preview</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-token-name">--border-2xs</span></td><td>0.0625rem</td><td>1px</td>
+                <td><div style="height:var(--border-2xs);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">--border-xs</span></td><td>0.125rem</td><td>2px</td>
+                <td><div style="height:var(--border-xs);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">--border-sm</span></td><td>0.1875rem</td><td>3px</td>
+                <td><div style="height:var(--border-sm);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">--border-md</span></td><td>0.25rem</td><td>4px</td>
+                <td><div style="height:var(--border-md);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">--border-lg</span></td><td>0.375rem</td><td>6px</td>
+                <td><div style="height:var(--border-lg);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">--border-xl</span></td><td>0.5rem</td><td>8px</td>
+                <td><div style="height:var(--border-xl);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">--border-2xl</span></td><td>0.75rem</td><td>12px</td>
+                <td><div style="height:var(--border-2xl);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Shadow Scale ──────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">layers</span>Shadow Scale</div>
+          <p class="docs-desc">Shadow tokens automatically resolve to stronger values in dark mode — no manual <code>[data-theme="dark"]</code> overrides needed in components.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:var(--space-4);padding:var(--space-4) 0;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
+              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-xs)"></div>
+              <span class="docs-radius-label" style="text-align:center;">--shadow-xs<br><span style="opacity:0.6;font-size:var(--text-2xs)">Subtle lift</span></span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
+              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-sm)"></div>
+              <span class="docs-radius-label" style="text-align:center;">--shadow-sm<br><span style="opacity:0.6;font-size:var(--text-2xs)">Cards, panels</span></span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
+              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-md)"></div>
+              <span class="docs-radius-label" style="text-align:center;">--shadow-md<br><span style="opacity:0.6;font-size:var(--text-2xs)">Dropdowns, FABs</span></span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
+              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-lg)"></div>
+              <span class="docs-radius-label" style="text-align:center;">--shadow-lg<br><span style="opacity:0.6;font-size:var(--text-2xs)">Popovers, map pins</span></span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
+              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-xl)"></div>
+              <span class="docs-radius-label" style="text-align:center;">--shadow-xl<br><span style="opacity:0.6;font-size:var(--text-2xs)">Modals, drawers</span></span>
+            </div>
+          </div>
+          <p class="docs-desc"><code>--widget-shadow</code> is a semantic alias (resolves to <code>--shadow-sm</code>) used for widget surface elevation — override it in <code>agency-theme.css</code> to adjust all widget shadows at once.</p>
+        </div>
+
+        <!-- ── Typography Scale ──────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">text_fields</span>Typography Scale</div>
+
+          <div class="docs-subsection-title">Font Sizes</div>
+          <table class="docs-token-table">
+            <thead><tr><th>Token</th><th>Value</th><th>Preview</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">--text-2xs</span></td><td>0.625rem (10px)</td><td><span style="font-size:var(--text-2xs)">The quick brown fox</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-xs</span></td><td>0.75rem (12px)</td><td><span style="font-size:var(--text-xs)">The quick brown fox</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-sm</span></td><td>0.875rem (14px)</td><td><span style="font-size:var(--text-sm)">The quick brown fox</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-base</span></td><td>1rem (16px)</td><td><span style="font-size:var(--text-base)">The quick brown fox</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-md</span></td><td>1.125rem (18px)</td><td><span style="font-size:var(--text-md)">The quick brown fox</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-lg</span></td><td>1.25rem (20px)</td><td><span style="font-size:var(--text-lg)">The quick brown fox</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-xl</span></td><td>1.5rem (24px)</td><td><span style="font-size:var(--text-xl)">The quick brown fox</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-2xl</span></td><td>1.875rem (30px)</td><td><span style="font-size:var(--text-2xl)">Heading</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-3xl</span></td><td>2.25rem (36px)</td><td><span style="font-size:var(--text-3xl)">Heading</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-4xl</span></td><td>3rem (48px)</td><td><span style="font-size:var(--text-4xl)">Hero</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-5xl</span></td><td>3.75rem (60px)</td><td><span style="font-size:var(--text-5xl)">XL</span></td></tr>
+              <tr><td><span class="docs-token-name">--text-6xl</span></td><td>4.5rem (72px)</td><td><span style="font-size:var(--text-6xl)">XL</span></td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title">Icon Sizes</div>
+          <p class="docs-desc">Use these for <code>font-size</code> on <code>.material-symbols-outlined</code> elements — not <code>--text-*</code> — so icon sizes can be tuned independently of text.</p>
+          <table class="docs-token-table">
+            <thead><tr><th>Token</th><th>Value</th><th>Preview</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">--icon-xs</span></td><td>1rem (16px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-xs)">info</span></td></tr>
+              <tr><td><span class="docs-token-name">--icon-sm</span></td><td>1.125rem (18px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-sm)">info</span></td></tr>
+              <tr><td><span class="docs-token-name">--icon-md</span></td><td>1.25rem (20px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-md)">info</span></td></tr>
+              <tr><td><span class="docs-token-name">--icon-lg</span></td><td>1.5rem (24px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-lg)">info</span></td></tr>
+              <tr><td><span class="docs-token-name">--icon-xl</span></td><td>2rem (32px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-xl)">info</span></td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title">Font Weights</div>
+          <table class="docs-token-table">
+            <thead><tr><th>Token</th><th>Weight</th><th>Preview</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">--font-extralight</span></td><td>200</td><td><span style="font-weight:var(--font-extralight)">Extra Light Text</span></td></tr>
+              <tr><td><span class="docs-token-name">--font-light</span></td><td>300</td><td><span style="font-weight:var(--font-light)">Light Text</span></td></tr>
+              <tr><td><span class="docs-token-name">--font-regular</span></td><td>400</td><td><span style="font-weight:var(--font-regular)">Regular Text</span></td></tr>
+              <tr><td><span class="docs-token-name">--font-medium</span></td><td>500</td><td><span style="font-weight:var(--font-medium)">Medium Text</span></td></tr>
+              <tr><td><span class="docs-token-name">--font-semibold</span></td><td>600</td><td><span style="font-weight:var(--font-semibold)">Semibold Text</span></td></tr>
+              <tr><td><span class="docs-token-name">--font-bold</span></td><td>700</td><td><span style="font-weight:var(--font-bold)">Bold Text</span></td></tr>
+              <tr><td><span class="docs-token-name">--font-extrabold</span></td><td>800</td><td><span style="font-weight:var(--font-extrabold)">Extra Bold Text</span></td></tr>
+              <tr><td><span class="docs-token-name">--font-black</span></td><td>900</td><td><span style="font-weight:var(--font-black)">Black Text</span></td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title">Line Heights</div>
+          <table class="docs-token-table">
+            <thead><tr><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">--leading-none</span></td><td>1</td><td>Tight display / hero text</td></tr>
+              <tr><td><span class="docs-token-name">--leading-tight</span></td><td>1.25</td><td>Large headings, UI labels</td></tr>
+              <tr><td><span class="docs-token-name">--leading-snug</span></td><td>1.375</td><td>Subheadings, card titles</td></tr>
+              <tr><td><span class="docs-token-name">--leading-normal</span></td><td>1.5</td><td>Body text (default)</td></tr>
+              <tr><td><span class="docs-token-name">--leading-relaxed</span></td><td>1.625</td><td>Long-form reading</td></tr>
+              <tr><td><span class="docs-token-name">--leading-loose</span></td><td>2</td><td>Accessibility / large print</td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title">Letter Spacing</div>
+          <table class="docs-token-table">
+            <thead><tr><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">--tracking-tight</span></td><td>-0.025em</td><td>Display / hero text</td></tr>
+              <tr><td><span class="docs-token-name">--tracking-normal</span></td><td>0</td><td>Body text (default)</td></tr>
+              <tr><td><span class="docs-token-name">--tracking-wide</span></td><td>0.025em</td><td>Subtext, UI labels</td></tr>
+              <tr><td><span class="docs-token-name">--tracking-wider</span></td><td>0.05em</td><td>Caps labels</td></tr>
+              <tr><td><span class="docs-token-name">--tracking-widest</span></td><td>0.1em</td><td>Uppercase badge labels</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('tokens');</script>
+</body>
+</html>

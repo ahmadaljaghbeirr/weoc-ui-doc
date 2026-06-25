@@ -1,0 +1,126 @@
+/* =============================================
+   weoc-typography.css
+   Type scale utilities, font weight utilities,
+   and text color utilities.
+   Loaded via weoc-ui.css barrel.
+   Requires: agency-theme.css (loaded by barrel).
+   ============================================= */
+
+/* ─── Type Scale ─── */
+
+.wui-text-2xs {
+  font-size: var(--text-2xs) !important;
+  line-height: var(--leading-normal) !important;
+}
+
+.wui-text-xs {
+  font-size: var(--text-xs) !important;
+  line-height: var(--leading-normal) !important;
+}
+
+.wui-text-sm {
+  font-size: var(--text-sm) !important;
+  line-height: var(--leading-snug) !important;
+}
+
+.wui-text-base {
+  font-size: var(--text-base) !important;
+  line-height: var(--leading-normal) !important;
+}
+
+.wui-text-md {
+  font-size: var(--text-md) !important;
+  line-height: var(--leading-tight) !important;
+}
+
+.wui-text-lg {
+  font-size: var(--text-lg) !important;
+  line-height: var(--leading-snug) !important;
+}
+
+.wui-text-xl {
+  font-size: var(--text-xl) !important;
+  line-height: var(--leading-tight) !important;
+}
+
+.wui-text-2xl {
+  font-size: var(--text-2xl) !important;
+  line-height: var(--leading-tight) !important;
+}
+
+/* ─── Font Weights ─── */
+
+.wui-extralight {
+  font-weight: var(--font-extralight);
+}
+
+.wui-light {
+  font-weight: var(--font-light);
+}
+
+.wui-regular {
+  font-weight: var(--font-regular);
+}
+
+.wui-medium {
+  font-weight: var(--font-medium) !important;
+}
+
+.wui-semibold {
+  font-weight: var(--font-semibold) !important;
+}
+
+.wui-bold {
+  font-weight: var(--font-bold) !important;
+}
+
+.wui-extrabold {
+  font-weight: var(--font-extrabold) !important;
+}
+
+.wui-black {
+  font-weight: var(--font-black) !important;
+}
+
+/* ─── Text Colors ─── */
+
+.wui-text-primary {
+  color: var(--color-text-primary) !important;
+}
+
+.wui-text-secondary {
+  color: var(--color-text-secondary) !important;
+}
+
+.wui-text-ui {
+  color: var(--color-text-ui) !important;
+}
+
+.wui-text-danger {
+  color: var(--color-danger) !important;
+}
+
+.wui-text-brand {
+  color: var(--color-10) !important;
+}
+
+.wui-label-text {
+  color: var(--color-text-secondary) !important;
+}
+
+/* ─── Text Truncation ─── */
+
+/* Single-line clamp + ellipsis. WIDTH-based: max-width in ch ≈ that many average
+   characters (default 20). Non-destructive — clips visually, leaves the DOM text
+   intact, so a child <eocfield>/link keeps its onclick and it survives WebEOC
+   updatesection refreshes. Override per use with style="--wui-truncate: 30ch";
+   pair with title="full text" for a hover tooltip. */
+.wui-truncate {
+  display: inline-block;
+  max-width: var(--wui-truncate, 20ch);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}

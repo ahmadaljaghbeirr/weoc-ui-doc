@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Feedback</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="feedback">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow">Components</div>
+          <div class="docs-hero-title">Feedback</div>
+          <div class="docs-hero-sub">Banners, callouts, alarms, skeleton loaders, and empty state components.</div>
+        </div>
+
+        <!-- ── wui-banner ─────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">notifications</span>wui-banner</div>
+          <p class="docs-desc">Page-level alert bar. Colored left border + bottom border. Use at the top of a board or panel to communicate a persistent state.</p>
+
+          <div class="docs-example stacked">
+            <div class="wui-banner danger">
+              <div class="wui-banner-body">
+                <span class="material-symbols-outlined">error</span>
+                <div>
+                  <div class="wui-banner-text">EOC Fully Activated — Level 4 Critical</div>
+                  <div class="wui-banner-sub">All available resources have been mobilized. Command staff report to EOC immediately.</div>
+                </div>
+              </div>
+            </div>
+            <div class="wui-banner warning">
+              <div class="wui-banner-body">
+                <span class="material-symbols-outlined">warning</span>
+                <div>
+                  <div class="wui-banner-text">Watch: Severe Weather Advisory</div>
+                  <div class="wui-banner-sub">National Weather Service has issued a severe thunderstorm warning for the region.</div>
+                </div>
+              </div>
+            </div>
+            <div class="wui-banner success">
+              <div class="wui-banner-body">
+                <span class="material-symbols-outlined">check_circle</span>
+                <div><div class="wui-banner-text">All Clear — EOC Deactivated</div></div>
+              </div>
+            </div>
+            <div class="wui-banner info">
+              <div class="wui-banner-body">
+                <span class="material-symbols-outlined">info</span>
+                <div><div class="wui-banner-text">Scheduled Maintenance: Sunday 02:00–04:00</div></div>
+              </div>
+            </div>
+            <div class="wui-banner primary">
+              <div class="wui-banner-body">
+                <span class="material-symbols-outlined">campaign</span>
+                <div><div class="wui-banner-text">System-wide broadcast: Update your contact information by Friday.</div></div>
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-banner danger"&gt;
+  &lt;div class="wui-banner-body"&gt;
+    &lt;span class="material-symbols-outlined"&gt;error&lt;/span&gt;
+    &lt;div&gt;
+      &lt;div class="wui-banner-text"&gt;Critical Alert&lt;/div&gt;
+      &lt;div class="wui-banner-sub"&gt;Supplementary detail text.&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Colors: danger | warning | success | info | primary | secondary --&gt;</pre>
+        </div>
+
+        <!-- ── wui-callout ─────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">chat_bubble</span>wui-callout</div>
+          <p class="docs-desc">4-sided inline contextual notices. Lighter than a banner — use inside panel bodies, form flows, or documentation. 6 variants.</p>
+
+          <div class="docs-example stacked">
+            <div class="wui-callout primary">
+              <span class="material-symbols-outlined">info</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Primary callout</div>
+                General informational notice with a title and body text.
+              </div>
+            </div>
+            <div class="wui-callout info">
+              <span class="material-symbols-outlined">info</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Info callout</div>
+                Contextual information the user should be aware of.
+              </div>
+            </div>
+            <div class="wui-callout success">
+              <span class="material-symbols-outlined">check_circle</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Success callout</div>
+                Operation completed. Record has been saved successfully.
+              </div>
+            </div>
+            <div class="wui-callout warning">
+              <span class="material-symbols-outlined">warning</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Warning callout</div>
+                This action cannot be undone. Proceed with caution.
+              </div>
+            </div>
+            <div class="wui-callout danger">
+              <span class="material-symbols-outlined">error</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Danger callout</div>
+                Critical constraint violated. Data could not be submitted.
+              </div>
+            </div>
+            <div class="wui-callout secondary">
+              <span class="material-symbols-outlined">help</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Secondary callout</div>
+                Low-priority note or tip for the user.
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-callout warning"&gt;
+  &lt;span class="material-symbols-outlined"&gt;warning&lt;/span&gt;
+  &lt;div class="wui-callout-body"&gt;
+    &lt;div class="wui-callout-title"&gt;Warning title&lt;/div&gt;
+    Body text of the callout.
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Variants: primary | info | success | warning | danger | secondary --&gt;</pre>
+        </div>
+
+        <!-- ── wui-alarm ───────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">alarm</span>wui-alarm</div>
+          <p class="docs-desc">Active alert circle. Add <code>.active</code> to trigger a sonar radial pulse animation. Use for live emergency indicators.</p>
+
+          <div class="docs-example row" style="align-items:center;gap:var(--space-8)">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
+              <div class="wui-alarm sm active"></div>
+              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">SM · active</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
+              <div class="wui-alarm active"></div>
+              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">Base · active</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
+              <div class="wui-alarm lg active"></div>
+              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">LG · active</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
+              <div class="wui-alarm xl active"></div>
+              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">XL · active</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
+              <div class="wui-alarm"></div>
+              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">Inactive</span>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-alarm active"&gt;&lt;/div&gt;     &lt;!-- pulsing --&gt;
+&lt;div class="wui-alarm"&gt;&lt;/div&gt;            &lt;!-- static --&gt;
+
+&lt;!-- Sizes: .sm | default | .lg | .xl --&gt;</pre>
+        </div>
+
+        <!-- ── wui-skeleton ────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">hourglass_empty</span>wui-skeleton</div>
+          <p class="docs-desc">Shimmer loading placeholder. Compose with shape + height + width utilities.</p>
+
+          <div class="docs-subsection-title">Shapes</div>
+          <div class="docs-example stacked">
+            <div class="wui-skeleton h-lg"></div>
+            <div class="wui-skeleton h-base w-2-3"></div>
+            <div class="wui-skeleton h-sm w-1-2"></div>
+            <div class="wui-skeleton pill h-btn w-1-3"></div>
+            <div style="display:flex;gap:var(--space-3);align-items:center">
+              <div class="wui-skeleton circle h-avatar"></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:var(--space-2)">
+                <div class="wui-skeleton h-base w-3-4"></div>
+                <div class="wui-skeleton h-sm w-1-2"></div>
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;!-- Rectangle (default) --&gt;
+&lt;div class="wui-skeleton h-lg"&gt;&lt;/div&gt;
+&lt;div class="wui-skeleton h-base w-2-3"&gt;&lt;/div&gt;
+
+&lt;!-- Pill shape --&gt;
+&lt;div class="wui-skeleton pill h-btn"&gt;&lt;/div&gt;
+
+&lt;!-- Circle (avatar) --&gt;
+&lt;div class="wui-skeleton circle h-avatar"&gt;&lt;/div&gt;
+&lt;div class="wui-skeleton circle h-avatar-lg"&gt;&lt;/div&gt;
+
+&lt;!-- Inline --&gt;
+&lt;div class="wui-skeleton inline h-xs"&gt;&lt;/div&gt;
+
+&lt;!-- Height tokens: h-2xs | h-xs | h-sm | h-base | h-lg | h-xl | h-2xl
+                    h-btn | h-input | h-icon | h-fab | h-tab | h-avatar | h-avatar-lg --&gt;
+&lt;!-- Width tokens:  w-full | w-3-4 | w-2-3 | w-1-2 | w-1-3 | w-1-4 --&gt;</pre>
+
+          <div class="docs-subsection-title">Skeleton card pattern</div>
+          <div class="docs-example">
+            <div class="wui-card" style="width:280px">
+              <div class="wui-card-hdr">
+                <div class="wui-card-hdr-left" style="display:flex;align-items:center;gap:var(--space-3)">
+                  <div class="wui-skeleton circle h-avatar"></div>
+                  <div style="display:flex;flex-direction:column;gap:var(--space-2);flex:1">
+                    <div class="wui-skeleton h-sm w-3-4"></div>
+                    <div class="wui-skeleton h-xs w-1-2"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="wui-card-body" style="display:flex;flex-direction:column;gap:var(--space-2)">
+                <div class="wui-skeleton h-sm w-full"></div>
+                <div class="wui-skeleton h-sm w-3-4"></div>
+                <div class="wui-skeleton h-sm w-1-2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── wui-empty-state ─────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">inbox</span>wui-empty-state</div>
+          <p class="docs-desc">Full-area empty state with icon + label + sub + optional action. Use <code>.compact</code> for inline contexts; <code>.dashed</code> adds a border.</p>
+
+          <div class="docs-example stacked">
+            <div class="wui-empty-state">
+              <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--color-secondary-text)">inbox</span>
+              <div class="wui-empty-label">No Incidents Found</div>
+              <div class="wui-empty-sub">No incidents match your current filters. Adjust the filter criteria or create a new incident.</div>
+              <button class="wui-btn outline primary wui-btn-sm"><span class="material-symbols-outlined">add</span> New Incident</button>
+            </div>
+          </div>
+
+          <div class="docs-example">
+            <div class="wui-empty-state compact">
+              <span class="material-symbols-outlined">search_off</span>
+              <div class="wui-empty-label">No results</div>
+            </div>
+            <div class="wui-empty-state compact dashed" style="flex:1">
+              <span class="material-symbols-outlined">cloud_upload</span>
+              <div class="wui-empty-label">Drop files here</div>
+              <div class="wui-empty-sub">or click to browse</div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-empty-state"&gt;
+  &lt;span class="material-symbols-outlined"&gt;inbox&lt;/span&gt;
+  &lt;div class="wui-empty-label"&gt;No Results&lt;/div&gt;
+  &lt;div class="wui-empty-sub"&gt;No items match your filters.&lt;/div&gt;
+  &lt;button class="wui-btn outline primary wui-btn-sm"&gt;Create New&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Compact / with dashed border --&gt;
+&lt;div class="wui-empty-state compact dashed"&gt;…&lt;/div&gt;
+
+&lt;!-- Inline text-only --&gt;
+&lt;div class="wui-empty-section"&gt;No notes attached to this record.&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">wui-empty-section (inline)</div>
+          <div class="docs-example">
+            <div class="wui-empty-section">No attachments on this record.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('feedback');</script>
+</body>
+</html>

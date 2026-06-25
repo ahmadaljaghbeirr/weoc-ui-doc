@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Navigation</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="navigation">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow">Components</div>
+          <div class="docs-hero-title">Navigation</div>
+          <div class="docs-hero-sub">wui-hdr-wrap for board headers with tabs, and wui-band-wrap for status info bars.</div>
+        </div>
+
+        <!-- ── wui-hdr-wrap ────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">web_asset</span>wui-hdr-wrap</div>
+          <p class="docs-desc">Sticky board header. Structure: <code>wui-hdr-wrap</code> → <code>wui-hdr-inner</code> → <code>wui-hdr-top</code> (the row holding <code>wui-hdr-left</code> = icon + title, and <code>wui-hdr-right</code> = actions). An optional <code>wui-hdr-tabs-wrap</code> sits below <code>wui-hdr-top</code>, inside the same inner. The <code>.centered</code> variant turns <code>wui-hdr-inner</code> into a max-width card.</p>
+
+          <div class="docs-subsection-title">Basic header</div>
+          <div class="docs-example stacked" style="padding:0;overflow:hidden;border-radius:var(--radius-lg)">
+            <div class="wui-hdr-wrap">
+              <div class="wui-hdr-inner">
+                <div class="wui-hdr-top">
+                  <div class="wui-hdr-left">
+                    <div class="wui-hdr-icon">
+                      <span class="material-symbols-outlined">emergency</span>
+                    </div>
+                    <div>
+                      <div class="wui-hdr-title">Operations Center</div>
+                      <div class="wui-hdr-subtitle">Active Incidents — Level 3</div>
+                    </div>
+                  </div>
+                  <div class="wui-hdr-right">
+                    <span class="wui-badge danger animate">Active</span>
+                    <button class="wui-btn ghost secondary wui-btn-sm icon-only" title="Settings">
+                      <span class="material-symbols-outlined">settings</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-hdr-wrap"&gt;
+  &lt;div class="wui-hdr-inner"&gt;
+    &lt;div class="wui-hdr-top"&gt;                &lt;!-- the title/actions row --&gt;
+      &lt;div class="wui-hdr-left"&gt;
+        &lt;div class="wui-hdr-icon"&gt;
+          &lt;span class="material-symbols-outlined"&gt;emergency&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;div class="wui-hdr-title"&gt;Operations Center&lt;/div&gt;
+          &lt;div class="wui-hdr-subtitle"&gt;Active Incidents — Level 3&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="wui-hdr-right"&gt;
+        &lt;span class="wui-badge danger animate"&gt;Active&lt;/span&gt;
+        &lt;button class="wui-btn ghost secondary wui-btn-sm icon-only"&gt;
+          &lt;span class="material-symbols-outlined"&gt;settings&lt;/span&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">Header with tab bar</div>
+          <div class="docs-example stacked" style="padding:0;overflow:hidden;border-radius:var(--radius-lg)">
+            <div class="wui-hdr-wrap">
+              <div class="wui-hdr-inner">
+                <div class="wui-hdr-top">
+                  <div class="wui-hdr-left">
+                    <div class="wui-hdr-title">EOC Dashboard</div>
+                  </div>
+                  <div class="wui-hdr-right">
+                    <button class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">add</span> New</button>
+                  </div>
+                </div>
+                <div class="wui-hdr-tabs-wrap">
+                  <div class="wui-hdr-tabs">
+                    <button class="wui-hdr-tab active">Overview</button>
+                    <button class="wui-hdr-tab">Incidents</button>
+                    <button class="wui-hdr-tab">Resources</button>
+                    <button class="wui-hdr-tab">Shelters</button>
+                    <button class="wui-hdr-tab">Communications</button>
+                    <button class="wui-hdr-tab">Logistics</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-hdr-wrap"&gt;
+  &lt;div class="wui-hdr-inner"&gt;
+    &lt;div class="wui-hdr-top"&gt;
+      &lt;div class="wui-hdr-left"&gt;&lt;div class="wui-hdr-title"&gt;EOC Dashboard&lt;/div&gt;&lt;/div&gt;
+      &lt;div class="wui-hdr-right"&gt;…actions…&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="wui-hdr-tabs-wrap"&gt;        &lt;!-- below hdr-top, inside inner --&gt;
+      &lt;div class="wui-hdr-tabs"&gt;            &lt;!-- overflow-x scroll, no scrollbar --&gt;
+        &lt;button class="wui-hdr-tab active"&gt;Overview&lt;/button&gt;
+        &lt;button class="wui-hdr-tab"&gt;Incidents&lt;/button&gt;
+        &lt;button class="wui-hdr-tab"&gt;Resources&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- Tabs auto get fade-edge scroll indicators via ::before/::after + .has-left/.has-right --&gt;</pre>
+
+          <div class="docs-subsection-title">Centered variant (.centered)</div>
+          <p class="docs-desc"><code>.centered</code> on <code>wui-hdr-wrap</code> makes <code>wui-hdr-inner</code> a max-width (1100px) card centered in the header, with transparent surrounding chrome. Good for marketing / landing-style boards.</p>
+          <div class="docs-example stacked" style="padding:var(--space-4);background:var(--color-60);overflow:hidden;border-radius:var(--radius-lg)">
+            <div class="wui-hdr-wrap centered">
+              <div class="wui-hdr-inner">
+                <div class="wui-hdr-top">
+                  <div class="wui-hdr-left">
+                    <div class="wui-hdr-icon"><span class="material-symbols-outlined">hub</span></div>
+                    <div>
+                      <div class="wui-hdr-title">Atlas Crisis Suite</div>
+                      <div class="wui-hdr-subtitle">Unified emergency operations</div>
+                    </div>
+                  </div>
+                  <div class="wui-hdr-right">
+                    <button class="wui-btn ghost secondary wui-btn-sm">Docs</button>
+                    <button class="wui-btn primary wui-btn-sm">Launch</button>
+                  </div>
+                </div>
+                <div class="wui-hdr-tabs-wrap">
+                  <div class="wui-hdr-tabs">
+                    <button class="wui-hdr-tab active">Overview</button>
+                    <button class="wui-hdr-tab">Modules</button>
+                    <button class="wui-hdr-tab">Pricing</button>
+                    <button class="wui-hdr-tab">Support</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-hdr-wrap centered"&gt;   &lt;!-- inner becomes a 1100px centered card --&gt;
+  &lt;div class="wui-hdr-inner"&gt;
+    &lt;div class="wui-hdr-top"&gt;…&lt;/div&gt;
+    &lt;div class="wui-hdr-tabs-wrap"&gt;&lt;div class="wui-hdr-tabs"&gt;…&lt;/div&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">Title row atoms</div>
+          <pre class="docs-code">&lt;!-- Use these inside wui-hdr-left for richer title blocks --&gt;
+&lt;div class="wui-hdr-title-row"&gt;
+  &lt;div class="wui-hdr-title"&gt;Board Name&lt;/div&gt;
+  &lt;span class="wui-badge warning"&gt;Draft&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class="wui-hdr-subtitle"&gt;Subtitle text&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── wui-band-wrap ────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">info</span>wui-band-wrap</div>
+          <p class="docs-desc">Info bar for displaying EOC status data, counts, or KPIs in a horizontal strip. Add <code>.stripe.{color}</code> for a diagonal-striped left border + colored bottom border.</p>
+
+          <div class="docs-subsection-title">Basic band</div>
+          <div class="docs-example stacked" style="padding:0;overflow:hidden;border-radius:var(--radius-lg)">
+            <div class="wui-band-wrap">
+              <div class="wui-band-row">
+                <div class="wui-band-seg">
+                  <div class="wui-band-label">Activation Level</div>
+                  <div class="wui-band-value">Level 3 — Partial</div>
+                </div>
+                <div class="wui-band-divider"></div>
+                <div class="wui-band-seg">
+                  <div class="wui-band-label">Incidents Open</div>
+                  <div class="wui-band-value">47</div>
+                </div>
+                <div class="wui-band-divider"></div>
+                <div class="wui-band-seg">
+                  <div class="wui-band-label">Resources Deployed</div>
+                  <div class="wui-band-value">312</div>
+                </div>
+                <div class="wui-band-divider"></div>
+                <div class="wui-band-seg">
+                  <div class="wui-band-label">Shelters Active</div>
+                  <div class="wui-band-value">8 / 12</div>
+                </div>
+                <div class="wui-band-spacer"></div>
+                <div class="wui-band-actions">
+                  <button class="wui-btn ghost secondary wui-btn-sm">Refresh</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-band-wrap"&gt;
+  &lt;div class="wui-band-row"&gt;
+    &lt;div class="wui-band-seg"&gt;
+      &lt;div class="wui-band-label"&gt;Activation Level&lt;/div&gt;
+      &lt;div class="wui-band-value"&gt;Level 3&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="wui-band-divider"&gt;&lt;/div&gt;
+    &lt;div class="wui-band-seg"&gt;…&lt;/div&gt;
+    &lt;div class="wui-band-spacer"&gt;&lt;/div&gt;   &lt;!-- pushes actions to end --&gt;
+    &lt;div class="wui-band-actions"&gt;…&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">Stripe variants</div>
+          <div class="docs-example stacked" style="gap:var(--space-3)">
+            <div class="wui-band-wrap stripe danger">
+              <div class="wui-band-row">
+                <div class="wui-band-seg">
+                  <div class="wui-band-label">Status</div>
+                  <div class="wui-band-value">EOC Activated — Level 4 Critical</div>
+                </div>
+              </div>
+            </div>
+            <div class="wui-band-wrap stripe warning">
+              <div class="wui-band-row">
+                <div class="wui-band-seg">
+                  <div class="wui-band-label">Status</div>
+                  <div class="wui-band-value">Elevated — Monitoring</div>
+                </div>
+              </div>
+            </div>
+            <div class="wui-band-wrap stripe success">
+              <div class="wui-band-row">
+                <div class="wui-band-seg">
+                  <div class="wui-band-label">Status</div>
+                  <div class="wui-band-value">Normal Operations</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-band-wrap stripe danger"&gt;…&lt;/div&gt;
+&lt;div class="wui-band-wrap stripe warning"&gt;…&lt;/div&gt;
+&lt;div class="wui-band-wrap stripe success"&gt;…&lt;/div&gt;
+&lt;div class="wui-band-wrap stripe primary"&gt;…&lt;/div&gt;
+&lt;div class="wui-band-wrap stripe info"&gt;…&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">Stacked segment (label over value)</div>
+          <div class="docs-example stacked" style="padding:0;overflow:hidden;border-radius:var(--radius-lg)">
+            <div class="wui-band-wrap">
+              <div class="wui-band-row">
+                <div class="wui-band-seg wui-band-seg-stack">
+                  <div class="wui-band-label">EOC Director</div>
+                  <div class="wui-band-value">John Davis</div>
+                </div>
+                <div class="wui-band-divider"></div>
+                <div class="wui-band-seg wui-band-seg-stack">
+                  <div class="wui-band-label">Opened At</div>
+                  <div class="wui-band-value">2024-01-15 · 14:00</div>
+                </div>
+                <div class="wui-band-divider"></div>
+                <div class="wui-band-seg wui-band-seg-stack">
+                  <div class="wui-band-label">Duration</div>
+                  <div class="wui-band-value"><span class="wui-elapsed warning">04:32:11</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-band-seg wui-band-seg-stack"&gt;
+  &lt;div class="wui-band-label"&gt;Director&lt;/div&gt;
+  &lt;div class="wui-band-value"&gt;John Davis&lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('navigation');</script>
+</body>
+</html>

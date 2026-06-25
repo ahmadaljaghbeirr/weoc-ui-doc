@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — EOC Lists</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="lists">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow">Reference</div>
+          <div class="docs-hero-title">EOC List Registry</div>
+          <div class="docs-hero-sub">
+            Define all dropdown list data once in <code>eoc-lists.js</code> — a single JS file hosted on the CDN.
+            Any board that loads it gets its lists on every environment, no WebEOC admin re-entry required.
+          </div>
+        </div>
+
+        <!-- ── Why ──────────────────────────────────────────────────────────── -->
+        <div class="wui-callout warning">
+          <span class="material-symbols-outlined">warning</span>
+          <div class="wui-callout-body">
+            <div class="wui-callout-title">The migration problem this solves</div>
+            WebEOC lists live in the environment database. Moving to a new environment means
+            manually re-entering every list — and sub-lists cannot be exported recursively at all.
+            <code>eoc-lists.js</code> moves that data out of the database and into a CDN-hosted JS file
+            that travels with your board package.
+          </div>
+        </div>
+
+        <div class="wui-callout info" style="margin-top:var(--space-3)">
+          <span class="material-symbols-outlined">info</span>
+          <div class="wui-callout-body">
+            <div class="wui-callout-title">XSLT display views still need a WebEOC list</div>
+            If a display view uses a server-side <code>&lt;list name="..."&gt;</code> XSL construct to render
+            label text, that list must still exist in WebEOC admin.
+            The registry only replaces the <strong>input side</strong> — TomSelect dropdowns populated by JS.
+            Boards following the weoc-ui pattern render values directly from <code>@FieldValue</code> attributes,
+            so they have no XSL list dependency.
+          </div>
+        </div>
+
+        <!-- ── Load order ────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">bolt</span>Load Order</div>
+          <p class="docs-desc">
+            Include <code>eoc-lists.js</code> in the board's <code>&lt;head&gt;</code> before any script
+            that references <code>EOCLists</code>.
+            No dependencies — the file is standalone.
+          </p>
+          <pre class="docs-code">&lt;head&gt;
+  &lt;script src="https://cdn.atlascrisis.com/Shared/JS/weoc-ui.js"&gt;&lt;/script&gt;
+
+  &lt;!-- List registry — no dependencies --&gt;
+  &lt;script src="https://cdn.atlascrisis.com/Shared/JS/eoc-lists.js"&gt;&lt;/script&gt;
+
+  &lt;!-- TomSelect (library + factory) --&gt;
+  &lt;script src="https://cdn.atlascrisis.com/Shared/JS/tom-select.complete.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://cdn.atlascrisis.com/Shared/JS/tom-select-factory.js"&gt;&lt;/script&gt;
+&lt;/head&gt;</pre>
+        </div>
+
+        <!-- ── API ───────────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">code</span>API — <code>window.EOCLists</code></div>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-api-method">EOCLists.get(name)</span></td>
+                <td><span class="docs-api-type">Array</span></td>
+                <td>Top-level items for a list. Returns <code>[{value, text}, …]</code>. Returns <code>[]</code> if the list is not registered.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCLists.getChildren(name, parentValue)</span></td>
+                <td><span class="docs-api-type">Array</span></td>
+                <td>Child items for a given parent value in a tree list. Returns <code>[]</code> for flat lists or unknown parents.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCLists.hasChildren(name)</span></td>
+                <td><span class="docs-api-type">boolean</span></td>
+                <td>Whether a list has a <code>children</code> map (i.e. is a tree list).</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCLists.list()</span></td>
+                <td><span class="docs-api-type">string[]</span></td>
+                <td>All registered list names — useful for debugging or building an admin UI.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCLists.populate(select, name, opts?)</span></td>
+                <td><span class="docs-api-type">number</span></td>
+                <td>
+                  Fill a native <code>&lt;select&gt;</code> element with items from the registry.
+                  Returns the number of options added.<br>
+                  <code>opts.parentValue</code> — fetch sub-list children instead of top-level items.<br>
+                  <code>opts.keepPlaceholder</code> — keep the first option (blank) when clearing.
+                </td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCLists.register(name, definition)</span></td>
+                <td><span class="docs-api-type">void</span></td>
+                <td>
+                  Add or replace a list at runtime. Pass a flat array or a tree object.
+                  Useful for board-specific lists not shared across all boards.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Defining lists ────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">data_object</span>Defining Lists</div>
+          <p class="docs-desc">
+            All lists live in <code>eoc-lists.js</code>. Two formats — flat and tree.
+            Add new lists to the file; boards pick them up automatically on next deploy.
+          </p>
+          <pre class="docs-code">// ── Flat list ─────────────────────────────────────────────────────────────────
+// define(name, [{ value, text }, ...])
+define('Priority', [
+  { value: 'Critical', text: 'Critical' },
+  { value: 'High',     text: 'High' },
+  { value: 'Medium',   text: 'Medium' },
+  { value: 'Low',      text: 'Low' }
+]);
+
+// ── Tree list (parent → children) ─────────────────────────────────────────────
+// define(name, { items: [...], children: { parentValue: [...], ... } })
+define('Resource Category', {
+  items: [
+    { value: 'Personnel',  text: 'Personnel' },
+    { value: 'Equipment',  text: 'Equipment' },
+    { value: 'Vehicles',   text: 'Vehicles' }
+  ],
+  children: {
+    Personnel: [
+      { value: 'EOC Staff',  text: 'EOC Staff' },
+      { value: 'Field Team', text: 'Field Team' },
+      { value: 'Volunteer',  text: 'Volunteer' }
+    ],
+    Equipment: [
+      { value: 'Generator', text: 'Generator' },
+      { value: 'Radio',     text: 'Radio' }
+    ],
+    Vehicles: [
+      { value: 'Ambulance',  text: 'Ambulance' },
+      { value: 'Fire Truck', text: 'Fire Truck' }
+    ]
+  }
+});
+
+// ── Register at runtime (board-specific list) ──────────────────────────────────
+// Call this from your board's initialize() before TomSelectFactory.init()
+EOCLists.register('My Board Status', [
+  { value: 'Draft',    text: 'Draft' },
+  { value: 'Approved', text: 'Approved' },
+  { value: 'Archived', text: 'Archived' }
+]);</pre>
+        </div>
+
+        <!-- ── Demo: Flat list ───────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">format_list_bulleted</span>Demo — Flat List</div>
+          <p class="docs-desc">
+            <code>EOCLists.populate()</code> fills a native <code>&lt;select&gt;</code>. Pass it to TomSelect.
+            The Priority list ships in <code>eoc-lists.js</code> — no WebEOC list needed.
+          </p>
+
+          <div class="docs-example" style="flex-direction:column;align-items:flex-start;gap:var(--space-4)">
+            <div style="display:flex;gap:var(--space-4);align-items:center;flex-wrap:wrap;width:100%">
+              <div style="flex:1;min-width:220px;max-width:320px">
+                <select id="demo-list-flat" style="width:100%"></select>
+              </div>
+              <div style="display:flex;align-items:center;gap:var(--space-2)">
+                <span style="font-size:var(--font-sm);color:var(--color-text-secondary)">Selected:</span>
+                <span id="demo-list-flat-out" class="wui-badge bordered secondary">None</span>
+              </div>
+            </div>
+            <div id="demo-list-flat-chips" style="display:flex;gap:var(--space-2);flex-wrap:wrap"></div>
+          </div>
+
+          <pre class="docs-code">// Populate before TomSelect init
+var prioritySel = document.querySelector('[name="Priority"]');
+EOCLists.populate(prioritySel, 'Priority');
+
+// Init TomSelect normally
+var ts = new TomSelect(prioritySel, {
+  plugins: ['clear_button'],
+  placeholder: '— Select priority —',
+  allowEmptyOption: true
+});
+
+// React to selection
+ts.on('change', function (val) {
+  var VARIANTS = { Critical: 'danger', High: 'warning', Medium: 'primary', Low: 'success' };
+  badge.className = 'wui-badge ' + (VARIANTS[val] || 'bordered secondary');
+  badge.textContent = val || 'None';
+});</pre>
+        </div>
+
+        <!-- ── Demo: Cascading ───────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">account_tree</span>Demo — Cascading (Sub-List)</div>
+          <p class="docs-desc">
+            Tree lists define parent items and a <code>children</code> map.
+            When the parent changes, call <code>EOCLists.getChildren()</code> to reload the child TomSelect.
+            No recursive export needed — the entire tree lives in the JS file.
+          </p>
+
+          <div class="docs-example" style="flex-direction:column;align-items:flex-start;gap:var(--space-3)">
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;width:100%">
+              <div style="flex:1;min-width:220px;max-width:300px">
+                <label style="font-size:var(--font-sm);color:var(--color-text-secondary);display:block;margin-bottom:var(--space-1)">Category</label>
+                <select id="demo-list-cat" style="width:100%"></select>
+              </div>
+              <div style="flex:1;min-width:220px;max-width:300px">
+                <label style="font-size:var(--font-sm);color:var(--color-text-secondary);display:block;margin-bottom:var(--space-1)">Sub-Category</label>
+                <select id="demo-list-sub" style="width:100%"></select>
+              </div>
+            </div>
+            <div id="demo-list-cascade-out" style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;min-height:28px"></div>
+          </div>
+
+          <pre class="docs-code">// Populate parent from registry
+EOCLists.populate(catSel, 'Resource Category');
+var catTs = new TomSelect(catSel, { plugins: ['clear_button'],
+  placeholder: '— Select category —', allowEmptyOption: true });
+
+// Child starts empty and disabled
+var subTs = new TomSelect(subSel, { plugins: ['clear_button'],
+  placeholder: '— Select category first —', allowEmptyOption: true });
+subTs.disable();
+
+// Reload child when parent changes
+catTs.on('change', function (val) {
+  subTs.clear(true);
+  subTs.clearOptions();
+  if (val) {
+    EOCLists.getChildren('Resource Category', val).forEach(function (item) {
+      subTs.addOption({ value: item.value, text: item.text });
+    });
+    subTs.enable();
+    subTs.refreshOptions(false);
+  } else {
+    subTs.disable();
+  }
+});</pre>
+        </div>
+
+        <!-- ── Board integration ─────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">integration_instructions</span>Board Integration Pattern</div>
+          <p class="docs-desc">
+            In a WebEOC board's <code>initialize()</code>, populate registry-backed selects
+            <strong>before</strong> <code>TomSelectFactory.init()</code>.
+            The factory then wraps them normally — all existing <code>data-*</code> attributes still apply.
+          </p>
+          <pre class="docs-code">function initialize() {
+  // 1. Populate from registry BEFORE factory init
+  var prioritySel = document.querySelector('[name="Priority"]');
+  if (prioritySel) EOCLists.populate(prioritySel, 'Priority');
+
+  var catSel = document.querySelector('[name="MainCategory"]');
+  if (catSel) EOCLists.populate(catSel, 'Resource Category');
+
+  // 2. Factory inits TomSelect on all .tomselect elements
+  TomSelectFactory.init();
+
+  // 3. Wire cascading AFTER factory init (factory created the ts instance)
+  var catTs = TomSelectFactory.get('MainCategory');
+  var subTs = TomSelectFactory.get('SubCategory');
+  if (catTs &amp;&amp; subTs) {
+    catTs.on('change', function (val) {
+      subTs.clear(true);
+      subTs.clearOptions();
+      EOCLists.getChildren('Resource Category', val).forEach(function (item) {
+        subTs.addOption({ value: item.value, text: item.text });
+      });
+      subTs.refreshOptions(false);
+    });
+  }
+}</pre>
+          <p class="docs-desc" style="margin-top:var(--space-3)">
+            The WebEOC view defines the select with <code>&lt;element name="select"&gt;</code> / <code>&lt;attribute name="class"&gt;tomselect&lt;/attribute&gt;</code>
+            as normal — no <code>list</code> attribute, no <code>data-list</code> attribute.
+            The registry handles the options; the factory handles the widget.
+          </p>
+          <pre class="docs-code">&lt;!-- Input view: select backed by registry instead of a WebEOC list --&gt;
+&lt;element name="select"&gt;
+  &lt;attribute name="name"&gt;Priority&lt;/attribute&gt;
+  &lt;attribute name="class"&gt;tomselect&lt;/attribute&gt;
+  &lt;attribute name="data-placeholder"&gt;&amp;mdash; Select priority &amp;mdash;&lt;/attribute&gt;
+  &lt;attribute name="data-required"&gt;true&lt;/attribute&gt;
+&lt;/element&gt;
+&lt;!-- EOCLists.populate() fills the options in initialize() before factory.init() --&gt;</pre>
+        </div>
+
+        <!-- ── Registry reference ─────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">inventory_2</span>Built-in Lists</div>
+          <p class="docs-desc">
+            All lists defined in <code>eoc-lists.js</code> as shipped.
+            Add new lists to the file for any domain; use <code>EOCLists.register()</code> for board-specific
+            overrides at runtime without touching the shared file.
+          </p>
+
+          <div id="demo-list-registry-grid" style="display:flex;flex-wrap:wrap;gap:var(--space-3)"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('lists');</script>
+</body>
+</html>

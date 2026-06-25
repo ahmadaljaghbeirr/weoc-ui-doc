@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Tier Colors</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="tier-colors">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow">Components</div>
+          <div class="docs-hero-title">Tier Colors</div>
+          <div class="docs-hero-sub">Agency activation-tier color extensions. Apply <code>.tier-1</code> through <code>.tier-4</code> to badges, chips, status dots, icon bubbles, callouts, banners, cards, and level bars to communicate EOC activation state.</div>
+        </div>
+
+        <!-- ── Tier system overview ──────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">emergency</span>Tier System</div>
+          <p class="docs-desc">The four tiers map to EOC activation levels. Token names follow the pattern <code>--tier-N-color</code>, <code>--tier-N-light</code>, <code>--tier-N-muted</code>, <code>--tier-N-glow</code>, <code>--tier-N-text</code>. All tokens are defined in <code>agency-theme.css</code> with full dark-mode remaps.</p>
+
+          <table class="docs-token-table">
+            <thead>
+              <tr><th>Class</th><th>Color</th><th>Activation Level</th><th>Tokens</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-token-name">.tier-1</span></td>
+                <td>
+                  <span class="docs-token-preview" style="background:var(--tier-1-color)"></span>
+                  <span style="color:var(--tier-1-text);font-weight:600">Green</span>
+                </td>
+                <td>Standby / Normal Operations</td>
+                <td><span class="docs-token-name">--tier-1-*</span></td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">.tier-2</span></td>
+                <td>
+                  <span class="docs-token-preview" style="background:var(--tier-2-color)"></span>
+                  <span style="color:var(--tier-2-text);font-weight:600">Amber</span>
+                </td>
+                <td>Partial Activation</td>
+                <td><span class="docs-token-name">--tier-2-*</span></td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">.tier-3</span></td>
+                <td>
+                  <span class="docs-token-preview" style="background:var(--tier-3-color)"></span>
+                  <span style="color:var(--tier-3-text);font-weight:600">Red-Orange</span>
+                </td>
+                <td>Full Activation</td>
+                <td><span class="docs-token-name">--tier-3-*</span></td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">.tier-4</span></td>
+                <td>
+                  <span class="docs-token-preview" style="background:var(--tier-4-color)"></span>
+                  <span style="color:var(--tier-4-text);font-weight:600">Critical Red</span>
+                </td>
+                <td>MACC Activated</td>
+                <td><span class="docs-token-name">--tier-4-*</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Badge ────────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">new_label</span>wui-badge</div>
+          <p class="docs-desc">Soft (tinted) and solid filled variants. Add <code>.animate</code> for a pulsing glow on live active tiers.</p>
+
+          <div class="docs-subsection-title">Soft (default)</div>
+          <div class="docs-example row">
+            <span class="wui-badge tier-1">Tier 1</span>
+            <span class="wui-badge tier-2">Tier 2</span>
+            <span class="wui-badge tier-3">Tier 3</span>
+            <span class="wui-badge tier-4">Tier 4</span>
+          </div>
+
+          <div class="docs-subsection-title">Solid filled</div>
+          <div class="docs-example row">
+            <span class="wui-badge solid tier-1">Tier 1</span>
+            <span class="wui-badge solid tier-2">Tier 2</span>
+            <span class="wui-badge solid tier-3">Tier 3</span>
+            <span class="wui-badge solid tier-4">Tier 4</span>
+          </div>
+
+          <div class="docs-subsection-title">Animated (live activation state)</div>
+          <div class="docs-example row">
+            <span class="wui-badge tier-1 animate">Tier 1</span>
+            <span class="wui-badge tier-2 animate">Tier 2</span>
+            <span class="wui-badge tier-3 animate">Tier 3</span>
+            <span class="wui-badge tier-4 animate">Tier 4</span>
+          </div>
+          <pre class="docs-code">&lt;span class="wui-badge tier-1"&gt;Tier 1&lt;/span&gt;
+&lt;span class="wui-badge solid tier-2"&gt;Tier 2&lt;/span&gt;
+&lt;span class="wui-badge tier-4 animate"&gt;Tier 4&lt;/span&gt;</pre>
+        </div>
+
+        <!-- ── Chip ─────────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">sell</span>wui-chip</div>
+          <p class="docs-desc">Pill-shaped chips for tier-based filtering and labeling in view toolbars.</p>
+
+          <div class="docs-example row">
+            <span class="wui-chip tier-1"><span class="material-symbols-outlined">check_circle</span> Tier 1</span>
+            <span class="wui-chip tier-2"><span class="material-symbols-outlined">warning</span> Tier 2</span>
+            <span class="wui-chip tier-3"><span class="material-symbols-outlined">error</span> Tier 3</span>
+            <span class="wui-chip tier-4"><span class="material-symbols-outlined">emergency</span> Tier 4</span>
+          </div>
+          <pre class="docs-code">&lt;span class="wui-chip tier-1"&gt;Tier 1&lt;/span&gt;
+&lt;span class="wui-chip tier-4"&gt;&lt;span class="material-symbols-outlined"&gt;emergency&lt;/span&gt; Tier 4&lt;/span&gt;</pre>
+        </div>
+
+        <!-- ── Status dot ────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">radio_button_checked</span>wui-status-dot</div>
+          <p class="docs-desc">Static and animated live dots for tier level indicators in record rows and dashboards.</p>
+
+          <div class="docs-subsection-title">Static</div>
+          <div class="docs-example row">
+            <span class="wui-status-dot tier-1"></span>
+            <span class="wui-status-dot tier-2"></span>
+            <span class="wui-status-dot tier-3"></span>
+            <span class="wui-status-dot tier-4"></span>
+          </div>
+
+          <div class="docs-subsection-title">Live (pulsing)</div>
+          <div class="docs-example row">
+            <span class="wui-status-dot live tier-1"></span>
+            <span class="wui-status-dot live tier-2"></span>
+            <span class="wui-status-dot live tier-3"></span>
+            <span class="wui-status-dot live tier-4"></span>
+          </div>
+          <pre class="docs-code">&lt;span class="wui-status-dot tier-3"&gt;&lt;/span&gt;
+&lt;span class="wui-status-dot live tier-4"&gt;&lt;/span&gt;</pre>
+        </div>
+
+        <!-- ── Icon bubble ───────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">category</span>wui-icon-bubble</div>
+          <p class="docs-desc">Soft (tinted) and solid icon containers. Tier-colored bubbles work well in incident cards and dashboard stat blocks.</p>
+
+          <div class="docs-subsection-title">Soft</div>
+          <div class="docs-example row">
+            <span class="wui-icon-bubble tier-1"><span class="material-symbols-outlined">check_circle</span></span>
+            <span class="wui-icon-bubble tier-2"><span class="material-symbols-outlined">warning</span></span>
+            <span class="wui-icon-bubble tier-3"><span class="material-symbols-outlined">error</span></span>
+            <span class="wui-icon-bubble tier-4"><span class="material-symbols-outlined">emergency</span></span>
+          </div>
+
+          <div class="docs-subsection-title">Solid</div>
+          <div class="docs-example row">
+            <span class="wui-icon-bubble solid tier-1"><span class="material-symbols-outlined">check_circle</span></span>
+            <span class="wui-icon-bubble solid tier-2"><span class="material-symbols-outlined">warning</span></span>
+            <span class="wui-icon-bubble solid tier-3"><span class="material-symbols-outlined">error</span></span>
+            <span class="wui-icon-bubble solid tier-4"><span class="material-symbols-outlined">emergency</span></span>
+          </div>
+
+          <div class="docs-subsection-title">Bordered</div>
+          <div class="docs-example row">
+            <span class="wui-icon-bubble bordered tier-1"><span class="material-symbols-outlined">check_circle</span></span>
+            <span class="wui-icon-bubble bordered tier-2"><span class="material-symbols-outlined">warning</span></span>
+            <span class="wui-icon-bubble bordered tier-3"><span class="material-symbols-outlined">error</span></span>
+            <span class="wui-icon-bubble bordered tier-4"><span class="material-symbols-outlined">emergency</span></span>
+          </div>
+          <pre class="docs-code">&lt;span class="wui-icon-bubble tier-4"&gt;&lt;span class="material-symbols-outlined"&gt;emergency&lt;/span&gt;&lt;/span&gt;
+&lt;span class="wui-icon-bubble solid tier-4"&gt;&lt;span class="material-symbols-outlined"&gt;emergency&lt;/span&gt;&lt;/span&gt;</pre>
+        </div>
+
+        <!-- ── Callout ───────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">info</span>wui-callout</div>
+          <p class="docs-desc">Inline callout blocks tinted by tier color. Pair the icon with the tier's Material Symbol for semantic clarity.</p>
+
+          <div class="docs-example stacked">
+            <div class="wui-callout tier-1">
+              <span class="material-symbols-outlined">check_circle</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Tier 1 — Normal Operations</div>
+                EOC is in monitoring mode. All units on standby. No resource deployment required.
+              </div>
+            </div>
+            <div class="wui-callout tier-2">
+              <span class="material-symbols-outlined">warning</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Tier 2 — Partial Activation</div>
+                Selected ESFs activated. Resource coordination underway. Situation under management.
+              </div>
+            </div>
+            <div class="wui-callout tier-3">
+              <span class="material-symbols-outlined">error</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Tier 3 — Full Activation</div>
+                All ESFs activated. Mutual aid requested. Director present at EOC.
+              </div>
+            </div>
+            <div class="wui-callout tier-4">
+              <span class="material-symbols-outlined">emergency</span>
+              <div class="wui-callout-body">
+                <div class="wui-callout-title">Tier 4 — MACC Activated</div>
+                Regional coordination active. State resources engaged. Executive leadership at MACC.
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-callout tier-4"&gt;
+  &lt;span class="material-symbols-outlined"&gt;emergency&lt;/span&gt;
+  &lt;div class="wui-callout-body"&gt;
+    &lt;div class="wui-callout-title"&gt;Tier 4 — MACC Activated&lt;/div&gt;
+    …description…
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── Banner ────────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">campaign</span>wui-banner</div>
+          <p class="docs-desc">Full-width top banners for system-wide activation-level announcements. Tier 4 should always use dismiss=false to keep the state visible.</p>
+
+          <div class="docs-example stacked" style="gap:var(--space-2)">
+            <div class="wui-banner tier-1">
+              <span class="material-symbols-outlined">check_circle</span>
+              <span class="wui-banner-body">
+                <strong>EOC Tier 1</strong> — System operational. Monitoring active.
+              </span>
+            </div>
+            <div class="wui-banner tier-2">
+              <span class="material-symbols-outlined">warning</span>
+              <span class="wui-banner-body">
+                <strong>EOC Tier 2 Activated</strong> — Partial activation in effect. ESF 1, 5, 13 reporting.
+              </span>
+            </div>
+            <div class="wui-banner tier-3">
+              <span class="material-symbols-outlined">error</span>
+              <span class="wui-banner-body">
+                <strong>EOC Tier 3 — Full Activation</strong> — All ESFs active. Incident Commander on site.
+              </span>
+            </div>
+            <div class="wui-banner tier-4">
+              <span class="material-symbols-outlined">emergency</span>
+              <span class="wui-banner-body">
+                <strong>MACC ACTIVATED — Tier 4</strong> — Regional emergency declared. All boards locked for audit.
+              </span>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-banner tier-4" data-wui-banner=""&gt;
+  &lt;span class="material-symbols-outlined"&gt;emergency&lt;/span&gt;
+  &lt;span class="wui-banner-body"&gt;MACC ACTIVATED — Tier 4&lt;/span&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── Card accent + side ────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">credit_card</span>wui-card — Accent &amp; Side</div>
+          <p class="docs-desc">Incident record cards colored by activation tier. Use <code>.has-accent</code> for a 4px left-border stripe, or <code>.has-side .wui-card-side</code> for a full colored column.</p>
+
+          <div class="docs-subsection-title">has-accent tier variants</div>
+          <div class="docs-example stacked">
+            <div class="wui-card has-accent tier-1">
+              <div class="wui-card-body">
+                <div class="wui-card-label">Incident #204 — Power Outage</div>
+                <div class="wui-card-sub">Tier 1 · Monitoring</div>
+              </div>
+            </div>
+            <div class="wui-card has-accent tier-2">
+              <div class="wui-card-body">
+                <div class="wui-card-label">Incident #211 — Flash Flood Watch</div>
+                <div class="wui-card-sub">Tier 2 · ESF 3, 9 Active</div>
+              </div>
+            </div>
+            <div class="wui-card has-accent tier-3">
+              <div class="wui-card-body">
+                <div class="wui-card-label">Incident #218 — Wildfire Evacuation</div>
+                <div class="wui-card-sub">Tier 3 · Full Activation</div>
+              </div>
+            </div>
+            <div class="wui-card has-accent tier-4">
+              <div class="wui-card-body">
+                <div class="wui-card-label">Incident #225 — Regional Earthquake</div>
+                <div class="wui-card-sub">Tier 4 · MACC Activated</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">has-side tier variants</div>
+          <div class="docs-example stacked">
+            <div class="wui-card has-side">
+              <div class="wui-card-side tier-1"></div>
+              <div class="wui-card-body">
+                <div class="wui-card-label">Incident #204 — Tier 1</div>
+                <div class="wui-card-sub">Normal Operations</div>
+              </div>
+            </div>
+            <div class="wui-card has-side">
+              <div class="wui-card-side tier-2"></div>
+              <div class="wui-card-body">
+                <div class="wui-card-label">Incident #211 — Tier 2</div>
+                <div class="wui-card-sub">Partial Activation</div>
+              </div>
+            </div>
+            <div class="wui-card has-side">
+              <div class="wui-card-side tier-3"></div>
+              <div class="wui-card-body">
+                <div class="wui-card-label">Incident #218 — Tier 3</div>
+                <div class="wui-card-sub">Full Activation</div>
+              </div>
+            </div>
+            <div class="wui-card has-side">
+              <div class="wui-card-side tier-4"></div>
+              <div class="wui-card-body">
+                <div class="wui-card-label">Incident #225 — Tier 4</div>
+                <div class="wui-card-sub">MACC Activated</div>
+              </div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;!-- Left accent bar --&gt;
+&lt;div class="wui-card has-accent tier-4"&gt;
+  &lt;div class="wui-card-body"&gt;…&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Full color side column --&gt;
+&lt;div class="wui-card has-side"&gt;
+  &lt;div class="wui-card-side tier-4"&gt;&lt;/div&gt;
+  &lt;div class="wui-card-body"&gt;…&lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── Level bar ─────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">signal_cellular_alt</span>wui-lvl — Tier variants</div>
+          <p class="docs-desc">Level bar segments lit up in tier color. The <code>.current</code> segment pulses. Combine with a tier badge for the full activation row.</p>
+
+          <div class="docs-example stacked" style="gap:var(--space-5)">
+
+            <div style="display:flex;align-items:center;gap:var(--space-4)">
+              <span class="wui-badge tier-1 wui-badge-sm">Tier 1</span>
+              <div class="wui-lvl tier-1">
+                <div class="wui-lvl-inner">
+                  <div class="wui-lvl-bar">
+                    <div class="wui-lvl-seg on current"></div>
+                    <div class="wui-lvl-seg"></div>
+                    <div class="wui-lvl-seg"></div>
+                    <div class="wui-lvl-seg"></div>
+                  </div>
+                </div>
+                <div class="wui-lvl-count">1</div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:var(--space-4)">
+              <span class="wui-badge tier-2 wui-badge-sm">Tier 2</span>
+              <div class="wui-lvl tier-2">
+                <div class="wui-lvl-inner">
+                  <div class="wui-lvl-bar">
+                    <div class="wui-lvl-seg on"></div>
+                    <div class="wui-lvl-seg on current"></div>
+                    <div class="wui-lvl-seg"></div>
+                    <div class="wui-lvl-seg"></div>
+                  </div>
+                </div>
+                <div class="wui-lvl-count">2</div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:var(--space-4)">
+              <span class="wui-badge tier-3 wui-badge-sm">Tier 3</span>
+              <div class="wui-lvl tier-3">
+                <div class="wui-lvl-inner">
+                  <div class="wui-lvl-bar">
+                    <div class="wui-lvl-seg on"></div>
+                    <div class="wui-lvl-seg on"></div>
+                    <div class="wui-lvl-seg on current"></div>
+                    <div class="wui-lvl-seg"></div>
+                  </div>
+                </div>
+                <div class="wui-lvl-count">3</div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:var(--space-4)">
+              <span class="wui-badge tier-4 wui-badge-sm">Tier 4</span>
+              <div class="wui-lvl tier-4">
+                <div class="wui-lvl-inner">
+                  <div class="wui-lvl-bar">
+                    <div class="wui-lvl-seg on"></div>
+                    <div class="wui-lvl-seg on"></div>
+                    <div class="wui-lvl-seg on"></div>
+                    <div class="wui-lvl-seg on current"></div>
+                  </div>
+                </div>
+                <div class="wui-lvl-count">4</div>
+              </div>
+            </div>
+
+          </div>
+          <pre class="docs-code">&lt;div class="wui-lvl tier-4"&gt;
+  &lt;div class="wui-lvl-inner"&gt;
+    &lt;div class="wui-lvl-bar"&gt;
+      &lt;div class="wui-lvl-seg on"&gt;&lt;/div&gt;
+      &lt;div class="wui-lvl-seg on"&gt;&lt;/div&gt;
+      &lt;div class="wui-lvl-seg on"&gt;&lt;/div&gt;
+      &lt;div class="wui-lvl-seg on current"&gt;&lt;/div&gt;  &lt;!-- current = pulses --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="wui-lvl-count"&gt;4&lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── Token reference ───────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Token Reference</div>
+          <p class="docs-desc">All tier tokens are defined in <code>agency-theme.css</code>. Dark mode values remapped under <code>[data-theme="dark"]</code>.</p>
+
+          <table class="docs-token-table">
+            <thead><tr><th>Token</th><th>Tier 1 (Green)</th><th>Tier 2 (Amber)</th><th>Tier 3 (Red-Orange)</th><th>Tier 4 (Critical Red)</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-token-name">--tier-N-color</span></td>
+                <td><span class="docs-token-preview" style="background:#6ab143"></span> #6ab143</td>
+                <td><span class="docs-token-preview" style="background:#f5a623"></span> #f5a623</td>
+                <td><span class="docs-token-preview" style="background:#d0440f"></span> #d0440f</td>
+                <td><span class="docs-token-preview" style="background:#cf1717"></span> #cf1717</td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">--tier-N-light</span></td>
+                <td><span class="docs-token-preview" style="background:#e8f5e1"></span> #e8f5e1</td>
+                <td><span class="docs-token-preview" style="background:#fef3e2"></span> #fef3e2</td>
+                <td><span class="docs-token-preview" style="background:#fce8e3"></span> #fce8e3</td>
+                <td><span class="docs-token-preview" style="background:#fce3e3"></span> #fce3e3</td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">--tier-N-muted</span></td>
+                <td><span class="docs-token-preview" style="background:#b8dfa7"></span> #b8dfa7</td>
+                <td><span class="docs-token-preview" style="background:#f8d08a"></span> #f8d08a</td>
+                <td><span class="docs-token-preview" style="background:#f0b09b"></span> #f0b09b</td>
+                <td><span class="docs-token-preview" style="background:#f0a0a0"></span> #f0a0a0</td>
+              </tr>
+              <tr>
+                <td><span class="docs-token-name">--tier-N-text</span></td>
+                <td><span class="docs-token-preview" style="background:#3a7622"></span> #3a7622</td>
+                <td><span class="docs-token-preview" style="background:#7a4e0d"></span> #7a4e0d</td>
+                <td><span class="docs-token-preview" style="background:#7a1f05"></span> #7a1f05</td>
+                <td><span class="docs-token-preview" style="background:#7a0b0b"></span> #7a0b0b</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('tier-colors');</script>
+</body>
+</html>

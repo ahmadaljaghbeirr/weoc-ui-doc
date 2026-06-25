@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Grid &amp; Flex</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="grid">
+      <div class="docs-page">
+        <style>
+          .demo-col {
+            background: var(--color-10);
+            color: var(--color-on-accent);
+            border-radius: var(--radius-sm);
+            padding: var(--space-2) var(--space-3);
+            font-size: var(--text-xs);
+            font-weight: 700;
+            text-align: center;
+          }
+          .demo-col.alt   { background: var(--color-secondary); }
+          .demo-col.light { background: var(--color-info); }
+          .demo-grid-box {
+            background: var(--color-10);
+            opacity: 0.6;
+            border-radius: var(--radius-sm);
+            height: 48px;
+          }
+          .docs-divider-demo { max-width: 400px; width: 100%; }
+        </style>
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow">Foundations</div>
+          <div class="docs-hero-title">Grid &amp; Flex</div>
+          <div class="docs-hero-sub">12-column Bootstrap-compatible grid, CSS grid utilities, flex helpers, gap, and the divider component.</div>
+        </div>
+
+        <!-- ── 12-column grid ──────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">view_column</span>12-Column Grid (wui-row)</div>
+          <p class="docs-desc">Bootstrap-compatible row/column system. <code>wui-row</code> + <code>wui-col-{1–12}</code>. Responsive: <code>wui-col-sm-*</code>, <code>wui-col-md-*</code>, <code>wui-col-lg-*</code>, <code>wui-col-xl-*</code>.</p>
+
+          <div class="docs-subsection-title">Even columns</div>
+          <div class="docs-example stacked" style="gap:var(--space-2)">
+            <div class="wui-row g-2">
+              <div class="wui-col-12"><div class="demo-col">col-12</div></div>
+            </div>
+            <div class="wui-row g-2">
+              <div class="wui-col-6"><div class="demo-col">col-6</div></div>
+              <div class="wui-col-6"><div class="demo-col alt">col-6</div></div>
+            </div>
+            <div class="wui-row g-2">
+              <div class="wui-col-4"><div class="demo-col">col-4</div></div>
+              <div class="wui-col-4"><div class="demo-col alt">col-4</div></div>
+              <div class="wui-col-4"><div class="demo-col light">col-4</div></div>
+            </div>
+            <div class="wui-row g-2">
+              <div class="wui-col-3"><div class="demo-col">3</div></div>
+              <div class="wui-col-3"><div class="demo-col alt">3</div></div>
+              <div class="wui-col-3"><div class="demo-col light">3</div></div>
+              <div class="wui-col-3"><div class="demo-col">3</div></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Mixed widths</div>
+          <div class="docs-example stacked" style="gap:var(--space-2)">
+            <div class="wui-row g-2">
+              <div class="wui-col-8"><div class="demo-col">col-8</div></div>
+              <div class="wui-col-4"><div class="demo-col alt">col-4</div></div>
+            </div>
+            <div class="wui-row g-2">
+              <div class="wui-col-3"><div class="demo-col">col-3</div></div>
+              <div class="wui-col-6"><div class="demo-col alt">col-6</div></div>
+              <div class="wui-col-3"><div class="demo-col light">col-3</div></div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-row g-3"&gt;    &lt;!-- g-0..5 sets gap --&gt;
+  &lt;div class="wui-col-8"&gt;Main content&lt;/div&gt;
+  &lt;div class="wui-col-4"&gt;Sidebar&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Responsive --&gt;
+&lt;div class="wui-row g-3"&gt;
+  &lt;div class="wui-col-12 wui-col-md-6 wui-col-lg-4"&gt;…&lt;/div&gt;
+  &lt;div class="wui-col-12 wui-col-md-6 wui-col-lg-4"&gt;…&lt;/div&gt;
+  &lt;div class="wui-col-full"&gt;…full width…&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Offsets --&gt;
+&lt;div class="wui-row"&gt;
+  &lt;div class="wui-col-4 wui-offset-4"&gt;Centered 4-col&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Gap modifiers on row: g-{0-5} | gx-{0-5} (horizontal) | gy-{0-5} (vertical) --&gt;
+&lt;!-- Alignment on row: align-start | align-center | align-end | align-stretch --&gt;</pre>
+        </div>
+
+        <!-- ── CSS Grid utilities ───────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">grid_4x4</span>CSS Grid Utilities</div>
+          <p class="docs-desc">Utility classes that apply <code>display:grid</code> with predefined column counts or auto-fill behavior.</p>
+
+          <div class="docs-subsection-title">wui-grid-{1–6} — fixed column count</div>
+          <div class="docs-example stacked" style="gap:var(--space-3)">
+            <div class="wui-grid wui-grid-3 wui-gap-3" style="width:100%">
+              <div class="demo-grid-box"></div>
+              <div class="demo-grid-box" style="opacity:0.4"></div>
+              <div class="demo-grid-box" style="opacity:0.7"></div>
+            </div>
+            <div class="wui-grid wui-grid-4 wui-gap-3" style="width:100%">
+              <div class="demo-grid-box"></div>
+              <div class="demo-grid-box" style="opacity:0.4"></div>
+              <div class="demo-grid-box" style="opacity:0.7"></div>
+              <div class="demo-grid-box" style="opacity:0.5"></div>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;!-- Fixed column count: wui-grid-1 through wui-grid-6 --&gt;
+&lt;div class="wui-grid wui-grid-3 wui-gap-3"&gt;
+  &lt;div&gt;…&lt;/div&gt;
+  &lt;div&gt;…&lt;/div&gt;
+  &lt;div&gt;…&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Auto-fill responsive: wui-grid-auto --&gt;
+&lt;div class="wui-grid wui-grid-auto wui-gap-3"&gt;…&lt;/div&gt;
+
+&lt;!-- Fit to content: wui-grid-fit --&gt;
+&lt;div class="wui-grid wui-grid-fit wui-gap-3"&gt;…&lt;/div&gt;
+
+&lt;!-- Dense packing: add wui-grid-dense --&gt;
+&lt;!-- Fill height: add wui-grid-fill-h --&gt;</pre>
+
+          <div class="docs-subsection-title">Span helpers</div>
+          <pre class="docs-code">&lt;!-- Column span --&gt;
+&lt;div class="wui-grid wui-grid-4 wui-gap-2"&gt;
+  &lt;div class="wui-span-2"&gt;Spans 2 cols&lt;/div&gt;
+  &lt;div class="wui-span-3"&gt;Spans 3 cols&lt;/div&gt;
+  &lt;div class="wui-span-full"&gt;Spans all cols&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Row span --&gt;
+&lt;div class="wui-row-span-2"&gt;Spans 2 rows&lt;/div&gt;
+
+&lt;!-- Start position --&gt;
+&lt;div class="wui-col-start-3"&gt;Starts at col 3&lt;/div&gt;
+&lt;div class="wui-row-start-2"&gt;Starts at row 2&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── Flex utilities ──────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">swap_horiz</span>Flex Utilities</div>
+
+          <table class="docs-token-table">
+            <thead><tr><th>Class</th><th>CSS</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">wui-flex</span></td><td>display: flex</td></tr>
+              <tr><td><span class="docs-token-name">wui-inline-flex</span></td><td>display: inline-flex</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-row</span></td><td>flex-direction: row</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-col</span></td><td>flex-direction: column</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-wrap</span></td><td>flex-wrap: wrap</td></tr>
+              <tr><td><span class="docs-token-name">wui-justify-between</span></td><td>justify-content: space-between</td></tr>
+              <tr><td><span class="docs-token-name">wui-justify-center</span></td><td>justify-content: center</td></tr>
+              <tr><td><span class="docs-token-name">wui-justify-end</span></td><td>justify-content: flex-end</td></tr>
+              <tr><td><span class="docs-token-name">wui-items-center</span></td><td>align-items: center</td></tr>
+              <tr><td><span class="docs-token-name">wui-items-start</span></td><td>align-items: flex-start</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-1</span></td><td>flex: 1</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-none</span></td><td>flex: none</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-grow</span></td><td>flex-grow: 1</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-shrink-0</span></td><td>flex-shrink: 0</td></tr>
+              <tr><td><span class="docs-token-name">wui-min-w-0</span></td><td>min-width: 0 (prevents flex overflow)</td></tr>
+              <tr><td><span class="docs-token-name">wui-w-full</span></td><td>width: 100%</td></tr>
+              <tr><td><span class="docs-token-name">wui-h-full</span></td><td>height: 100%</td></tr>
+            </tbody>
+          </table>
+          <pre class="docs-code">&lt;div class="wui-flex wui-items-center wui-justify-between wui-gap-3"&gt;
+  &lt;div class="wui-flex-1 wui-min-w-0"&gt;Flexible content (won't overflow)&lt;/div&gt;
+  &lt;div class="wui-flex-shrink-0"&gt;Fixed end action&lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── Gap utilities ───────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">space_bar</span>Gap Utilities</div>
+          <table class="docs-token-table">
+            <thead><tr><th>Class</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">wui-gap-0</span></td><td>0</td></tr>
+              <tr><td><span class="docs-token-name">wui-gap-xs</span></td><td>var(--space-xs)</td></tr>
+              <tr><td><span class="docs-token-name">wui-gap-sm</span></td><td>var(--space-sm)</td></tr>
+              <tr><td><span class="docs-token-name">wui-gap-1 … wui-gap-6</span></td><td>var(--space-1) … var(--space-6)</td></tr>
+              <tr><td><span class="docs-token-name">wui-gap-8</span></td><td>var(--space-8)</td></tr>
+              <tr><td><span class="docs-token-name">wui-gap-x-{0-5}</span></td><td>column-gap only</td></tr>
+              <tr><td><span class="docs-token-name">wui-gap-y-{0-5}</span></td><td>row-gap only</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Display utilities ───────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">visibility</span>Display Utilities</div>
+          <table class="docs-token-table">
+            <thead><tr><th>Class</th><th>CSS</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">wui-d-none</span></td><td>display: none</td></tr>
+              <tr><td><span class="docs-token-name">wui-d-block</span></td><td>display: block</td></tr>
+              <tr><td><span class="docs-token-name">wui-d-inline</span></td><td>display: inline</td></tr>
+              <tr><td><span class="docs-token-name">wui-d-inline-block</span></td><td>display: inline-block</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── wui-divider ─────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">horizontal_rule</span>wui-divider</div>
+          <p class="docs-desc">Horizontal rule component. Use as <code>&lt;hr&gt;</code> or <code>&lt;div&gt;</code>. Modifiers control spacing and thickness.</p>
+
+          <div class="docs-example stacked docs-divider-demo">
+            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Default</div>
+            <hr class="wui-divider">
+            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Small margin (--sm)</div>
+            <hr class="wui-divider wui-divider--sm">
+            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Large margin (--lg)</div>
+            <hr class="wui-divider wui-divider--lg">
+            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Thick (--thick)</div>
+            <hr class="wui-divider wui-divider--thick">
+            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Labeled (--labeled)</div>
+            <div class="wui-divider wui-divider--labeled">Section Break</div>
+          </div>
+          <pre class="docs-code">&lt;hr class="wui-divider"&gt;
+&lt;hr class="wui-divider wui-divider--sm"&gt;   &lt;!-- less margin --&gt;
+&lt;hr class="wui-divider wui-divider--lg"&gt;   &lt;!-- more margin --&gt;
+&lt;hr class="wui-divider wui-divider--thick"&gt; &lt;!-- 2px --&gt;
+
+&lt;!-- Labeled: text centered between two lines --&gt;
+&lt;div class="wui-divider wui-divider--labeled"&gt;Section Break&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── Filter bar / View toggle ────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">filter_list</span>Filter Bar &amp; View Toggle</div>
+
+          <div class="docs-subsection-title">wui-filter-bar</div>
+          <div class="docs-example">
+            <div class="wui-filter-bar" style="width:100%">
+              <div class="wui-search-wrap">
+                <span class="wui-search-icon material-symbols-outlined">search</span>
+                <input type="text" placeholder="Search incidents…" style="width:100%;padding:var(--space-2) var(--space-3) var(--space-2) var(--space-8);border:1px solid rgba(0,0,0,0.15);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-30);color:inherit">
+              </div>
+              <button class="wui-btn outline secondary wui-btn-sm">
+                <span class="material-symbols-outlined">filter_list</span> Filter
+              </button>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-filter-bar"&gt;
+  &lt;div class="wui-search-wrap"&gt;
+    &lt;span class="wui-search-icon material-symbols-outlined"&gt;search&lt;/span&gt;
+    &lt;input type="text" placeholder="Search…"&gt;
+  &lt;/div&gt;
+  &lt;button class="wui-btn outline secondary wui-btn-sm"&gt;Filter&lt;/button&gt;
+&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">wui-view-toggle-group</div>
+          <div class="docs-example">
+            <div class="wui-view-toggle-group">
+              <button class="wui-view-toggle-btn active" title="List view">
+                <span class="material-symbols-outlined">list</span>
+              </button>
+              <button class="wui-view-toggle-btn" title="Grid view">
+                <span class="material-symbols-outlined">grid_view</span>
+              </button>
+              <button class="wui-view-toggle-btn" title="Map view">
+                <span class="material-symbols-outlined">map</span>
+              </button>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-view-toggle-group"&gt;
+  &lt;button class="wui-view-toggle-btn active"&gt;
+    &lt;span class="material-symbols-outlined"&gt;list&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class="wui-view-toggle-btn"&gt;
+    &lt;span class="material-symbols-outlined"&gt;grid_view&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('grid');</script>
+</body>
+</html>

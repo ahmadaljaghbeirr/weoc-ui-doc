@@ -1,0 +1,1509 @@
+/* =============================================
+  weoc-containers.css
+  Content container components: card, panel,
+  embed, plane, person-card, and info-grid.
+  Loaded via weoc-ui.css barrel.
+  Requires: agency-theme.css (loaded by barrel).
+  ============================================= */
+
+/* ============================================================
+  1) CARD (wui-card)
+  Three-layer system — surface / templates / atoms.
+  See wui-card.css for the standalone spec reference.
+  ============================================================ */
+
+/* ─── Layer 1: Surface ─── */
+
+.wui-card {
+  background: var(--color-30);
+  /* Published for descendants (e.g. sticky table headers) to flatten onto. */
+  --wui-surface: var(--color-30);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+  position: relative;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* Density tokens consumed by templates and atoms */
+  --_pad: var(--wui-card-padding, var(--space-3));
+  --_gap: var(--wui-card-gap, var(--space-2));
+}
+
+/* States */
+.wui-card.is-interactive {
+  cursor: pointer;
+}
+
+/* Gradient border — hover and selected share the same ::after treatment.
+  ::before is reserved for the accent bar (.has-accent), so ::after is used here. */
+.wui-card.is-interactive:hover,
+.wui-card.is-selected {
+  border-color: transparent;
+}
+
+.wui-card.is-interactive:hover::after,
+.wui-card.is-selected::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: var(--border-radius);
+  background: linear-gradient(90deg,
+      var(--color-10) 0%,
+      var(--color-10-light) 50%,
+      var(--color-10-light) 50%,
+      var(--color-10) 100%);
+  pointer-events: none;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.wui-card.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Density modifiers */
+.wui-card.is-compact {
+  --wui-card-padding: var(--space-2);
+  --wui-card-gap: var(--space-1);
+}
+
+.wui-card.is-comfortable {
+  --wui-card-padding: var(--space-4);
+  --wui-card-gap: var(--space-3);
+}
+
+/* Accent bar — .has-accent + color modifier */
+.wui-card.has-accent::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  pointer-events: none;
+}
+
+.wui-card.has-accent.primary::before {
+  background: var(--color-10);
+}
+
+.wui-card.has-accent.success::before {
+  background: var(--color-success);
+}
+
+.wui-card.has-accent.warning::before {
+  background: var(--color-warning);
+}
+
+.wui-card.has-accent.danger::before {
+  background: var(--color-danger);
+}
+
+.wui-card.has-accent.info::before {
+  background: var(--color-info);
+}
+
+.wui-card.has-accent.secondary::before {
+  background: var(--color-secondary);
+}
+
+/* Side column — .has-side + color modifier */
+.wui-card.has-side {
+  flex-direction: row;
+}
+
+.wui-card-side {
+  width: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: var(--space-sm);
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.wui-card-side.danger {
+  background: var(--color-danger);
+}
+
+.wui-card-side.warning {
+  background: var(--color-warning);
+}
+
+.wui-card-side.success {
+  background: var(--color-success);
+}
+
+.wui-card-side.primary {
+  background: var(--color-10);
+}
+
+.wui-card-side.info {
+  background: var(--color-info);
+}
+
+.wui-card-side.secondary {
+  background: var(--color-secondary);
+}
+
+/* Severity icon — for use inside .wui-card-side */
+.wui-severity-icon {
+  background: color-mix(in srgb, var(--color-30) 25%, transparent);
+  padding: var(--space-5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wui-severity-icon-inner {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.45);
+}
+
+.wui-severity-icon-inner .material-symbols-outlined {
+  font-size: var(--text-base);
+}
+
+.wui-severity-icon-inner.danger {
+  color: var(--color-danger);
+}
+
+.wui-severity-icon-inner.warning {
+  color: var(--color-warning);
+}
+
+.wui-severity-icon-inner.success {
+  color: var(--color-success);
+}
+
+.wui-severity-icon-inner.primary {
+  color: var(--color-10);
+}
+
+/* ─── Layer 2: Templates ─── */
+
+/* is-metric — KPI cards, stat cells, tier counts */
+.wui-card.is-metric {
+  gap: var(--_gap);
+  padding: var(--_pad);
+}
+
+/* wui-card-hdr inside is-metric: card already carries its own padding, hdr adds layout only */
+.wui-card.is-metric .wui-card-hdr {
+  padding: 0;
+}
+
+/* Headless metric — no header; the body expands to fill the whole card. */
+.wui-card.is-metric.is-headless {
+  gap: 0;
+}
+
+.wui-card.is-metric.is-headless>.wui-card-hdr {
+  display: none;
+}
+
+.wui-card.is-metric.is-headless> :not(.wui-card-hdr) {
+  flex: 1;
+  min-height: 0;
+}
+
+/* is-record — event rows, device rows, log entries */
+.wui-card.is-record {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--_pad) var(--space-4);
+  min-width: 0;
+}
+
+/* wui-card-meta default is horizontal row; inside is-record it becomes a column */
+.wui-card.is-record .wui-card-meta {
+  flex-direction: column;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  margin-bottom: 0;
+}
+
+/* wui-card-status inside is-record: multiple badges stack vertically */
+.wui-card.is-record .wui-card-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+/* has-lead-fill — full-height colored lead strip (opt-in modifier on is-record cards)
+  overflow:hidden clips the lead background to the card's border-radius on the left corners.
+  Standard color classes applied to wui-card-lead; tier-* handled in board CSS. */
+
+.wui-card.is-record.has-lead-fill {
+  padding-left: 0;
+  overflow: hidden;
+}
+
+.wui-card.is-record.has-lead-fill>.wui-card-lead {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--_pad);
+  overflow: hidden;
+  /* bleed past the card's vertical padding so the strip is flush top-to-bottom */
+  margin-top: calc(-2 * var(--_pad));
+  margin-bottom: calc(-2 * var(--_pad));
+}
+
+.wui-card.is-record.has-lead-fill>.wui-card-lead.primary {
+  background: var(--color-10);
+  color: var(--color-on-accent);
+}
+
+.wui-card.is-record.has-lead-fill>.wui-card-lead.info {
+  background: var(--color-info);
+  color: var(--color-on-accent);
+}
+
+.wui-card.is-record.has-lead-fill>.wui-card-lead.success {
+  background: var(--color-success);
+  color: var(--color-on-accent);
+}
+
+.wui-card.is-record.has-lead-fill>.wui-card-lead.warning {
+  background: var(--color-warning);
+  color: var(--color-30);
+}
+
+.wui-card.is-record.has-lead-fill>.wui-card-lead.danger {
+  background: var(--color-danger);
+  color: var(--color-on-accent);
+}
+
+.wui-card.is-record.has-lead-fill>.wui-card-lead.secondary {
+  background: var(--color-secondary);
+  color: var(--color-30);
+}
+
+/* is-item — gallery cards (device grid, facility cards, resource tiles) */
+.wui-card.is-item {
+  overflow: hidden;
+}
+
+/* ─── Layer 3: Atoms ─── */
+
+/* Generic container regions */
+.wui-card-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--_pad);
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.wui-card-hdr.has-border {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.wui-card-hdr-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.wui-card-hdr-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.wui-card-body {
+  flex: 1;
+  padding: var(--_pad);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--_gap);
+}
+
+.wui-card.has-side .wui-card-body {
+  padding: var(--_pad) var(--space-11) var(--_pad) var(--_pad);
+}
+
+.wui-card-footer {
+  padding: var(--space-2) var(--_pad);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.wui-card-footer.justify-end {
+  justify-content: flex-end;
+}
+
+.wui-card-footer.justify-between {
+  justify-content: space-between;
+}
+
+/* Metric atoms */
+.wui-card-label {
+  font-size: var(--text-2xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-text-secondary);
+}
+
+.wui-card-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  line-height: var(--leading-none);
+}
+
+.wui-card-value.sm {
+  font-size: var(--text-xl);
+}
+
+.wui-card-value.xs {
+  font-size: var(--text-lg);
+}
+
+.wui-card-delta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+}
+
+.wui-card-delta .material-symbols-outlined {
+  font-size: var(--text-sm);
+}
+
+.wui-card-delta.up {
+  color: var(--color-success);
+}
+
+.wui-card-delta.down {
+  color: var(--color-danger);
+}
+
+.wui-card-delta-lbl {
+  color: var(--color-text-ui);
+  font-weight: var(--font-regular);
+}
+
+.wui-card-sub {
+  margin-top: auto;
+}
+
+/* Record regions */
+.wui-card-lead {
+  flex-shrink: 0;
+}
+
+.wui-card-primary {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.wui-card-content {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.wui-card-status {
+  flex-shrink: 0;
+}
+
+.wui-card-end {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Item regions */
+.wui-card-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--_pad);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  flex-shrink: 0;
+}
+
+.wui-card-band.primary {
+  background: var(--color-10-light);
+  color: var(--color-10);
+}
+
+.wui-card-band.info {
+  background: var(--color-info-light);
+  color: var(--color-info-text);
+}
+
+.wui-card-band.success {
+  background: var(--color-success-light);
+  color: var(--color-success-text);
+}
+
+.wui-card-band.warning {
+  background: var(--color-warning-light);
+  color: var(--color-warning-text);
+}
+
+.wui-card-band.danger {
+  background: var(--color-danger-light);
+  color: var(--color-danger-text);
+}
+
+.wui-card-band.secondary {
+  background: var(--color-secondary-light);
+  color: var(--color-text-secondary);
+}
+
+/* Field grid */
+.wui-card-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--_gap) var(--space-4);
+}
+
+.wui-card-fields.cols-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.wui-card-fields.cols-3 {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.wui-card-fields.cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.wui-card-field.span-2 {
+  grid-column: span 2;
+}
+
+.wui-card-field.span-full {
+  grid-column: 1 / -1;
+}
+
+.wui-card-field {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-primary);
+  min-width: 0;
+}
+
+.wui-card-field-label {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-semibold);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.wui-card-field.is-stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.wui-card-field.is-stacked .wui-card-field-label {
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+}
+
+/* Stats */
+.wui-card-stats {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.wui-card-stats.is-inline {
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.wui-card-stats.is-inline .wui-card-stat+.wui-card-stat {
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--color-border);
+}
+
+.wui-card-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--border-radius);
+  flex: 1;
+  background: var(--color-60);
+}
+
+.wui-card-stats.is-inline .wui-card-stat {
+  flex: unset;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.wui-card-stat-value {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  line-height: var(--leading-none);
+}
+
+.wui-card-stat-label {
+  font-size: var(--text-2xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  line-height: var(--leading-none);
+}
+
+.wui-card-stat.success {
+  background: var(--color-success-light);
+}
+
+.wui-card-stat.success .wui-card-stat-value,
+.wui-card-stat.success .wui-card-stat-label {
+  color: var(--color-success-text);
+}
+
+.wui-card-stat.danger {
+  background: var(--color-danger-light);
+}
+
+.wui-card-stat.danger .wui-card-stat-value,
+.wui-card-stat.danger .wui-card-stat-label {
+  color: var(--color-danger-text);
+}
+
+.wui-card-stat.warning {
+  background: var(--color-warning-light);
+}
+
+.wui-card-stat.warning .wui-card-stat-value,
+.wui-card-stat.warning .wui-card-stat-label {
+  color: var(--color-warning-text);
+}
+
+.wui-card-stat.primary {
+  background: var(--color-10-light);
+}
+
+.wui-card-stat.primary .wui-card-stat-value,
+.wui-card-stat.primary .wui-card-stat-label {
+  color: var(--color-10);
+}
+
+.wui-card-stat.secondary {
+  background: var(--color-secondary-light);
+}
+
+.wui-card-stat.secondary .wui-card-stat-value {
+  color: var(--color-text-primary);
+}
+
+.wui-card-stat.secondary .wui-card-stat-label {
+  color: var(--color-text-secondary);
+}
+
+/* Utility atoms */
+.wui-card-id {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.wui-card-divider {
+  height: 1px;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+.wui-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.wui-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+/* ─── Update Entry ─── */
+
+.wui-update-entry {
+  padding-top: var(--space-2);
+}
+
+.wui-update-desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.wui-update-meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+/* ============================================================
+  1a) PERSON (wui-person)
+  Compound: avatar + name + optional label + optional role.
+  Appears in: ev-reporter, check log rows, ack-modal, SOP assignee.
+  Size: md (default) | sm
+  ============================================================ */
+
+.wui-person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.wui-person.sm {
+  gap: var(--space-1);
+}
+
+.wui-person-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.wui-person-label {
+  font-size: var(--text-2xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.wui-person-name {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wui-person.sm .wui-person-name {
+  font-size: 0.6875rem;
+}
+
+.wui-person-sub {
+  font-size: var(--text-2xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.wui-person.sm .wui-person-sub {
+  font-size: var(--text-2xs);
+}
+
+/* ============================================================
+  2) PANEL (wui-panel)
+  ============================================================ */
+
+
+.wui-content-wrap {
+  padding: var(--space-2) var(--space-3);
+}
+
+.wui-panel-wrap {
+  padding: var(--space-2) var(--space-1);
+}
+
+.wui-page-shell .wui-panel-wrap {
+  padding: 0;
+}
+
+.page-center .wui-panel-wrap {
+  padding: var(--space-2) 0;
+}
+
+.wui-panel {
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+
+.wui-panel-hdr {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.wui-panel-title-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.wui-panel-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.wui-panel-title .material-symbols-outlined {
+  font-size: var(--text-base);
+  color: var(--color-10);
+}
+
+.wui-panel-sub {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.wui-panel-hdr-actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.wui-panel-body {
+  flex: 0 0 auto;
+  overflow: visible;
+  height: auto;
+  width: 100%;
+}
+
+.wui-panel-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.wui-panel-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wui-panel-body::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: calc(var(--border-radius) / 2);
+}
+
+/* Fill parent height and scroll body contents */
+.wui-panel.is-scrollable {
+  flex: 1 1 auto;
+}
+
+.wui-panel.is-scrollable .wui-panel-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.wui-panel-footer {
+  padding: var(--space-3) var(--space-2);
+  border-top: 1px solid var(--color-border);
+  flex: 0 0 auto;
+}
+
+.wui-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ============================================================
+  3) EMBED (wui-embed)
+  ============================================================ */
+
+.wui-embed-wrap {
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.wui-embed {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.wui-embed-hdr {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-1);
+}
+
+.wui-embed-hdr-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.wui-embed-hdr-title {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.wui-embed-hdr-sub {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.wui-embed-hdr-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.wui-embed-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.wui-embed-body-wrap {
+  padding: var(--space-2);
+}
+
+.wui-embed-body.no-scroll {
+  flex: 0 0 auto;
+  overflow: visible;
+  height: auto;
+}
+
+.wui-embed-footer {
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--color-border);
+  flex: 0 0 auto;
+}
+
+/* ============================================================
+  4) PLANE (wui-plane)
+  Color variants: .color-60 (default) | .color-30 | .primary |
+  .success | .warning | .danger | .info | .secondary
+  ============================================================ */
+
+.wui-plane {
+  --_bg:     var(--color-60);
+  --_border: var(--color-border);
+  /* Opaque surface published for descendants (sticky table headers) to flatten
+     onto. Kept opaque even on tinted variants below so headers never bleed. */
+  --wui-surface: var(--color-60);
+  background:    var(--_bg);
+  border:        1px solid var(--_border);
+  border-radius: var(--border-radius);
+  padding:       var(--space-3) var(--space-4);
+}
+
+/* Surface neutrals */
+.wui-plane.color-60  { --_bg: var(--color-60);  --_border: var(--color-border); --wui-surface: var(--color-60); }
+.wui-plane.color-30  { --_bg: var(--color-30);  --_border: var(--color-border); --wui-surface: var(--color-30); }
+
+/* Semantic tinted variants */
+.wui-plane.primary   { --_bg: var(--color-10-light);      --_border: var(--color-10-muted); }
+.wui-plane.success   { --_bg: var(--color-success-light);  --_border: var(--color-success-muted); }
+.wui-plane.warning   { --_bg: var(--color-warning-light);  --_border: var(--color-warning-muted); }
+.wui-plane.danger    { --_bg: var(--color-danger-light);   --_border: var(--color-danger-muted); }
+.wui-plane.info      { --_bg: var(--color-info-light);     --_border: var(--color-info-muted); }
+.wui-plane.secondary { --_bg: var(--color-secondary-light);--_border: var(--color-secondary-muted); }
+
+/* ============================================================
+  5) WIDGET (wui-widget)
+  Draggable dashboard widget shell for GridStack layouts.
+  Header is hidden by default — revealed by a parent edit-mode
+  class on the grid container (board CSS responsibility).
+  Sub-classes:
+    .wui-widget-hdr    — drag/title bar; display:none until edit mode
+    .wui-widget-drag   — drag handle affordance; opacity:0 until edit mode
+    .wui-widget-title  — widget label; flex:1
+    .wui-widget-body   — flex-1 content area; overflow:hidden
+  ============================================================ */
+
+.wui-widget {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-30);
+  border-radius: var(--border-radius);
+  box-shadow: var(--widget-shadow);
+  overflow: hidden;
+}
+
+.wui-widget-hdr {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  background: var(--widget-header-bg);
+  border-bottom: 1px solid var(--widget-border);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.wui-widget-drag {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.wui-widget-drag:active {
+  cursor: grabbing;
+}
+
+.wui-widget-drag .material-symbols-outlined {
+  font-size: var(--icon-sm);
+}
+
+.wui-widget-title {
+  font-size: 0.8125rem;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.wui-widget-body {
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+}
+
+/* ============================================================
+  6) PERSON CARD (wui-person-card)
+  ============================================================ */
+
+.wui-person-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-60);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+}
+
+.wui-person-card-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-10-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wui-person-card-avatar .material-symbols-outlined {
+  font-size: var(--text-xl);
+  color: var(--color-10);
+}
+
+.wui-person-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.wui-person-card-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.wui-person-card-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.wui-person-card-meta>*+*::before {
+  content: '•';
+  margin-right: var(--space-xs);
+  color: var(--color-text-secondary);
+}
+
+.wui-person-card-role,
+.wui-person-card-unit {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.wui-person-card-contact {
+  font-size: var(--text-xs);
+  color: var(--color-10);
+  font-weight: var(--font-medium);
+}
+
+.wui-person-card-date {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================================
+  6) INFO GRID (wui-info-grid)
+  Read-only field grid used inside panels and detail views.
+  Usage:
+    <div class="wui-info-grid">
+      <div class="wui-info-item">
+        <div class="wui-info-label"><span class="material-symbols-outlined">icon</span> Label</div>
+        <div class="wui-info-value">Value</div>
+      </div>
+    </div>
+  ============================================================ */
+
+/* ─── Grid ─── */
+
+.wui-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4) var(--space-5);
+}
+
+.wui-info-grid.col1 {
+  grid-template-columns: 1fr;
+}
+
+.wui-info-grid.col3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.wui-info-grid.col4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 576px) {
+
+  .wui-info-grid,
+  .wui-info-grid.col3,
+  .wui-info-grid.col4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+  7) COLLAPSIBLE COMPONENTS
+  Three variants — all share the same JS mechanism:
+    container : data-wui-collapsible   (+  .is-open toggled by JS)
+    trigger   : data-wui-collapse      (or data-wui-collapse="true" in XSL)
+    body      : .wui-collapsible-body > .wui-collapsible-content
+
+  a) wui-collapsible      — boxed minimal accordion
+  b) wui-section-collapse — ghost inline section header (no box)
+  c) wui-collapse-panel   — card + optional accent stripe
+                            variants: primary | success | warning |
+                                      danger | secondary
+  ============================================================ */
+
+/* ── Shared mechanics: body · content · chevron ── */
+
+.wui-collapsible-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wui-collapsible.is-open > .wui-collapsible-body,
+.wui-section-collapse.is-open > .wui-collapsible-body,
+.wui-collapse-panel.is-open > .wui-collapsible-body,
+[data-wui-collapsible].is-open > .wui-collapsible-body {
+  grid-template-rows: 1fr;
+}
+
+/* Grid item — overflow:hidden here (not on the container) clips children
+   as the row animates. No padding: padding on the item itself adds physical
+   height even at min-height:0, breaking the 0fr collapse. Put padding on
+   whatever you put inside this element. */
+.wui-collapsible-content {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.wui-collapsible-chevron {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Covers all three variants — descendant, not direct child */
+[data-wui-collapsible].is-open .wui-collapsible-chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wui-collapsible-body,
+  .wui-collapsible-chevron {
+    transition: none;
+  }
+}
+
+/* ── a) wui-collapsible — boxed minimal ── */
+
+/*
+  <div class="wui-collapsible" data-wui-collapsible>
+    <button class="wui-collapsible-header" data-wui-collapse>
+      <span class="wui-collapsible-title">
+        <span class="material-symbols-outlined">tune</span> Section
+      </span>
+      <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+    </button>
+    <div class="wui-collapsible-body">
+      <div class="wui-collapsible-content">…</div>
+    </div>
+  </div>
+*/
+
+.wui-collapsible {
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.wui-collapsible-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  font: inherit;
+  text-align: left;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.wui-collapsible-header:hover {
+  background: var(--color-hover);
+}
+
+.wui-collapsible-header:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: 0;
+}
+
+.wui-collapsible.is-open > .wui-collapsible-header,
+[data-wui-collapsible].is-open > .wui-collapsible-header {
+  border-bottom-color: var(--color-border);
+}
+
+.wui-collapsible-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+}
+
+.wui-collapsible-title .material-symbols-outlined {
+  font-size: var(--text-base);
+  color: var(--color-10);
+}
+
+/* ── b) wui-section-collapse — ghost inline ── */
+
+/*
+  <div class="wui-section-collapse" data-wui-collapsible>
+    <button class="wui-section-collapse-hdr" data-wui-collapse>
+      <span class="wui-section-collapse-title">Section Label</span>
+      <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+    </button>
+    <div class="wui-collapsible-body">
+      <div class="wui-collapsible-content">…</div>
+    </div>
+  </div>
+*/
+
+.wui-section-collapse-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.wui-section-collapse-hdr:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.wui-section-collapse-title {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: color 0.15s;
+}
+
+.wui-section-collapse-hdr:hover .wui-section-collapse-title {
+  color: var(--color-text-primary);
+}
+
+/* Border fades when open — content flows directly under the title */
+.wui-section-collapse.is-open > .wui-section-collapse-hdr,
+[data-wui-collapsible].is-open > .wui-section-collapse-hdr {
+  border-bottom-color: transparent;
+}
+
+
+/* ── c) wui-collapse-panel — card + accent + variants ── */
+
+/*
+  Basic:
+  <div class="wui-collapse-panel" data-wui-collapsible>
+    <button class="wui-collapse-panel-hdr" data-wui-collapse>
+      <div class="wui-collapse-panel-titles">
+        <div class="wui-collapse-panel-title">Title</div>
+        <div class="wui-collapse-panel-sub">Subtitle / count</div>
+      </div>
+      <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+    </button>
+    <div class="wui-collapsible-body">
+      <div class="wui-collapsible-content">…</div>
+    </div>
+  </div>
+
+  With leading icon + accent color:
+  <div class="wui-collapse-panel primary" data-wui-collapsible>
+    <button class="wui-collapse-panel-hdr" data-wui-collapse>
+      <span class="wui-collapse-panel-icon material-symbols-outlined">people</span>
+      …titles…
+      …chevron…
+    </button>
+    …body…
+  </div>
+
+  Variants (accent stripe on top): primary | success | warning | danger | secondary
+*/
+
+.wui-collapse-panel {
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.wui-collapse-panel.primary   { border-top: 3px solid var(--color-primary); }
+.wui-collapse-panel.success   { border-top: 3px solid var(--color-success); }
+.wui-collapse-panel.warning   { border-top: 3px solid var(--color-warning); }
+.wui-collapse-panel.danger    { border-top: 3px solid var(--color-danger); }
+.wui-collapse-panel.secondary { border-top: 3px solid var(--color-text-secondary); }
+
+.wui-collapse-panel-hdr {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  font: inherit;
+  text-align: left;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.wui-collapse-panel-hdr:hover {
+  background: var(--color-hover);
+}
+
+.wui-collapse-panel-hdr:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: 0;
+}
+
+.wui-collapse-panel.is-open > .wui-collapse-panel-hdr,
+[data-wui-collapsible].is-open > .wui-collapse-panel-hdr {
+  border-bottom-color: var(--color-border);
+}
+
+/* Leading icon — square container, tinted by variant */
+.wui-collapse-panel-icon {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-60);
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+}
+
+.wui-collapse-panel.primary .wui-collapse-panel-icon   { color: var(--color-primary); }
+.wui-collapse-panel.success .wui-collapse-panel-icon   { color: var(--color-success); }
+.wui-collapse-panel.warning .wui-collapse-panel-icon   { color: var(--color-warning); }
+.wui-collapse-panel.danger  .wui-collapse-panel-icon   { color: var(--color-danger);  }
+.wui-collapse-panel.secondary .wui-collapse-panel-icon { color: var(--color-text-secondary); }
+
+/* Title + sub stacked */
+.wui-collapse-panel-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+.wui-collapse-panel-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+.wui-collapse-panel-sub {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.3;
+}
+
+/* ─── Item ─── */
+
+.wui-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.wui-info-item.span-all {
+  grid-column: 1 / -1;
+}
+
+.wui-info-item.spaced {
+  margin-bottom: var(--space-4);
+}
+
+/* ─── Label ─── */
+
+.wui-info-label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.wui-info-label .material-symbols-outlined {
+  font-size: var(--text-sm);
+  color: var(--color-10);
+  flex-shrink: 0;
+}
+
+/* ─── Value ─── */
+
+.wui-info-value {
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
+  font-weight: var(--font-medium);
+  min-height: 22px;
+}
+
+.wui-info-value.muted {
+  color: var(--color-text-secondary);
+  font-style: italic;
+  font-weight: var(--font-regular);
+}
+
+.wui-info-value.prose {
+  line-height: var(--leading-relaxed);
+}
+
+.wui-info-value.is-empty::after {
+  content: "No data available";
+  color: var(--color-text-secondary);
+  font-style: italic;
+  font-weight: var(--font-regular);
+}

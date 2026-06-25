@@ -1,0 +1,353 @@
+/* =============================================
+   weoc-forms.css
+   Shared form and button primitives for WebEOC Input-style views.
+   Requires: agency-theme.css (load first for tokens).
+   Import after weoc-ui.css in board entry sheets when both are used.
+   ============================================= */
+
+/* ------------------------------------------------------------
+   Component: Form Footer — Fully extended or floating centered
+   ------------------------------------------------------------ */
+
+/* ─── Wrapper ─── */
+
+.wui-ftr-wrap {
+  background: var(--color-30);
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.wui-ftr-wrap.centered {
+  background: transparent;
+  border-top: unset;
+  justify-content: center;
+  margin-top: auto;
+}
+
+/* ─── Inner ─── */
+
+.wui-ftr-inner {
+  width: 100%;
+}
+
+.wui-ftr-wrap.centered .wui-ftr-inner {
+  background: var(--color-30);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-inline: var(--space-5);
+}
+
+/* ─── Body row ─── */
+
+.wui-ftr-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-5);
+  gap: var(--space-4);
+}
+
+.wui-ftr-wrap.centered .wui-ftr-body {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ─── Left (meta / status) ─── */
+
+.wui-ftr-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.wui-ftr-meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.wui-ftr-meta.danger .material-symbols-outlined {
+  color: var(--color-danger);
+}
+
+.wui-ftr-meta.warning .material-symbols-outlined {
+  color: var(--color-warning);
+}
+
+.wui-ftr-meta.success .material-symbols-outlined {
+  color: var(--color-success);
+}
+
+.wui-ftr-meta.primary .material-symbols-outlined {
+  color: var(--color-10);
+}
+
+.wui-ftr-meta strong {
+  font-weight: var(--font-semibold);
+  color: var(--color-text-ui);
+}
+
+/* ─── Right / Actions ─── */
+
+.wui-ftr-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.wui-ftr-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* End: Form Footer */
+
+
+/* Start: Form Sections */
+.form-section {
+  background: var(--color-30);
+  border-radius: var(--border-radius);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--widget-shadow);
+}
+
+.form-section-title {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+  margin: 0 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.form-section-title .material-symbols-outlined {
+  font-size: var(--text-md);
+  color: var(--color-10);
+}
+
+/* End: Form Sections */
+
+/* ------------------------------------------------------------
+   Component: Fieldset — grouped form section (legend + fields)
+   Editable counterpart to the read-only .wui-info-grid. Wraps a
+   set of .field-row groups under a titled legend. Works on a real
+   <fieldset>/<legend> (semantic) or plain divs.
+
+     <fieldset class="wui-fieldset">
+       <legend class="wui-fieldset-legend">
+         <span class="material-symbols-outlined">tune</span> Section
+       </legend>
+       <p class="wui-fieldset-sub">Optional description</p>
+       <div class="wui-fieldset-body">
+         <div class="field-row"> … field-item … </div>
+       </div>
+     </fieldset>
+
+   .plain → no chrome (just a titled group).
+   ------------------------------------------------------------ */
+.wui-fieldset {
+  min-width: 0;                       /* fixes the <fieldset> shrink quirk in flex/grid */
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+}
+
+.wui-fieldset-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.wui-fieldset-legend .material-symbols-outlined {
+  font-size: var(--text-base);
+  color: var(--color-10);
+}
+
+.wui-fieldset-sub {
+  margin: calc(-1 * var(--space-3)) 0 var(--space-4);   /* tuck up under the legend */
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+/* .field-row carries its own margin-bottom; neutralise the trailing one */
+.wui-fieldset > .field-row:last-child,
+.wui-fieldset-body > .field-row:last-child {
+  margin-bottom: 0;
+}
+
+.wui-fieldset.plain {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+/* Start: Form Fields */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+}
+
+.field-row.full {
+  grid-template-columns: 1fr;
+}
+
+.field-row.three {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.field-row.four {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.field-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.field-label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.field-label .material-symbols-outlined {
+  font-size: var(--text-sm);
+  color: var(--color-10);
+}
+
+.field-label .required {
+  color: var(--color-danger);
+  margin-left: var(--space-xs);
+}
+
+.form-control {
+  height: 2.5rem !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--border-radius) !important;
+  font-size: var(--text-xs) !important;
+  color: var(--color-text-primary) !important;
+  background: transparent !important;
+  padding: 0 var(--space-3) !important;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s !important;
+  box-shadow: none !important;
+}
+
+.form-control:focus {
+  border-color: var(--color-10) !important;
+  box-shadow: 0 0 0 3px var(--color-10-light) !important;
+  outline: none !important;
+}
+
+.form-control::placeholder {
+  color: var(--color-text-secondary) !important;
+}
+
+/* Readonly — secondary-light overlay on the transparent base; dashed border
+   signals locked. [readonly]:not(.flatpickr-input) exempts flatpickr, which
+   adds [readonly] as a pointer-control mechanism, not a semantic readonly signal. */
+.form-control[readonly]:not(.flatpickr-input),
+.form-control.is-readonly {
+  background: var(--color-secondary-light) !important;
+  border-color: var(--color-border) !important;
+  border-style: dashed !important;
+  color: var(--color-text-secondary) !important;
+  cursor: default !important;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.form-control[readonly]:not(.flatpickr-input):focus,
+.form-control.is-readonly:focus {
+  border-color: var(--color-border) !important;
+  box-shadow: none !important;
+}
+
+textarea.form-control[readonly]:not(.flatpickr-input),
+textarea.form-control.is-readonly {
+  resize: none;
+}
+
+/* Dim the label when the entire field-item is marked readonly */
+.field-item.is-readonly .field-label {
+  opacity: 0.6;
+}
+
+textarea.form-control {
+  height: auto !important;
+  padding: var(--space-3) !important;
+  resize: vertical;
+  min-height: 90px;
+}
+
+.field-hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+.field-error {
+  display: none;
+}
+
+/* End: Form Fields */
+
+/* wui-checkbox / wui-radio (vanilla selection controls) + Radio Cards
+   → live in weoc-card-group.css so they load via the core barrel on every view
+   (weoc-forms.css is imported on input views only). */
+
+
+/* Start: Form Footer */
+.form-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.form-footer .page-center {
+  background: var(--color-30);
+  border-radius: var(--border-radius);
+  box-shadow: var(--widget-shadow);
+  padding: var(--space-3) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+/* End: Form Footer */

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Tables</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="tables">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow">Components</div>
+          <div class="docs-hero-title">Tables</div>
+          <div class="docs-hero-sub">Three table variants for WebEOC record views: a flat bordered grid, a spacious card-row layout, and a dense operator log with expandable detail rows.</div>
+        </div>
+
+        <div class="wui-callout info">
+          <span class="material-symbols-outlined">info</span>
+          <div class="wui-callout-body">
+            <div class="wui-callout-title">Add-on module — load weoc-tables.css after the core barrel</div>
+            Tables are not in <code>weoc-ui-core.css</code>. Add <code>&lt;link rel="stylesheet" href="weoc-tables.css"&gt;</code> on table views.
+          </div>
+        </div>
+
+        <!-- ── wui-table-standard ───────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">table_rows</span>wui-table-standard</div>
+          <p class="docs-desc">Flat, bordered table with fixed column layout and sticky header. Wrap in <code>wui-table-wrap</code> for scroll + container queries. Density modifiers <code>is-compact</code> / <code>is-comfortable</code> on the <code>&lt;table&gt;</code>.</p>
+          <div class="docs-example stacked">
+            <div class="wui-table-wrap">
+              <table class="wui-table-standard">
+                <thead>
+                  <tr>
+                    <th class="wui-col-primary">Incident</th>
+                    <th class="wui-col-md is-sortable">Status</th>
+                    <th class="wui-cell-num">Acks</th>
+                    <th class="wui-col-actions"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Power Outage — Tower B</td>
+                    <td><span class="wui-badge primary">Open</span></td>
+                    <td class="wui-cell-num">7</td>
+                    <td class="wui-col-actions">
+                      <div class="wui-table-actions">
+                        <button class="wui-table-action-btn primary" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                        <button class="wui-table-action-btn danger" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="is-selected">
+                    <td>Water Leak — Level 3</td>
+                    <td><span class="wui-badge success">Closed</span></td>
+                    <td class="wui-cell-num">12</td>
+                    <td class="wui-col-actions">
+                      <div class="wui-table-actions">
+                        <button class="wui-table-action-btn primary" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                        <button class="wui-table-action-btn danger" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="is-warning">
+                    <td>Comms Degraded — Sector 7</td>
+                    <td><span class="wui-badge warning">Monitoring</span></td>
+                    <td class="wui-cell-num">3</td>
+                    <td class="wui-col-actions">
+                      <div class="wui-table-actions">
+                        <button class="wui-table-action-btn primary" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                        <button class="wui-table-action-btn danger" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-table-wrap"&gt;
+  &lt;table class="wui-table-standard"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th class="wui-col-primary"&gt;Incident&lt;/th&gt;
+        &lt;th class="wui-col-md is-sortable"&gt;Status&lt;/th&gt;
+        &lt;th class="wui-cell-num"&gt;Acks&lt;/th&gt;
+        &lt;th class="wui-col-actions"&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr class="is-selected"&gt;
+        &lt;td&gt;Water Leak&lt;/td&gt;
+        &lt;td&gt;&lt;span class="wui-badge success"&gt;Closed&lt;/span&gt;&lt;/td&gt;
+        &lt;td class="wui-cell-num"&gt;12&lt;/td&gt;
+        &lt;td class="wui-col-actions"&gt;
+          &lt;div class="wui-table-actions"&gt;
+            &lt;button class="wui-table-action-btn primary"&gt;…&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</pre>
+          <div class="docs-subsection-title">Row color accents</div>
+          <p class="docs-desc">Left-border accent: add one color class to any <code>&lt;tr&gt;</code>. Works on all three table variants — standard and cards get a 3px border; on <code>wui-table-log</code> it drives <code>--_tier</code> so the 4px border and elapsed time color both update.</p>
+          <div class="docs-example stacked">
+            <div class="wui-table-wrap">
+              <table class="wui-table-standard">
+                <thead>
+                  <tr>
+                    <th class="wui-col-primary">Row class</th>
+                    <th>Use case</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="is-primary">
+                    <td><code>is-primary</code></td>
+                    <td>Active / selected focus</td>
+                  </tr>
+                  <tr class="is-success">
+                    <td><code>is-success</code></td>
+                    <td>Resolved / closed / confirmed</td>
+                  </tr>
+                  <tr class="is-info">
+                    <td><code>is-info</code></td>
+                    <td>Informational / monitoring</td>
+                  </tr>
+                  <tr class="is-warning">
+                    <td><code>is-warning</code></td>
+                    <td>Caution / needs attention</td>
+                  </tr>
+                  <tr class="is-danger">
+                    <td><code>is-danger</code></td>
+                    <td>Danger / escalated / critical</td>
+                  </tr>
+                  <tr class="is-secondary">
+                    <td><code>is-secondary</code></td>
+                    <td>Muted / archived / low priority</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="docs-subsection-title">Row fill states</div>
+          <p class="docs-desc">Background-fill variants for semantic status rows. <code>is-highlighted</code> = warning fill · <code>is-error</code> = danger fill · <code>is-selected</code> = primary fill.</p>
+          <div class="docs-subsection-title">Other row states</div>
+          <p class="docs-desc"><code>is-disabled</code>, <code>is-loading</code>, <code>is-dragging</code>, <code>is-dragover</code>.</p>
+          <div class="docs-subsection-title">Column widths (on <code>&lt;th&gt;</code>)</div>
+          <p class="docs-desc"><code>wui-col-sm</code> (80px) · <code>wui-col-index</code> (150px) · <code>wui-col-md</code> (180px) · <code>wui-col-primary</code> (40%) · <code>wui-col-secondary</code> (25%) · <code>wui-col-actions</code> (80px, centered). Sort indicators: <code>is-sortable</code>, <code>is-sort-asc</code>, <code>is-sort-desc</code>.</p>
+        </div>
+
+        <!-- ── wui-table-cards ──────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">view_agenda</span>wui-table-cards</div>
+          <p class="docs-desc">Card-row variant: each row reads as a spaced card. Same row-state and column classes as standard. Responsive via container queries (requires the <code>wui-table-wrap</code> parent).</p>
+          <div class="docs-example stacked">
+            <div class="wui-table-wrap">
+              <table class="wui-table-cards">
+                <thead>
+                  <tr>
+                    <th class="wui-col-primary">Incident</th>
+                    <th>Severity</th>
+                    <th class="wui-cell-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="wui-col-primary">Power Outage — Tower B</td>
+                    <td><span class="wui-chip danger">Critical</span></td>
+                    <td class="wui-cell-center"><button class="wui-table-action-btn primary" title="View"><span class="material-symbols-outlined">open_in_new</span></button></td>
+                  </tr>
+                  <tr class="is-selected">
+                    <td class="wui-col-primary">Water Leak — Level 3</td>
+                    <td><span class="wui-chip warning">High</span></td>
+                    <td class="wui-cell-center"><button class="wui-table-action-btn primary" title="View"><span class="material-symbols-outlined">open_in_new</span></button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <pre class="docs-code">&lt;div class="wui-table-wrap"&gt;
+  &lt;table class="wui-table-cards"&gt;
+    &lt;thead&gt;&lt;tr&gt;&lt;th class="wui-col-primary"&gt;Incident&lt;/th&gt;&lt;th&gt;Severity&lt;/th&gt;&lt;th class="wui-cell-center"&gt;Actions&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td class="wui-col-primary"&gt;Power Outage&lt;/td&gt;
+        &lt;td&gt;&lt;span class="wui-chip danger"&gt;Critical&lt;/span&gt;&lt;/td&gt;
+        &lt;td class="wui-cell-center"&gt;…&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── wui-table-log ────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">receipt_long</span>wui-table-log</div>
+          <p class="docs-desc">Dense operator log. Each record is a <strong>pair</strong> of rows: a <code>wui-log-row</code> and a following <code>wui-log-detail-row</code>. The color accent (<code>is-primary</code> / <code>is-success</code> / <code>is-info</code> / <code>is-warning</code> / <code>is-danger</code> / <code>is-secondary</code>) goes on the data row only — the detail row inherits via the adjacent sibling rule. The detail row reveals when the data row has <code>is-open</code> (toggled by JS via <code>data-wui-row="true"</code>). Zebra striping is automatic. Tier-color overrides belong in the consuming view's own CSS.</p>
+          <div class="docs-example stacked">
+            <table class="wui-table-log">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Elapsed</th>
+                  <th>Incident</th>
+                  <th>Classification</th>
+                  <th>Status</th>
+                  <th>Acks</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="wui-log-row is-danger is-open" data-wui-row="true">
+                  <td><span class="material-symbols-outlined wui-log-expand">expand_more</span></td>
+                  <td class="wui-log-elapsed">18d 21h</td>
+                  <td>
+                    <div class="wui-log-title-row">
+                      <span class="wui-log-title">Power Outage</span>
+                      <span class="wui-log-id">#26-0000063</span>
+                      <span class="wui-badge danger">Critical</span>
+                    </div>
+                  </td>
+                  <td class="wui-log-class">Fire &amp; Safety / Structural fire</td>
+                  <td><span class="wui-badge primary">Open</span></td>
+                  <td class="wui-log-acks">&#10003; 7</td>
+                </tr>
+                <tr class="wui-log-detail-row">
+                  <td colspan="6">
+                    <div class="wui-log-detail">
+                      <div class="wui-log-desc">Transformer fault on the north feed. Backup generators online; ETA to grid restore 4h.</div>
+                      <div class="wui-log-meta">Logged by J. Rivera · updated 12 min ago</div>
+                      <div class="wui-log-actions">
+                        <button class="wui-btn wui-btn-sm secondary outline">Acknowledge</button>
+                        <button class="wui-btn wui-btn-sm primary">Open record</button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="wui-log-row is-success" data-wui-row="true">
+                  <td><span class="material-symbols-outlined wui-log-expand">expand_more</span></td>
+                  <td class="wui-log-elapsed">2h 05m</td>
+                  <td>
+                    <div class="wui-log-title-row">
+                      <span class="wui-log-title">Routine Check</span>
+                      <span class="wui-log-id">#26-0000071</span>
+                    </div>
+                  </td>
+                  <td class="wui-log-class">Operations / Status report</td>
+                  <td><span class="wui-badge success">Closed</span></td>
+                  <td class="wui-log-acks">&#10003; 4</td>
+                </tr>
+                <tr class="wui-log-detail-row">
+                  <td colspan="6">
+                    <div class="wui-log-detail">
+                      <div class="wui-log-desc">All systems nominal at shift handover.</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <pre class="docs-code">&lt;table class="wui-table-log"&gt;
+  &lt;tbody&gt;
+    &lt;!-- accent class on the data row only; detail row inherits via adjacent sibling --&gt;
+    &lt;tr class="wui-log-row is-danger is-open" data-wui-row="true"&gt;
+      &lt;td&gt;&lt;span class="material-symbols-outlined wui-log-expand"&gt;expand_more&lt;/span&gt;&lt;/td&gt;
+      &lt;td class="wui-log-elapsed"&gt;18d 21h&lt;/td&gt;
+      &lt;td&gt;
+        &lt;div class="wui-log-title-row"&gt;
+          &lt;span class="wui-log-title"&gt;Power Outage&lt;/span&gt;
+          &lt;span class="wui-log-id"&gt;#26-0000063&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/td&gt;
+      &lt;td class="wui-log-class"&gt;Structural fire&lt;/td&gt;
+      &lt;td&gt;&lt;span class="wui-badge primary"&gt;Open&lt;/span&gt;&lt;/td&gt;
+      &lt;td class="wui-log-acks"&gt;&amp;#10003; 7&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr class="wui-log-detail-row"&gt;
+      &lt;td colspan="6"&gt;
+        &lt;div class="wui-log-detail"&gt;
+          &lt;div class="wui-log-desc"&gt;…&lt;/div&gt;
+          &lt;div class="wui-log-actions"&gt;…&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</pre>
+          <div class="wui-callout warning">
+            <span class="material-symbols-outlined">warning</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title">data-wui-row="true" — value form required in WebEOC XML</div>
+              The expand/collapse wiring reads <code>data-wui-row</code>. WebEOC's XML parser rejects bare boolean attributes, so always write <code>="true"</code>.
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Cell utilities ───────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">grid_on</span>Cell &amp; action utilities</div>
+          <p class="docs-desc">Attach to <code>&lt;td&gt;</code> / <code>&lt;th&gt;</code> across any variant.</p>
+          <table class="docs-token-table">
+            <thead><tr><th>Class</th><th>Effect</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">wui-cell-num</span></td><td>Right-align, tabular numerals</td></tr>
+              <tr><td><span class="docs-token-name">wui-cell-center</span></td><td>Center-align content</td></tr>
+              <tr><td><span class="docs-token-name">wui-cell-muted</span></td><td>Muted, smaller secondary text</td></tr>
+              <tr><td><span class="docs-token-name">wui-cell-truncate</span></td><td>Single-line ellipsis (wrap text in a span)</td></tr>
+              <tr><td><span class="docs-token-name">wui-cell-chips</span></td><td>Flex-wrap row for multiple badges/chips</td></tr>
+              <tr><td><span class="docs-token-name">wui-table-actions</span> + <span class="docs-token-name">wui-table-action-btn</span></td><td>Icon-button group + button (variants: primary/success/warning/danger/secondary)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('tables');</script>
+</body>
+</html>
