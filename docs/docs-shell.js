@@ -48,6 +48,12 @@
       items: [
         { key: 'motion', label: 'Animation', file: 'motion.html' }
       ]
+    },
+    {
+      group: 'Patterns',
+      items: [
+        { key: 'views', label: 'Board Views', file: 'views.html' }
+      ]
     }
   ];
 
@@ -56,6 +62,8 @@
   var themeHooked = false;
   var swatchHooked = false;
   var swatchStylesInjected = false;
+  var mountedApps = [];
+  var DocsStore = null;
 
   var THEMES = [
     { id: 'atlas',   label: 'Atlas Blue',  color: '#185fa5' },
@@ -248,9 +256,13 @@
     if (!window.flatpickr)   jobs.push(loadScript(shared + 'JS/flatpickr.min.js'));
     if (!window.uPlot)       jobs.push(loadScript(shared + 'JS/uPlot.iife.min.js'));
     if (!window.EOCLists)    jobs.push(loadScript(shared + 'JS/eoc-lists.js'));
+    if (!window.PetiteVue)   jobs.push(loadScript(shared + 'JS/petite-vue.iife.js'));
     ensureCSS(shared + 'CSS/uPlot.min.css');
     // Factory wrappers + weoc-anim must load AFTER their respective libraries.
     return Promise.all(jobs).then(function () {
+      if (window.PetiteVue && !DocsStore) {
+        DocsStore = window.PetiteVue.reactive({});
+      }
       var jobs2 = [];
       if (!window.TomSelectFactory) jobs2.push(loadScript(shared + 'JS/tom-select-factory.js'));
       if (!window.FlatpickrFactory)  jobs2.push(loadScript(shared + 'JS/flatpickr-factory.js'));
@@ -786,6 +798,9 @@
       if (barReset && bar) {
         barReset.addEventListener('click', function () { A.bar(bar, 0, { duration: 0.4 }); });
       }
+    },
+    views: function () {
+      // interactive zone demos mount here via DocShell.mount()
     }
   };
 
@@ -850,6 +865,10 @@
         name: 'cover-reveal',
         // Curtain wipes IN left → right over the (sole) current pane.
         leave: function (data) {
+          for (var i = 0; i < mountedApps.length; i++) {
+            try { mountedApps[i].unmount(); } catch (e) {}
+          }
+          mountedApps = [];
           if (reduceMotion) return;
           var el = wipeEl();
           placeWipe(el, data.current.container);
@@ -878,6 +897,16 @@
   }
 
   window.DocShell = {
+    /* Create a Petite Vue app, mount it, and register it for auto-cleanup on
+       the next Barba navigation. Call from PAGE_INIT[namespace]. */
+    mount: function (selector, data) {
+      if (!window.PetiteVue) return null;
+      var app = window.PetiteVue.createApp(data).mount(selector);
+      mountedApps.push(app);
+      return app;
+    },
+    /* Access the global reactive store. */
+    store: function () { return DocsStore; },
     init: function (activeKey) {
       var root = getRoot();
       var shared = root + '../';
