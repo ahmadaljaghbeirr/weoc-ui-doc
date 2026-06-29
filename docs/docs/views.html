@@ -11,85 +11,33 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-  <style>
-    /* ── Zone diagram helpers ─────────────────────────────── */
-    .vz-board {
-      display: flex;
-      flex-direction: column;
-      border: 1.5px solid var(--color-border);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      background: var(--color-bg);
-      font-family: var(--font-mono);
-      font-size: var(--text-2xs);
-      font-weight: 600;
-      gap: 2px;
-      padding: 2px;
-    }
-    .vz-row {
-      display: flex;
-      gap: 2px;
-    }
-    .vz-zone {
-      padding: var(--space-2) var(--space-3);
-      border-radius: var(--radius-sm);
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .vz-zone-name {
-      font-weight: 700;
-      letter-spacing: 0.04em;
-    }
-    .vz-zone-class {
-      opacity: 0.75;
-      font-weight: 500;
-    }
-    .vz-zone-note {
-      font-weight: 400;
-      font-family: var(--font-sans);
-      font-size: var(--text-2xs);
-      opacity: 0.8;
-      margin-top: 2px;
-    }
-    /* zone colours */
-    .vz-hdr    { background: var(--color-10-light);        color: var(--color-10-text);        border: 1px solid var(--color-10-muted); }
-    .vz-kpi    { background: var(--color-success-light);   color: var(--color-success-text);   border: 1px solid var(--color-success-muted); }
-    .vz-filter { background: var(--color-warning-light);   color: var(--color-warning-text);   border: 1px solid var(--color-warning-muted); }
-    .vz-table  { background: var(--color-60);              color: var(--color-text-secondary); border: 1px solid var(--color-border); flex: 1; }
-    .vz-panel  { background: var(--color-secondary-light); color: var(--color-text-secondary); border: 1px solid var(--color-secondary-muted); }
-    .vz-map    { background: var(--color-info-light);      color: var(--color-info-text);      border: 1px solid var(--color-info-muted); }
-    .vz-stub   { background: var(--color-30);              color: var(--color-text-tertiary);  border: 1px dashed var(--color-border); }
-    /* optional badge on a zone */
-    .vz-tag {
-      display: inline-block;
-      padding: 1px 5px;
-      border-radius: 3px;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      opacity: 0.7;
-      background: currentColor;
-      color: var(--color-bg);
-      margin-left: var(--space-1);
-    }
-    .vz-optional { font-style: italic; opacity: 0.6; }
-    /* variant label */
-    .vz-variant-label {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      margin-bottom: var(--space-3);
-    }
-    .vz-variant-label .wui-badge { font-size: var(--text-xs); }
-  </style>
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
   <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="views">
+      <style>
+        /* ── Zone diagram helpers — scoped to this page ───────────── */
+        /* Lives inside the Barba container so Barba carries it on navigation */
+        .vz-board { display:flex;flex-direction:column;border:1.5px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;background:var(--color-bg);font-family:var(--font-mono);font-size:var(--text-2xs);font-weight:600;gap:2px;padding:2px }
+        .vz-row { display:flex;gap:2px }
+        .vz-zone { padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);display:flex;flex-direction:column;gap:2px }
+        .vz-zone-name { font-weight:700;letter-spacing:.04em }
+        .vz-zone-class { opacity:.75;font-weight:500 }
+        .vz-zone-note { font-weight:400;font-family:var(--font-sans);font-size:var(--text-2xs);opacity:.8;margin-top:2px }
+        .vz-hdr    { background:var(--color-10-light);       color:var(--color-10-text);       border:1px solid var(--color-10-muted) }
+        .vz-kpi    { background:var(--color-success-light);  color:var(--color-success-text);  border:1px solid var(--color-success-muted) }
+        .vz-filter { background:var(--color-warning-light);  color:var(--color-warning-text);  border:1px solid var(--color-warning-muted) }
+        .vz-table  { background:var(--color-60);             color:var(--color-text-secondary);border:1px solid var(--color-border);flex:1 }
+        .vz-panel  { background:var(--color-secondary-light);color:var(--color-text-secondary);border:1px solid var(--color-secondary-muted) }
+        .vz-map    { background:var(--color-info-light);     color:var(--color-info-text);     border:1px solid var(--color-info-muted) }
+        .vz-stub   { background:var(--color-30);             color:var(--color-text-tertiary); border:1px dashed var(--color-border) }
+        .vz-tag { display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.7;background:currentColor;color:var(--color-bg);margin-left:var(--space-1) }
+        .vz-optional { font-style:italic;opacity:.6 }
+        .vz-variant-label { display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3) }
+        .vz-variant-label .wui-badge { font-size:var(--text-xs) }
+      </style>
       <div class="docs-page">
 
         <div class="docs-hero">

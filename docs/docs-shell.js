@@ -62,8 +62,6 @@
   var themeHooked = false;
   var swatchHooked = false;
   var swatchStylesInjected = false;
-  var mountedApps = [];
-  var DocsStore = null;
 
   var THEMES = [
     { id: 'atlas',   label: 'Atlas Blue',  color: '#185fa5' },
@@ -212,6 +210,9 @@
     if (sb) sb.innerHTML = renderSidebar(ns, root);
     var label = labelFor(ns);
     document.title = (label && ns !== 'home') ? 'weoc-ui — ' + label : 'weoc-ui — Component Library';
+    if (window.Alpine && window._docsStoreReady) {
+      window.Alpine.store('docs').activePage = ns;
+    }
   }
 
   /* ── On-demand global assets ──────────────────────────────────────────────
@@ -256,12 +257,36 @@
     if (!window.flatpickr)   jobs.push(loadScript(shared + 'JS/flatpickr.min.js'));
     if (!window.uPlot)       jobs.push(loadScript(shared + 'JS/uPlot.iife.min.js'));
     if (!window.EOCLists)    jobs.push(loadScript(shared + 'JS/eoc-lists.js'));
-    if (!window.PetiteVue)   jobs.push(loadScript(shared + 'JS/petite-vue.iife.js'));
+    if (!window.Alpine)      jobs.push(loadScript(root + 'vendor/alpine/cdn.min.js'));
     ensureCSS(shared + 'CSS/uPlot.min.css');
     // Factory wrappers + weoc-anim must load AFTER their respective libraries.
     return Promise.all(jobs).then(function () {
-      if (window.PetiteVue && !DocsStore) {
-        DocsStore = window.PetiteVue.reactive({});
+      if (window.Alpine && !window._docsStoreReady) {
+        window._docsStoreReady = true;
+
+        window.Alpine.store('docs', {
+          // ── Theme ───────────────────────────────────────────────────
+          // Mirrors localStorage so x-data blocks can read/react to it.
+          // Always mutate via setTheme() — it syncs the <link> and swatches.
+          theme: localStorage.getItem('wui-docs-theme') || 'atlas',
+          setTheme: function (id) {
+            this.theme = id;
+            loadTheme(id);
+          },
+
+          // ── Active page ─────────────────────────────────────────────
+          // Set by renderChrome on every navigation. Use in x-data to
+          // conditionally show/hide chrome elements per page.
+          activePage: null,
+
+          // ── Page-scoped reactive state ──────────────────────────────
+          // PAGE_INIT functions write into page.* for x-data blocks on
+          // that page. Alpine destroys element-bound scopes automatically
+          // when Barba removes the old container — no manual cleanup needed.
+          page: {}
+        });
+
+        window.Alpine.start();
       }
       var jobs2 = [];
       if (!window.TomSelectFactory) jobs2.push(loadScript(shared + 'JS/tom-select-factory.js'));
@@ -865,10 +890,6 @@
         name: 'cover-reveal',
         // Curtain wipes IN left → right over the (sole) current pane.
         leave: function (data) {
-          for (var i = 0; i < mountedApps.length; i++) {
-            try { mountedApps[i].unmount(); } catch (e) {}
-          }
-          mountedApps = [];
           if (reduceMotion) return;
           var el = wipeEl();
           placeWipe(el, data.current.container);
@@ -897,16 +918,11 @@
   }
 
   window.DocShell = {
-    /* Create a Petite Vue app, mount it, and register it for auto-cleanup on
-       the next Barba navigation. Call from PAGE_INIT[namespace]. */
-    mount: function (selector, data) {
-      if (!window.PetiteVue) return null;
-      var app = window.PetiteVue.createApp(data).mount(selector);
-      mountedApps.push(app);
-      return app;
+    /* Access the global Alpine store. Returns the 'docs' store object,
+       or null if Alpine hasn't initialised yet. */
+    store: function () {
+      return window.Alpine ? window.Alpine.store('docs') : null;
     },
-    /* Access the global reactive store. */
-    store: function () { return DocsStore; },
     init: function (activeKey) {
       var root = getRoot();
       var shared = root + '../';
