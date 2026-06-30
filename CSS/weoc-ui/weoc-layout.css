@@ -177,6 +177,38 @@
   overflow: hidden;
 }
 
+/* ─── Detail Inner Frame (wui-det-inner) ─────────────────────── */
+/*
+  Single max-width centering column for input-view body sections.
+  Mirrors the wui-hdr-wrap.centered / wui-hdr-inner and
+  wui-ftr-wrap.centered / wui-ftr-inner pattern — centering applied
+  once, between header and footer, instead of repeating page-center
+  on every tab panel.
+
+  Place directly inside form.input-form, wrapping wui-det-body:
+
+    form.input-form  (flex:1 shell child — styles in weoc-forms.css)
+      └── .wui-det-inner   ← this element
+            └── .wui-det-body
+                  └── .wui-tab-panel
+                        └── .wui-panel-wrap > .wui-panel  (no page-center needed)
+*/
+.wui-det-inner {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Vertical breathing room inside the scroll area — replaces the
+   padding previously provided by .wui-tab-panel .page-center */
+.wui-det-inner .wui-tab-panel {
+  padding: var(--space-2) 0;
+}
+
 .wui-tab-panel {
   display: none;
   height: 100%;
@@ -189,6 +221,7 @@
 .wui-tab-panel .page-center {
   padding: var(--space-2) 0;
   box-sizing: border-box;
+  max-width: 1092px;
 }
 
 /* Input views want padding: 0 (form continues to edge) — override with .is-form */
@@ -212,6 +245,22 @@
 .wui-tab-panel::-webkit-scrollbar-thumb {
   background: var(--color-border);
   border-radius: calc(var(--border-radius) / 2);
+}
+
+/* ─── Tab / List toggle (is-list-mode) ──────────────────────── */
+/*
+  JS toggles .is-list-mode on .wui-det-body via toggleViewMode().
+  In list mode: header tabs hidden, all panels stack vertically and
+  the det-body itself becomes the scroll container (not each panel).
+*/
+.wui-det-body.is-list-mode {
+  overflow-y: auto;
+}
+
+.wui-det-body.is-list-mode .wui-tab-panel {
+  display: block;
+  height: auto;
+  overflow-y: visible;
 }
 
 /* ─── List Layout ────────────────────────────────────────────── */

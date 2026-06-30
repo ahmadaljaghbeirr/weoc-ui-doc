@@ -81,6 +81,11 @@ button:focus-visible {
   border-radius: var(--border-radius);
 }
 
+.cLightBoxClose {
+  display: none;
+}
+
+
 /* ─── Utilities ─── */
 
 .w-100 {

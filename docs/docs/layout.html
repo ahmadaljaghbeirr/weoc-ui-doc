@@ -305,15 +305,206 @@
         <!-- ── Details panel ────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">dock_to_right</span>wui-details-panel</div>
-          <p class="docs-desc">Master-detail panel for grid views. Hidden by default; add <code>visible</code> to slide it in on selection. Holds <code>wui-det-body</code> → <code>wui-tab-panel</code> (active tab gets <code>active</code>).</p>
+          <p class="docs-desc">Master-detail panel for grid views. Hidden by default; add <code>visible</code> to slide it in on selection. Holds <code>wui-det-body</code> → <code>wui-tab-panel</code> (active tab gets <code>active</code>). Content goes directly inside the panel — no <code>page-center</code> or <code>wui-det-inner</code> (panel width already constrains the layout).</p>
           <pre class="docs-code">&lt;div class="wui-details-panel visible"&gt;
   &lt;button class="wui-panel-close-btn"&gt;&lt;span class="material-symbols-outlined"&gt;close&lt;/span&gt;&lt;/button&gt;
   &lt;div class="wui-det-body"&gt;
     &lt;div class="wui-tab-panel active"&gt;
-      &lt;div class="page-center"&gt;Detail content&lt;/div&gt;
+      &lt;div class="wui-panel-wrap"&gt;…panel content…&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="wui-tab-panel"&gt;
+      &lt;div class="wui-panel-wrap"&gt;…second tab…&lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── wui-det-inner ────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">center_focus_strong</span>wui-det-inner — input view content frame</div>
+          <p class="docs-desc">Single centering wrapper for full-page input-view body sections. Mirrors <code>wui-hdr-inner</code> / <code>wui-ftr-inner</code>: one <code>max-width:1100px</code> column, horizontally centered. Lives inside <code>form.input-form</code>, wraps <code>wui-det-body</code>. Replaces per-tab <code>page-center</code> divs — centering applied once, not on every panel.</p>
+
+          <div class="docs-subsection-title">DOM nesting</div>
+          <pre class="docs-code">form.input-form          → flex:1 column (styled by weoc-forms.css)
+  └── .wui-det-inner    → max-width:1100px, centered, flex column ← THIS ELEMENT
+        └── .wui-det-body    → flex:1, overflow:hidden
+              └── .wui-tab-panel.active   → display:block, scrolls
+                    └── .wui-panel-wrap → .wui-panel   (no page-center)</pre>
+
+          <div class="docs-subsection-title">Why it exists</div>
+          <p class="docs-desc">Before this component, every tab panel had its own <code>&lt;div class="page-center"&gt;</code>. That created a different centering context than the header/footer (which center via <code>wui-hdr-inner</code> / <code>wui-ftr-inner</code>), causing misalignment when the form inherited viewport padding. <code>wui-det-inner</code> solves this: one element, same max-width column, aligned with the header and footer.</p>
+
+          <pre class="docs-code">&lt;form class="input-form" data-validate-hidden="true" data-tab-panel="true"&gt;
+  &lt;!-- insertfields / updatefields / hidden inputs --&gt;
+  &lt;div class="wui-det-inner"&gt;
+    &lt;div class="wui-det-body"&gt;
+      &lt;div class="wui-tab-panel active" id="panel-details"&gt;
+        &lt;div class="wui-panel-wrap"&gt;
+          &lt;div class="wui-panel"&gt;…&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div style="display: none"&gt;&lt;savebutton/&gt;&lt;/div&gt;
+&lt;/form&gt;</pre>
+        </div>
+
+        <!-- ── Input view scaffold ──────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">assignment</span>Input view scaffold</div>
+          <p class="docs-desc">Canonical HTML skeleton for a full-page WebEOC input view. Form is <code>form.input-form</code> (flex column child of the shell — <code>weoc-forms.css</code> provides the flex rules). <code>wui-det-inner</code> centers the body. Footer is <code>wui-ftr-wrap.centered</code> outside the form.</p>
+
+          <div class="docs-subsection-title">Single-panel (no tabs)</div>
+          <pre class="docs-code">&lt;div class="wui-page-shell"&gt;
+  &lt;div class="wui-hdr-wrap centered"&gt;
+    &lt;div class="wui-hdr-inner"&gt;
+      &lt;div class="wui-hdr-top"&gt;…title…&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;form class="input-form" data-validate-hidden="true"&gt;
+    &lt;!-- insertfields / updatefields / hidden inputs --&gt;
+    &lt;div class="wui-det-inner"&gt;
+      &lt;div class="wui-det-body"&gt;
+        &lt;div class="wui-panel-wrap"&gt;
+          &lt;div class="wui-panel"&gt;…fields…&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div style="display: none"&gt;&lt;savebutton id="bOriginalSave"/&gt;&lt;/div&gt;
+  &lt;/form&gt;
+
+  &lt;div class="wui-ftr-wrap centered"&gt;
+    &lt;div class="wui-ftr-inner"&gt;
+      &lt;div class="wui-ftr-body"&gt;
+        &lt;div class="wui-ftr-left"&gt;&lt;/div&gt;
+        &lt;div class="wui-ftr-actions"&gt;
+          &lt;returnlink&gt;&lt;button class="wui-btn outline danger" type="button"&gt;Cancel&lt;/button&gt;&lt;/returnlink&gt;
+          &lt;button id="bSave" class="wui-btn primary" type="button"&gt;Save&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">Multi-tab with header tabs</div>
+          <pre class="docs-code">&lt;div class="wui-page-shell"&gt;
+  &lt;div class="wui-hdr-wrap centered"&gt;
+    &lt;div class="wui-hdr-inner"&gt;
+      &lt;div class="wui-hdr-top"&gt;…title…&lt;/div&gt;
+      &lt;div class="wui-hdr-tabs"&gt;
+        &lt;div class="wui-hdr-tab active" id="tab-details" onclick="switchTab('details')"&gt;Details&lt;/div&gt;
+        &lt;div class="wui-hdr-tab" id="tab-info" onclick="switchTab('info')"&gt;Info&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;form class="input-form" data-validate-hidden="true" data-tab-panel="true"&gt;
+    &lt;!-- insertfields / updatefields / hidden inputs --&gt;
+    &lt;div class="wui-det-inner"&gt;
+      &lt;div class="wui-det-body"&gt;
+        &lt;div class="wui-tab-panel active" id="panel-details"&gt;
+          &lt;div class="wui-panel-wrap"&gt;&lt;div class="wui-panel"&gt;…&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="wui-tab-panel" id="panel-info"&gt;
+          &lt;div class="wui-panel-wrap"&gt;&lt;div class="wui-panel"&gt;…&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div style="display: none"&gt;&lt;savebutton id="bOriginalSave"/&gt;&lt;/div&gt;
+  &lt;/form&gt;
+
+  &lt;div class="wui-ftr-wrap centered"&gt;
+    &lt;div class="wui-ftr-inner"&gt;
+      &lt;div class="wui-ftr-body"&gt;
+        &lt;div class="wui-ftr-left"&gt;&lt;/div&gt;
+        &lt;div class="wui-ftr-actions"&gt;
+          &lt;returnlink&gt;&lt;button class="wui-btn outline danger" type="button"&gt;Cancel&lt;/button&gt;&lt;/returnlink&gt;
+          &lt;button id="bSave" class="wui-btn primary" type="button"&gt;Save&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">CSS required</div>
+          <table class="docs-token-table">
+            <thead><tr><th>File</th><th>What it provides</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-token-name">weoc-ui-core.css</span></td><td>Full library — shell, layout, panels, buttons, navigation</td></tr>
+              <tr><td><span class="docs-token-name">weoc-forms.css</span></td><td><code>form.input-form</code> flex rules + <code>.wui-ftr-wrap.centered</code> padding flush</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Tab / List toggle ────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">view_agenda</span>Tab / List toggle pattern</div>
+          <p class="docs-desc">Lets a user switch a multi-tab input view between <em>tab mode</em> (one panel at a time, header tabs navigate) and <em>list mode</em> (all panels stacked vertically in one scroll, header tabs hidden). State persists in <code>localStorage</code> per board. CSS: <code>.wui-det-body.is-list-mode</code> modifier in <code>weoc-layout.css</code>.</p>
+
+          <div class="docs-subsection-title">Toggle button — place in wui-hdr-right</div>
+          <pre class="docs-code">&lt;div class="wui-hdr-right"&gt;
+  &lt;button type="button" id="btn-view-toggle" class="wui-btn outline wui-btn-sm"
+          onclick="toggleViewMode()" title="Switch view mode"&gt;
+    &lt;span class="material-symbols-outlined" id="view-toggle-icon"&gt;view_agenda&lt;/span&gt;
+    &lt;span id="view-toggle-label"&gt;List Form&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">JavaScript</div>
+          <pre class="docs-code">let currentTab = 'details';          // tracks active tab in tab mode
+let isListMode = false;
+const VIEW_MODE_KEY = 'myBoardViewMode';  // unique key per board
+
+function switchTab(tab) {
+  currentTab = tab;
+  if (!isListMode) {
+    $('.wui-hdr-tab').removeClass('active');
+    $('.wui-tab-panel').removeClass('active');
+    $('#tab-' + tab).addClass('active');
+    $('#panel-' + tab).addClass('active');
+  }
+}
+
+function toggleViewMode() {
+  isListMode = !isListMode;
+  applyViewMode();
+  localStorage.setItem(VIEW_MODE_KEY, isListMode ? 'list' : 'tabs');
+}
+
+function applyViewMode() {
+  if (isListMode) {
+    $('.wui-hdr-tabs').hide();
+    $('.wui-tab-panel').addClass('active');
+    $('.wui-det-body').addClass('is-list-mode');
+    $('#view-toggle-icon').text('tab');
+    $('#view-toggle-label').text('Tab Form');
+  } else {
+    $('.wui-hdr-tabs').show();
+    $('.wui-tab-panel').removeClass('active');
+    $('.wui-det-body').removeClass('is-list-mode');
+    $('.wui-hdr-tab').removeClass('active');
+    $('#panel-' + currentTab).addClass('active');
+    $('#tab-' + currentTab).addClass('active');
+    $('#view-toggle-icon').text('view_agenda');
+    $('#view-toggle-label').text('List Form');
+  }
+}
+
+// Restore saved mode on page load
+$(function () {
+  var saved = localStorage.getItem(VIEW_MODE_KEY);
+  if (saved === 'list') { isListMode = true; applyViewMode(); }
+});</pre>
+
+          <div class="docs-subsection-title">How it works</div>
+          <table class="docs-token-table">
+            <thead><tr><th>State</th><th>CSS modifier</th><th>Effect</th></tr></thead>
+            <tbody>
+              <tr><td>Tab mode (default)</td><td><em>none</em></td><td>Only <code>.wui-tab-panel.active</code> visible; <code>wui-hdr-tabs</code> shown</td></tr>
+              <tr><td>List mode</td><td><code>.wui-det-body.is-list-mode</code></td><td>All panels <code>display:block; height:auto</code>; det-body scrolls; tabs hidden</td></tr>
+            </tbody>
+          </table>
         </div>
 
       </div>

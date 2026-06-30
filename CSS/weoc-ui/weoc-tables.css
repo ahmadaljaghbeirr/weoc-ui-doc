@@ -178,7 +178,14 @@
   --wui-cards-head-px: var(--space-4);
   --wui-cards-actions-col: var(--space-10);
   --wui-cards-centered-col: var(--space-11);
+
+  /* Row surface — color-30 by default; add .color-60 for the darker neutral. */
+  --wui-cards-row-bg: var(--color-30);
 }
+
+/* Row colour variant (mirrors .wui-plane's API): default color-30, opt color-60. */
+.wui-table-cards.color-30 { --wui-cards-row-bg: var(--color-30); }
+.wui-table-cards.color-60 { --wui-cards-row-bg: var(--color-60); }
 
 /* Cards float on the page/container backdrop (gaps between rows show it
    through), not on the card surface — so flatten the sticky header onto that
@@ -188,8 +195,8 @@
   --wui-th-surface: var(--wui-surface, var(--color-bg));
 }
 
-/* Default (no JS): opaque backdrop-coloured header. Matches the gap colour so
-   it reads as "transparent" at rest, yet always occludes scrolled rows. */
+/* Fallback (before/without JS): opaque backdrop-coloured header — never bleeds.
+   Visible only if weoc-ui.js doesn't run; otherwise the managed rules below win. */
 .wui-table-cards thead th {
   background: var(--wui-th-surface);
   color: var(--color-text-primary);
@@ -200,19 +207,19 @@
   padding: 0 var(--wui-cards-head-px);
 }
 
-/* Path B (opt-in): genuinely transparent at rest, opaque only when stuck.
-   Needs data-wui-sticky-head="true" + weoc-ui.js (toggles .is-stuck on the
-   <thead>). Use only when the backdrop behind the table isn't a flat colour;
-   without the attribute the header stays opaque above and never bleeds. */
-.wui-table-cards[data-wui-sticky-head="true"] thead th { background: transparent; }
-.wui-table-cards[data-wui-sticky-head="true"] thead.is-stuck th { background: var(--wui-th-surface); }
+/* Managed by weoc-ui.js §10: it auto-binds every cards table and adds
+   .wui-sticky-managed to the <thead> — so the header is genuinely transparent
+   at rest (shows whatever backdrop it sits on, container-agnostic) and swaps to
+   the opaque surface ONLY while stuck. No per-view attribute needed. */
+.wui-table-cards thead.wui-sticky-managed th { background: transparent; }
+.wui-table-cards thead.wui-sticky-managed.is-stuck th { background: var(--wui-th-surface); }
 
 .wui-table-cards tbody td {
   padding: var(--wui-cards-cell-py) var(--wui-cards-cell-px);
   vertical-align: middle;
   font-size: var(--text-sm);
   color: var(--color-text-primary);
-  background: var(--color-30);
+  background: var(--wui-cards-row-bg);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   transition: border-color 0.12s ease, background 0.12s ease;

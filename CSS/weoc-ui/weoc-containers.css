@@ -764,6 +764,13 @@
   padding: var(--space-2) 0;
 }
 
+/* wui-det-inner context: restore inter-panel vertical spacing that
+   wui-page-shell .wui-panel-wrap zeroes out. Specificity [0,2,0]
+   matches the rule above — source order wins (this comes after). */
+.wui-det-inner .wui-panel-wrap {
+  padding: var(--space-2) 0;
+}
+
 .wui-panel {
   background: var(--color-30);
   border: 1px solid var(--color-border);

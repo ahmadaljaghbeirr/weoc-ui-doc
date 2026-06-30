@@ -33,6 +33,9 @@
         .vz-panel  { background:var(--color-secondary-light);color:var(--color-text-secondary);border:1px solid var(--color-secondary-muted) }
         .vz-map    { background:var(--color-info-light);     color:var(--color-info-text);     border:1px solid var(--color-info-muted) }
         .vz-stub   { background:var(--color-30);             color:var(--color-text-tertiary); border:1px dashed var(--color-border) }
+        .vz-tabs   { background:var(--color-warning-light);  color:var(--color-warning-text);  border:1px solid var(--color-warning-muted) }
+        .vz-body   { background:var(--color-60);             color:var(--color-text-secondary);border:1px solid var(--color-border);flex:1 }
+        .vz-footer { background:var(--color-secondary-light);color:var(--color-text-secondary);border:1px solid var(--color-secondary-muted) }
         .vz-tag { display:inline-block;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;opacity:.7;background:currentColor;color:var(--color-bg);margin-left:var(--space-1) }
         .vz-optional { font-style:italic;opacity:.6 }
         .vz-variant-label { display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3) }
@@ -491,10 +494,335 @@
           <div class="docs-section-title">
             <span class="material-symbols-outlined">edit_note</span>Input Views
           </div>
-          <p class="docs-desc">Form views for creating and editing records.</p>
-          <div class="vz-board" style="height:120px">
-            <div class="vz-zone vz-stub" style="flex:1;display:flex;align-items:center;justify-content:center">
-              <span style="font-size:var(--text-sm);font-style:italic">Coming soon — layout sketch pending</span>
+          <p class="docs-desc">
+            Full-page forms for creating and editing records. The <code>wui-page-shell</code> is the full-page
+            flex column: a sticky <strong>header</strong> (title + optional tab row), a scrolling
+            <strong>form body</strong> centered by <code>wui-det-inner</code>, and a sticky <strong>footer</strong>
+            with Save / Cancel. The <code>&lt;form class="input-form"&gt;</code> wraps the body and carries the
+            WebEOC <code>insertfields</code> / <code>updatefields</code> / hidden inputs. Two structural variants
+            exist based on whether the form is split into tabs.
+          </p>
+
+          <!-- ── Variant overview ─────────────────────────────── -->
+          <div class="docs-subsection-title">Variants at a glance</div>
+          <div class="docs-example stacked" style="gap: var(--space-5)">
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+              <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
+                <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
+                  <span class="wui-badge primary">Variant 1</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Single panel</span>
+                </div>
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                  One <code>wui-det-body</code> with stacked <code>wui-panel-wrap</code> sections. No tabs.
+                  Best for short forms (one or two sections).
+                </p>
+              </div>
+              <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
+                <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
+                  <span class="wui-badge info">Variant 2</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Multi-tab</span>
+                </div>
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                  A <code>wui-hdr-tabs</code> row; each tab is a <code>wui-tab-panel</code>, <code>switchTab()</code>
+                  navigates. Optional <strong>Tab / List toggle</strong> flattens every tab into one scroll.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── VARIANT 1 ─────────────────────────────────────── -->
+          <div class="docs-subsection-title">Variant 1 — Single panel</div>
+          <p class="docs-desc">
+            No tabs. The form body is one <code>wui-det-body</code> holding stacked <code>wui-panel-wrap</code>
+            sections, centered by <code>wui-det-inner</code>. The body scrolls; header and footer stay fixed.
+          </p>
+
+          <!-- Zone diagram -->
+          <div class="docs-example stacked">
+            <div class="vz-board" style="height:320px">
+              <div style="padding:2px 4px;font-family:var(--font-mono);font-size:var(--text-2xs);font-weight:700;color:var(--color-text-tertiary)">.wui-page-shell — full-page flex column</div>
+
+              <div class="vz-zone vz-hdr" style="flex:0 0 auto">
+                <span class="vz-zone-name">HEADER</span>
+                <span class="vz-zone-class">.wui-hdr-wrap.centered → .wui-hdr-inner → .wui-hdr-top</span>
+                <span class="vz-zone-note">title (New / Edit via &lt;choose&gt;) + subtitle</span>
+              </div>
+
+              <div class="vz-zone vz-body">
+                <span class="vz-zone-name">FORM BODY</span>
+                <span class="vz-zone-class">form.input-form → .wui-det-inner → .wui-det-body</span>
+                <span class="vz-zone-note">stacked .wui-panel-wrap → .wui-panel · fields = field-row → field-item · flex:1 · scrolls</span>
+              </div>
+
+              <div class="vz-zone vz-footer" style="flex:0 0 auto">
+                <span class="vz-zone-name">FOOTER</span>
+                <span class="vz-zone-class">.wui-ftr-wrap.centered → .wui-ftr-inner → .wui-ftr-body</span>
+                <span class="vz-zone-note">Cancel (returnlink) + Save · outside the form</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Abstract skeleton -->
+          <div class="docs-subsection-title">Abstract skeleton — Variant 1</div>
+          <pre class="docs-code">&lt;div class="wui-page-shell"&gt;
+
+  &lt;!-- ── HEADER ───────────────────────────────────────────────── --&gt;
+  &lt;div class="wui-hdr-wrap centered"&gt;
+    &lt;div class="wui-hdr-inner"&gt;
+      &lt;div class="wui-hdr-top"&gt;
+        &lt;div class="wui-hdr-left"&gt;
+          &lt;h1 class="wui-hdr-title"&gt;
+            &lt;choose&gt;
+              &lt;when test="/data/@dataid = '0'"&gt;New Record&lt;/when&gt;
+              &lt;otherwise&gt;Edit Record&lt;/otherwise&gt;
+            &lt;/choose&gt;
+          &lt;/h1&gt;
+          &lt;div class="wui-hdr-subtitle"&gt;Context line&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ── FORM ─────────────────────────────────────────────────── --&gt;
+  &lt;form class="input-form" data-validate-hidden="true"&gt;
+    &lt;insertfields&gt;&lt;!-- system insert fields --&gt;&lt;/insertfields&gt;
+    &lt;updatefields&gt;&lt;!-- system update fields --&gt;&lt;/updatefields&gt;
+    &lt;autonumber name="RecordNumber" digits="7"&gt;{YY}-{autonumber}&lt;/autonumber&gt;
+    &lt;!-- hidden system inputs + module hidden block --&gt;
+
+    &lt;div class="wui-det-inner"&gt;
+      &lt;div class="wui-det-body"&gt;
+
+        &lt;div class="wui-panel-wrap"&gt;
+          &lt;div class="wui-panel"&gt;
+            &lt;div class="wui-panel-hdr"&gt;
+              &lt;div class="wui-panel-title-wrap"&gt;
+                &lt;p class="wui-panel-title wui-text-sm wui-bold wui-text-primary"&gt;
+                  &lt;span class="material-symbols-outlined"&gt;info&lt;/span&gt; Section Title
+                &lt;/p&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class="wui-panel-body no-scroll"&gt;
+              &lt;div class="wui-content-wrap"&gt;
+                &lt;div class="field-row"&gt;
+                  &lt;div class="field-item"&gt;
+                    &lt;label class="field-label"&gt;
+                      &lt;span class="material-symbols-outlined"&gt;title&lt;/span&gt; Field
+                      &lt;span class="required"/&gt;
+                    &lt;/label&gt;
+                    &lt;input type="text" name="Field" class="form-control" required="true"/&gt;
+                    &lt;div class="field-error"/&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;!-- repeat wui-panel-wrap for each section --&gt;
+
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div style="display:none"&gt;&lt;savebutton id="bOriginalSave"/&gt;&lt;/div&gt;
+  &lt;/form&gt;
+
+  &lt;!-- ── FOOTER ───────────────────────────────────────────────── --&gt;
+  &lt;div class="wui-ftr-wrap centered"&gt;
+    &lt;div class="wui-ftr-inner"&gt;
+      &lt;div class="wui-ftr-body" style="justify-content:flex-end"&gt;
+        &lt;div class="wui-ftr-right"&gt;
+          &lt;returnlink&gt;
+            &lt;button class="wui-btn outline danger" type="button"&gt;
+              &lt;span class="material-symbols-outlined"&gt;close&lt;/span&gt; Cancel
+            &lt;/button&gt;
+          &lt;/returnlink&gt;
+          &lt;button id="bSave" class="wui-btn primary" type="button"&gt;
+            &lt;span class="material-symbols-outlined"&gt;save&lt;/span&gt; Save
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;&lt;!-- /wui-page-shell --&gt;</pre>
+
+          <!-- ── VARIANT 2 ─────────────────────────────────────── -->
+          <div class="docs-subsection-title" style="margin-top:var(--space-8)">Variant 2 — Multi-tab</div>
+          <p class="docs-desc">
+            The header gains a <code>wui-hdr-tabs</code> row; the body holds one <code>wui-tab-panel</code> per tab
+            (first gets <code>.active</code>). The form needs <code>data-tab-panel="true"</code> so hidden-tab
+            validation still fires. An optional <strong>Tab / List toggle</strong> in <code>wui-hdr-right</code>
+            lets the user collapse all tabs into one continuous scroll.
+          </p>
+
+          <!-- Zone diagram -->
+          <div class="docs-example stacked">
+            <div class="vz-board" style="height:360px">
+              <div style="padding:2px 4px;font-family:var(--font-mono);font-size:var(--text-2xs);font-weight:700;color:var(--color-text-tertiary)">.wui-page-shell — full-page flex column</div>
+
+              <div class="vz-zone vz-hdr" style="flex:0 0 auto">
+                <span class="vz-zone-name">HEADER <span class="vz-optional">+ optional Tab / List toggle (right)</span></span>
+                <span class="vz-zone-class">.wui-hdr-wrap.centered → .wui-hdr-top [ .wui-hdr-left · .wui-hdr-right ]</span>
+              </div>
+
+              <div class="vz-zone vz-tabs" style="flex:0 0 auto">
+                <span class="vz-zone-name">TAB STRIP</span>
+                <span class="vz-zone-class">.wui-hdr-tabs → .wui-hdr-tab × N (onclick switchTab)</span>
+              </div>
+
+              <div class="vz-zone vz-body">
+                <span class="vz-zone-name">FORM BODY</span>
+                <span class="vz-zone-class">form.input-form[data-tab-panel] → .wui-det-inner → .wui-det-body</span>
+                <span class="vz-zone-note">.wui-tab-panel.active shown (tab mode) · all panels stacked when .is-list-mode</span>
+              </div>
+
+              <div class="vz-zone vz-footer" style="flex:0 0 auto">
+                <span class="vz-zone-name">FOOTER</span>
+                <span class="vz-zone-class">.wui-ftr-wrap.centered</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Abstract skeleton -->
+          <div class="docs-subsection-title">Abstract skeleton — Variant 2 (deltas from Variant 1)</div>
+          <pre class="docs-code">&lt;div class="wui-hdr-inner"&gt;
+  &lt;div class="wui-hdr-top"&gt;
+    &lt;div class="wui-hdr-left"&gt;&lt;h1 class="wui-hdr-title"&gt;New / Edit Record&lt;/h1&gt;&lt;/div&gt;
+
+    &lt;!-- optional Tab / List toggle --&gt;
+    &lt;div class="wui-hdr-right"&gt;
+      &lt;button type="button" id="btn-view-toggle" class="wui-btn outline wui-btn-sm"
+              onclick="toggleViewMode()" title="Switch view mode"&gt;
+        &lt;span class="material-symbols-outlined" id="view-toggle-icon"&gt;view_agenda&lt;/span&gt;
+        &lt;span id="view-toggle-label"&gt;List Form&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- TAB STRIP --&gt;
+  &lt;div class="wui-hdr-tabs"&gt;
+    &lt;div class="wui-hdr-tab active" id="tab-details" onclick="switchTab('details')"&gt;
+      &lt;span class="material-symbols-outlined"&gt;info&lt;/span&gt; Details
+    &lt;/div&gt;
+    &lt;div class="wui-hdr-tab" id="tab-location" onclick="switchTab('location')"&gt;
+      &lt;span class="material-symbols-outlined"&gt;location_on&lt;/span&gt; Location
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- FORM — note data-tab-panel="true" --&gt;
+&lt;form class="input-form" data-validate-hidden="true" data-tab-panel="true"&gt;
+  &lt;!-- insertfields / updatefields / hidden inputs --&gt;
+  &lt;div class="wui-det-inner"&gt;
+    &lt;div class="wui-det-body"&gt;
+      &lt;div class="wui-tab-panel active" id="panel-details"&gt;
+        &lt;div class="wui-panel-wrap"&gt;&lt;div class="wui-panel"&gt;&lt;!-- field-rows --&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="wui-tab-panel" id="panel-location"&gt;
+        &lt;div class="wui-panel-wrap"&gt;&lt;div class="wui-panel"&gt;&lt;!-- field-rows --&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div style="display:none"&gt;&lt;savebutton id="bOriginalSave"/&gt;&lt;/div&gt;
+&lt;/form&gt;</pre>
+
+          <!-- Toggle JS -->
+          <div class="docs-subsection-title">Tab / List toggle — JavaScript</div>
+          <p class="docs-desc">
+            Tab mode shows one <code>wui-tab-panel.active</code> at a time. List mode adds
+            <code>.is-list-mode</code> to <code>wui-det-body</code> (defined in <code>weoc-layout.css</code>),
+            which forces every panel to <code>display:block; height:auto</code> and makes the body itself scroll;
+            the tab strip is hidden. State persists per board in <code>localStorage</code>.
+          </p>
+          <pre class="docs-code">let currentTab = 'details';
+let isListMode = false;
+const VIEW_MODE_KEY = 'myBoardViewMode';   // unique key per board
+
+function switchTab(tab) {
+  currentTab = tab;
+  if (isListMode) return;                  // list mode shows all panels
+  $('.wui-hdr-tab').removeClass('active');
+  $('.wui-tab-panel').removeClass('active');
+  $('#tab-' + tab).addClass('active');
+  $('#panel-' + tab).addClass('active');
+}
+
+function toggleViewMode() {
+  isListMode = !isListMode;
+  applyViewMode();
+  localStorage.setItem(VIEW_MODE_KEY, isListMode ? 'list' : 'tabs');
+}
+
+function applyViewMode() {
+  if (isListMode) {
+    $('.wui-hdr-tabs').hide();
+    $('.wui-tab-panel').addClass('active');
+    $('.wui-det-body').addClass('is-list-mode');
+    $('#view-toggle-icon').text('tab');
+    $('#view-toggle-label').text('Tab Form');
+  } else {
+    $('.wui-hdr-tabs').show();
+    $('.wui-tab-panel').removeClass('active');
+    $('.wui-det-body').removeClass('is-list-mode');
+    $('#panel-' + currentTab).addClass('active');
+    $('#tab-' + currentTab).addClass('active');
+    $('#view-toggle-icon').text('view_agenda');
+    $('#view-toggle-label').text('List Form');
+  }
+}
+
+// Restore saved mode on load
+$(function () {
+  if (localStorage.getItem(VIEW_MODE_KEY) === 'list') { isListMode = true; applyViewMode(); }
+});</pre>
+
+          <!-- Zone reference -->
+          <div class="docs-subsection-title">Zone reference</div>
+          <table class="wui-table-standard" style="margin-top:var(--space-2)">
+            <thead>
+              <tr><th class="wui-col-md">Zone</th><th class="wui-col-primary">Class(es)</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Shell</strong></td>
+                <td><code>.wui-page-shell</code></td>
+                <td>Full-page flex column. Holds header, form, and footer in order.</td>
+              </tr>
+              <tr>
+                <td><strong>Header</strong></td>
+                <td><code>.wui-hdr-wrap.centered</code></td>
+                <td>Title (New / Edit via <code>&lt;choose&gt;</code>) + subtitle. Multi-tab adds a <code>.wui-hdr-tabs</code> row and, optionally, a Tab / List toggle in <code>.wui-hdr-right</code>.</td>
+              </tr>
+              <tr>
+                <td><strong>Form</strong></td>
+                <td><code>form.input-form</code></td>
+                <td>Flex:1 column (rules from <code>weoc-forms.css</code>). Carries <code>insertfields</code> / <code>updatefields</code> / hidden inputs / <code>savebutton</code>. Add <code>data-tab-panel="true"</code> for multi-tab so hidden-tab fields still validate.</td>
+              </tr>
+              <tr>
+                <td><strong>Content frame</strong></td>
+                <td><code>.wui-det-inner → .wui-det-body</code></td>
+                <td><code>wui-det-inner</code> centers at max-width 1100px (aligned with header/footer). Single-panel: stacked <code>wui-panel-wrap</code>. Multi-tab: one <code>wui-tab-panel</code> per tab.</td>
+              </tr>
+              <tr>
+                <td><strong>Fields</strong></td>
+                <td><code>.field-row → .field-item</code></td>
+                <td>Editable field grid (from <code>weoc-forms.css</code>). <code>.field-item-full</code> spans the row; <code>.field-row.full</code> is a single full-width column.</td>
+              </tr>
+              <tr>
+                <td><strong>Footer</strong></td>
+                <td><code>.wui-ftr-wrap.centered</code></td>
+                <td>Save / Cancel bar. Lives <em>outside</em> the form, directly in the shell. <code>#bSave</code> validates then clicks the hidden <code>#bOriginalSave</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="wui-callout info" style="margin-top:var(--space-3)">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body">
+              <span class="wui-callout-title">CSS required</span>
+              Input views load <code>weoc-ui-core.css</code> <strong>and</strong> <code>weoc-forms.css</code>
+              (the form flex rules + footer padding flush). The display/details views do not need
+              <code>weoc-forms.css</code>.
             </div>
           </div>
         </div>
@@ -507,10 +835,263 @@
           <div class="docs-section-title">
             <span class="material-symbols-outlined">info</span>Details Views
           </div>
-          <p class="docs-desc">Read-only record detail panels — embedded in the Display split or opened standalone.</p>
-          <div class="vz-board" style="height:120px">
-            <div class="vz-zone vz-stub" style="flex:1;display:flex;align-items:center;justify-content:center">
-              <span style="font-size:var(--text-sm);font-style:italic">Coming soon — layout sketch pending</span>
+          <p class="docs-desc">
+            Read-only record views. Same <code>wui-page-shell</code> skeleton as an input view but with
+            <strong>no <code>&lt;form&gt;</code> and no footer save bar</strong>. The header carries the record
+            title, number, and a status badge; the body presents fields with the read-only
+            <code>wui-info-grid</code> (not <code>field-row</code> / <code>field-item</code>). A details view either
+            renders standalone or is embedded into the <strong>Display Type A</strong> right panel
+            (<code>.wui-det-body</code>) via BoardScript. Two structural variants — single-panel and multi-tab.
+          </p>
+
+          <!-- ── Variant overview ─────────────────────────────── -->
+          <div class="docs-subsection-title">Variants at a glance</div>
+          <div class="docs-example stacked" style="gap: var(--space-5)">
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+              <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
+                <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
+                  <span class="wui-badge primary">Variant 1</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Single panel</span>
+                </div>
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                  Stacked <code>wui-panel-wrap</code> sections of <code>wui-info-grid</code>. No tabs.
+                  Common for short records embedded in the Display panel.
+                </p>
+              </div>
+              <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
+                <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
+                  <span class="wui-badge info">Variant 2</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Multi-tab</span>
+                </div>
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                  Scrollable <code>wui-hdr-tabs-wrap</code> strip with arrow FABs + edge shadows.
+                  One <code>wui-tab-panel</code> per tab; <code>switchTab()</code> navigates.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── VARIANT 1 ─────────────────────────────────────── -->
+          <div class="docs-subsection-title">Variant 1 — Single panel</div>
+          <p class="docs-desc">
+            No tabs. The body is one <code>wui-det-body</code> with stacked <code>wui-panel-wrap</code> sections,
+            each a <code>wui-info-grid</code> of read-only label/value pairs.
+          </p>
+
+          <!-- Zone diagram -->
+          <div class="docs-example stacked">
+            <div class="vz-board" style="height:280px">
+              <div style="padding:2px 4px;font-family:var(--font-mono);font-size:var(--text-2xs);font-weight:700;color:var(--color-text-tertiary)">.wui-page-shell — full-page flex column</div>
+
+              <div class="vz-zone vz-hdr" style="flex:0 0 auto">
+                <span class="vz-zone-name">HEADER <span class="vz-optional">+ optional Back (embed only)</span></span>
+                <span class="vz-zone-class">.wui-hdr-wrap.centered → .wui-hdr-top [ .wui-hdr-left · .wui-hdr-right ]</span>
+                <span class="vz-zone-note">title + #record number + status badge · Back in .wui-hdr-actions</span>
+              </div>
+
+              <div class="vz-zone vz-body">
+                <span class="vz-zone-name">BODY</span>
+                <span class="vz-zone-class">.wui-det-inner → .wui-det-body</span>
+                <span class="vz-zone-note">stacked .wui-panel-wrap → .wui-panel → .wui-info-grid (read-only) · no form, no footer</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Abstract skeleton -->
+          <div class="docs-subsection-title">Abstract skeleton — Variant 1</div>
+          <pre class="docs-code">&lt;div class="wui-page-shell"&gt;
+
+  &lt;!-- ── HEADER ───────────────────────────────────────────────── --&gt;
+  &lt;div class="wui-hdr-wrap centered"&gt;
+    &lt;div class="wui-hdr-inner"&gt;
+      &lt;div class="wui-hdr-top"&gt;
+        &lt;div class="wui-hdr-left"&gt;
+          &lt;div class="wui-hdr-title-row"&gt;
+            &lt;span class="wui-hdr-title"&gt;&lt;eocfield name="Title"/&gt;&lt;/span&gt;
+            &lt;span style="color: var(--color-border)"&gt;|&lt;/span&gt;
+            &lt;span class="wui-text-sm wui-text-brand wui-bold"&gt;#&lt;eocfield name="RecordNumber"/&gt;&lt;/span&gt;
+            &lt;!-- status badge: class chosen from a field via &lt;choose&gt; --&gt;
+            &lt;span class="wui-badge primary"&gt;&lt;eocfield name="Status"/&gt;&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class="wui-hdr-subtitle"&gt;&lt;eocfield name="Category"/&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="wui-hdr-right"&gt;
+          &lt;div class="wui-hdr-actions"&gt;
+            &lt;!-- Back only when opened as an embedded / dialog view --&gt;
+            &lt;if test="/data/ViewParameter[@name='isEmbedView'] = '1'"&gt;
+              &lt;returnlink&gt;&lt;button class="wui-btn secondary outline" type="button"&gt;Back&lt;/button&gt;&lt;/returnlink&gt;
+            &lt;/if&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ── BODY (no form, no footer) ────────────────────────────── --&gt;
+  &lt;div class="wui-det-inner"&gt;
+    &lt;div class="wui-det-body"&gt;
+      &lt;div class="wui-panel-wrap"&gt;
+        &lt;div class="wui-panel"&gt;
+          &lt;div class="wui-panel-hdr"&gt;&lt;div class="wui-panel-title-wrap"&gt;&lt;!-- section title --&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class="wui-panel-body"&gt;
+            &lt;div class="wui-content-wrap"&gt;
+              &lt;div class="wui-info-grid"&gt;
+                &lt;div class="wui-info-item"&gt;
+                  &lt;div class="wui-info-label"&gt;&lt;span class="material-symbols-outlined"&gt;label&lt;/span&gt; Field&lt;/div&gt;
+                  &lt;div class="wui-info-value"&gt;&lt;eocfield name="Field"/&gt;&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;!-- repeat wui-panel-wrap for each section --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;&lt;!-- /wui-page-shell --&gt;</pre>
+
+          <!-- ── VARIANT 2 ─────────────────────────────────────── -->
+          <div class="docs-subsection-title" style="margin-top:var(--space-8)">Variant 2 — Multi-tab (scrollable strip)</div>
+          <p class="docs-desc">
+            Details views carry their tab strip in <code>wui-hdr-tabs-wrap</code> with two arrow FABs — the strip
+            scrolls horizontally and reveals edge shadows (<code>has-left</code> / <code>has-right</code>) when it
+            overflows. Each tab maps id <code>tab-X</code> to panel <code>panel-X</code> via <code>switchTab('X')</code>.
+          </p>
+
+          <!-- Zone diagram -->
+          <div class="docs-example stacked">
+            <div class="vz-board" style="height:320px">
+              <div style="padding:2px 4px;font-family:var(--font-mono);font-size:var(--text-2xs);font-weight:700;color:var(--color-text-tertiary)">.wui-page-shell — full-page flex column</div>
+
+              <div class="vz-zone vz-hdr" style="flex:0 0 auto">
+                <span class="vz-zone-name">HEADER</span>
+                <span class="vz-zone-class">.wui-hdr-wrap.centered → title + #record + status badge</span>
+              </div>
+
+              <div class="vz-zone vz-tabs" style="flex:0 0 auto">
+                <span class="vz-zone-name">TAB STRIP <span class="vz-optional">— scrollable</span></span>
+                <span class="vz-zone-class">.wui-hdr-tabs-wrap [ .wui-fab.tabs-scroll-left · .wui-hdr-tabs · .wui-fab.tabs-scroll-right ]</span>
+                <span class="vz-zone-note">arrow FABs + edge shadows (.has-left / .has-right) · wheel scrolls</span>
+              </div>
+
+              <div class="vz-zone vz-body">
+                <span class="vz-zone-name">BODY</span>
+                <span class="vz-zone-class">.wui-det-inner → .wui-det-body → .wui-tab-panel.active</span>
+                <span class="vz-zone-note">.wui-panel → .wui-info-grid (read-only)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Abstract skeleton -->
+          <div class="docs-subsection-title">Abstract skeleton — Variant 2 (tab strip + body)</div>
+          <pre class="docs-code">&lt;!-- header tab strip --&gt;
+&lt;div class="wui-hdr-tabs-wrap" id="det-tabs-scroll-wrap"&gt;
+  &lt;button type="button" class="wui-fab secondary neon-outline tabs-scroll-left" id="tabs-scroll-left"&gt;
+    &lt;span class="material-symbols-outlined"&gt;chevron_left&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;div class="wui-hdr-tabs" id="det-tabs"&gt;
+    &lt;div class="wui-hdr-tab active" id="tab-details" onclick="switchTab('details')"&gt;
+      &lt;span class="material-symbols-outlined"&gt;info&lt;/span&gt; Details
+    &lt;/div&gt;
+    &lt;div class="wui-hdr-tab" id="tab-location" onclick="switchTab('location')"&gt;
+      &lt;span class="material-symbols-outlined"&gt;location_on&lt;/span&gt; Location
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;button type="button" class="wui-fab secondary neon-outline tabs-scroll-right" id="tabs-scroll-right"&gt;
+    &lt;span class="material-symbols-outlined"&gt;chevron_right&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- body: one wui-tab-panel per tab, first gets .active --&gt;
+&lt;div class="wui-det-inner"&gt;
+  &lt;div class="wui-det-body"&gt;
+    &lt;div class="wui-tab-panel active" id="panel-details"&gt;
+      &lt;div class="wui-panel-wrap"&gt;&lt;div class="wui-panel"&gt;&lt;!-- wui-info-grid --&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="wui-tab-panel" id="panel-location"&gt;
+      &lt;div class="wui-panel-wrap"&gt;&lt;div class="wui-panel"&gt;&lt;!-- ... --&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+
+          <!-- JS -->
+          <div class="docs-subsection-title">JavaScript</div>
+          <pre class="docs-code">// Switch header tabs (multi-tab only)
+function switchTab(tab) {
+  $('.wui-hdr-tab').removeClass('active');
+  $('.wui-tab-panel').removeClass('active');
+  $('#tab-' + tab).addClass('active');
+  $('#panel-' + tab).addClass('active');
+}
+
+// Mark blank read-only values so CSS shows an em-dash placeholder
+function applyEmptyStates() {
+  $('.wui-info-value').each(function () {
+    if (!$(this).text().trim()) $(this).addClass('is-empty');
+  });
+}
+
+// Edge shadows + arrow buttons + wheel scroll for the tab strip (multi-tab only)
+function setupTabsScrollShadow() {
+  var $tabs = $('#det-tabs'), $wrap = $('#det-tabs-scroll-wrap');
+  function updateShadows() {
+    var el = $tabs[0];
+    $wrap.toggleClass('has-left',  el.scrollLeft > 0);
+    $wrap.toggleClass('has-right', el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  }
+  $tabs.on('scroll', updateShadows);
+  $('#tabs-scroll-left').on('click',  function () { $tabs[0].scrollBy({ left: -160, behavior: 'smooth' }); });
+  $('#tabs-scroll-right').on('click', function () { $tabs[0].scrollBy({ left:  160, behavior: 'smooth' }); });
+  $tabs.on('wheel', function (e) {
+    if (e.originalEvent.deltaY !== 0) { e.preventDefault(); $tabs[0].scrollLeft += e.originalEvent.deltaY; }
+  });
+  updateShadows();
+}
+
+$(function () {
+  applyEmptyStates();
+  setupTabsScrollShadow();   // omit for the single-panel variant
+});</pre>
+
+          <!-- Zone reference -->
+          <div class="docs-subsection-title">Zone reference</div>
+          <table class="wui-table-standard" style="margin-top:var(--space-2)">
+            <thead>
+              <tr><th class="wui-col-md">Zone</th><th class="wui-col-primary">Class(es)</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Header</strong></td>
+                <td><code>.wui-hdr-wrap.centered</code></td>
+                <td>Title + <code>#</code> record number + status badge (class via <code>&lt;choose&gt;</code>). Optional Back button in <code>.wui-hdr-actions</code>, shown only for embed/dialog views.</td>
+              </tr>
+              <tr>
+                <td><strong>Tab strip</strong> <span class="vz-optional">(multi-tab)</span></td>
+                <td><code>.wui-hdr-tabs-wrap</code></td>
+                <td>Scrollable: <code>.wui-fab.tabs-scroll-left</code> / <code>-right</code> arrow buttons + edge shadows toggled by <code>.has-left</code> / <code>.has-right</code>. Mouse wheel scrolls the strip.</td>
+              </tr>
+              <tr>
+                <td><strong>Content frame</strong></td>
+                <td><code>.wui-det-inner → .wui-det-body</code></td>
+                <td>Same centering as input. Single-panel: stacked <code>wui-panel-wrap</code>. Multi-tab: one <code>wui-tab-panel</code> per tab.</td>
+              </tr>
+              <tr>
+                <td><strong>Fields</strong></td>
+                <td><code>.wui-info-grid → .wui-info-item</code></td>
+                <td>Read-only label/value grid. <code>.wui-info-label</code> (icon + text) + <code>.wui-info-value</code>. <code>.col3</code> / <code>.col4</code> set column count. <code>applyEmptyStates()</code> adds <code>.is-empty</code> to blank values.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="wui-callout info" style="margin-top:var(--space-3)">
+            <span class="material-symbols-outlined">compare_arrows</span>
+            <div class="wui-callout-body">
+              <span class="wui-callout-title">Input vs Details — what changes</span>
+              No <code>&lt;form&gt;</code> and no footer (display is read-only). Fields use
+              <code>wui-info-grid</code> instead of <code>field-row</code> / <code>field-item</code>. Tabs use the
+              scrollable <code>wui-hdr-tabs-wrap</code> strip instead of the plain <code>wui-hdr-tabs</code>.
+              CSS = <code>weoc-ui-core.css</code> only (no <code>weoc-forms.css</code>).
             </div>
           </div>
         </div>

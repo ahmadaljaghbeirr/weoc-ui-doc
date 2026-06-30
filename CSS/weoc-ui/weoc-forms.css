@@ -52,11 +52,6 @@
   gap: var(--space-4);
 }
 
-.wui-ftr-wrap.centered .wui-ftr-body {
-  padding-left: 0;
-  padding-right: 0;
-}
-
 /* ─── Left (meta / status) ─── */
 
 .wui-ftr-left {
@@ -331,6 +326,28 @@ textarea.form-control {
    (weoc-forms.css is imported on input views only). */
 
 
+/* ─── Form Shell ─── */
+/*
+  Explicit flex properties for form.input-form so it participates correctly in
+  the wui-page-shell flex column without needing style="all: inherit" on the
+  element. The form fills available height and passes its width through to
+  wui-det-inner, which handles the max-width centering.
+*/
+form.input-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Input views load weoc-forms.css; details views do not — so this override is
+   input-view-scoped. Flushes the footer inner to match body panel outer edges. */
+.wui-ftr-wrap.centered .wui-ftr-inner {
+  padding-inline: 0;
+}
+
 /* Start: Form Footer */
 .form-footer {
   flex-shrink: 0;
@@ -342,7 +359,7 @@ textarea.form-control {
   background: var(--color-30);
   border-radius: var(--border-radius);
   box-shadow: var(--widget-shadow);
-  padding: var(--space-3) var(--space-5);
+  padding: var(--space-3) 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
