@@ -1480,7 +1480,7 @@
 /* ─── Value ─── */
 
 .wui-info-value {
-  font-size: var(--text-base);
+  font-size: var(--text-xs);
   color: var(--color-text-primary);
   font-weight: var(--font-medium);
   min-height: 22px;

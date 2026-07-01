@@ -97,17 +97,48 @@
     document.head.appendChild(s);
   }
 
+  // Palette id → agency-theme file name (atlas = the base file).
+  function agencyThemeFile(id) {
+    return (!id || id === 'atlas') ? 'agency-theme.css' : 'agency-theme-' + id + '.css';
+  }
+
+  function activePalette() {
+    return localStorage.getItem('wui-docs-theme') || 'atlas';
+  }
+
+  /* The TinyMCE content iframe is a separate document with its OWN copy of the
+     agency theme (loaded via content_css). The host swatch swap doesn't touch it,
+     so swap the iframe's agency-theme <link> too — keeps the editor content on the
+     same palette as the page, live, without re-initialising the editor. */
+  function syncTinyMCEPalette() {
+    if (!window.tinymce || typeof window.tinymce.get !== 'function') return;
+    var file = agencyThemeFile(activePalette());
+    window.tinymce.get().forEach(function (ed) {
+      try {
+        var doc = ed.getDoc && ed.getDoc();
+        if (!doc) return;
+        var links = doc.querySelectorAll('link[rel="stylesheet"]');
+        for (var i = 0; i < links.length; i++) {
+          var href = links[i].getAttribute('href') || '';
+          if (/agency-theme[^/]*\.css/.test(href)) {
+            links[i].setAttribute('href', href.replace(/agency-theme[^/]*\.css/, file));
+          }
+        }
+      } catch (e) {}
+    });
+  }
+
   function loadTheme(id) {
     var link = getAgencyThemeLink();
     if (!link) return;
     var href = link.getAttribute('href');
     var base = href.replace(/agency-theme[^/]*\.css/, '');
-    var file = id === 'atlas' ? 'agency-theme.css' : 'agency-theme-' + id + '.css';
-    link.href = base + file;
+    link.href = base + agencyThemeFile(id);
     localStorage.setItem('wui-docs-theme', id);
     document.querySelectorAll('[data-theme-pick]').forEach(function (btn) {
       btn.classList.toggle('is-active', btn.getAttribute('data-theme-pick') === id);
     });
+    syncTinyMCEPalette();   // keep any open editor's iframe on the same palette
   }
 
   function applyStoredTheme() {
@@ -360,9 +391,11 @@
       // loaded INTO it (tokens + Cairo + light/dark) BEFORE our content styling,
       // which consumes those tokens. Load agency-theme.css, NOT weoc-ui-core.css
       // (the core reset's body rules would break the editor content body).
-      // Absolute URLs so they resolve correctly even after Barba navigation.
+      // Use the ACTIVE palette file so Barba navigation into this page lands on
+      // the right palette (no refresh needed). Absolute URLs so they resolve
+      // correctly even after Barba navigation.
       var contentCss = [
-        new URL('../../CSS/weoc-ui/agency-theme.css', document.baseURI).href,
+        new URL('../../CSS/weoc-ui/' + agencyThemeFile(activePalette()), document.baseURI).href,
         new URL('../../CSS/tinymce-content-tokens.css', document.baseURI).href
       ];
       var applyTheme = function (ed) { if (window.WUI) window.WUI.applyTinyMCETheme(ed); };
