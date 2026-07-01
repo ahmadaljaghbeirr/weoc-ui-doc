@@ -20,346 +20,468 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Components</div>
+          <div class="docs-hero-eyebrow">Overlays</div>
           <div class="docs-hero-title">Overlays</div>
-          <div class="docs-hero-sub">Drawer, modal, popover, and dropdown — all driven by <code>WUI.open/close/toggle</code> or declarative <code>[data-wui-toggle]</code> attributes.</div>
+          <div class="docs-hero-sub">Floating and dismissible surfaces: <code>wui-popover</code>, <code>wui-dropdown</code>, <code>wui-modal</code>, and <code>wui-drawer</code>. Every trigger below is wired with the exact declarative <code>data-wui-*</code> attributes that <code>weoc-ui.js</code> delegates from the head, so the demos open for real with no page script.</div>
         </div>
 
         <div class="wui-callout info">
           <span class="material-symbols-outlined">info</span>
           <div class="wui-callout-body">
             <div class="wui-callout-title">WebEOC XML constraint</div>
-            Boolean attributes must use <code>=""</code> values: <code>data-wui-backdrop="true"</code>, <code>data-wui-dismiss=""</code>. Never bare attributes.
+            Boolean <code>data-wui-*</code> attributes must carry a value: <code>data-wui-backdrop="true"</code>, <code>data-wui-dismiss=""</code>. Bare boolean attributes break WebEOC's XML parser. The demos below use the value form throughout.
           </div>
         </div>
 
-        <!-- ── wui-drawer ─────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">dock_to_right</span>wui-drawer</div>
-          <p class="docs-desc">Full-viewport fixed overlay. Default slides from right. Add <code>.start</code> to slide from left. Add <code>.has-overlay</code> to dim the page. Controlled by <code>WUI.open/close</code> or <code>[data-wui-toggle]</code>.</p>
-
-          <div class="docs-subsection-title">Live demos</div>
-          <div class="docs-example row">
-            <button class="wui-btn primary" data-wui-toggle="#demo-drawer-right">Open Right Drawer</button>
-            <button class="wui-btn outline primary" data-wui-toggle="#demo-drawer-left">Open Left Drawer</button>
-            <button class="wui-btn outline secondary" data-wui-toggle="#demo-drawer-sm">Small Drawer</button>
-            <button class="wui-btn outline secondary" data-wui-toggle="#demo-drawer-lg">Large Drawer</button>
-          </div>
-
-          <pre class="docs-code">&lt;!-- Trigger --&gt;
-&lt;button data-wui-toggle="#my-drawer"&gt;Open Drawer&lt;/button&gt;
-
-&lt;!-- Drawer (place near &lt;/body&gt;) --&gt;
-&lt;div id="my-drawer" class="wui-drawer" data-wui-backdrop="true"&gt;
-  &lt;div class="wui-drawer-panel"&gt;
-    &lt;div class="wui-drawer-header"&gt;
-      &lt;div class="wui-drawer-title"&gt;Drawer Title&lt;/div&gt;
-      &lt;button class="wui-action-btn" data-wui-dismiss=""&gt;
-        &lt;span class="material-symbols-outlined"&gt;close&lt;/span&gt;
-      &lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="wui-drawer-body"&gt;…content…&lt;/div&gt;
-    &lt;div class="wui-drawer-footer"&gt;
-      &lt;button class="wui-btn primary"&gt;Save&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Sizes: .sm (20rem) | default (25rem) | .lg (32rem) | .xl (40rem) --&gt;
-&lt;!-- Direction: default right | .start = left --&gt;
-&lt;!-- Overlay: .has-overlay dims background when .is-open --&gt;</pre>
-        </div>
-
-        <!-- ── wui-modal ───────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">open_in_new</span>wui-modal</div>
-          <p class="docs-desc">Centered dialog. Default 32rem wide. Scales + fades in on open. Backdrop auto-locks scroll when <code>data-wui-backdrop="true"</code>.</p>
-
-          <div class="docs-subsection-title">Live demos</div>
-          <div class="docs-example row">
-            <button class="wui-btn primary" data-wui-toggle="#demo-modal">Open Modal</button>
-            <button class="wui-btn outline primary" data-wui-toggle="#demo-modal-sm">Small</button>
-            <button class="wui-btn outline primary" data-wui-toggle="#demo-modal-lg">Large</button>
-          </div>
-
-          <pre class="docs-code">&lt;!-- Trigger --&gt;
-&lt;button data-wui-toggle="#my-modal"&gt;Open Modal&lt;/button&gt;
-
-&lt;!-- Modal (place near &lt;/body&gt;) --&gt;
-&lt;div id="my-modal" class="wui-modal" data-wui-backdrop="true"&gt;
-  &lt;div class="wui-modal-dialog"&gt;
-    &lt;div class="wui-modal-header"&gt;
-      &lt;div class="wui-modal-title"&gt;Confirm Action&lt;/div&gt;
-      &lt;button class="wui-modal-close" data-wui-dismiss=""&gt;
-        &lt;span class="material-symbols-outlined"&gt;close&lt;/span&gt;
-      &lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="wui-modal-body"&gt;
-      Are you sure you want to proceed?
-    &lt;/div&gt;
-    &lt;div class="wui-modal-footer"&gt;
-      &lt;button class="wui-btn ghost secondary" data-wui-dismiss=""&gt;Cancel&lt;/button&gt;
-      &lt;button class="wui-btn danger"&gt;Confirm&lt;/button&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Sizes: .sm (24rem) | default (32rem) | .lg (44rem) | .xl (60rem) --&gt;</pre>
-        </div>
-
-        <!-- ── wui-popover ─────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-popover ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">open_in_browser</span>wui-popover</div>
-          <p class="docs-desc">Floating contextual panel positioned near a trigger. Contains a menu list with <code>wui-pop-actions</code> + <code>wui-pop-btn</code> items.</p>
+          <p class="docs-desc">Floating contextual panel anchored to a trigger. It is <code>display:none</code> until <code>weoc-ui.js</code> adds the reveal class named by <code>data-wui-open-class="show"</code>. No backdrop, so a click anywhere outside the panel closes it. Wrap items in <code>wui-pop-actions</code>; each row is a <code>wui-pop-btn</code>.</p>
 
-          <div class="docs-subsection-title">Action menu popover</div>
-          <p class="docs-desc">Driven entirely by data-attributes (no JS): <code>data-wui-toggle="#id"</code> on the trigger; on the target, <code>data-wui-open-class="show"</code> (the class WUI adds to reveal it), <code>data-wui-anchor="bottom-end"</code> (WUI positions it relative to the trigger), and <code>data-wui-dismiss=""</code> on the inner wrapper (any item click closes it).</p>
-          <div class="docs-example centered" style="min-height:120px">
-            <button class="wui-btn outline secondary wui-btn-sm" data-wui-toggle="#demo-pop">
-              <span class="material-symbols-outlined">more_vert</span> Actions
-            </button>
-            <div id="demo-pop" class="wui-popover"
-                 data-wui-open-class="show"
-                 data-wui-anchor="bottom-end">
-              <div class="wui-pop-actions" data-wui-dismiss="">
-                <button class="wui-pop-btn"><span class="material-symbols-outlined">edit</span> Edit Record</button>
-                <button class="wui-pop-btn"><span class="material-symbols-outlined">visibility</span> View Details</button>
-                <button class="wui-pop-btn warning"><span class="material-symbols-outlined">flag</span> Flag</button>
-                <button class="wui-pop-btn danger"><span class="material-symbols-outlined">delete</span> Delete</button>
+          <div class="docs-subsection-title">Action menu — click to open</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Trigger -->
+              <button class="wui-btn outline secondary wui-btn-sm" data-wui-toggle="#demo-pop">
+                <span class="material-symbols-outlined">more_vert</span> Actions
+              </button>
+              <!-- Popover target: open-class + anchor drive positioning; dismiss on any item click -->
+              <div id="demo-pop" class="wui-popover" data-wui-open-class="show" data-wui-anchor="bottom-end">
+                <div class="wui-pop-actions" data-wui-dismiss="">
+                  <button class="wui-pop-btn"><span class="material-symbols-outlined">edit</span> Edit Record</button>
+                  <button class="wui-pop-btn"><span class="material-symbols-outlined">visibility</span> View Details</button>
+                  <button class="wui-pop-btn warning"><span class="material-symbols-outlined">flag</span> Flag</button>
+                  <button class="wui-pop-btn danger"><span class="material-symbols-outlined">delete</span> Delete</button>
+                </div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;!-- Trigger --&gt;
-&lt;button data-wui-toggle="#my-pop"&gt;Actions&lt;/button&gt;
 
-&lt;!-- Target: open-class + anchor + dismiss drive the whole thing --&gt;
-&lt;div id="my-pop" class="wui-popover"
-     data-wui-open-class="show"      &lt;!-- class WUI adds to reveal --&gt;
-     data-wui-anchor="bottom-end"&gt;   &lt;!-- side-align: top/bottom/left/right + start/center/end --&gt;
-  &lt;div class="wui-pop-actions" data-wui-dismiss=""&gt;   &lt;!-- click any item → close --&gt;
-    &lt;button class="wui-pop-btn"&gt;
-      &lt;span class="material-symbols-outlined"&gt;edit&lt;/span&gt; Edit
-    &lt;/button&gt;
-    &lt;button class="wui-pop-btn danger"&gt;
-      &lt;span class="material-symbols-outlined"&gt;delete&lt;/span&gt; Delete
-    &lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;!-- wui-pop-btn colors: (default) | primary | warning | danger | success --&gt;</pre>
+          <div class="docs-subsection-title">wui-pop-btn — all color variants</div>
+          <p class="docs-desc">The item color tints its label and icon. Available: default (neutral), <code>primary</code>, <code>secondary</code>, <code>success</code>, <code>warning</code>, <code>info</code>, <code>danger</code>. Shown here inside a statically-revealed popover (<code>show</code> class hard-coded) so all rows are visible at once.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-popover show" style="position:relative;z-index:auto;min-width:200px">
+                <div class="wui-pop-actions">
+                  <!-- Default (neutral) -->
+                  <button class="wui-pop-btn"><span class="material-symbols-outlined">edit</span> Default</button>
+                  <!-- Primary -->
+                  <button class="wui-pop-btn primary"><span class="material-symbols-outlined">star</span> Primary</button>
+                  <!-- Secondary -->
+                  <button class="wui-pop-btn secondary"><span class="material-symbols-outlined">more_horiz</span> Secondary</button>
+                  <!-- Success -->
+                  <button class="wui-pop-btn success"><span class="material-symbols-outlined">check</span> Success</button>
+                  <!-- Warning -->
+                  <button class="wui-pop-btn warning"><span class="material-symbols-outlined">flag</span> Warning</button>
+                  <!-- Info -->
+                  <button class="wui-pop-btn info"><span class="material-symbols-outlined">info</span> Info</button>
+                  <!-- Danger -->
+                  <button class="wui-pop-btn danger"><span class="material-symbols-outlined">delete</span> Danger</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- ── wui-dropdown ────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-dropdown ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">arrow_drop_down_circle</span>wui-dropdown</div>
-          <p class="docs-desc">Select-like dropdown with a styled item list. Positioned relative to its wrapper. Toggle via <code>[data-wui-toggle]</code>; items can have icons.</p>
+          <p class="docs-desc">Select-like menu that lives inside a <code>wui-dropdown-wrap</code> so trigger and menu stay grouped. Same three target attributes as the popover: <code>data-wui-open-class="show"</code>, <code>data-wui-anchor="bottom-end"</code>, and <code>data-wui-dismiss=""</code> (picking an item closes it). Rows are <code>wui-dropdown-item</code>; an optional <code>wui-dropdown-item-icon</code> leads each row. An optional <code>wui-dropdown-arrow</code> points back at the trigger.</p>
 
-          <p class="docs-desc">Same three target attributes as the popover. Live inside a <code>wui-dropdown-wrap</code> so the trigger and menu stay grouped; <code>data-wui-dismiss=""</code> on the menu closes it when an item is picked.</p>
-          <div class="docs-example centered" style="min-height:120px">
-            <div class="wui-dropdown-wrap" style="width:220px">
-              <button class="wui-btn outline secondary" style="width:100%;justify-content:space-between" data-wui-toggle="#demo-dropdown">
-                Select a filter…
-                <span class="material-symbols-outlined wui-dropdown-arrow">expand_more</span>
-              </button>
-              <div id="demo-dropdown" class="wui-dropdown"
-                   data-wui-open-class="show"
-                   data-wui-anchor="bottom-end"
-                   data-wui-dismiss="">
-                <div class="wui-dropdown-item">
-                  <span class="wui-dropdown-item-icon material-symbols-outlined">check_circle</span>
-                  All incidents
-                </div>
-                <div class="wui-dropdown-item danger">
-                  <span class="wui-dropdown-item-icon material-symbols-outlined">warning</span>
-                  Critical only
-                </div>
-                <div class="wui-dropdown-item warning">
-                  <span class="wui-dropdown-item-icon material-symbols-outlined">priority_high</span>
-                  High priority
-                </div>
-                <div class="wui-dropdown-item success">
-                  <span class="wui-dropdown-item-icon material-symbols-outlined">done_all</span>
-                  Resolved
+          <div class="docs-subsection-title">Filter menu — click to open</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-dropdown-wrap" style="width:220px">
+                <!-- Trigger -->
+                <button class="wui-btn outline secondary" style="width:100%;justify-content:space-between" data-wui-toggle="#demo-dropdown">
+                  Select a filter…
+                  <span class="material-symbols-outlined">expand_more</span>
+                </button>
+                <!-- Menu target -->
+                <div id="demo-dropdown" class="wui-dropdown" data-wui-open-class="show" data-wui-anchor="bottom-end" data-wui-dismiss="">
+                  <div class="wui-dropdown-arrow"></div>
+                  <div class="wui-dropdown-item">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">check_circle</span>
+                    All incidents
+                  </div>
+                  <div class="wui-dropdown-item danger">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">warning</span>
+                    Critical only
+                  </div>
+                  <div class="wui-dropdown-item warning">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">priority_high</span>
+                    High priority
+                  </div>
+                  <div class="wui-dropdown-item success">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">done_all</span>
+                    Resolved
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-dropdown-wrap"&gt;
-  &lt;button data-wui-toggle="#my-drop"&gt;
-    Select… &lt;span class="wui-dropdown-arrow material-symbols-outlined"&gt;expand_more&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;div id="my-drop" class="wui-dropdown"
-       data-wui-open-class="show"
-       data-wui-anchor="bottom-end"
-       data-wui-dismiss=""&gt;
-    &lt;div class="wui-dropdown-item"&gt;Option A&lt;/div&gt;
-    &lt;div class="wui-dropdown-item danger"&gt;
-      &lt;span class="wui-dropdown-item-icon material-symbols-outlined"&gt;warning&lt;/span&gt;
-      Danger option
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title">wui-dropdown-item — all color variants</div>
+          <p class="docs-desc">Item colors tint the label and icon and give a matching hover background: default (neutral), <code>primary</code>, <code>secondary</code>, <code>success</code>, <code>warning</code>, <code>info</code>, <code>danger</code>. Shown inside a statically-revealed menu (<code>show</code> hard-coded) so every variant is visible; hover any row to see its state.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-dropdown-wrap" style="width:240px;min-height:340px">
+                <div class="wui-dropdown show" style="position:relative;top:0;box-shadow:none">
+                  <!-- Default (neutral) -->
+                  <div class="wui-dropdown-item">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">list</span>
+                    Default item
+                  </div>
+                  <!-- Primary -->
+                  <div class="wui-dropdown-item primary">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">star</span>
+                    Primary item
+                  </div>
+                  <!-- Secondary -->
+                  <div class="wui-dropdown-item secondary">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">more_horiz</span>
+                    Secondary item
+                  </div>
+                  <!-- Success -->
+                  <div class="wui-dropdown-item success">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">check_circle</span>
+                    Success item
+                  </div>
+                  <!-- Warning -->
+                  <div class="wui-dropdown-item warning">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">priority_high</span>
+                    Warning item
+                  </div>
+                  <!-- Info -->
+                  <div class="wui-dropdown-item info">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">info</span>
+                    Info item
+                  </div>
+                  <!-- Danger -->
+                  <div class="wui-dropdown-item danger">
+                    <span class="wui-dropdown-item-icon material-symbols-outlined">warning</span>
+                    Danger item
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- ── Programmatic API ────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-modal ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">open_in_new</span>wui-modal</div>
+          <p class="docs-desc">Centered dialog that scales and fades in on open. Structure: <code>wui-modal</code> &gt; <code>wui-modal-dialog</code> &gt; <code>wui-modal-header</code> (with <code>wui-modal-title</code> + <code>wui-modal-close</code>), <code>wui-modal-body</code>, and an optional <code>wui-modal-footer</code>. Mark the <code>wui-modal</code> with <code>data-wui-backdrop="true"</code> to dim the page, lock scroll, and trap focus. Open with <code>data-wui-toggle="#id"</code>; close with any <code>data-wui-dismiss=""</code>, a backdrop click, or Esc.</p>
+
+          <div class="docs-subsection-title">Default (md, 32rem) — click to open</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Trigger -->
+              <button class="wui-btn primary" data-wui-toggle="#demo-modal">Open Modal</button>
+              <!-- Modal -->
+              <div id="demo-modal" class="wui-modal" data-wui-backdrop="true">
+                <div class="wui-modal-dialog">
+                  <div class="wui-modal-header">
+                    <span class="wui-modal-title"><span class="material-symbols-outlined">verified</span> Confirm Action</span>
+                    <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-modal-body">
+                    <p style="font-size:var(--text-sm);color:var(--color-text-secondary)">Default 32rem dialog. Scales and fades in. The backdrop dims the page, locks scroll, and traps focus. Press Esc, click the backdrop, or use a dismiss button to close.</p>
+                  </div>
+                  <div class="wui-modal-footer">
+                    <button class="wui-btn ghost secondary" data-wui-dismiss="">Cancel</button>
+                    <button class="wui-btn primary" data-wui-dismiss="">Confirm</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Sizes — sm · md · lg · xl</div>
+          <p class="docs-desc">Width axis on the <code>wui-modal</code>: <code>.sm</code> (24rem), default md (32rem), <code>.lg</code> (44rem), <code>.xl</code> (60rem).</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <button class="wui-btn outline primary" data-wui-toggle="#demo-modal-sm">Small (.sm)</button>
+              <!-- md (default) -->
+              <button class="wui-btn outline primary" data-wui-toggle="#demo-modal-md">Medium (default)</button>
+              <!-- lg -->
+              <button class="wui-btn outline primary" data-wui-toggle="#demo-modal-lg">Large (.lg)</button>
+              <!-- xl -->
+              <button class="wui-btn outline primary" data-wui-toggle="#demo-modal-xl">XL (.xl)</button>
+
+              <!-- sm modal -->
+              <div id="demo-modal-sm" class="wui-modal sm" data-wui-backdrop="true">
+                <div class="wui-modal-dialog">
+                  <div class="wui-modal-header">
+                    <span class="wui-modal-title"><span class="material-symbols-outlined">warning</span> Small (.sm = 24rem)</span>
+                    <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-modal-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">Compact confirm dialogs.</p></div>
+                  <div class="wui-modal-footer">
+                    <button class="wui-btn ghost secondary" data-wui-dismiss="">Cancel</button>
+                    <button class="wui-btn danger" data-wui-dismiss="">Delete</button>
+                  </div>
+                </div>
+              </div>
+              <!-- md modal -->
+              <div id="demo-modal-md" class="wui-modal" data-wui-backdrop="true">
+                <div class="wui-modal-dialog">
+                  <div class="wui-modal-header">
+                    <span class="wui-modal-title"><span class="material-symbols-outlined">open_in_new</span> Medium (default = 32rem)</span>
+                    <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-modal-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">The default size when no size class is present.</p></div>
+                </div>
+              </div>
+              <!-- lg modal -->
+              <div id="demo-modal-lg" class="wui-modal lg" data-wui-backdrop="true">
+                <div class="wui-modal-dialog">
+                  <div class="wui-modal-header">
+                    <span class="wui-modal-title"><span class="material-symbols-outlined">description</span> Large (.lg = 44rem)</span>
+                    <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-modal-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">Larger form dialogs or detail views.</p></div>
+                  <div class="wui-modal-footer">
+                    <button class="wui-btn ghost secondary" data-wui-dismiss="">Cancel</button>
+                    <button class="wui-btn primary" data-wui-dismiss="">Save</button>
+                  </div>
+                </div>
+              </div>
+              <!-- xl modal -->
+              <div id="demo-modal-xl" class="wui-modal xl" data-wui-backdrop="true">
+                <div class="wui-modal-dialog">
+                  <div class="wui-modal-header">
+                    <span class="wui-modal-title"><span class="material-symbols-outlined">grid_view</span> XL (.xl = 60rem)</span>
+                    <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-modal-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">Widest dialog. Good for embedded forms or side-by-side content.</p></div>
+                  <div class="wui-modal-footer">
+                    <button class="wui-btn ghost secondary" data-wui-dismiss="">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Header + body only (no footer)</div>
+          <p class="docs-desc">The <code>wui-modal-footer</code> region is optional; omit it for a lightweight notice.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Trigger -->
+              <button class="wui-btn outline info" data-wui-toggle="#demo-modal-nofoot">Open (no footer)</button>
+              <!-- Modal without footer -->
+              <div id="demo-modal-nofoot" class="wui-modal" data-wui-backdrop="true">
+                <div class="wui-modal-dialog">
+                  <div class="wui-modal-header">
+                    <span class="wui-modal-title"><span class="material-symbols-outlined">info</span> Notice</span>
+                    <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-modal-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">A dialog with just a header and body. Close with the X, the backdrop, or Esc.</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-drawer ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">dock_to_right</span>wui-drawer</div>
+          <p class="docs-desc">Side panel that slides in from an edge. The wrapper <code>wui-drawer</code> carries every axis; children stay bare. Structure: <code>wui-drawer</code> &gt; <code>wui-drawer-panel</code> &gt; <code>wui-drawer-header</code> (with <code>wui-drawer-title</code> + <code>wui-drawer-close</code>), <code>wui-drawer-body</code>, and an optional <code>wui-drawer-footer</code>. Side: default right or <code>.start</code> (left). Size: <code>.sm</code> (20rem), default md (25rem), <code>.lg</code> (32rem), <code>.xl</code> (40rem). Add <code>.has-overlay</code> plus <code>data-wui-backdrop="true"</code> to dim and block the page; without them the drawer floats and the page stays usable. Open with <code>data-wui-toggle="#id"</code>; close with <code>data-wui-dismiss=""</code>, backdrop click, or Esc.</p>
+
+          <div class="docs-subsection-title">Side — right (default) and left (.start)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Right (default) -->
+              <button class="wui-btn primary" data-wui-toggle="#demo-drawer-right">Open Right Drawer</button>
+              <!-- Left (.start) -->
+              <button class="wui-btn outline primary" data-wui-toggle="#demo-drawer-left">Open Left Drawer</button>
+
+              <!-- Right drawer (default side, default md size, has-overlay) -->
+              <div id="demo-drawer-right" class="wui-drawer has-overlay" data-wui-backdrop="true">
+                <div class="wui-drawer-panel">
+                  <div class="wui-drawer-header">
+                    <div class="wui-drawer-title">Right Drawer (default)</div>
+                    <button class="wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-drawer-body">
+                    <p style="font-size:var(--text-sm);color:var(--color-text-secondary)">Slides in from the right at 25rem. Content scrolls inside the body.</p>
+                  </div>
+                  <div class="wui-drawer-footer">
+                    <button class="wui-btn ghost secondary" data-wui-dismiss="">Close</button>
+                    <button class="wui-btn primary">Save</button>
+                  </div>
+                </div>
+              </div>
+              <!-- Left drawer (.start) -->
+              <div id="demo-drawer-left" class="wui-drawer start has-overlay" data-wui-backdrop="true">
+                <div class="wui-drawer-panel">
+                  <div class="wui-drawer-header">
+                    <div class="wui-drawer-title">Left Drawer (.start)</div>
+                    <button class="wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-drawer-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">Slides in from the left via the <code>.start</code> modifier.</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Sizes — sm · md · lg · xl</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <button class="wui-btn outline secondary" data-wui-toggle="#demo-drawer-sm">Small (.sm)</button>
+              <!-- md (default) -->
+              <button class="wui-btn outline secondary" data-wui-toggle="#demo-drawer-md">Medium (default)</button>
+              <!-- lg -->
+              <button class="wui-btn outline secondary" data-wui-toggle="#demo-drawer-lg">Large (.lg)</button>
+              <!-- xl -->
+              <button class="wui-btn outline secondary" data-wui-toggle="#demo-drawer-xl">XL (.xl)</button>
+
+              <!-- sm drawer -->
+              <div id="demo-drawer-sm" class="wui-drawer sm has-overlay" data-wui-backdrop="true">
+                <div class="wui-drawer-panel">
+                  <div class="wui-drawer-header">
+                    <div class="wui-drawer-title">Small Drawer (.sm = 20rem)</div>
+                    <button class="wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-drawer-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">20rem wide.</p></div>
+                </div>
+              </div>
+              <!-- md drawer -->
+              <div id="demo-drawer-md" class="wui-drawer has-overlay" data-wui-backdrop="true">
+                <div class="wui-drawer-panel">
+                  <div class="wui-drawer-header">
+                    <div class="wui-drawer-title">Medium Drawer (default = 25rem)</div>
+                    <button class="wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-drawer-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">25rem wide. The default when no size class is present.</p></div>
+                </div>
+              </div>
+              <!-- lg drawer -->
+              <div id="demo-drawer-lg" class="wui-drawer lg has-overlay" data-wui-backdrop="true">
+                <div class="wui-drawer-panel">
+                  <div class="wui-drawer-header">
+                    <div class="wui-drawer-title">Large Drawer (.lg = 32rem)</div>
+                    <button class="wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-drawer-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">32rem wide.</p></div>
+                </div>
+              </div>
+              <!-- xl drawer -->
+              <div id="demo-drawer-xl" class="wui-drawer xl has-overlay" data-wui-backdrop="true">
+                <div class="wui-drawer-panel">
+                  <div class="wui-drawer-header">
+                    <div class="wui-drawer-title">XL Drawer (.xl = 40rem)</div>
+                    <button class="wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-drawer-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">40rem wide.</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Floating (no overlay)</div>
+          <p class="docs-desc">Omit <code>.has-overlay</code> and <code>data-wui-backdrop</code> so the drawer floats over the page without dimming it, leaving the page usable underneath.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Trigger -->
+              <button class="wui-btn outline info" data-wui-toggle="#demo-drawer-float">Open Floating Drawer</button>
+              <!-- Floating drawer: no .has-overlay, no data-wui-backdrop -->
+              <div id="demo-drawer-float" class="wui-drawer">
+                <div class="wui-drawer-panel">
+                  <div class="wui-drawer-header">
+                    <div class="wui-drawer-title">Floating Drawer</div>
+                    <button class="wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-drawer-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">No backdrop. The page behind stays interactive. Close with the X, an outside click, or Esc.</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Legacy overlays ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">history</span>Legacy overlays</div>
+          <p class="docs-desc">Two older overlay families remain in <code>weoc-overlays.css</code>. Prefer <code>wui-modal</code> and <code>wui-drawer</code> for new work; these are documented for maintenance of existing boards.</p>
+
+          <div class="docs-subsection-title">.modal-overlay / .modal-frame</div>
+          <p class="docs-desc">A bare fixed backdrop (<code>modal-overlay</code>, shown with the <code>.visible</code> class) centering a fixed 720×510 <code>modal-frame</code>. It carries no built-in header, body, or dismiss wiring, so it is toggled by hand rather than by <code>data-wui-*</code>. Rendered statically below; the live overlay would cover the viewport.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Static preview (position relativized so it sits in-flow) -->
+              <div class="modal-overlay visible" style="position:relative;inset:auto;padding:var(--space-4)">
+                <div class="modal-frame" style="width:100%;max-width:480px;height:200px;display:flex;align-items:center;justify-content:center;color:var(--color-text-secondary);font-size:var(--text-sm)">
+                  720×510 modal-frame (scaled down for preview)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">.wui-close-record-modal</div>
+          <p class="docs-desc">A specialized confirm dialog for closing event records: a fixed 480×560 dialog whose body typically hosts a WebEOC <code>embedview</code>. Its overlay (<code>wui-close-record-modal-overlay</code>) is hidden until the <code>.visible</code> class is set. Regions: <code>-header</code> (with <code>-title-wrap</code>, <code>-title</code>, <code>-close-btn</code>) and <code>-body</code>. Shown static below.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-close-record-modal" style="position:relative;height:auto">
+                <div class="wui-close-record-modal-header">
+                  <div class="wui-close-record-modal-title-wrap">
+                    <span class="material-symbols-outlined">warning</span>
+                    <span class="wui-close-record-modal-title">Close Record?</span>
+                  </div>
+                  <button class="wui-close-record-modal-close-btn" data-wui-dismiss="true"><span class="material-symbols-outlined">close</span></button>
+                </div>
+                <div class="wui-close-record-modal-body" style="padding:var(--space-5);height:auto;font-size:var(--text-sm);color:var(--color-text-secondary)">
+                  Embedded close-record form (<code>embedview</code>) renders here.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ JS API ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">code</span>Overlay JS API</div>
-          <pre class="docs-code">// Open / close / toggle any overlay by element reference
-WUI.open(panelEl, triggerEl)
-WUI.close(panelEl)
-WUI.toggle(panelEl, triggerEl)
-
-// Events fired on the panel element
-panelEl.addEventListener('wui:open', e =&gt; { /* e.detail.trigger */ })
-panelEl.addEventListener('wui:close', e =&gt; { })
-
-// WUI.anchor — position a floating element near a trigger
-WUI.anchor(floatingEl, triggerEl, {
-  side: 'bottom',      // 'top' | 'bottom' | 'left' | 'right'
-  align: 'start',      // 'start' | 'center' | 'end'
-  gap: 8,              // px offset from trigger
-  margin: 8            // px from viewport edge
-})</pre>
-        </div>
-
-        <!-- ── wui-close-record-modal ───────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">cancel</span>wui-close-record-modal</div>
-          <p class="docs-desc">A specialized confirm dialog for closing event records (the body typically hosts a WebEOC <code>embedview</code>). Its overlay is <code>display:none</code> until <code>visible</code> is set. Distinct from the generic <code>wui-modal</code> above — fixed 480×560 dialog tuned for an embedded close-form.</p>
-          <div class="docs-example centered">
-            <div class="wui-close-record-modal" style="position:relative">
-              <div class="wui-close-record-modal-header">
-                <div class="wui-close-record-modal-title-wrap">
-                  <span class="material-symbols-outlined">warning</span>
-                  <span class="wui-close-record-modal-title">Close Record?</span>
+          <p class="docs-desc">Everything above is declarative and needs no page script. For programmatic control, <code>weoc-ui.js</code> exposes the same primitives that the <code>data-wui-*</code> handlers call internally.</p>
+          <div class="wui-demo center" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <button class="wui-btn primary" id="api-open-btn">Open via WUI.open()</button>
+              <div id="api-modal" class="wui-modal" data-wui-backdrop="true">
+                <div class="wui-modal-dialog">
+                  <div class="wui-modal-header">
+                    <span class="wui-modal-title"><span class="material-symbols-outlined">terminal</span> Opened by script</span>
+                    <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
+                  </div>
+                  <div class="wui-modal-body"><p style="font-size:var(--text-sm);color:var(--color-text-secondary)">This dialog was opened with <code>WUI.open()</code> and listens for <code>wui:open</code> / <code>wui:close</code>. Dismiss buttons, the backdrop, and Esc still work.</p></div>
+                  <div class="wui-modal-footer">
+                    <button class="wui-btn primary" data-wui-dismiss="">Done</button>
+                  </div>
                 </div>
-                <button class="wui-close-record-modal-close-btn" data-wui-dismiss="true"><span class="material-symbols-outlined">close</span></button>
-              </div>
-              <div class="wui-close-record-modal-body" style="padding:var(--space-5);font-size:var(--text-sm);color:var(--color-text-ui)">
-                Embedded close-record form (<code>embedview</code>) renders here.
               </div>
             </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-close-record-modal-overlay" data-wui-backdrop="true"&gt;
-  &lt;div class="wui-close-record-modal"&gt;
-    &lt;div class="wui-close-record-modal-header"&gt;
-      &lt;div class="wui-close-record-modal-title-wrap"&gt;
-        &lt;span class="material-symbols-outlined"&gt;warning&lt;/span&gt;
-        &lt;span class="wui-close-record-modal-title"&gt;Close Record?&lt;/span&gt;
-      &lt;/div&gt;
-      &lt;button class="wui-close-record-modal-close-btn" data-wui-dismiss="true"&gt;
-        &lt;span class="material-symbols-outlined"&gt;close&lt;/span&gt;
-      &lt;/button&gt;
-    &lt;/div&gt;
-    &lt;div class="wui-close-record-modal-body"&gt;
-      &lt;embedview src="…"&gt;&lt;/embedview&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
-          <div class="wui-callout warning">
-            <span class="material-symbols-outlined">warning</span>
-            <div class="wui-callout-body">
-              <div class="wui-callout-title">Boolean data-wui-* attributes use the value form</div>
-              <code>data-wui-backdrop="true"</code> and <code>data-wui-dismiss="true"</code> — WebEOC's XML parser rejects bare boolean attributes.
-            </div>
+            <template class="wui-demo-js">
+var panel = document.getElementById('api-modal');
+var trigger = document.getElementById('api-open-btn');
+
+// Open / close / toggle any overlay by element reference
+trigger.addEventListener('click', function () {
+  WUI.open(panel, trigger);   // or WUI.toggle(panel, trigger)
+});
+
+// Events fire on the panel element
+panel.addEventListener('wui:open', function (e) {
+  console.log('opened by', e.detail && e.detail.trigger);
+});
+panel.addEventListener('wui:close', function () {
+  console.log('closed');
+});
+
+// WUI.anchor positions a floating element near a trigger:
+// WUI.anchor(floatingEl, triggerEl, { side: 'bottom', align: 'end', gap: 8, margin: 8 })
+            </template>
           </div>
         </div>
 
-      </div>
-    </div>
-  </div>
-
-  <!-- Demo drawers (live) -->
-  <div id="demo-drawer-right" class="wui-drawer has-overlay" data-wui-backdrop="true">
-    <div class="wui-drawer-panel">
-      <div class="wui-drawer-header">
-        <div class="wui-drawer-title">Right Drawer (Default)</div>
-        <button class="wui-action-btn wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <div class="wui-drawer-body">
-        <p style="font-size:var(--text-sm);color:var(--color-secondary-text)">Slides in from the right. 25rem wide by default. Content scrolls inside.</p>
-        <div class="wui-info-grid" style="margin-top:var(--space-4)">
-          <div class="wui-info-item"><div class="wui-info-label">Size</div><div class="wui-info-value">25rem (default)</div></div>
-          <div class="wui-info-item"><div class="wui-info-label">Direction</div><div class="wui-info-value">Right (default)</div></div>
-        </div>
-      </div>
-      <div class="wui-drawer-footer">
-        <button class="wui-btn ghost secondary" data-wui-dismiss="">Close</button>
-        <button class="wui-btn primary">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="demo-drawer-left" class="wui-drawer start has-overlay" data-wui-backdrop="true">
-    <div class="wui-drawer-panel">
-      <div class="wui-drawer-header">
-        <div class="wui-drawer-title">Left Drawer (.start)</div>
-        <button class="wui-action-btn wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <div class="wui-drawer-body"><p style="font-size:var(--text-sm);color:var(--color-secondary-text)">Slides in from the left via .start modifier.</p></div>
-    </div>
-  </div>
-
-  <div id="demo-drawer-sm" class="wui-drawer sm has-overlay" data-wui-backdrop="true">
-    <div class="wui-drawer-panel">
-      <div class="wui-drawer-header">
-        <div class="wui-drawer-title">Small Drawer (.sm)</div>
-        <button class="wui-action-btn wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <div class="wui-drawer-body"><p style="font-size:var(--text-sm);color:var(--color-secondary-text)">20rem wide.</p></div>
-    </div>
-  </div>
-
-  <div id="demo-drawer-lg" class="wui-drawer lg has-overlay" data-wui-backdrop="true">
-    <div class="wui-drawer-panel">
-      <div class="wui-drawer-header">
-        <div class="wui-drawer-title">Large Drawer (.lg)</div>
-        <button class="wui-action-btn wui-drawer-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <div class="wui-drawer-body"><p style="font-size:var(--text-sm);color:var(--color-secondary-text)">32rem wide.</p></div>
-    </div>
-  </div>
-
-  <!-- Demo modals -->
-  <div id="demo-modal" class="wui-modal" data-wui-backdrop="true">
-    <div class="wui-modal-dialog">
-      <div class="wui-modal-header">
-        <div class="wui-modal-title">Default Modal (32rem)</div>
-        <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <div class="wui-modal-body">
-        <p style="font-size:var(--text-sm);color:var(--color-secondary-text)">Modal body content. Scales + fades in. Backdrop locks scroll.</p>
-      </div>
-      <div class="wui-modal-footer">
-        <button class="wui-btn ghost secondary" data-wui-dismiss="">Cancel</button>
-        <button class="wui-btn primary" data-wui-dismiss="">Confirm</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="demo-modal-sm" class="wui-modal sm" data-wui-backdrop="true">
-    <div class="wui-modal-dialog">
-      <div class="wui-modal-header">
-        <div class="wui-modal-title">Small Modal (.sm = 24rem)</div>
-        <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <div class="wui-modal-body"><p style="font-size:var(--text-sm);color:var(--color-secondary-text)">Compact confirm dialogs.</p></div>
-      <div class="wui-modal-footer">
-        <button class="wui-btn ghost secondary" data-wui-dismiss="">Cancel</button>
-        <button class="wui-btn danger" data-wui-dismiss="">Delete</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="demo-modal-lg" class="wui-modal lg" data-wui-backdrop="true">
-    <div class="wui-modal-dialog">
-      <div class="wui-modal-header">
-        <div class="wui-modal-title">Large Modal (.lg = 44rem)</div>
-        <button class="wui-modal-close" data-wui-dismiss=""><span class="material-symbols-outlined">close</span></button>
-      </div>
-      <div class="wui-modal-body"><p style="font-size:var(--text-sm);color:var(--color-secondary-text)">Larger form dialogs or detail views.</p></div>
-      <div class="wui-modal-footer">
-        <button class="wui-btn ghost secondary" data-wui-dismiss="">Cancel</button>
-        <button class="wui-btn primary" data-wui-dismiss="">Save</button>
       </div>
     </div>
   </div>

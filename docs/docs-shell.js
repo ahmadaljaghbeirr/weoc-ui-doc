@@ -1,59 +1,110 @@
 (function () {
   'use strict';
 
+  /* Mantine-aligned IA. `kw` = search keywords (component names / synonyms).
+     Content-level page rebuilds + new dedicated pages (combobox, dates, …) land
+     in phase 2c; for now existing pages are regrouped under the new categories. */
   var NAV = [
     {
-      group: 'Getting Started',
+      group: 'Get Started',
       items: [
-        { key: 'home', label: 'Introduction', file: null }
+        { key: 'home', label: 'Introduction', file: null, kw: 'intro overview install getting started load order' },
+        { key: 'motion', label: 'Animation', file: 'motion.html', kw: 'gsap transition motion weoc-anim ring counter bar' },
+        { key: 'js-api', label: 'JS API', file: 'js-api.html', kw: 'WUI api events theme declarative attributes overlay' },
+        { key: 'lists', label: 'EOC Lists', file: 'lists.html', kw: 'lists registry cascading tree flat select data' }
       ]
     },
     {
-      group: 'Foundations',
+      group: 'Theming',
       items: [
-        { key: 'tokens', label: 'Design Tokens', file: 'tokens.html' },
-        { key: 'typography', label: 'Typography', file: 'typography.html' },
-        { key: 'grid', label: 'Grid & Flex', file: 'grid.html' }
+        { key: 'tokens', label: 'Design Tokens', file: 'tokens.html', kw: 'tokens color spacing radius shadow theme palette dark light' },
+        { key: 'tier-colors', label: 'Tier Colors', file: 'tier-colors.html', kw: 'tier activation 1 2 3 4 emergency accent' }
       ]
     },
     {
-      group: 'Components',
+      group: 'Layout',
       items: [
-        { key: 'interactive', label: 'Interactive', file: 'interactive.html' },
-        { key: 'indicators', label: 'Indicators', file: 'indicators.html' },
-        { key: 'cards', label: 'Cards & Forms', file: 'cards.html' },
-        { key: 'forms', label: 'Forms', file: 'forms.html' },
-        { key: 'tinymce', label: 'Rich Text', file: 'tinymce.html' },
-        { key: 'containers', label: 'Containers', file: 'containers.html' },
-        { key: 'layout', label: 'Layout', file: 'layout.html' },
-        { key: 'tables', label: 'Tables', file: 'tables.html' },
-        { key: 'navigation', label: 'Navigation', file: 'navigation.html' },
-        { key: 'overlays', label: 'Overlays', file: 'overlays.html' },
-        { key: 'calendar', label: 'Calendar', file: 'calendar.html' },
-        { key: 'feedback', label: 'Feedback', file: 'feedback.html' },
-        { key: 'progress', label: 'Progress', file: 'progress.html' },
-        { key: 'charts', label: 'Charts', file: 'charts.html' },
-        { key: 'maps', label: 'Maps', file: 'maps.html' },
-        { key: 'tier-colors', label: 'Tier Colors', file: 'tier-colors.html' }
+        { key: 'layout', label: 'Layout & Shell', file: 'layout.html', kw: 'appshell page-shell split splitter scroll-area toolbar tab widget dashboard fill-area body-shell' },
+        { key: 'grid', label: 'Grid & Flex', file: 'grid.html', kw: 'grid flex container row col group stack simplegrid gap space bento' }
       ]
     },
     {
-      group: 'Reference',
+      group: 'Inputs',
       items: [
-        { key: 'js-api', label: 'JS API', file: 'js-api.html' },
-        { key: 'lists', label: 'EOC Lists', file: 'lists.html' }
+        { key: 'forms', label: 'Text Inputs & Fields', file: 'forms.html', kw: 'textinput input textarea fieldset field-row form-control readonly label' },
+        { key: 'cards', label: 'Controls', file: 'cards.html', kw: 'checkbox radio switch slider segmented card-option card-group toggle' }
       ]
     },
     {
-      group: 'Recipes',
+      group: 'Combobox',
       items: [
-        { key: 'motion', label: 'Animation', file: 'motion.html' }
+        { key: 'combobox', label: 'Select (TomSelect)', file: 'combobox.html', kw: 'select combobox multiselect autocomplete tags tomselect dropdown pill' }
+      ]
+    },
+    {
+      group: 'Buttons',
+      items: [
+        { key: 'buttons', label: 'Buttons', file: 'buttons.html', kw: 'button btn fab floating action actionicon icon-only extended' }
+      ]
+    },
+    {
+      group: 'Navigation',
+      items: [
+        { key: 'navigation', label: 'Navigation', file: 'navigation.html', kw: 'tabs anchor link band header hdr banner breadcrumbs stepper' }
+      ]
+    },
+    {
+      group: 'Feedback',
+      items: [
+        { key: 'feedback', label: 'Feedback', file: 'feedback.html', kw: 'alert callout banner alarm skeleton empty-state loader spinner notification' },
+        { key: 'progress', label: 'Progress', file: 'progress.html', kw: 'progress bar ring semicircle segmented percentage' }
+      ]
+    },
+    {
+      group: 'Overlays',
+      items: [
+        { key: 'overlays', label: 'Overlays', file: 'overlays.html', kw: 'modal dialog drawer popover dropdown menu tooltip overlay' }
+      ]
+    },
+    {
+      group: 'Data Display',
+      items: [
+        { key: 'containers', label: 'Cards & Containers', file: 'containers.html', kw: 'card paper plane panel embed collapsible accordion person info-grid datalist' },
+        { key: 'interactive', label: 'Badges & Chips', file: 'interactive.html', kw: 'badge chip pill label tag' },
+        { key: 'indicators', label: 'Indicators', file: 'indicators.html', kw: 'avatar status-dot indicator icon-bubble themeicon level elapsed' },
+        { key: 'tables', label: 'Tables', file: 'tables.html', kw: 'table standard cards log row column sticky sortable' }
+      ]
+    },
+    {
+      group: 'Dates',
+      items: [
+        { key: 'dates', label: 'Date & Time (Flatpickr)', file: 'dates.html', kw: 'date datepicker datetime time range flatpickr calendar input' }
+      ]
+    },
+    {
+      group: 'Charts',
+      items: [
+        { key: 'charts', label: 'Charts', file: 'charts.html', kw: 'chart line area bar stepped pie donut uplot timeseries' }
+      ]
+    },
+    {
+      group: 'Schedule',
+      items: [
+        { key: 'calendar', label: 'Calendar', file: 'calendar.html', kw: 'calendar month week day agenda event schedule' }
+      ]
+    },
+    {
+      group: 'Typography',
+      items: [
+        { key: 'typography', label: 'Typography', file: 'typography.html', kw: 'text title heading truncate weight size color mono' },
+        { key: 'tinymce', label: 'Rich Text', file: 'tinymce.html', kw: 'tinymce editor rich text wysiwyg content' }
       ]
     },
     {
       group: 'Patterns',
       items: [
-        { key: 'views', label: 'Board Views', file: 'views.html' }
+        { key: 'views', label: 'Board Views', file: 'views.html', kw: 'display input details remove board view scaffold zone' },
+        { key: 'maps', label: 'Maps', file: 'maps.html', kw: 'map esri basemap point popover controls location' }
       ]
     }
   ];
@@ -202,6 +253,12 @@
             '</a>' +
           '</div>' +
           '<div class="wui-hdr-right">' +
+            '<div class="docs-search">' +
+              '<span class="material-symbols-outlined docs-search-icon">search</span>' +
+              '<input id="docs-search" type="text" class="docs-search-input" placeholder="Search components…" autocomplete="off" spellcheck="false">' +
+              '<span class="docs-search-kbd">Ctrl K</span>' +
+              '<div id="docs-search-results" class="docs-search-results"></div>' +
+            '</div>' +
             '<span class="docs-version wui-badge bordered secondary">v1.0</span>' +
             swatchHtml +
             '<button class="wui-btn ghost secondary wui-btn-sm" data-wui-theme-toggle title="Toggle theme">' +
@@ -288,7 +345,7 @@
     // content_css / iframe theming is applied in PAGE_INIT.tinymce.
     if (!window.tinymce)     jobs.push(loadScript(root + 'vendor/tinymce-8.6.0/tinymce.min.js'));
     if (!window.gsap)        jobs.push(loadScript(shared + 'JS/gsap.min.js'));
-    if (!window.barba)       jobs.push(loadScript(root + 'vendor/barba.min.js'));
+    /* Barba removed — navigation is now the Alpine-driven fetch/swap router below. */
     if (!window.WUICalendar) jobs.push(loadScript(shared + 'JS/weoc-calendar.js'));
     if (!window.TomSelect)   jobs.push(loadScript(shared + 'JS/tom-select.complete.min.js'));
     if (!window.flatpickr)   jobs.push(loadScript(shared + 'JS/flatpickr.min.js'));
@@ -342,9 +399,11 @@
       var el = document.getElementById('theme-display');
       if (el && window.WUI) el.textContent = window.WUI.getTheme();
     },
-    forms: function () {
+    // forms.html is CSS-only (weoc-forms.css) — no PAGE_INIT needed.
+    // TomSelect moved to PAGE_INIT.combobox, Flatpickr to PAGE_INIT.dates.
+    combobox: function () {
       if (window.TomSelectFactory) {
-        // Register person renderer BEFORE init so data-render="DocsPersonTmpl" resolves
+        // Custom renderer — register BEFORE init so data-render="DocsPersonTmpl" resolves.
         TomSelectFactory.registerTemplate('DocsPersonTmpl', {
           option: function (data) {
             return '<div class="ts-person-option">' +
@@ -355,31 +414,53 @@
           },
           item: function (data) { return '<div>' + data.text + '</div>'; }
         });
-        TomSelectFactory.init();
-        var rdTs = TomSelectFactory.get('demo-ts-readonly');
-        if (rdTs) rdTs.wrapper.classList.add('is-readonly');
-      }
-      if (window.FlatpickrFactory) {
-        FlatpickrFactory.init();
-      }
-      // Dependent select demo: rebuild child options when parent changes
-      window.docsFilterChild = function (value) {
-        var child = document.getElementById('demo-ts-child');
-        if (!child) return;
-        var map = {
-          hazmat: [['chem-spill', 'Chemical Spill'], ['radiation', 'Radiation'], ['gas-leak', 'Gas Leak']],
-          fire:   [['structure', 'Structure Fire'], ['wildfire', 'Wildfire'], ['vehicle', 'Vehicle Fire']],
-          flood:  [['flash', 'Flash Flood'], ['river', 'River Flood'], ['storm', 'Storm Surge']]
+
+        // Dependent select: rebuild child options from the parent value, then resync.
+        window.docsFilterChild = function (value) {
+          var child = document.getElementById('cb-child');
+          if (!child) return;
+          var map = {
+            hazmat: [['chem-spill', 'Chemical Spill'], ['radiation', 'Radiation'], ['gas-leak', 'Gas Leak']],
+            fire:   [['structure', 'Structure Fire'], ['wildfire', 'Wildfire'], ['vehicle', 'Vehicle Fire']],
+            flood:  [['flash', 'Flash Flood'], ['river', 'River Flood'], ['storm', 'Storm Surge']]
+          };
+          var pairs = map[value] || [];
+          while (child.options.length > 1) child.remove(1);
+          pairs.forEach(function (p) {
+            var o = document.createElement('option');
+            o.value = p[0]; o.text = p[1]; child.appendChild(o);
+          });
+          var ts = TomSelectFactory.get('cb-child');
+          if (ts) { ts.clearOptions(); ts.sync(); ts.clear(true); }
         };
-        var pairs = map[value] || [];
-        while (child.options.length > 1) child.remove(1);
-        pairs.forEach(function (p) {
-          var o = document.createElement('option');
-          o.value = p[0]; o.text = p[1]; child.appendChild(o);
-        });
-        var ts = TomSelectFactory.get('demo-ts-child');
-        if (ts) { ts.clearOptions(); ts.sync(); ts.clear(true); }
-      };
+
+        // Change-callback readout.
+        window.docsLevelChange = function (value) {
+          var out = document.getElementById('cb-onchange-out');
+          if (out) out.textContent = value || 'none';
+        };
+
+        // Binds every select.tomselect on the page (single, multi, tags, remote,
+        // optgroups, person renderer, parent/child, slots, on-change, dropdown-parent,
+        // disabled, readonly). mountDropdownSlots + wireDependentSelect run inside init.
+        TomSelectFactory.init();
+
+        // Readonly is a post-init class on the wrapper.
+        var rd = TomSelectFactory.get('cb-readonly');
+        if (rd && rd.wrapper) rd.wrapper.classList.add('is-readonly');
+      }
+    },
+    dates: function () {
+      if (!window.FlatpickrFactory) return;
+      // Binds every [data-fp-preset] input in the page; skips already-inited ones.
+      // Re-runs after each SPA swap because runPageInit(ns) calls PAGE_INIT[ns].
+      FlatpickrFactory.init();
+      // Readonly display demo: lock it so it renders a value but never opens.
+      var ro = document.getElementById('fp-readonly');
+      if (ro && ro._flatpickr) {
+        ro.classList.add('is-readonly');
+        ro._flatpickr.set('clickOpens', false);
+      }
     },
     tinymce: function () {
       if (!window.tinymce) return;
@@ -906,7 +987,149 @@
     }
   };
 
+  /* ── wui-demo: single-source live example + code ──────────────────────────
+     The .wui-demo-preview holds the LIVE markup (the source of truth). We read
+     its innerHTML and render it as the Markup code box, so the code shown is
+     exactly what produced the preview — they cannot drift. An optional
+     <template class="wui-demo-js"> becomes a JavaScript box; data-wui-demo-run
+     also executes it, so JS demos are single-source too. Idempotent. */
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+  }
+  function dedent(s) {
+    var lines = s.replace(/\t/g, '  ').replace(/^\n+/, '').replace(/\s+$/, '').split('\n');
+    var min = Infinity;
+    for (var i = 0; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      var lead = lines[i].match(/^ */)[0].length;
+      if (lead < min) min = lead;
+    }
+    if (!isFinite(min)) min = 0;
+    for (var j = 0; j < lines.length; j++) lines[j] = lines[j].slice(min);
+    return lines.join('\n');
+  }
+  function codeBox(label, icon, codeText) {
+    var wrap = document.createElement('div');
+    var bar = document.createElement('div');
+    bar.className = 'wui-demo-codebar';
+    bar.innerHTML =
+      '<span class="wui-demo-codelabel"><span class="material-symbols-outlined">' +
+        icon + '</span>' + label + '</span>' +
+      '<button class="wui-demo-copy" type="button" data-demo-copy>' +
+        '<span class="material-symbols-outlined">content_copy</span>Copy</button>';
+    var pre = document.createElement('pre');
+    pre.className = 'docs-code';
+    pre.textContent = codeText;            // textContent = safe, exact
+    wrap.appendChild(bar);
+    wrap.appendChild(pre);
+    return wrap;
+  }
+  /* Two+ code boxes (Markup + JavaScript) rendered as tabs, so the demo doesn't
+     become a long scroll. One shared copy button copies the active pane. */
+  function tabbedCode(boxes) {
+    var wrap = document.createElement('div');
+    wrap.className = 'wui-demo-tabbed';
+    var tabs = '';
+    for (var i = 0; i < boxes.length; i++) {
+      tabs += '<button type="button" class="wui-demo-tab' + (i === 0 ? ' is-active' : '') +
+        '" data-demo-tab="' + i + '"><span class="material-symbols-outlined">' +
+        boxes[i].icon + '</span>' + boxes[i].label + '</button>';
+    }
+    var bar = document.createElement('div');
+    bar.className = 'wui-demo-tabbar';
+    bar.innerHTML = '<div class="wui-demo-tablist">' + tabs + '</div>' +
+      '<button class="wui-demo-copy" type="button" data-demo-copy>' +
+      '<span class="material-symbols-outlined">content_copy</span>Copy</button>';
+    wrap.appendChild(bar);
+    for (var j = 0; j < boxes.length; j++) {
+      var pre = document.createElement('pre');
+      pre.className = 'docs-code wui-demo-pane' + (j === 0 ? ' is-active' : '');
+      pre.setAttribute('data-demo-pane', j);
+      pre.textContent = boxes[j].code;
+      wrap.appendChild(pre);
+    }
+    return wrap;
+  }
+
+  function renderDemos(root) {
+    var scope = root || document;
+    var demos = scope.querySelectorAll('[data-wui-demo]');
+    for (var i = 0; i < demos.length; i++) {
+      var demo = demos[i];
+      if (demo.getAttribute('data-demo-ready') === '1') continue;
+      demo.setAttribute('data-demo-ready', '1');
+
+      var preview = demo.querySelector('.wui-demo-preview');
+      var jsTpl = demo.querySelector('template.wui-demo-js');
+      var boxes = [];
+      if (preview) boxes.push({ label: 'Markup', icon: 'code', code: dedent(preview.innerHTML) });
+      if (jsTpl) {
+        var jsText = dedent(jsTpl.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
+        boxes.push({ label: 'JavaScript', icon: 'javascript', code: jsText });
+      }
+      var group = document.createElement('div');
+      group.className = 'wui-demo-code-group';
+      // 1 box (markup-only) = plain labeled box; 2+ (markup + JS) = tabbed, to
+      // avoid a long stacked scroll (user request).
+      if (boxes.length === 1) group.appendChild(codeBox(boxes[0].label, boxes[0].icon, boxes[0].code));
+      else if (boxes.length > 1) group.appendChild(tabbedCode(boxes));
+      demo.appendChild(group);
+
+      // Optionally EXECUTE the JS so the shown snippet is the running snippet.
+      if (jsTpl && demo.hasAttribute('data-wui-demo-run')) {
+        try { (new Function(jsTpl.content ? tplText(jsTpl) : jsTpl.textContent))(); }
+        catch (e) { /* demo JS error — leave preview as-is */ }
+      }
+    }
+  }
+  function tplText(tpl) {
+    // template content is inert; serialise it back to text for execution
+    var d = document.createElement('div');
+    d.appendChild(tpl.content.cloneNode(true));
+    return d.textContent;
+  }
+
+  /* Copy buttons for demo code boxes — delegated, bound once. */
+  var demoCopyBound = false;
+  function bindDemoCopy() {
+    if (demoCopyBound) return;
+    demoCopyBound = true;
+    document.addEventListener('click', function (e) {
+      // Tab switch (Markup / JavaScript)
+      var tab = e.target.closest('[data-demo-tab]');
+      if (tab) {
+        var wrap = tab.closest('.wui-demo-tabbed');
+        if (wrap) {
+          var idx = tab.getAttribute('data-demo-tab');
+          wrap.querySelectorAll('[data-demo-tab]').forEach(function (t) { t.classList.toggle('is-active', t === tab); });
+          wrap.querySelectorAll('[data-demo-pane]').forEach(function (p) { p.classList.toggle('is-active', p.getAttribute('data-demo-pane') === idx); });
+        }
+        return;
+      }
+      var btn = e.target.closest('[data-demo-copy]');
+      if (!btn) return;
+      var pre, tabbed = btn.closest('.wui-demo-tabbed');
+      if (tabbed) pre = tabbed.querySelector('.wui-demo-pane.is-active');
+      else { var bar = btn.closest('.wui-demo-codebar'); pre = bar && bar.nextElementSibling; }
+      if (!pre) return;
+      var done = function () {
+        btn.classList.add('is-copied');
+        btn.innerHTML = '<span class="material-symbols-outlined">check</span>Copied';
+        setTimeout(function () {
+          btn.classList.remove('is-copied');
+          btn.innerHTML = '<span class="material-symbols-outlined">content_copy</span>Copy';
+        }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pre.textContent).then(done, function () {});
+      }
+    });
+  }
+
   function runPageInit(ns) {
+    renderDemos(document);
+    bindDemoCopy();
     if (PAGE_INIT[ns]) { try { PAGE_INIT[ns](); } catch (e) {} }
   }
 
@@ -957,41 +1180,156 @@
     el.style.height = r.height + 'px';
   }
 
-  function startBarba(root) {
-    if (barbaStarted || !window.barba) return;
-    barbaStarted = true;
+  function coverIn(target) {
+    if (reduceMotion || !window.gsap) return Promise.resolve();
+    var el = wipeEl();
+    placeWipe(el, target);
+    window.gsap.set(el, { transformOrigin: 'left center', scaleX: 0 });
+    return window.gsap.to(el, { scaleX: 1, duration: 0.5, ease: 'power3.inOut' });
+  }
+  function revealOut(target) {
+    if (reduceMotion || !window.gsap) return Promise.resolve();
+    var el = wipeEl();
+    placeWipe(el, target);
+    window.gsap.set(el, { transformOrigin: 'right center', scaleX: 1 });
+    return window.gsap.to(el, { scaleX: 0, duration: 0.55, ease: 'power3.inOut', delay: 0.08 });
+  }
 
-    window.barba.init({
-      sync: false,   // current leaves fully BEFORE next enters — no two-page overlap
-      transitions: [{
-        name: 'cover-reveal',
-        // Curtain wipes IN left → right over the (sole) current pane.
-        leave: function (data) {
-          if (reduceMotion) return;
-          var el = wipeEl();
-          placeWipe(el, data.current.container);
-          window.gsap.set(el, { transformOrigin: 'left center', scaleX: 0 });
-          return window.gsap.to(el, { scaleX: 1, duration: 0.55, ease: 'power3.inOut' });
-        },
-        // Barba keeps the OLD container in the DOM (flex) until after enter, so
-        // both pages would stack as the curtain slides off. Hide the old one
-        // now (barba removes it shortly) so the reveal shows ONLY the new page.
-        // The panel HOLDS fully covered (delay) so the swap is painted unseen.
-        enter: function (data) {
-          var r = getRoot();
-          var ns = data.next.namespace;
-          if (data.current && data.current.container) data.current.container.style.display = 'none';
-          renderChrome(ns, r);
-          try { data.next.container.scrollTop = 0; } catch (e) {}
-          runPageInit(ns);
-          if (reduceMotion) return;
-          var el = wipeEl();
-          placeWipe(el, data.next.container);
-          window.gsap.set(el, { transformOrigin: 'right center', scaleX: 1 });
-          return window.gsap.to(el, { scaleX: 0, duration: 0.6, ease: 'power3.inOut', delay: 0.12 });
-        }
-      }]
+  /* ── Router (Barba-free) ──────────────────────────────────────────────────
+     Alpine owns page state; navigation is a minimal fetch+swap SPA that keeps
+     the GSAP curtain. Only #docs-main's inner swaps; chrome re-renders per nav.
+     DOC-SITE ONLY — not a WebEOC pattern. */
+  var routerBound = false;
+  var navigating = false;
+
+  function rootForPath(path) {
+    return /weoc-ui-docs\.html$/.test((path || '').replace(/\\/g, '/')) ? './' : '../';
+  }
+  function nsForUrl(url) {
+    var clean = (url || '').split('#')[0].split('?')[0];
+    var file = clean.split('/').pop();
+    if (/weoc-ui-docs\.html$/.test(clean) || file === '') return 'home';
+    for (var i = 0; i < NAV.length; i++)
+      for (var j = 0; j < NAV[i].items.length; j++)
+        if (NAV[i].items[j].file && NAV[i].items[j].file === file) return NAV[i].items[j].key;
+    return 'home';
+  }
+
+  function swapContent(html, ns, hash) {
+    var main = document.getElementById('docs-main');
+    if (!main) return;
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var incoming = doc.getElementById('docs-main');
+    main.innerHTML = incoming ? incoming.innerHTML : html;
+    renderChrome(ns, rootForPath(location.pathname));
+    runPageInit(ns);
+    if (hash) {
+      var t = main.querySelector(hash);
+      if (t) { t.scrollIntoView(); } else { main.scrollTop = 0; }
+    } else {
+      main.scrollTop = 0;
+    }
+  }
+
+  function navigate(url, opts) {
+    opts = opts || {};
+    var main = document.getElementById('docs-main');
+    if (!main || navigating) { if (!main) location.href = url; return; }
+    navigating = true;
+    var a = document.createElement('a'); a.href = url;
+    var abs = a.href, hash = a.hash || '';
+    var ns = nsForUrl(abs);
+    Promise.resolve(coverIn(main))
+      .then(function () { return fetch(abs, { credentials: 'same-origin' }); })
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        if (opts.push !== false) history.pushState({ url: abs }, '', abs);
+        swapContent(html, ns, hash);
+        return revealOut(document.getElementById('docs-main'));
+      })
+      .catch(function () { location.href = url; })
+      .then(function () { navigating = false; });
+  }
+
+  function isInternalDocLink(a) {
+    if (!a || a.target === '_blank' || a.hasAttribute('download')) return false;
+    var href = a.getAttribute('href') || '';
+    if (!href || href.charAt(0) === '#' || /^(https?:|mailto:|tel:)/i.test(href)) return false;
+    return /(weoc-ui-docs\.html)($|[?#])|\/docs\/[a-z0-9-]+\.html($|[?#])/i.test(a.href);
+  }
+
+  function bindRouter() {
+    if (routerBound) return;
+    routerBound = true;
+    history.replaceState({ url: location.href }, '', location.href);
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+      var a = e.target.closest('a');
+      if (!isInternalDocLink(a)) return;
+      e.preventDefault();
+      navigate(a.href);
     });
+    window.addEventListener('popstate', function () {
+      navigate(location.href, { push: false });
+    });
+  }
+
+  /* ── Search (over NAV labels + keywords) ──────────────────────────────────*/
+  var searchBound = false;
+  function searchMatches(q) {
+    q = (q || '').trim().toLowerCase();
+    if (!q) return [];
+    var terms = q.split(/\s+/), out = [];
+    for (var i = 0; i < NAV.length; i++)
+      for (var j = 0; j < NAV[i].items.length; j++) {
+        var it = NAV[i].items[j];
+        var hay = (it.label + ' ' + NAV[i].group + ' ' + (it.kw || '')).toLowerCase();
+        var ok = true;
+        for (var t = 0; t < terms.length; t++) if (hay.indexOf(terms[t]) === -1) { ok = false; break; }
+        if (ok) out.push({ group: NAV[i].group, item: it });
+      }
+    return out.slice(0, 12);
+  }
+  function renderSearchResults(q) {
+    var panel = document.getElementById('docs-search-results');
+    if (!panel) return;
+    var res = searchMatches(q);
+    if (!res.length) { panel.innerHTML = q ? '<div class="docs-search-empty">No matches</div>' : ''; panel.classList.toggle('is-open', !!q); return; }
+    var root = getRoot(), html = '';
+    for (var i = 0; i < res.length; i++) {
+      var href = getHref(res[i].item, root);
+      html += '<a class="docs-search-hit" href="' + href + '" data-search-hit>' +
+        '<span class="docs-search-hit-label">' + res[i].item.label + '</span>' +
+        '<span class="docs-search-hit-group">' + res[i].group + '</span></a>';
+    }
+    panel.innerHTML = html;
+    panel.classList.add('is-open');
+  }
+  function bindSearch() {
+    if (searchBound) return;
+    searchBound = true;
+    document.addEventListener('input', function (e) {
+      if (e.target && e.target.id === 'docs-search') renderSearchResults(e.target.value);
+    });
+    document.addEventListener('keydown', function (e) {
+      var input = document.getElementById('docs-search');
+      if (!input) return;
+      if (e.key === 'Enter' && document.activeElement === input) {
+        var first = document.querySelector('#docs-search-results [data-search-hit]');
+        if (first) { e.preventDefault(); navigate(first.href); closeSearch(); }
+      } else if (e.key === 'Escape') { closeSearch(); input.blur(); }
+      else if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); input.focus(); }
+    });
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-search-hit]')) { closeSearch(); }
+      else if (!e.target.closest('.docs-search')) { closeSearch(); }
+    });
+  }
+  function closeSearch() {
+    var panel = document.getElementById('docs-search-results');
+    var input = document.getElementById('docs-search');
+    if (panel) { panel.classList.remove('is-open'); panel.innerHTML = ''; }
+    if (input) input.value = '';
   }
 
   window.DocShell = {
@@ -1016,11 +1354,12 @@
       renderChrome(ns, root);
       hookThemeReadout();
       hookThemeSwatches();
+      bindRouter();
+      bindSearch();
 
       ensureGlobalAssets(root).then(function () {
         entranceAnimate();
         runPageInit(ns);
-        startBarba(root);
       });
     }
   };

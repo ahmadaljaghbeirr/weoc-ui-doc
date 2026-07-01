@@ -502,6 +502,28 @@
   text-align: center;
 }
 
+/* ── Fluid table (.is-fluid) ──
+   Fixed px columns (wui-col-md/index/secondary) can't shrink under
+   table-layout:fixed — if their widths sum past the container the table
+   overflows and clips the last column. Use .is-fluid on a table that lives in
+   a resizable/narrow shell (side panel, split-view dialog, details pane) to
+   turn the flexible DATA columns into `auto`: they split the space left after
+   the genuinely-fixed narrow columns (# / actions via wui-col-sm/actions), so
+   the table is always exactly the container width and cells wrap/ellipsize
+   instead of truncating. Narrow fixed columns are intentionally left fixed. */
+.wui-table-standard.is-fluid,
+.wui-table-cards.is-fluid { width: 100%; }
+
+.wui-table-standard.is-fluid .wui-col-md,
+.wui-table-cards.is-fluid .wui-col-md,
+.wui-table-standard.is-fluid .wui-col-index,
+.wui-table-cards.is-fluid .wui-col-index,
+.wui-table-standard.is-fluid .wui-col-secondary,
+.wui-table-cards.is-fluid .wui-col-secondary {
+  width: auto;
+  min-width: 0;
+}
+
 /* ============================================================
       9) ROW ACTION BUTTONS
       ============================================================ */

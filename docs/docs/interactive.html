@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>weoc-ui — Interactive</title>
+  <title>weoc-ui — Badges &amp; Chips</title>
   <script src="../../JS/weoc-ui.js"></script>
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
   <link rel="stylesheet" href="../docs-style.css">
@@ -20,604 +20,249 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Components</div>
-          <div class="docs-hero-title">Interactive</div>
-          <div class="docs-hero-sub">Buttons, FAB, links, action buttons, badges, chips, switches, and sliders.</div>
+          <div class="docs-hero-eyebrow">Data Display</div>
+          <div class="docs-hero-title">Badges &amp; Chips</div>
+          <div class="docs-hero-sub">Compact status and metadata labels: the square status <code>wui-badge</code> and the rounded pill <code>wui-chip</code>. Every size, color, icon, and state is shown below with its exact markup.</div>
         </div>
 
-        <!-- ── wui-btn ──────────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-badge ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">smart_button</span>wui-btn</div>
-          <p class="docs-desc">Base class for all button styles. <code>min-height: 2.375rem</code>. Pair with a variant class and optionally a size class.</p>
+          <div class="docs-section-title"><span class="material-symbols-outlined">sell</span>wui-badge</div>
+          <p class="docs-desc">Uppercase status label. The base <code>wui-badge</code> is neutral until you add a <em>color</em> (<code>primary</code> … <code>info</code>). Add a <em>size</em> (<code>wui-badge-sm</code> … <code>wui-badge-xl</code>), <code>bordered</code> for an outline, <code>icon-only</code>, <code>is-interactive</code> for hover/press feedback, or <code>animate</code> for a pulsing status ring.</p>
 
-          <div class="docs-subsection-title">Solid variants</div>
-          <div class="docs-example row">
-            <button class="wui-btn primary">Primary</button>
-            <button class="wui-btn secondary">Secondary</button>
-            <button class="wui-btn success">Success</button>
-            <button class="wui-btn warning">Warning</button>
-            <button class="wui-btn danger">Danger</button>
-            <button class="wui-btn info">Info</button>
+          <div class="docs-subsection-title">Base (neutral, no color)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Base -->
+              <span class="wui-badge">Badge</span>
+            </div>
           </div>
-          <pre class="docs-code">&lt;button class="wui-btn primary"&gt;Primary&lt;/button&gt;
-&lt;button class="wui-btn secondary"&gt;Secondary&lt;/button&gt;
-&lt;button class="wui-btn success"&gt;Success&lt;/button&gt;
-&lt;button class="wui-btn warning"&gt;Warning&lt;/button&gt;
-&lt;button class="wui-btn danger"&gt;Danger&lt;/button&gt;
-&lt;button class="wui-btn info"&gt;Info&lt;/button&gt;</pre>
 
-          <div class="docs-subsection-title">Outline variants</div>
-          <div class="docs-example row">
-            <button class="wui-btn outline primary">Primary</button>
-            <button class="wui-btn outline secondary">Secondary</button>
-            <button class="wui-btn outline success">Success</button>
-            <button class="wui-btn outline warning">Warning</button>
-            <button class="wui-btn outline danger">Danger</button>
-            <button class="wui-btn outline info">Info</button>
+          <div class="docs-subsection-title">Colors — all</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-badge primary">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-badge secondary">Secondary</span>
+              <!-- Success -->
+              <span class="wui-badge success">Success</span>
+              <!-- Warning -->
+              <span class="wui-badge warning">Warning</span>
+              <!-- Danger -->
+              <span class="wui-badge danger">Danger</span>
+              <!-- Info -->
+              <span class="wui-badge info">Info</span>
+            </div>
           </div>
-          <pre class="docs-code">&lt;button class="wui-btn outline primary"&gt;Primary&lt;/button&gt;</pre>
 
-          <div class="docs-subsection-title">Ghost variants</div>
-          <div class="docs-example row">
-            <button class="wui-btn ghost primary">Primary</button>
-            <button class="wui-btn ghost secondary">Secondary</button>
-            <button class="wui-btn ghost success">Success</button>
-            <button class="wui-btn ghost danger">Danger</button>
+          <div class="docs-subsection-title">Sizes — sm → xl (base has no size class)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-badge wui-badge-sm primary">SM</span>
+              <!-- base (no size class) -->
+              <span class="wui-badge primary">Base</span>
+              <!-- md -->
+              <span class="wui-badge wui-badge-md primary">MD</span>
+              <!-- lg -->
+              <span class="wui-badge wui-badge-lg primary">LG</span>
+              <!-- xl -->
+              <span class="wui-badge wui-badge-xl primary">XL</span>
+            </div>
           </div>
-          <pre class="docs-code">&lt;button class="wui-btn ghost primary"&gt;Primary&lt;/button&gt;</pre>
 
-          <div class="docs-subsection-title">Neon-outline &amp; Dashed</div>
-          <div class="docs-example row">
-            <button class="wui-btn neon-outline primary">Neon Primary</button>
-            <button class="wui-btn neon-outline success">Neon Success</button>
-            <button class="wui-btn outline dashed">Dashed</button>
+          <div class="docs-subsection-title">Bordered — all colors</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-badge bordered primary">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-badge bordered secondary">Secondary</span>
+              <!-- Success -->
+              <span class="wui-badge bordered success">Success</span>
+              <!-- Warning -->
+              <span class="wui-badge bordered warning">Warning</span>
+              <!-- Danger -->
+              <span class="wui-badge bordered danger">Danger</span>
+              <!-- Info -->
+              <span class="wui-badge bordered info">Info</span>
+            </div>
           </div>
-          <pre class="docs-code">&lt;button class="wui-btn neon-outline primary"&gt;Neon&lt;/button&gt;
-&lt;button class="wui-btn outline dashed"&gt;Dashed&lt;/button&gt;</pre>
 
-          <div class="docs-subsection-title">Sizes</div>
-          <div class="docs-example row" style="align-items:center">
-            <button class="wui-btn primary wui-btn-2xs">2XS</button>
-            <button class="wui-btn primary wui-btn-xs">XS</button>
-            <button class="wui-btn primary wui-btn-sm">SM</button>
-            <button class="wui-btn primary">Base</button>
-            <button class="wui-btn primary wui-btn-lg">LG</button>
-            <button class="wui-btn primary wui-btn-xl">XL</button>
-            <button class="wui-btn primary wui-btn-2xl">2XL</button>
+          <div class="docs-subsection-title">With icon</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Leading icon -->
+              <span class="wui-badge success"><span class="material-symbols-outlined">check_circle</span>Approved</span>
+              <!-- Trailing icon -->
+              <span class="wui-badge warning">Pending<span class="material-symbols-outlined">schedule</span></span>
+            </div>
           </div>
-          <pre class="docs-code">&lt;button class="wui-btn primary wui-btn-2xs"&gt;2XS&lt;/button&gt;
-&lt;button class="wui-btn primary wui-btn-xs"&gt;XS&lt;/button&gt;
-&lt;button class="wui-btn primary wui-btn-sm"&gt;SM&lt;/button&gt;
-&lt;button class="wui-btn primary"&gt;Base&lt;/button&gt;
-&lt;button class="wui-btn primary wui-btn-lg"&gt;LG&lt;/button&gt;
-&lt;button class="wui-btn primary wui-btn-xl"&gt;XL&lt;/button&gt;
-&lt;button class="wui-btn primary wui-btn-2xl"&gt;2XL&lt;/button&gt;</pre>
 
-          <div class="docs-subsection-title">With icon (Material Symbols)</div>
-          <div class="docs-example row">
-            <button class="wui-btn primary">
-              <span class="material-symbols-outlined">add</span> New Record
-            </button>
-            <button class="wui-btn outline danger">
-              <span class="material-symbols-outlined">delete</span> Delete
-            </button>
-            <button class="wui-btn ghost secondary icon-only" title="Settings">
-              <span class="material-symbols-outlined">settings</span>
-            </button>
-            <button class="wui-btn outline primary icon-only" title="Filter">
-              <span class="material-symbols-outlined">filter_list</span>
-            </button>
+          <div class="docs-subsection-title">Icon scale — grows with size</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-badge wui-badge-sm info"><span class="material-symbols-outlined">bolt</span>SM</span>
+              <!-- md -->
+              <span class="wui-badge wui-badge-md info"><span class="material-symbols-outlined">bolt</span>MD</span>
+              <!-- lg -->
+              <span class="wui-badge wui-badge-lg info"><span class="material-symbols-outlined">bolt</span>LG</span>
+              <!-- xl -->
+              <span class="wui-badge wui-badge-xl info"><span class="material-symbols-outlined">bolt</span>XL</span>
+            </div>
           </div>
-          <pre class="docs-code">&lt;button class="wui-btn primary"&gt;
-  &lt;span class="material-symbols-outlined"&gt;add&lt;/span&gt; New Record
-&lt;/button&gt;
 
-&lt;!-- Icon-only (square button) --&gt;
-&lt;button class="wui-btn ghost secondary icon-only"&gt;
-  &lt;span class="material-symbols-outlined"&gt;settings&lt;/span&gt;
-&lt;/button&gt;</pre>
-
-          <div class="docs-subsection-title">Block</div>
-          <div class="docs-example stacked" style="max-width:320px">
-            <button class="wui-btn primary block">Full-width Button</button>
+          <div class="docs-subsection-title">Icon-only — all sizes</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-badge wui-badge-sm icon-only primary"><span class="material-symbols-outlined">star</span></span>
+              <!-- base (icon-only) -->
+              <span class="wui-badge icon-only primary"><span class="material-symbols-outlined">star</span></span>
+              <!-- md -->
+              <span class="wui-badge wui-badge-md icon-only primary"><span class="material-symbols-outlined">star</span></span>
+              <!-- lg -->
+              <span class="wui-badge wui-badge-lg icon-only primary"><span class="material-symbols-outlined">star</span></span>
+              <!-- xl -->
+              <span class="wui-badge wui-badge-xl icon-only primary"><span class="material-symbols-outlined">star</span></span>
+            </div>
           </div>
-          <pre class="docs-code">&lt;button class="wui-btn primary block"&gt;Full-width&lt;/button&gt;</pre>
+
+          <div class="docs-subsection-title">Interactive — hover &amp; press</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- is-interactive -->
+              <span class="wui-badge primary is-interactive">Clickable</span>
+              <!-- is-interactive + icon -->
+              <span class="wui-badge danger is-interactive"><span class="material-symbols-outlined">close</span>Remove</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Animate — pulsing status ring (per color)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-badge primary animate">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-badge secondary animate">Secondary</span>
+              <!-- Success -->
+              <span class="wui-badge success animate">Success</span>
+              <!-- Warning -->
+              <span class="wui-badge warning animate">Warning</span>
+              <!-- Danger -->
+              <span class="wui-badge danger animate">Danger</span>
+              <!-- Info -->
+              <span class="wui-badge info animate">Info</span>
+            </div>
+          </div>
         </div>
 
-        <!-- ── wui-fab ──────────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-chip ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">add_circle</span>wui-fab</div>
-          <p class="docs-desc">Floating action button. 3rem circle by default. Hover lifts (+translateY). Fixed placement available with <code>wui-fab-fixed-br</code>.</p>
+          <div class="docs-section-title"><span class="material-symbols-outlined">label</span>wui-chip</div>
+          <p class="docs-desc">Rounded pill for tags, filters, and metadata. The base <code>wui-chip</code> defaults to the primary tint; override with a <em>color</em> (<code>primary</code> … <code>info</code>). Add a <em>size</em> (<code>wui-chip-xs</code> … <code>wui-chip-2xl</code>), an icon, or <code>icon-only</code>.</p>
 
-          <div class="docs-subsection-title">Variants</div>
-          <div class="docs-example row" style="align-items:center">
-            <button class="wui-fab primary"><span class="material-symbols-outlined">add</span></button>
-            <button class="wui-fab success"><span class="material-symbols-outlined">check</span></button>
-            <button class="wui-fab warning"><span class="material-symbols-outlined">warning</span></button>
-            <button class="wui-fab danger"><span class="material-symbols-outlined">delete</span></button>
-            <button class="wui-fab secondary"><span class="material-symbols-outlined">more_horiz</span></button>
-            <button class="wui-fab info"><span class="material-symbols-outlined">info</span></button>
-          </div>
-          <pre class="docs-code">&lt;button class="wui-fab primary"&gt;&lt;span class="material-symbols-outlined"&gt;add&lt;/span&gt;&lt;/button&gt;</pre>
-
-          <div class="docs-subsection-title">Sizes</div>
-          <div class="docs-example row" style="align-items:center">
-            <button class="wui-fab primary wui-fab-xs"><span class="material-symbols-outlined">add</span></button>
-            <button class="wui-fab primary wui-fab-sm"><span class="material-symbols-outlined">add</span></button>
-            <button class="wui-fab primary wui-fab-md"><span class="material-symbols-outlined">add</span></button>
-            <button class="wui-fab primary wui-fab-lg"><span class="material-symbols-outlined">add</span></button>
-            <button class="wui-fab primary wui-fab-xl"><span class="material-symbols-outlined">add</span></button>
-          </div>
-          <pre class="docs-code">&lt;button class="wui-fab primary wui-fab-xs"&gt;…&lt;/button&gt;
-&lt;button class="wui-fab primary wui-fab-sm"&gt;…&lt;/button&gt;
-&lt;button class="wui-fab primary wui-fab-md"&gt;…&lt;/button&gt;  &lt;!-- default --&gt;
-&lt;button class="wui-fab primary wui-fab-lg"&gt;…&lt;/button&gt;
-&lt;button class="wui-fab primary wui-fab-xl"&gt;…&lt;/button&gt;</pre>
-
-          <div class="docs-subsection-title">Extended (pill with label)</div>
-          <div class="docs-example row">
-            <button class="wui-fab-extended primary">
-              <span class="material-symbols-outlined">add</span> New Report
-            </button>
-            <button class="wui-fab-extended success">
-              <span class="material-symbols-outlined">save</span> Save
-            </button>
-          </div>
-          <pre class="docs-code">&lt;button class="wui-fab-extended primary"&gt;
-  &lt;span class="material-symbols-outlined"&gt;add&lt;/span&gt; New Report
-&lt;/button&gt;</pre>
-
-          <div class="docs-subsection-title">Fixed bottom-right</div>
-          <pre class="docs-code">&lt;!-- Renders fixed in the viewport corner --&gt;
-&lt;button class="wui-fab primary wui-fab-fixed-br"&gt;
-  &lt;span class="material-symbols-outlined"&gt;add&lt;/span&gt;
-&lt;/button&gt;</pre>
-        </div>
-
-        <!-- ── wui-link ─────────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">link</span>wui-link</div>
-          <p class="docs-desc">Inline text links. Applies brand color by default; modifiers change color or style.</p>
-
-          <div class="docs-example row" style="flex-wrap:wrap;gap:var(--space-5)">
-            <a href="#" class="wui-link">Default</a>
-            <a href="#" class="wui-link secondary">Secondary</a>
-            <a href="#" class="wui-link success">Success</a>
-            <a href="#" class="wui-link warning">Warning</a>
-            <a href="#" class="wui-link danger">Danger</a>
-            <a href="#" class="wui-link info">Info</a>
-            <a href="#" class="wui-link muted">Muted</a>
-          </div>
-          <pre class="docs-code">&lt;a href="#" class="wui-link"&gt;Default&lt;/a&gt;
-&lt;a href="#" class="wui-link secondary"&gt;Secondary&lt;/a&gt;
-&lt;a href="#" class="wui-link danger"&gt;Danger&lt;/a&gt;
-&lt;a href="#" class="wui-link muted"&gt;Muted&lt;/a&gt;</pre>
-
-          <div class="docs-subsection-title">Style modifiers</div>
-          <div class="docs-example row">
-            <a href="#" class="wui-link underlined">Underlined</a>
-            <a href="#" class="wui-link plain">Plain (no underline)</a>
-            <a href="#" class="wui-link sm">Small</a>
-            <a href="#" class="wui-link xs">Extra Small</a>
-          </div>
-          <pre class="docs-code">&lt;a href="#" class="wui-link underlined"&gt;Underlined&lt;/a&gt;
-&lt;a href="#" class="wui-link plain"&gt;No underline&lt;/a&gt;
-&lt;a href="#" class="wui-link sm"&gt;Small&lt;/a&gt;
-&lt;a href="#" class="wui-link xs"&gt;Extra small&lt;/a&gt;</pre>
-        </div>
-
-        <!-- ── wui-action-btn ───────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">touch_app</span>wui-action-btn</div>
-          <p class="docs-desc">Compact inline icon buttons for row/card actions. Wrap multiple in <code>wui-actions</code>.</p>
-
-          <div class="docs-example row">
-            <div class="wui-actions">
-              <button class="wui-action-btn" title="Edit"><span class="material-symbols-outlined">edit</span></button>
-              <button class="wui-action-btn warning" title="Flag"><span class="material-symbols-outlined">flag</span></button>
-              <button class="wui-action-btn danger" title="Delete"><span class="material-symbols-outlined">delete</span></button>
-              <button class="wui-action-btn success" title="Approve"><span class="material-symbols-outlined">check_circle</span></button>
-              <button class="wui-action-btn primary" title="View"><span class="material-symbols-outlined">open_in_new</span></button>
+          <div class="docs-subsection-title">Base (primary tint by default)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Base -->
+              <span class="wui-chip">Chip</span>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-actions"&gt;
-  &lt;button class="wui-action-btn" title="Edit"&gt;
-    &lt;span class="material-symbols-outlined"&gt;edit&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;button class="wui-action-btn danger" title="Delete"&gt;
-    &lt;span class="material-symbols-outlined"&gt;delete&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;button class="wui-action-btn warning" title="Flag"&gt;
-    &lt;span class="material-symbols-outlined"&gt;flag&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;button class="wui-action-btn success" title="Approve"&gt;
-    &lt;span class="material-symbols-outlined"&gt;check_circle&lt;/span&gt;
-  &lt;/button&gt;
-&lt;/div&gt;</pre>
-        </div>
 
-        <!-- ── wui-badge ────────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">label</span>wui-badge</div>
-          <p class="docs-desc">Small uppercase status labels. <code>font-size: var(--text-2xs)</code>.</p>
-
-          <div class="docs-subsection-title">Color variants</div>
-          <div class="docs-example row">
-            <span class="wui-badge primary">Primary</span>
-            <span class="wui-badge secondary">Secondary</span>
-            <span class="wui-badge success">Success</span>
-            <span class="wui-badge warning">Warning</span>
-            <span class="wui-badge danger">Danger</span>
-          </div>
-          <pre class="docs-code">&lt;span class="wui-badge primary"&gt;Primary&lt;/span&gt;
-&lt;span class="wui-badge success"&gt;Success&lt;/span&gt;
-&lt;span class="wui-badge warning"&gt;Warning&lt;/span&gt;
-&lt;span class="wui-badge danger"&gt;Danger&lt;/span&gt;</pre>
-
-          <div class="docs-subsection-title">Sizes</div>
-          <div class="docs-example row" style="align-items:center">
-            <span class="wui-badge danger wui-badge-sm">SM</span>
-            <span class="wui-badge danger wui-badge-md">MD</span>
-            <span class="wui-badge danger">Base</span>
-            <span class="wui-badge danger wui-badge-lg">LG</span>
-            <span class="wui-badge danger wui-badge-xl">XL</span>
-          </div>
-          <pre class="docs-code">&lt;span class="wui-badge danger wui-badge-sm"&gt;SM&lt;/span&gt;
-&lt;span class="wui-badge danger wui-badge-lg"&gt;LG&lt;/span&gt;</pre>
-
-          <div class="docs-subsection-title">Bordered &amp; Icon-only</div>
-          <div class="docs-example row">
-            <span class="wui-badge primary bordered">Bordered</span>
-            <span class="wui-badge danger bordered">Critical</span>
-            <span class="wui-badge warning icon-only"><span class="material-symbols-outlined">warning</span></span>
-            <span class="wui-badge danger icon-only"><span class="material-symbols-outlined">error</span></span>
-          </div>
-          <pre class="docs-code">&lt;span class="wui-badge primary bordered"&gt;Bordered&lt;/span&gt;
-&lt;span class="wui-badge warning icon-only"&gt;
-  &lt;span class="material-symbols-outlined"&gt;warning&lt;/span&gt;
-&lt;/span&gt;</pre>
-
-          <div class="docs-subsection-title">Animated pulse</div>
-          <div class="docs-example row">
-            <span class="wui-badge danger animate">Live</span>
-            <span class="wui-badge warning animate">Alert</span>
-            <span class="wui-badge success animate">Active</span>
-            <span class="wui-badge primary animate">Sync</span>
-          </div>
-          <pre class="docs-code">&lt;span class="wui-badge danger animate"&gt;Live&lt;/span&gt;
-&lt;span class="wui-badge warning animate"&gt;Alert&lt;/span&gt;</pre>
-        </div>
-
-        <!-- ── wui-chip ─────────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">sell</span>wui-chip</div>
-          <p class="docs-desc">Pill-shaped category/tag labels. Uses local CSS custom properties: <code>--wui-chip-bg</code>, <code>--wui-chip-border</code>, <code>--wui-chip-text</code>.</p>
-
-          <div class="docs-subsection-title">Color variants</div>
-          <div class="docs-example row">
-            <span class="wui-chip primary">Primary</span>
-            <span class="wui-chip secondary">Secondary</span>
-            <span class="wui-chip success">Success</span>
-            <span class="wui-chip warning">Warning</span>
-            <span class="wui-chip danger">Danger</span>
-          </div>
-          <pre class="docs-code">&lt;span class="wui-chip primary"&gt;Primary&lt;/span&gt;
-&lt;span class="wui-chip success"&gt;Success&lt;/span&gt;
-&lt;span class="wui-chip danger"&gt;Danger&lt;/span&gt;</pre>
-
-          <div class="docs-subsection-title">Sizes</div>
-          <div class="docs-example row" style="align-items:center">
-            <span class="wui-chip primary wui-chip-xs">XS</span>
-            <span class="wui-chip primary wui-chip-sm">SM</span>
-            <span class="wui-chip primary wui-chip-md">MD</span>
-            <span class="wui-chip primary">Base</span>
-            <span class="wui-chip primary wui-chip-lg">LG</span>
-            <span class="wui-chip primary wui-chip-xl">XL</span>
-            <span class="wui-chip primary wui-chip-2xl">2XL</span>
-          </div>
-          <pre class="docs-code">&lt;span class="wui-chip primary wui-chip-xs"&gt;XS&lt;/span&gt;
-&lt;span class="wui-chip primary wui-chip-lg"&gt;LG&lt;/span&gt;</pre>
-        </div>
-
-        <!-- ── wui-switch ───────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">toggle_on</span>wui-switch</div>
-          <p class="docs-desc">An iOS-style pill toggle built on a hidden <code>&lt;input type="checkbox"&gt;</code>. The real input stays in the accessibility tree and is keyboard-focusable. The white thumb slides left (off) → right (on) with a CSS transition.</p>
-
-          <div class="docs-subsection-title">Color variants</div>
-          <div class="docs-example row" style="flex-wrap:wrap;gap:var(--space-5) var(--space-6)">
-            <label class="wui-switch primary">
-              <input type="checkbox" checked>
-              <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-              <span class="wui-switch-label">Primary</span>
-            </label>
-            <label class="wui-switch secondary">
-              <input type="checkbox" checked>
-              <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-              <span class="wui-switch-label">Secondary</span>
-            </label>
-            <label class="wui-switch success">
-              <input type="checkbox" checked>
-              <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-              <span class="wui-switch-label">Success</span>
-            </label>
-            <label class="wui-switch warning">
-              <input type="checkbox" checked>
-              <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-              <span class="wui-switch-label">Warning</span>
-            </label>
-            <label class="wui-switch danger">
-              <input type="checkbox" checked>
-              <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-              <span class="wui-switch-label">Danger</span>
-            </label>
-            <label class="wui-switch info">
-              <input type="checkbox" checked>
-              <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-              <span class="wui-switch-label">Info</span>
-            </label>
-          </div>
-          <pre class="docs-code">&lt;!-- primary (default) | secondary | success | warning | danger | info --&gt;
-&lt;label class="wui-switch primary"&gt;
-  &lt;input type="checkbox"&gt;
-  &lt;span class="wui-switch-track"&gt;
-    &lt;span class="wui-switch-thumb"&gt;&lt;/span&gt;
-  &lt;/span&gt;
-  &lt;span class="wui-switch-label"&gt;Enable alerts&lt;/span&gt;
-&lt;/label&gt;</pre>
-
-          <div class="docs-subsection-title">Size variants</div>
-          <p class="docs-desc">Three sizes. Combine with any color modifier.</p>
-          <div class="docs-example row" style="align-items:center;gap:var(--space-6)">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
-              <label class="wui-switch sm primary">
-                <input type="checkbox" checked>
-                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-                <span class="wui-switch-label">.sm</span>
-              </label>
-              <code style="font-size:11px;color:var(--color-text-secondary)">28×16px · 11px thumb</code>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
-              <label class="wui-switch primary">
-                <input type="checkbox" checked>
-                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-                <span class="wui-switch-label">default</span>
-              </label>
-              <code style="font-size:11px;color:var(--color-text-secondary)">36×20px · 14px thumb</code>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
-              <label class="wui-switch lg primary">
-                <input type="checkbox" checked>
-                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-                <span class="wui-switch-label">.lg</span>
-              </label>
-              <code style="font-size:11px;color:var(--color-text-secondary)">44×24px · 17px thumb</code>
+          <div class="docs-subsection-title">Colors — all</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-chip primary">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-chip secondary">Secondary</span>
+              <!-- Success -->
+              <span class="wui-chip success">Success</span>
+              <!-- Warning -->
+              <span class="wui-chip warning">Warning</span>
+              <!-- Danger -->
+              <span class="wui-chip danger">Danger</span>
+              <!-- Info -->
+              <span class="wui-chip info">Info</span>
             </div>
           </div>
-          <pre class="docs-code">&lt;!-- .sm (28×16px) · default (36×20px) · .lg (44×24px) --&gt;
-&lt;label class="wui-switch sm primary"&gt;...&lt;/label&gt;
-&lt;label class="wui-switch primary"&gt;...&lt;/label&gt;
-&lt;label class="wui-switch lg primary"&gt;...&lt;/label&gt;</pre>
 
-          <div class="docs-subsection-title">States</div>
-          <div class="docs-example row" style="gap:var(--space-6)">
-            <div style="display:flex;flex-direction:column;gap:var(--space-3)">
-              <label class="wui-switch primary">
-                <input type="checkbox">
-                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-                <span class="wui-switch-label">Off (unchecked)</span>
-              </label>
-              <label class="wui-switch primary">
-                <input type="checkbox" checked>
-                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-                <span class="wui-switch-label">On (checked)</span>
-              </label>
-              <label class="wui-switch primary is-disabled">
-                <input type="checkbox">
-                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-                <span class="wui-switch-label">Disabled off</span>
-              </label>
-              <label class="wui-switch primary is-disabled">
-                <input type="checkbox" checked>
-                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
-                <span class="wui-switch-label">Disabled on</span>
-              </label>
+          <div class="docs-subsection-title">Sizes — xs → 2xl (base = md)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- xs -->
+              <span class="wui-chip wui-chip-xs primary">XS</span>
+              <!-- sm -->
+              <span class="wui-chip wui-chip-sm primary">SM</span>
+              <!-- base (md) -->
+              <span class="wui-chip primary">Base</span>
+              <!-- md -->
+              <span class="wui-chip wui-chip-md primary">MD</span>
+              <!-- lg -->
+              <span class="wui-chip wui-chip-lg primary">LG</span>
+              <!-- xl -->
+              <span class="wui-chip wui-chip-xl primary">XL</span>
+              <!-- 2xl -->
+              <span class="wui-chip wui-chip-2xl primary">2XL</span>
             </div>
           </div>
-          <pre class="docs-code">&lt;!-- Disabled: .is-disabled on &lt;label&gt; OR disabled on &lt;input&gt; — both work --&gt;
-&lt;label class="wui-switch primary is-disabled"&gt;
-  &lt;input type="checkbox"&gt; ...
-&lt;/label&gt;
 
-&lt;label class="wui-switch primary"&gt;
-  &lt;input type="checkbox" disabled&gt; ...
-&lt;/label&gt;</pre>
-
-          <div class="docs-subsection-title">In a settings row</div>
-          <p class="docs-desc">Label-less switch floated right of a description. Common in notification / preference panels.</p>
-          <div class="docs-example stacked" style="max-width:480px">
-            <div class="wui-card">
-              <div class="wui-card-hd"><div class="wui-card-title">Notification Settings</div></div>
-              <div class="wui-card-bd" style="display:flex;flex-direction:column;gap:var(--space-4)">
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)">
-                  <div>
-                    <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Email alerts</div>
-                    <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Send notifications to your inbox</div>
-                  </div>
-                  <label class="wui-switch success"><input type="checkbox" checked><span class="wui-switch-track"><span class="wui-switch-thumb"></span></span></label>
-                </div>
-                <div style="height:1px;background:var(--color-border)"></div>
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)">
-                  <div>
-                    <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">SMS alerts</div>
-                    <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Receive critical updates by text</div>
-                  </div>
-                  <label class="wui-switch warning"><input type="checkbox"><span class="wui-switch-track"><span class="wui-switch-thumb"></span></span></label>
-                </div>
-                <div style="height:1px;background:var(--color-border)"></div>
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)">
-                  <div>
-                    <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Incident escalation</div>
-                    <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Auto-escalate after 30 min without acknowledgement</div>
-                  </div>
-                  <label class="wui-switch danger"><input type="checkbox" checked><span class="wui-switch-track"><span class="wui-switch-thumb"></span></span></label>
-                </div>
-              </div>
+          <div class="docs-subsection-title">With icon</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Leading icon -->
+              <span class="wui-chip success"><span class="material-symbols-outlined">done</span>Verified</span>
+              <!-- Trailing icon (removable pattern) -->
+              <span class="wui-chip info">Filter<span class="material-symbols-outlined">close</span></span>
             </div>
           </div>
-          <pre class="docs-code">&lt;!-- Label-less switch in a flex row — omit .wui-switch-label --&gt;
-&lt;div style="display:flex;align-items:center;justify-content:space-between"&gt;
-  &lt;div&gt;Email alerts&lt;/div&gt;
-  &lt;label class="wui-switch success"&gt;
-    &lt;input type="checkbox" checked&gt;
-    &lt;span class="wui-switch-track"&gt;&lt;span class="wui-switch-thumb"&gt;&lt;/span&gt;&lt;/span&gt;
-  &lt;/label&gt;
-&lt;/div&gt;</pre>
-        </div>
 
-        <!-- ── wui-slider ───────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">linear_scale</span>wui-slider</div>
-          <p class="docs-desc">
-            Styled <code>&lt;input type="range"&gt;</code> with a two-tone gradient track and accent thumb.
-            Two modes: <strong>dynamic</strong> (continuous) and <strong>stepped</strong> (<code>.stepped</code> + a <code>.wui-slider-ticks</code> row).
-            JS sets <code>--_fill</code> on the input element — Firefox also exposes <code>::-moz-range-progress</code> natively.
-          </p>
-
-          <div class="docs-subsection-title">Dynamic — color variants</div>
-          <p class="docs-desc">Drag any slider to see the live fill update.</p>
-          <div class="docs-example stacked" style="gap:var(--space-5)">
-            <div class="wui-slider primary">
-              <div class="wui-slider-info"><span class="wui-slider-label">Response Capacity</span><span class="wui-slider-value">72</span></div>
-              <input type="range" class="wui-slider-input" min="0" max="100" value="72">
-            </div>
-            <div class="wui-slider secondary">
-              <div class="wui-slider-info"><span class="wui-slider-label">Staff Availability</span><span class="wui-slider-value">45</span></div>
-              <input type="range" class="wui-slider-input" min="0" max="100" value="45">
-            </div>
-            <div class="wui-slider success">
-              <div class="wui-slider-info"><span class="wui-slider-label">Resource Allocation</span><span class="wui-slider-value">88</span></div>
-              <input type="range" class="wui-slider-input" min="0" max="100" value="88">
-            </div>
-            <div class="wui-slider warning">
-              <div class="wui-slider-info"><span class="wui-slider-label">Fuel Reserve</span><span class="wui-slider-value">33</span></div>
-              <input type="range" class="wui-slider-input" min="0" max="100" value="33">
-            </div>
-            <div class="wui-slider danger">
-              <div class="wui-slider-info"><span class="wui-slider-label">Shelter Occupancy</span><span class="wui-slider-value">91</span></div>
-              <input type="range" class="wui-slider-input" min="0" max="100" value="91">
-            </div>
-            <div class="wui-slider info">
-              <div class="wui-slider-info"><span class="wui-slider-label">Training Progress</span><span class="wui-slider-value">58</span></div>
-              <input type="range" class="wui-slider-input" min="0" max="100" value="58">
+          <div class="docs-subsection-title">Icon scale — grows with size</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- xs -->
+              <span class="wui-chip wui-chip-xs info"><span class="material-symbols-outlined">tag</span>XS</span>
+              <!-- sm -->
+              <span class="wui-chip wui-chip-sm info"><span class="material-symbols-outlined">tag</span>SM</span>
+              <!-- md -->
+              <span class="wui-chip wui-chip-md info"><span class="material-symbols-outlined">tag</span>MD</span>
+              <!-- lg -->
+              <span class="wui-chip wui-chip-lg info"><span class="material-symbols-outlined">tag</span>LG</span>
+              <!-- xl -->
+              <span class="wui-chip wui-chip-xl info"><span class="material-symbols-outlined">tag</span>XL</span>
+              <!-- 2xl -->
+              <span class="wui-chip wui-chip-2xl info"><span class="material-symbols-outlined">tag</span>2XL</span>
             </div>
           </div>
-          <pre class="docs-code">&lt;!-- primary | secondary | success | warning | danger | info --&gt;
-&lt;div class="wui-slider primary"&gt;
-  &lt;div class="wui-slider-info"&gt;
-    &lt;span class="wui-slider-label"&gt;Response Capacity&lt;/span&gt;
-    &lt;span class="wui-slider-value"&gt;72&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;input type="range" class="wui-slider-input" min="0" max="100" value="72"&gt;
-&lt;/div&gt;
 
-&lt;!-- JS fill helper — run once after DOM is ready --&gt;
-&lt;script&gt;
-function initSliders() {
-  document.querySelectorAll('.wui-slider-input').forEach(function(input) {
-    function update() {
-      var min = parseFloat(input.min) || 0;
-      var max = parseFloat(input.max) || 100;
-      var pct = ((parseFloat(input.value) - min) / (max - min) * 100).toFixed(1) + '%';
-      input.style.setProperty('--_fill', pct);
-      var container = input.closest('.wui-slider');
-      if (container) {
-        var display = container.querySelector('.wui-slider-value');
-        if (display) display.textContent = input.value;
-      }
-    }
-    input.addEventListener('input', update);
-    update();
-  });
-}
-initSliders();
-&lt;/script&gt;</pre>
-
-          <div class="docs-subsection-title">Size variants</div>
-          <p class="docs-desc">Three track/thumb sizes. Only track height and thumb diameter scale — the info row is unchanged.</p>
-          <div class="docs-example stacked" style="gap:var(--space-5)">
-            <div class="wui-slider sm primary">
-              <div class="wui-slider-info"><span class="wui-slider-label">sm — 3px track · 14px thumb</span><span class="wui-slider-value">60</span></div>
-              <input type="range" class="wui-slider-input" min="0" max="100" value="60">
-            </div>
-            <div class="wui-slider primary">
-              <div class="wui-slider-info"><span class="wui-slider-label">default — 5px track · 18px thumb</span><span class="wui-slider-value">60</span></div>
-              <input type="range" class="wui-slider-input" min="0" max="100" value="60">
-            </div>
-            <div class="wui-slider lg primary">
-              <div class="wui-slider-info"><span class="wui-slider-label">lg — 7px track · 22px thumb</span><span class="wui-slider-value">60</span></div>
-              <input type="range" class="wui-slider-input" min="0" max="100" value="60">
+          <div class="docs-subsection-title">Icon-only — all sizes</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- xs -->
+              <span class="wui-chip wui-chip-xs icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- sm -->
+              <span class="wui-chip wui-chip-sm icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- base (icon-only) -->
+              <span class="wui-chip icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- md -->
+              <span class="wui-chip wui-chip-md icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- lg -->
+              <span class="wui-chip wui-chip-lg icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- xl -->
+              <span class="wui-chip wui-chip-xl icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- 2xl -->
+              <span class="wui-chip wui-chip-2xl icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
             </div>
           </div>
-          <pre class="docs-code">&lt;!-- .sm (3px / 14px) · default (5px / 18px) · .lg (7px / 22px) --&gt;
-&lt;div class="wui-slider sm primary"&gt;...&lt;/div&gt;
-&lt;div class="wui-slider primary"&gt;...&lt;/div&gt;
-&lt;div class="wui-slider lg primary"&gt;...&lt;/div&gt;</pre>
-
-          <div class="docs-subsection-title">Stepped — with tick labels</div>
-          <p class="docs-desc">
-            Add <code>.stepped</code> to the container and a <code>.wui-slider-ticks</code> row below the input.
-            Native <code>step</code> on the input handles snapping. Tick count = <code>(max − min) / step + 1</code>.
-          </p>
-          <div class="docs-example stacked" style="gap:var(--space-7)">
-            <div class="wui-slider stepped primary">
-              <div class="wui-slider-info"><span class="wui-slider-label">Incident Priority</span><span class="wui-slider-value">3</span></div>
-              <input type="range" class="wui-slider-input" min="1" max="5" step="1" value="3">
-              <div class="wui-slider-ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
-            </div>
-            <div class="wui-slider stepped warning">
-              <div class="wui-slider-info"><span class="wui-slider-label">Activation Level</span><span class="wui-slider-value">2</span></div>
-              <input type="range" class="wui-slider-input" min="1" max="4" step="1" value="2">
-              <div class="wui-slider-ticks"><span>Monitoring</span><span>Partial</span><span>Full</span><span>Max</span></div>
-            </div>
-            <div class="wui-slider stepped danger">
-              <div class="wui-slider-info"><span class="wui-slider-label">Severity</span><span class="wui-slider-value">2</span></div>
-              <input type="range" class="wui-slider-input" min="1" max="3" step="1" value="2">
-              <div class="wui-slider-ticks"><span>Low</span><span>Medium</span><span>High</span></div>
-            </div>
-            <div class="wui-slider stepped success">
-              <div class="wui-slider-info"><span class="wui-slider-label">Team Readiness</span><span class="wui-slider-value">3</span></div>
-              <input type="range" class="wui-slider-input" min="1" max="3" step="1" value="3">
-              <div class="wui-slider-ticks"><span>Standby</span><span>Ready</span><span>Deployed</span></div>
-            </div>
-            <div class="wui-slider stepped info">
-              <div class="wui-slider-info"><span class="wui-slider-label">Data Confidence</span><span class="wui-slider-value">4</span></div>
-              <input type="range" class="wui-slider-input" min="1" max="5" step="1" value="4">
-              <div class="wui-slider-ticks"><span>Very Low</span><span>Low</span><span>Med</span><span>High</span><span>Certain</span></div>
-            </div>
-            <div class="wui-slider stepped secondary">
-              <div class="wui-slider-info"><span class="wui-slider-label">EOC Staffing</span><span class="wui-slider-value">2</span></div>
-              <input type="range" class="wui-slider-input" min="1" max="4" step="1" value="2">
-              <div class="wui-slider-ticks"><span>Minimal</span><span>Reduced</span><span>Normal</span><span>Surge</span></div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;!-- .stepped: add modifier + .wui-slider-ticks row --&gt;
-&lt;div class="wui-slider stepped primary"&gt;
-  &lt;div class="wui-slider-info"&gt;
-    &lt;span class="wui-slider-label"&gt;Incident Priority&lt;/span&gt;
-    &lt;span class="wui-slider-value"&gt;3&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;input type="range" class="wui-slider-input" min="1" max="5" step="1" value="3"&gt;
-  &lt;!-- one &lt;span&gt; per stop — count = (max - min) / step + 1 --&gt;
-  &lt;div class="wui-slider-ticks"&gt;
-    &lt;span&gt;1&lt;/span&gt;&lt;span&gt;2&lt;/span&gt;&lt;span&gt;3&lt;/span&gt;&lt;span&gt;4&lt;/span&gt;&lt;span&gt;5&lt;/span&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
         </div>
 
       </div>
     </div>
   </div>
+
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('interactive');</script>
 </body>

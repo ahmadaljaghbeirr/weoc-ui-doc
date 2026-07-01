@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>weoc-ui — Forms</title>
+  <title>weoc-ui — Text Inputs &amp; Fields</title>
   <script src="../../JS/weoc-ui.js"></script>
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-forms.css">
@@ -12,14 +12,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-  <link rel="stylesheet" href="../../CSS/tom-select.min.css">
-  <link rel="stylesheet" href="../../CSS/tom-select-agency.css">
-  <link rel="stylesheet" href="../../CSS/flatpickr.min.css">
-  <link rel="stylesheet" href="../../CSS/flatpickr-agency.css">
-  <script src="../../JS/tom-select.complete.min.js"></script>
-  <script src="../../JS/tom-select-factory.js"></script>
-  <script src="../../JS/flatpickr.min.js"></script>
-  <script src="../../JS/flatpickr-factory.js"></script>
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
@@ -29,541 +21,552 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Components</div>
-          <div class="docs-hero-title">Forms</div>
-          <div class="docs-hero-sub">Input-view building blocks: grouped fieldsets with field rows, labelled controls, and a sticky form footer for meta and actions.</div>
+          <div class="docs-hero-eyebrow">Inputs</div>
+          <div class="docs-hero-title">Text Inputs &amp; Fields</div>
+          <div class="docs-hero-sub">Input-view primitives from <code>weoc-forms.css</code>: the <code>form-control</code> input/textarea, the <code>wui-fieldset</code> group, the <code>field-row</code>/<code>field-item</code> grid, helper text, and the <code>wui-ftr-*</code> form footer. Every state and layout is shown below with its exact markup.</div>
         </div>
 
         <div class="wui-callout info">
           <span class="material-symbols-outlined">info</span>
           <div class="wui-callout-body">
             <div class="wui-callout-title">Add-on module — load weoc-forms.css on input views</div>
-            Forms are not in <code>weoc-ui-core.css</code>. Add <code>&lt;link rel="stylesheet" href="weoc-forms.css"&gt;</code>. For checkboxes / radios / card options see <a class="wui-link" href="./cards.html">Cards &amp; Forms</a>.
+            Forms are not in <code>weoc-ui-core.css</code>. Add <code>&lt;link rel="stylesheet" href="weoc-forms.css"&gt;</code> after the core barrel on input-style views. Checkboxes, radios, and card options live in <code>weoc-card-group.css</code> (see <a class="wui-link" href="./cards.html">Cards &amp; Forms</a>); TomSelect and Flatpickr have their own pages.
           </div>
         </div>
 
-        <!-- ── wui-fieldset ─────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ form-control ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">text_fields</span>form-control</div>
+          <p class="docs-desc">Base class for text inputs and textareas (<code>height: 2.5rem</code>, transparent background, bordered). Focus draws a primary ring. <code>textarea.form-control</code> auto-grows in height and is vertically resizable (<code>min-height: 90px</code>). Readonly and disabled states are documented in their own sections below.</p>
+
+          <div class="docs-subsection-title">Text input — default &amp; focus</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Placeholder -->
+              <input type="text" class="form-control" placeholder="Type here…">
+              <!-- With value -->
+              <input type="text" class="form-control" value="Incident at Terminal 3">
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Input types — <code>form-control</code> applies to all text-family inputs</div>
+          <p class="docs-desc"><code>form-control</code> is type-agnostic: apply it to any single-line <code>&lt;input&gt;</code>. These render identically to a text field but keep their native keyboards and validation. Number fields get a themed stepper — see <code>wui-number</code> below.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Email -->
+              <input type="email" class="form-control" placeholder="name@agency.gov">
+              <!-- Tel -->
+              <input type="tel" class="form-control" placeholder="+971 50 000 0000">
+              <!-- URL -->
+              <input type="url" class="form-control" placeholder="https://…">
+              <!-- Password -->
+              <input type="password" class="form-control" value="secret123">
+              <!-- Search -->
+              <input type="search" class="form-control" placeholder="Search records…">
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Textarea</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Empty textarea -->
+              <textarea class="form-control" placeholder="Brief description of the incident…"></textarea>
+              <!-- Textarea with value -->
+              <textarea class="form-control">Situation assessed at 08:00. No immediate life safety risk. Monitoring ongoing.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-number (themed stepper) ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">123</span>wui-number — themed stepper</div>
+          <p class="docs-desc">Browsers render native <code>type="number"</code> spinners in their own chrome that cannot be recoloured to match the theme (WebKit exposes almost nothing; Firefox nothing). <code>wui-number</code> wraps the input, hides the native spinners, and adds token-driven <code>+</code>/<code>−</code> buttons that follow light and dark automatically. <code>weoc-ui.js</code> binds <code>data-wui-step</code> and steps the input with the native <code>stepUp()</code>/<code>stepDown()</code>, so <code>min</code>, <code>max</code>, and <code>step</code> are honoured and <code>input</code>/<code>change</code> events still fire. The input stays keyboard-steppable (arrow keys); the buttons are <code>tabindex="-1"</code> mouse aids. Requires <code>weoc-ui.js</code>.</p>
+
+          <div class="docs-subsection-title">Default — with value, min / max / step</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default (step 1, min 0, max 999) -->
+              <div class="wui-number">
+                <input type="number" class="form-control" value="12" min="0" max="999" step="1">
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+              <!-- Placeholder, no value -->
+              <div class="wui-number">
+                <input type="number" class="form-control" placeholder="Casualty count" min="0">
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+              <!-- Decimal step -->
+              <div class="wui-number">
+                <input type="number" class="form-control" value="1.5" min="0" max="10" step="0.5">
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Readonly &amp; disabled — stepper hidden, padding reclaimed</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Readonly -->
+              <div class="wui-number">
+                <input type="number" class="form-control" value="42" readonly>
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+              <!-- Disabled -->
+              <div class="wui-number">
+                <input type="number" class="form-control" value="7" disabled>
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-fieldset ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">tune</span>wui-fieldset</div>
-          <p class="docs-desc">A titled section grouping field rows. <code>wui-fieldset-legend</code> (optional icon) → <code>wui-fieldset-sub</code> → <code>wui-fieldset-body</code> holding <code>field-row</code> groups. Each <code>field-row</code> is a 2-column grid by default; <code>full</code> = 1 col, <code>three</code> / <code>four</code> = 3 / 4 cols. Add <code>plain</code> to the fieldset to drop the surface chrome.</p>
-          <div class="docs-example stacked">
-            <fieldset class="wui-fieldset">
-              <legend class="wui-fieldset-legend">
-                <span class="material-symbols-outlined">person</span>
-                Reporting Officer
-              </legend>
-              <p class="wui-fieldset-sub">Who is filing this incident report.</p>
-              <div class="wui-fieldset-body">
-                <div class="field-row">
-                  <div class="field-item">
-                    <label class="field-label">First name <span class="required">*</span></label>
-                    <input type="text" class="form-control" placeholder="Jordan">
-                  </div>
-                  <div class="field-item">
-                    <label class="field-label">Last name <span class="required">*</span></label>
-                    <input type="text" class="form-control" placeholder="Rivera">
-                  </div>
-                </div>
-                <div class="field-row full">
-                  <div class="field-item">
-                    <label class="field-label">Summary</label>
-                    <textarea class="form-control" placeholder="Brief description of the incident..."></textarea>
-                    <div class="field-hint">Max 500 characters.</div>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
-          </div>
-          <pre class="docs-code">&lt;fieldset class="wui-fieldset"&gt;
-  &lt;legend class="wui-fieldset-legend"&gt;
-    &lt;span class="material-symbols-outlined"&gt;person&lt;/span&gt; Reporting Officer
-  &lt;/legend&gt;
-  &lt;p class="wui-fieldset-sub"&gt;Who is filing this report.&lt;/p&gt;
-  &lt;div class="wui-fieldset-body"&gt;
-    &lt;div class="field-row"&gt;
-      &lt;div class="field-item"&gt;
-        &lt;label class="field-label"&gt;First name &lt;span class="required"&gt;*&lt;/span&gt;&lt;/label&gt;
-        &lt;input type="text" class="form-control"&gt;
-      &lt;/div&gt;
-      &lt;div class="field-item"&gt;
-        &lt;label class="field-label"&gt;Last name&lt;/label&gt;
-        &lt;input type="text" class="form-control"&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="field-row full"&gt;
-      &lt;div class="field-item"&gt;
-        &lt;label class="field-label"&gt;Summary&lt;/label&gt;
-        &lt;textarea class="form-control"&gt;&lt;/textarea&gt;
-        &lt;div class="field-hint"&gt;Max 500 characters.&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/fieldset&gt;</pre>
-          <div class="docs-subsection-title">Row widths</div>
-          <p class="docs-desc"><code>field-row</code> (2 cols) · <code>field-row full</code> (1) · <code>field-row three</code> (3) · <code>field-row four</code> (4). <code>field-label .required</code> renders a danger-colored asterisk; <code>field-hint</code> is muted helper text below the control.</p>
-        </div>
+          <p class="docs-desc">A titled section grouping field rows. <code>wui-fieldset-legend</code> (optional icon) sits at the top, an optional <code>wui-fieldset-sub</code> description tucks under it, and <code>wui-fieldset-body</code> holds the <code>field-row</code> groups. Works on a real <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code> or plain divs. Add <code>plain</code> to drop the surface chrome (background, border, padding).</p>
 
-        <!-- ── Form footer ──────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">dock_to_bottom</span>wui-ftr-wrap — form footer</div>
-          <p class="docs-desc">Sticky action bar: meta on the left, buttons on the right. Add <code>centered</code> to the wrap for a max-width carded footer. <code>wui-ftr-meta</code> takes a status modifier (<code>primary</code> / <code>success</code> / <code>warning</code> / <code>danger</code>) that colors its icon.</p>
-          <div class="docs-example stacked">
-            <div class="wui-ftr-wrap">
-              <div class="wui-ftr-inner">
-                <div class="wui-ftr-body">
-                  <div class="wui-ftr-left">
-                    <div class="wui-ftr-meta success">
-                      <span class="material-symbols-outlined">check_circle</span>
-                      <strong>3 fields</strong>&nbsp;ready to submit
+          <div class="docs-subsection-title">Standard fieldset (legend + sub + body)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Fieldset with legend, sub, and body -->
+              <fieldset class="wui-fieldset">
+                <legend class="wui-fieldset-legend">
+                  <span class="material-symbols-outlined">person</span>
+                  Reporting Officer
+                </legend>
+                <p class="wui-fieldset-sub">Who is filing this incident report.</p>
+                <div class="wui-fieldset-body">
+                  <div class="field-row">
+                    <div class="field-item">
+                      <label class="field-label">First name <span class="required">*</span></label>
+                      <input type="text" class="form-control" placeholder="Jordan">
+                    </div>
+                    <div class="field-item">
+                      <label class="field-label">Last name <span class="required">*</span></label>
+                      <input type="text" class="form-control" placeholder="Rivera">
                     </div>
                   </div>
-                  <div class="wui-ftr-actions">
-                    <button type="button" class="wui-btn ghost secondary wui-btn-sm"><span class="material-symbols-outlined">close</span> Cancel</button>
-                    <button type="button" class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">save</span> Save</button>
+                  <div class="field-row full">
+                    <div class="field-item">
+                      <label class="field-label">Summary</label>
+                      <textarea class="form-control" placeholder="Brief description of the incident…"></textarea>
+                      <div class="field-hint">Max 500 characters.</div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </fieldset>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-ftr-wrap"&gt;          &lt;!-- add "centered" for a carded footer --&gt;
-  &lt;div class="wui-ftr-inner"&gt;
-    &lt;div class="wui-ftr-body"&gt;
-      &lt;div class="wui-ftr-left"&gt;
-        &lt;div class="wui-ftr-meta success"&gt;
-          &lt;span class="material-symbols-outlined"&gt;check_circle&lt;/span&gt;
-          &lt;strong&gt;3 fields&lt;/strong&gt; ready to submit
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;div class="wui-ftr-actions"&gt;
-        &lt;button class="wui-btn ghost secondary wui-btn-sm"&gt;Cancel&lt;/button&gt;
-        &lt;button class="wui-btn primary wui-btn-sm"&gt;Save&lt;/button&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
-        </div>
 
-        <!-- ── Readonly fields ─────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">lock</span>Readonly fields</div>
-          <p class="docs-desc">Use <code>[readonly]</code> (native HTML) or the <code>.is-readonly</code> class for controls that display existing data and must not be edited. The dashed border signals non-interactive; the muted surface and text keep the content readable without the weight of a disabled field.</p>
-
-          <div class="docs-subsection-title">Editable vs readonly — side-by-side</div>
-          <div class="docs-example stacked">
-            <fieldset class="wui-fieldset">
-              <legend class="wui-fieldset-legend">
-                <span class="material-symbols-outlined">compare_arrows</span>
-                Editable vs readonly
-              </legend>
-              <div class="wui-fieldset-body">
+          <div class="docs-subsection-title">Plain (no chrome)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Plain fieldset — titled group with no surface -->
+              <fieldset class="wui-fieldset plain">
+                <legend class="wui-fieldset-legend">
+                  <span class="material-symbols-outlined">tune</span>
+                  Filters
+                </legend>
                 <div class="field-row">
                   <div class="field-item">
-                    <label class="field-label">Editable field <span class="required">*</span></label>
-                    <input type="text" class="form-control" placeholder="Type here…">
-                    <div class="field-hint">Normal editable control.</div>
+                    <label class="field-label">Keyword</label>
+                    <input type="text" class="form-control" placeholder="Search text…">
                   </div>
-                  <div class="field-item is-readonly">
-                    <label class="field-label">Readonly field</label>
-                    <input type="text" class="form-control" readonly value="Computed by system">
-                    <div class="field-hint">Set by the system — not editable.</div>
-                  </div>
-                </div>
-                <div class="field-row">
                   <div class="field-item">
-                    <label class="field-label">Incident ID <span class="required">*</span></label>
+                    <label class="field-label">Reference</label>
                     <input type="text" class="form-control" placeholder="AUTO-0001">
                   </div>
-                  <div class="field-item is-readonly">
-                    <label class="field-label">Created by</label>
-                    <input type="text" class="form-control is-readonly" value="J. Rivera (WebEOC)">
-                  </div>
                 </div>
-                <div class="field-row full">
-                  <div class="field-item is-readonly">
-                    <label class="field-label">Prior assessment</label>
-                    <textarea class="form-control" readonly>Situation assessed at 08:00. No immediate life safety risk. Monitoring ongoing.</textarea>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
-          </div>
-          <pre class="docs-code">&lt;!-- Native readonly attribute (preferred for real inputs) --&gt;
-&lt;div class="field-item is-readonly"&gt;
-  &lt;label class="field-label"&gt;Created by&lt;/label&gt;
-  &lt;input type="text" class="form-control" readonly value="J. Rivera (WebEOC)"&gt;
-&lt;/div&gt;
-
-&lt;!-- Class-only version (use when [readonly] is not available, e.g. TomSelect output) --&gt;
-&lt;div class="field-item is-readonly"&gt;
-  &lt;label class="field-label"&gt;Status&lt;/label&gt;
-  &lt;input type="text" class="form-control is-readonly" value="Monitoring"&gt;
-&lt;/div&gt;
-
-&lt;!-- Readonly textarea --&gt;
-&lt;div class="field-item is-readonly"&gt;
-  &lt;label class="field-label"&gt;Prior assessment&lt;/label&gt;
-  &lt;textarea class="form-control" readonly&gt;Existing content…&lt;/textarea&gt;
-&lt;/div&gt;</pre>
-
-          <div class="wui-callout info">
-            <span class="material-symbols-outlined">info</span>
-            <div class="wui-callout-body">
-              <div class="wui-callout-title">Two selectors, same styles</div>
-              <code>[readonly]</code> covers native inputs and textareas. <code>.is-readonly</code> covers everything else — custom controls, TomSelect wrappers, display-only divs — so you can use the same visual language across all field types.
+              </fieldset>
             </div>
           </div>
+        </div>
+
+        <!-- ══════════════════════════ field grid ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">grid_view</span>Field grid — field-row / field-item</div>
+          <p class="docs-desc"><code>field-row</code> is a CSS grid. By default it is 2 columns; add <code>full</code> for 1 column, <code>three</code> for 3, or <code>four</code> for 4. Each <code>field-item</code> is a vertical stack of <code>field-label</code> → control → optional <code>field-hint</code>. <code>field-label .required</code> renders a danger-colored asterisk. A label may carry a leading <code>material-symbols-outlined</code> icon (tinted primary).</p>
+
+          <div class="docs-subsection-title">field-row — 2 columns (default)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Two columns -->
+              <div class="field-row">
+                <div class="field-item">
+                  <label class="field-label">First name</label>
+                  <input type="text" class="form-control" placeholder="Jordan">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">Last name</label>
+                  <input type="text" class="form-control" placeholder="Rivera">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">field-row full — 1 column</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Single full-width column -->
+              <div class="field-row full">
+                <div class="field-item">
+                  <label class="field-label">Summary</label>
+                  <input type="text" class="form-control" placeholder="One field spanning the full width">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">field-row three — 3 columns</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Three columns -->
+              <div class="field-row three">
+                <div class="field-item">
+                  <label class="field-label">City</label>
+                  <input type="text" class="form-control" placeholder="City">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">State</label>
+                  <input type="text" class="form-control" placeholder="State">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">ZIP</label>
+                  <input type="text" class="form-control" placeholder="00000">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">field-row four — 4 columns</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Four columns -->
+              <div class="field-row four">
+                <div class="field-item">
+                  <label class="field-label">Day</label>
+                  <input type="text" class="form-control" placeholder="DD">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">Month</label>
+                  <input type="text" class="form-control" placeholder="MM">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">Year</label>
+                  <input type="text" class="form-control" placeholder="YYYY">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">Zone</label>
+                  <input type="text" class="form-control" placeholder="UTC">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">field-label — required marker &amp; icon</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Required marker -->
+              <div class="field-row">
+                <div class="field-item">
+                  <label class="field-label">Incident ID <span class="required">*</span></label>
+                  <input type="text" class="form-control" placeholder="AUTO-0001">
+                </div>
+                <!-- Label with leading icon -->
+                <div class="field-item">
+                  <label class="field-label"><span class="material-symbols-outlined">location_on</span> Location</label>
+                  <input type="text" class="form-control" placeholder="Terminal 3">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">field-hint — helper text</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Muted helper text below the control -->
+              <div class="field-item">
+                <label class="field-label">Email</label>
+                <input type="text" class="form-control" placeholder="name@agency.gov">
+                <div class="field-hint">We only use this to send status updates.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ readonly ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">lock</span>Readonly fields</div>
+          <p class="docs-desc">Use the native <code>[readonly]</code> attribute or the <code>.is-readonly</code> class on the control for fields that display existing data and must not be edited. Both selectors produce the same look: a dashed border and a muted secondary-light surface. The text stays copyable and the field is still focusable. Wrapping <code>field-item</code> in <code>is-readonly</code> also dims the label. (Readonly is not disabled — see the callout below.)</p>
+
+          <div class="docs-subsection-title">[readonly] attribute vs .is-readonly class</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Native readonly attribute -->
+              <div class="field-item is-readonly">
+                <label class="field-label">Created by</label>
+                <input type="text" class="form-control" readonly value="J. Rivera (WebEOC)">
+              </div>
+              <!-- Class-only readonly (e.g. custom controls) -->
+              <div class="field-item is-readonly">
+                <label class="field-label">Status</label>
+                <input type="text" class="form-control is-readonly" value="Monitoring">
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Readonly textarea (resize disabled)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Readonly textarea — resize handle removed -->
+              <div class="field-item is-readonly">
+                <label class="field-label">Prior assessment</label>
+                <textarea class="form-control" readonly>Situation assessed at 08:00. No immediate life safety risk. Monitoring ongoing.</textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Editable vs readonly — side by side</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Editable + readonly in one row -->
+              <div class="field-row">
+                <div class="field-item">
+                  <label class="field-label">Editable field <span class="required">*</span></label>
+                  <input type="text" class="form-control" placeholder="Type here…">
+                  <div class="field-hint">Normal editable control.</div>
+                </div>
+                <div class="field-item is-readonly">
+                  <label class="field-label">Readonly field</label>
+                  <input type="text" class="form-control" readonly value="Computed by system">
+                  <div class="field-hint">Set by the system — not editable.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="wui-callout warning">
             <span class="material-symbols-outlined">visibility</span>
             <div class="wui-callout-body">
               <div class="wui-callout-title">Readonly ≠ disabled</div>
-              Readonly fields are still focusable and the text is copyable. If the control should be completely inert (no tab stop, grayed out), use the <code>disabled</code> attribute or <code>.is-disabled</code> instead.
+              Readonly fields are still focusable and the text is copyable. If the control must be completely inert (no tab stop, grayed out), use the <code>disabled</code> attribute instead (next section).
             </div>
           </div>
         </div>
 
-        <!-- ── Date range / search wrap ─────────────────────────────────────── -->
+        <!-- ══════════════════════════ disabled ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">date_range</span>Date range &amp; search chrome</div>
-          <p class="docs-desc"><code>wui-date-range-wrap</code> lays out a pair of flatpickr inputs (start / end) in a tight flex row. <code>wui-search-wrap</code> is a bordered search box with a leading icon and a borderless <code>wui-filter-search-filter</code> input.</p>
-          <div class="docs-example stacked">
-            <div class="wui-date-range-wrap">
-              <input type="text" class="form-control" placeholder="Start date">
-              <span class="material-symbols-outlined" style="color:var(--color-text-secondary)">arrow_forward</span>
-              <input type="text" class="form-control" placeholder="End date">
-            </div>
-            <div class="wui-search-wrap">
-              <span class="wui-search-icon material-symbols-outlined">search</span>
-              <input type="text" class="wui-filter-search-filter" placeholder="Search records...">
+          <div class="docs-section-title"><span class="material-symbols-outlined">block</span>Disabled fields</div>
+          <p class="docs-desc">The native <code>disabled</code> attribute renders inert controls. <code>form-control</code> inherits the browser's default disabled treatment (reduced contrast, no focus, no tab stop). Use disabled when the field should not be interactive at all; use readonly when its value should still be selectable and copyable.</p>
+
+          <div class="docs-subsection-title">Disabled input &amp; textarea</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Disabled input -->
+              <input type="text" class="form-control" disabled value="Locked value">
+              <!-- Disabled empty input -->
+              <input type="text" class="form-control" disabled placeholder="Unavailable">
+              <!-- Disabled textarea -->
+              <textarea class="form-control" disabled>Disabled textarea content.</textarea>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-date-range-wrap"&gt;
-  &lt;input type="text" placeholder="Start date"&gt;   &lt;!-- flatpickr --&gt;
-  &lt;input type="text" placeholder="End date"&gt;
-&lt;/div&gt;
-
-&lt;div class="wui-search-wrap"&gt;
-  &lt;span class="wui-search-icon material-symbols-outlined"&gt;search&lt;/span&gt;
-  &lt;input type="text" class="wui-filter-search-filter" placeholder="Search..."&gt;
-&lt;/div&gt;</pre>
         </div>
 
-        <!-- ── TomSelect ────────────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ form-section ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">arrow_drop_down_circle</span>TomSelect</div>
-          <p class="docs-desc">Powered by <code>tom-select-factory.js</code>. Add <code>class="tomselect"</code> to any <code>&lt;select&gt;</code> and call <code>TomSelectFactory.init()</code>. The factory injects a blank placeholder option, auto-resyncs dependent cascades via MutationObserver, and handles edit-mode repopulation for multi-selects.</p>
+          <div class="docs-section-title"><span class="material-symbols-outlined">view_agenda</span>form-section</div>
+          <p class="docs-desc">A carded surface with a titled header, used to break a long form into labelled blocks. <code>form-section-title</code> is an underlined heading with an optional leading icon (tinted primary). Similar to <code>wui-fieldset</code> but without a semantic <code>&lt;legend&gt;</code>; use it for lighter visual grouping.</p>
 
-          <div class="wui-callout info">
-            <span class="material-symbols-outlined">info</span>
-            <div class="wui-callout-body">
-              <div class="wui-callout-title">Load order</div>
-              <code>tom-select.min.css</code> → <code>tom-select-agency.css</code> in <code>&lt;head&gt;</code>, then TomSelect JS → <code>tom-select-factory.js</code>. Call <code>TomSelectFactory.init()</code> after the DOM is ready.
-            </div>
-          </div>
-
-          <div class="docs-subsection-title">Single select</div>
-          <p class="docs-desc">One item, dropdown search built in. <code>data-allow-empty="true"</code> keeps the blank option in the dropdown so the user can actively re-clear a field — omit for required fields (placeholder shows on load, but can't be re-selected once a value is chosen).</p>
-          <div class="docs-example stacked">
-            <div class="field-row">
-              <div class="field-item">
-                <label class="field-label">Priority <span class="required">*</span></label>
-                <select id="demo-ts-single" class="tomselect" data-placeholder="Select priority…">
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                  <option value="critical">Critical</option>
-                </select>
-              </div>
-              <div class="field-item">
-                <label class="field-label">Status (clearable)</label>
-                <select id="demo-ts-allow-empty" class="tomselect" data-placeholder="Optional — can clear…" data-allow-empty="true">
-                  <option value="active">Active</option>
-                  <option value="monitoring">Monitoring</option>
-                  <option value="resolved">Resolved</option>
-                </select>
+          <div class="docs-subsection-title">Titled section</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Carded section with underlined title -->
+              <div class="form-section">
+                <div class="form-section-title">
+                  <span class="material-symbols-outlined">description</span>
+                  Incident Details
+                </div>
+                <div class="field-row">
+                  <div class="field-item">
+                    <label class="field-label">Title <span class="required">*</span></label>
+                    <input type="text" class="form-control" placeholder="Short incident title">
+                  </div>
+                  <div class="field-item">
+                    <label class="field-label">Reference</label>
+                    <input type="text" class="form-control" placeholder="AUTO-0001">
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;select class="tomselect" data-placeholder="Select priority…"&gt;
-  &lt;option value="low"&gt;Low&lt;/option&gt;
-  &lt;option value="high"&gt;High&lt;/option&gt;
-&lt;/select&gt;
-
-&lt;!-- Clearable: user can re-select blank from the dropdown --&gt;
-&lt;select class="tomselect" data-allow-empty="true" data-placeholder="Optional…"&gt;…&lt;/select&gt;
-
-&lt;script&gt;TomSelectFactory.init();&lt;/script&gt;</pre>
-
-          <div class="docs-subsection-title">Multi-select</div>
-          <p class="docs-desc">Add <code>multiple</code> (or <code>data-multi="true"</code>). Selections render as removable chips; an inline search field is always visible in the dropdown. In edit mode, restore comma-separated values with <code>repopulateMultiSelect('FieldName', xslValue)</code> — WebEOC doesn't restore multi-select natively.</p>
-          <div class="docs-example stacked">
-            <div class="field-item">
-              <label class="field-label">Responding agencies</label>
-              <select id="demo-ts-multi" class="tomselect" multiple data-placeholder="Select agencies…">
-                <option value="fire">Fire Department</option>
-                <option value="police">Police</option>
-                <option value="ems">EMS</option>
-                <option value="eoc">EOC</option>
-                <option value="public-works">Public Works</option>
-                <option value="utilities">Utilities</option>
-              </select>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;select class="tomselect" multiple data-placeholder="Select agencies…"&gt;
-  &lt;option value="fire"&gt;Fire Department&lt;/option&gt;
-  &lt;option value="ems"&gt;EMS&lt;/option&gt;
-  …
-&lt;/select&gt;</pre>
-
-          <div class="docs-subsection-title">Creatable</div>
-          <p class="docs-desc"><code>data-create="true"</code> — type a new value and press Enter or Tab to add it. <code>createOnBlur</code> is also enabled so tabbing away commits the typed entry automatically.</p>
-          <div class="docs-example stacked">
-            <div class="field-item">
-              <label class="field-label">Keywords / tags</label>
-              <select id="demo-ts-create" class="tomselect" multiple data-placeholder="Type to add tags…" data-create="true">
-                <option value="urgent">Urgent</option>
-                <option value="life-safety">Life Safety</option>
-                <option value="infrastructure">Infrastructure</option>
-                <option value="comms">Communications</option>
-              </select>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;select class="tomselect" multiple data-create="true" data-placeholder="Type to add…"&gt;
-  &lt;option value="urgent"&gt;Urgent&lt;/option&gt;
-  …
-&lt;/select&gt;</pre>
-
-          <div class="docs-subsection-title">Dependent selects (parent / child)</div>
-          <p class="docs-desc">In WebEOC the board engine replaces the child's <code>&lt;option&gt;</code> list when the parent changes — the factory's MutationObserver detects the option-count change and resyncs. For non-WebEOC contexts, wire <code>data-on-change</code> on the parent to a function that rebuilds child options and calls <code>TomSelectFactory.get('child')?.clearOptions().sync()</code>. The demo below uses this pattern.</p>
-          <div class="docs-example stacked">
-            <div class="field-row">
-              <div class="field-item">
-                <label class="field-label">Category <span class="required">*</span></label>
-                <select id="demo-ts-parent" name="demo-category" class="tomselect" data-placeholder="Select category…" data-on-change="docsFilterChild">
-                  <option value="hazmat">Hazmat</option>
-                  <option value="fire">Fire</option>
-                  <option value="flood">Flood</option>
-                </select>
-              </div>
-              <div class="field-item">
-                <label class="field-label">Sub-category</label>
-                <select id="demo-ts-child" name="demo-subcategory" class="tomselect" data-placeholder="Select category first…">
-                </select>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;!-- Parent: fires data-on-change with the selected value --&gt;
-&lt;select name="Category" class="tomselect" data-on-change="onCategoryChange"&gt;…&lt;/select&gt;
-
-&lt;!-- Child: data-parent triggers auto-resync when parent changes (WebEOC) --&gt;
-&lt;select name="SubCategory" class="tomselect" data-parent="Category"&gt;…&lt;/select&gt;</pre>
-
-          <div class="docs-subsection-title">Custom option renderer</div>
-          <p class="docs-desc">Register a template with <code>TomSelectFactory.registerTemplate(name, def)</code> before calling <code>init()</code>, then point the select at it with <code>data-render="name"</code>. TomSelect copies all <code>data-*</code> attributes from <code>&lt;option&gt;</code> elements into the option data object.</p>
-          <div class="docs-example stacked">
-            <div class="field-item">
-              <label class="field-label">Assign officer</label>
-              <select id="demo-ts-person" class="tomselect" data-placeholder="Assign to…" data-render="DocsPersonTmpl">
-                <option value="jr" data-role="Incident Commander" data-dept="EOC">J. Rivera</option>
-                <option value="am" data-role="Operations Chief" data-dept="Fire">A. Martinez</option>
-                <option value="tp" data-role="Logistics Chief" data-dept="EOC">T. Park</option>
-                <option value="sb" data-role="Safety Officer" data-dept="EMS">S. Brown</option>
-              </select>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;select class="tomselect" data-render="PersonTemplate"&gt;
-  &lt;option value="jr" data-role="Incident Commander" data-dept="EOC"&gt;J. Rivera&lt;/option&gt;
-  …
-&lt;/select&gt;
-
-TomSelectFactory.registerTemplate('PersonTemplate', {
-  option: function(data) {
-    return '&lt;div class="ts-person-option"&gt;' +
-      '&lt;div class="ts-person-name"&gt;' + data.text + '&lt;/div&gt;' +
-      '&lt;div class="ts-person-meta"&gt;' + data.role + ' · ' + data.dept + '&lt;/div&gt;' +
-    '&lt;/div&gt;';
-  },
-  item: function(data) { return '&lt;div&gt;' + data.text + '&lt;/div&gt;'; }
-});
-TomSelectFactory.init();</pre>
-
-          <div class="docs-subsection-title">States — disabled &amp; readonly</div>
-          <p class="docs-desc">Disabled (<code>disabled</code> attr or <code>TomSelectFactory.disable('key')</code>) renders with reduced opacity — fully inert, no tab stop. Readonly (<code>.is-readonly</code> on the <code>.ts-wrapper</code> after init) matches the form-control readonly style: dashed border, muted surface, text copyable, no dropdown.</p>
-          <div class="docs-example stacked">
-            <div class="field-row">
-              <div class="field-item">
-                <label class="field-label">Disabled</label>
-                <select id="demo-ts-disabled" class="tomselect" disabled>
-                  <option value="active" selected>Active Monitoring</option>
-                </select>
-                <div class="field-hint">Fully inert — grayed out, no tab stop.</div>
-              </div>
-              <div class="field-item is-readonly">
-                <label class="field-label">Readonly</label>
-                <select id="demo-ts-readonly" class="tomselect">
-                  <option value="monitoring" selected>Monitoring</option>
-                </select>
-                <div class="field-hint">Focusable, text copyable — no dropdown opens.</div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;!-- Disabled --&gt;
-&lt;select class="tomselect" disabled&gt;…&lt;/select&gt;
-TomSelectFactory.disable('key'); // programmatic
-
-&lt;!-- Readonly: add .is-readonly to the .ts-wrapper after init --&gt;
-TomSelectFactory.get('key').wrapper.classList.add('is-readonly');
-
-&lt;!-- Wrap in .field-item.is-readonly to dim the label too --&gt;
-&lt;div class="field-item is-readonly"&gt;
-  &lt;label class="field-label"&gt;Label&lt;/label&gt;
-  &lt;select class="tomselect"&gt;…&lt;/select&gt;
-&lt;/div&gt;</pre>
         </div>
 
-        <!-- ── Flatpickr ──────────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-ftr-wrap (form footer) ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">calendar_today</span>Flatpickr</div>
-          <p class="docs-desc">Powered by <code>flatpickr-factory.js</code>. Add <code>data-fp-preset</code> to any <code>&lt;input&gt;</code> — the factory auto-inits on <code>DOMContentLoaded</code> and dispatches a bubbling <code>fp:change</code> CustomEvent on every date change. Re-init late-injected inputs with <code>FlatpickrFactory.init(scope)</code>.</p>
+          <div class="docs-section-title"><span class="material-symbols-outlined">dock_to_bottom</span>wui-ftr-wrap — form footer</div>
+          <p class="docs-desc">Sticky action bar for input views. <code>wui-ftr-wrap</code> → <code>wui-ftr-inner</code> → <code>wui-ftr-body</code> lays out a left meta zone (<code>wui-ftr-left</code> / <code>wui-ftr-meta</code>) and a right action zone (<code>wui-ftr-right</code> or <code>wui-ftr-actions</code>). <code>wui-ftr-meta</code> takes a status modifier (<code>primary</code> / <code>success</code> / <code>warning</code> / <code>danger</code>) that tints its icon, and <code>&lt;strong&gt;</code> inside it is emphasized. Add <code>centered</code> to the wrap for a max-width carded footer, or <code>actions-only</code> to the body when there is no meta zone so the buttons stay right-aligned.</p>
 
-          <div class="wui-callout info">
-            <span class="material-symbols-outlined">info</span>
-            <div class="wui-callout-body">
-              <div class="wui-callout-title">Load order</div>
-              <code>flatpickr.min.css</code> → <code>flatpickr-agency.css</code> in <code>&lt;head&gt;</code>, then <code>flatpickr.min.js</code> → <code>flatpickr-factory.js</code>. Already-initialized inputs are skipped on re-call.
+          <div class="docs-subsection-title">Default footer — meta status colors</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Success meta -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta success">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <strong>3 fields</strong>&nbsp;ready to submit
+                      </div>
+                    </div>
+                    <div class="wui-ftr-actions">
+                      <button type="button" class="wui-btn ghost secondary wui-btn-sm"><span class="material-symbols-outlined">close</span> Cancel</button>
+                      <button type="button" class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">save</span> Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="docs-subsection-title">Date pickers</div>
-          <div class="docs-example stacked">
-            <div class="field-row">
-              <div class="field-item">
-                <label class="field-label">ISO date (Y-m-d)</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="date" placeholder="YYYY-MM-DD">
+          <div class="docs-subsection-title">Meta modifiers — primary / warning / danger</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary meta -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta primary">
+                        <span class="material-symbols-outlined">info</span>
+                        <strong>Draft</strong>&nbsp;autosaved a moment ago
+                      </div>
+                    </div>
+                    <div class="wui-ftr-right">
+                      <button type="button" class="wui-btn primary wui-btn-sm">Continue</button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="field-item">
-                <label class="field-label">DMY date (d/m/Y)</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="date-dmy" placeholder="DD/MM/YYYY">
+              <!-- Warning meta -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta warning">
+                        <span class="material-symbols-outlined">warning</span>
+                        <strong>1 field</strong>&nbsp;needs review
+                      </div>
+                    </div>
+                    <div class="wui-ftr-right">
+                      <button type="button" class="wui-btn warning wui-btn-sm">Review</button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;input class="flatpickr-input flat-date" data-fp-preset="date"&gt;      &lt;!-- YYYY-MM-DD --&gt;
-&lt;input class="flatpickr-input flat-date" data-fp-preset="date-dmy"&gt;  &lt;!-- DD/MM/YYYY --&gt;</pre>
-
-          <div class="docs-subsection-title">Time pickers</div>
-          <div class="docs-example stacked">
-            <div class="field-row">
-              <div class="field-item">
-                <label class="field-label">Time — 24hr</label>
-                <input class="flatpickr-input flat-time" data-fp-preset="time" placeholder="HH:MM">
-              </div>
-              <div class="field-item">
-                <label class="field-label">Time — 12hr</label>
-                <input class="flatpickr-input flat-time" data-fp-preset="time-12" placeholder="HH:MM AM/PM">
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;input class="flatpickr-input flat-time" data-fp-preset="time"&gt;    &lt;!-- 24hr --&gt;
-&lt;input class="flatpickr-input flat-time" data-fp-preset="time-12"&gt; &lt;!-- 12hr --&gt;</pre>
-
-          <div class="docs-subsection-title">Date + time</div>
-          <div class="docs-example stacked">
-            <div class="field-row three">
-              <div class="field-item">
-                <label class="field-label">Datetime 24hr</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="datetime" placeholder="YYYY-MM-DD HH:MM">
-              </div>
-              <div class="field-item">
-                <label class="field-label">Datetime DMY 12hr</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="datetime-12" placeholder="DD/MM/YYYY h:MM AM/PM">
-              </div>
-              <div class="field-item">
-                <label class="field-label">Datetime + seconds</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="datetime-seconds" placeholder="YYYY-MM-DD HH:MM:SS">
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;input data-fp-preset="datetime"&gt;          &lt;!-- YYYY-MM-DD HH:MM, 24hr --&gt;
-&lt;input data-fp-preset="datetime-dmy"&gt;      &lt;!-- DD/MM/YYYY HH:MM, 24hr --&gt;
-&lt;input data-fp-preset="datetime-12"&gt;       &lt;!-- DD/MM/YYYY h:MM AM/PM --&gt;
-&lt;input data-fp-preset="datetime-seconds"&gt;  &lt;!-- YYYY-MM-DD HH:MM:SS --&gt;</pre>
-
-          <div class="docs-subsection-title">Constrained — future &amp; past only</div>
-          <p class="docs-desc">The min/max is refreshed on each open so "today" is always the actual current day at the moment the picker opens, not when the page loaded.</p>
-          <div class="docs-example stacked">
-            <div class="field-row">
-              <div class="field-item">
-                <label class="field-label">Future date only</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="future-date" placeholder="From today →">
-              </div>
-              <div class="field-item">
-                <label class="field-label">Past date only</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="past-date" placeholder="← Up to today">
-              </div>
-            </div>
-            <div class="field-row">
-              <div class="field-item">
-                <label class="field-label">Future date + time</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="future-datetime" placeholder="From now →">
-              </div>
-              <div class="field-item">
-                <label class="field-label">Past date + time + seconds</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="past-datetime" placeholder="← Up to now">
+              <!-- Danger meta -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta danger">
+                        <span class="material-symbols-outlined">error</span>
+                        <strong>2 errors</strong>&nbsp;must be fixed
+                      </div>
+                    </div>
+                    <div class="wui-ftr-right">
+                      <button type="button" class="wui-btn danger wui-btn-sm">Fix</button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;input data-fp-preset="future-date"&gt;      &lt;!-- no past dates; min refreshed on open --&gt;
-&lt;input data-fp-preset="past-date"&gt;        &lt;!-- no future dates --&gt;
-&lt;input data-fp-preset="future-datetime"&gt;  &lt;!-- date + 24hr time, future only --&gt;
-&lt;input data-fp-preset="past-datetime"&gt;    &lt;!-- date + 12hr time + seconds, past only --&gt;</pre>
 
-          <div class="docs-subsection-title">Range pair (start / end)</div>
-          <p class="docs-desc">Both inputs share a <code>data-fp-range-group</code>. The start's selection becomes the end's minimum and vice versa — they constrain each other automatically on close.</p>
-          <div class="docs-example stacked">
-            <div class="wui-date-range-wrap">
-              <input class="flatpickr-input flat-range-start" data-fp-preset="range-start" data-fp-range-group="docs-window" data-fp-range-role="start" placeholder="Start">
-              <span class="material-symbols-outlined" style="color:var(--color-text-secondary)">arrow_forward</span>
-              <input class="flatpickr-input flat-range-end" data-fp-preset="range-end" data-fp-range-group="docs-window" data-fp-range-role="end" placeholder="End">
-            </div>
-          </div>
-          <pre class="docs-code">&lt;input data-fp-preset="range-start"
-       data-fp-range-group="incident-window"
-       data-fp-range-role="start"&gt;
-&lt;input data-fp-preset="range-end"
-       data-fp-range-group="incident-window"
-       data-fp-range-role="end"&gt;</pre>
-
-          <div class="docs-subsection-title">Inline (embedded) calendar</div>
-          <p class="docs-desc"><code>data-fp-inline="true"</code> renders the calendar permanently in place — no popup. Works with any preset. Useful for date panels and filter widgets in dashboards.</p>
-          <div class="docs-example stacked">
-            <input data-fp-preset="date" data-fp-inline="true">
-          </div>
-          <pre class="docs-code">&lt;input data-fp-preset="date" data-fp-inline="true"&gt;
-&lt;input data-fp-preset="datetime" data-fp-inline="true"&gt;</pre>
-
-          <div class="docs-subsection-title">Readonly</div>
-          <p class="docs-desc">Flatpickr always sets <code>[readonly]</code> on its input internally. For a true display-only field, add <code>.is-readonly</code> to the input and call <code>fp.set('clickOpens', false)</code> on the instance. The dashed border and muted surface match the form-control readonly language.</p>
-          <div class="docs-example stacked">
-            <div class="field-row">
-              <div class="field-item">
-                <label class="field-label">Editable date</label>
-                <input class="flatpickr-input flat-date" data-fp-preset="date" placeholder="YYYY-MM-DD">
-              </div>
-              <div class="field-item is-readonly">
-                <label class="field-label">Readonly date</label>
-                <input id="demo-fp-readonly" class="flatpickr-input flat-date is-readonly" readonly value="2026-06-24">
+          <div class="docs-subsection-title">Centered — carded footer</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Centered variant: transparent wrap, carded inner -->
+              <div class="wui-ftr-wrap centered">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta">
+                        <span class="material-symbols-outlined">schedule</span>
+                        Last edited 2 minutes ago
+                      </div>
+                    </div>
+                    <div class="wui-ftr-actions">
+                      <button type="button" class="wui-btn ghost secondary wui-btn-sm">Cancel</button>
+                      <button type="button" class="wui-btn primary wui-btn-sm">Save</button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;!-- Static readonly (no factory init on this input) --&gt;
-&lt;div class="field-item is-readonly"&gt;
-  &lt;label class="field-label"&gt;Date&lt;/label&gt;
-  &lt;input class="flatpickr-input flat-date is-readonly" readonly value="2026-06-24"&gt;
-&lt;/div&gt;
 
-&lt;!-- Block picker on a live instance --&gt;
-var fp = document.querySelector('#myDate')._flatpickr;
-if (fp) { fp.set('clickOpens', false); }
-document.querySelector('#myDate').classList.add('is-readonly');</pre>
+          <div class="docs-subsection-title">Actions only — <code>actions-only</code> body (no meta)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Buttons alone: actions-only keeps them right-aligned with no left meta zone -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body actions-only">
+                    <div class="wui-ftr-actions">
+                      <button type="button" class="wui-btn ghost secondary wui-btn-sm">Cancel</button>
+                      <button type="button" class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">save</span> Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Composes with centered for a carded, buttons-only footer -->
+              <div class="wui-ftr-wrap centered">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body actions-only">
+                    <div class="wui-ftr-actions">
+                      <button type="button" class="wui-btn ghost secondary wui-btn-sm">Discard</button>
+                      <button type="button" class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">send</span> Submit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ form-footer (alt) ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">dock_to_bottom</span>form-footer</div>
+          <p class="docs-desc">A simpler, right-aligned footer variant. <code>form-footer</code> centers a <code>page-center</code> bar (carded surface, shadow) that pushes its buttons to the right. Use it when the footer only needs actions, with no left-side meta.</p>
+
+          <div class="docs-subsection-title">Right-aligned action bar</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- form-footer with page-center bar -->
+              <div class="form-footer">
+                <div class="page-center">
+                  <button type="button" class="wui-btn ghost secondary wui-btn-sm">Cancel</button>
+                  <button type="button" class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">save</span> Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>

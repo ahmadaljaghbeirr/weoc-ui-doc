@@ -565,21 +565,38 @@
 }
 
 /* ── Number input (table cell/row properties) ───────────── */
-.tox .tox-number-input {
-  background: var(--color-60) !important;
+.tox .tox-number-input,
+.tox .tox-number-input .tox-input-wrapper {
+  background: var(--color-30) !important;
 }
 
-.tox .tox-number-input .tox-input-wrapper {
-  background-color: var(--color-60) !important;
+/* Steppers: transparent buttons, arrows in the border colour (per request).
+   Hover/active add an accent tint + brighter arrow so they stay discoverable. */
+.tox .tox-number-input button {
+  background: transparent !important;
+  color: var(--color-border) !important;
 }
 
 .tox .tox-number-input button svg {
-  fill: var(--color-text-ui) !important;
+  fill: var(--color-border) !important;
+}
+
+.tox .tox-number-input button:hover,
+.tox .tox-number-input button:focus {
+  background: var(--color-10-light) !important;
 }
 
 .tox .tox-number-input button:hover svg,
 .tox .tox-number-input button:focus svg {
   fill: var(--color-text-primary) !important;
+}
+
+.tox .tox-number-input button:active {
+  background: var(--color-10-muted) !important;
+}
+
+.tox .tox-number-input button:active svg {
+  fill: var(--color-10) !important;
 }
 
 /* ── Dialog side-nav tabs (Help, Table properties, …) ───── */

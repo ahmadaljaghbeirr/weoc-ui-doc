@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>weoc-ui — Layout</title>
+  <title>weoc-ui — Layout &amp; Shell</title>
   <script src="../../JS/weoc-ui.js"></script>
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
   <link rel="stylesheet" href="../docs-style.css">
@@ -19,492 +19,584 @@
     <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="layout">
       <div class="docs-page">
         <style>
-          .demo-pane { display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: 700; border-radius: var(--radius-sm); background: var(--color-10); color: var(--color-on-accent); }
-          .demo-pane.alt { background: var(--color-secondary); }
+          /* Placeholder tiles used inside the contained shell demos. Structure-only:
+             plain tinted boxes so the layout skeleton reads without pulling in
+             card/panel components from other pages. */
+          .lay-box {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            font-family: var(--font-mono); font-size: var(--text-2xs); font-weight: 700;
+            letter-spacing: .02em; padding: var(--space-2);
+            border: 1px dashed var(--color-10); border-radius: var(--radius-sm);
+            background: var(--color-10-light, var(--color-30)); color: var(--color-10);
+            box-sizing: border-box; min-height: 2.25rem;
+          }
+          .lay-box.alt   { border-color: var(--color-secondary); color: var(--color-secondary); background: var(--color-30); }
+          .lay-box.info  { border-color: var(--color-info);    color: var(--color-info-text, var(--color-info));    background: var(--color-info-light, var(--color-30)); }
+          .lay-box.ok    { border-color: var(--color-success); color: var(--color-success-text, var(--color-success)); background: var(--color-success-light, var(--color-30)); }
+          .lay-box.warn  { border-color: var(--color-warning); color: var(--color-warning-text, var(--color-warning)); background: var(--color-warning-light, var(--color-30)); }
+          .lay-box.fill  { flex: 1; }
+          /* Give the contained shell demos a fixed height so primitives that
+             want to fill their parent (flex:1 / grid 1fr) render on the page. */
+          .lay-frame { height: 280px; }
+          .lay-frame.sm { height: 200px; }
         </style>
 
-
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Components</div>
-          <div class="docs-hero-title">Layout</div>
-          <div class="docs-hero-sub">The app shell (wui-body-shell, wui-main-div, wui-container), then wui-split, wui-toolbar, wui-field-row, wui-bento, and scroll/fill primitives.</div>
+          <div class="docs-hero-eyebrow">Layout</div>
+          <div class="docs-hero-title">Layout &amp; Shell</div>
+          <div class="docs-hero-sub">The full-height app shell (<code>wui-body-shell</code>, <code>wui-page-shell</code>, <code>wui-main-div</code>, <code>wui-view-body</code>), the two-pane <code>wui-split</code>, scroll / fill primitives (<code>wui-scroll-area</code>, <code>wui-fill-area</code>), the tab shell (<code>wui-det-body</code>, <code>wui-det-inner</code>, <code>wui-tab-panel</code>), <code>wui-toolbar</code>, and the generic grid templates. Shell primitives fill their parent height; the demos below wrap them in a fixed-height frame so the structure is visible on the page.</div>
         </div>
 
-        <!-- ── App shell ───────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ App shell ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">wysiwyg</span>App shell</div>
-          <p class="docs-desc">Every board nests the same way: <code>body.wui-body-shell</code> (full-height, <code>overflow:hidden</code>, flex column) → <code>wui-main-div</code> (padded flex column that fills the viewport) → a sticky <code>wui-hdr-wrap</code> plus a <code>flex:1</code> content region (<code>wui-split</code> or <code>wui-scroll-area</code>) that takes the remaining height. <code>wui-container</code> is the Bootstrap-aligned max-width content column for non-shell pages.</p>
+          <div class="docs-section-title"><span class="material-symbols-outlined">wysiwyg</span>App shell — wui-body-shell · wui-page-shell · wui-main-div · wui-view-body</div>
+          <p class="docs-desc">Every board nests the same full-height chain. <code>body.wui-body-shell</code> is <code>100vh · overflow:hidden · flex-column</code> (replaces the per-board body reset). Inside it, either <code>wui-main-div</code> (a padded flex column that fills the viewport) or <code>wui-page-shell</code> (a gapped, padded flex column used for input scaffolds) holds a shrink-to-content header plus a <code>flex:1</code> content region. <code>wui-view-body</code> is the scrollable content zone for display views — <code>flex:1; overflow-y:auto</code>, no padding of its own.</p>
 
-          <div class="docs-subsection-title">Shell nesting</div>
-          <div class="docs-example stacked">
-            <div style="border:1px dashed var(--color-secondary);border-radius:var(--radius-md);padding:var(--space-3);background:var(--color-60)">
-              <div style="font-family:var(--font-mono);font-size:var(--text-2xs);font-weight:700;color:var(--color-text-secondary);margin-bottom:var(--space-2)">body.wui-body-shell — 100vh · overflow:hidden · flex column</div>
-              <div style="border:1px dashed var(--color-10);border-radius:var(--radius-sm);padding:var(--space-3);background:var(--color-30)">
-                <div style="font-family:var(--font-mono);font-size:var(--text-2xs);font-weight:700;color:var(--color-10);margin-bottom:var(--space-2)">.wui-main-div — padded flex column, fills the shell</div>
-                <div style="border:1px dashed var(--color-info);border-radius:var(--radius-sm);padding:var(--space-2);background:var(--color-info-light);margin-bottom:var(--space-2);font-family:var(--font-mono);font-size:var(--text-2xs);color:var(--color-info-text)">.wui-hdr-wrap — sticky header (shrinks to content)</div>
-                <div style="border:1px dashed var(--color-success);border-radius:var(--radius-sm);padding:var(--space-2);background:var(--color-success-light);font-family:var(--font-mono);font-size:var(--text-2xs);color:var(--color-success-text)">.wui-split / .wui-scroll-area — flex:1 content, fills remaining height</div>
+          <div class="docs-subsection-title">Shell nesting (contained)</div>
+          <p class="docs-desc">This is the real shell chain rendered at a contained height. In a live board the outer <code>body.wui-body-shell</code> fills the viewport.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- body.wui-body-shell — 100vh · overflow:hidden · flex column -->
+              <div class="wui-body-shell lay-frame" style="height:280px;border:1px dashed var(--color-secondary);border-radius:var(--radius-md);padding:var(--space-2)">
+                <!-- wui-main-div — padded flex column, fills the shell -->
+                <div class="wui-main-div" style="height:auto;flex:1;padding:var(--space-2)">
+                  <!-- header — shrinks to content (e.g. wui-hdr-wrap) -->
+                  <div class="lay-box info" style="margin-bottom:var(--space-2)">header — shrinks to content</div>
+                  <!-- content region — flex:1, fills remaining height (wui-split / wui-view-body / wui-scroll-area) -->
+                  <div class="lay-box ok fill">content region — flex:1 · fills remaining height</div>
+                </div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;body class="wui-body-shell"&gt;        &lt;!-- 100vh · overflow:hidden · flex column --&gt;
-  &lt;div class="wui-main-div"&gt;          &lt;!-- padded flex column, fills the shell --&gt;
-    &lt;div class="wui-hdr-wrap"&gt;…header…&lt;/div&gt;        &lt;!-- shrinks to content --&gt;
-    &lt;div class="wui-split"&gt;…content…&lt;/div&gt;          &lt;!-- flex:1 — fills the rest --&gt;
-  &lt;/div&gt;
-&lt;/body&gt;</pre>
 
-          <div class="docs-subsection-title">wui-container — max-width content column</div>
-          <p class="docs-desc">Centered column with responsive max-width breakpoints (576/768/992/1200/1400px), Bootstrap-aligned. <code>wui-container-fluid</code> stays full-width at every breakpoint. Side padding from <code>--space-4</code>.</p>
-          <div class="docs-example stacked">
-            <div class="wui-container" style="background:var(--color-10-light);border:1px dashed var(--color-10);border-radius:var(--radius-sm)">
-              <div style="padding:var(--space-3) 0;text-align:center;color:var(--color-text-ui);font-size:var(--text-sm)">.wui-container — centered, max-width per breakpoint</div>
+          <div class="docs-subsection-title">wui-view-body — scrollable display content</div>
+          <p class="docs-desc">Wraps the scrolling card/grid area of a display view so the header + filter bar stay fixed while the body scrolls independently. Padding comes from the inner layout, not from <code>wui-view-body</code>.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Fixed header + independently scrolling body -->
+              <div class="wui-main-div lay-frame" style="height:200px;padding:var(--space-2)">
+                <div class="lay-box info" style="margin-bottom:var(--space-2)">fixed header</div>
+                <!-- wui-view-body — flex:1; overflow-y:auto -->
+                <div class="wui-view-body" style="padding:var(--space-2)">
+                  <div class="lay-box" style="margin-bottom:var(--space-2)">row 1 (scrolls)</div>
+                  <div class="lay-box" style="margin-bottom:var(--space-2)">row 2 (scrolls)</div>
+                  <div class="lay-box" style="margin-bottom:var(--space-2)">row 3 (scrolls)</div>
+                  <div class="lay-box" style="margin-bottom:var(--space-2)">row 4 (scrolls)</div>
+                  <div class="lay-box">row 5 (scrolls)</div>
+                </div>
+              </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-container"&gt;…&lt;/div&gt;        &lt;!-- responsive max-width, centered --&gt;
-&lt;div class="wui-container-fluid"&gt;…&lt;/div&gt;  &lt;!-- always full width --&gt;</pre>
+
+          <div class="docs-subsection-title">page-center — max-width content column</div>
+          <p class="docs-desc"><code>page-center</code> centers a <code>max-width:1100px</code> content column with top padding. Boards used to define it locally; it now lives in the library. Details views also constrain it to <code>1092px</code> inside a tab panel.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- page-center — centered max-width column -->
+              <div class="page-center" style="background:var(--color-30);border:1px dashed var(--color-10);border-radius:var(--radius-sm)">
+                <div class="lay-box" style="border:none;background:transparent">page-center — centered, max-width 1100px</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- ── wui-split ───────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-split ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">view_column</span>wui-split</div>
-          <p class="docs-desc">CSS grid two-pane layout. Panel is the secondary pane; main is the primary. Add <code>.panel-start</code> to dock panel on the left. Column ratios via modifier classes; override with inline <code>style="grid-template-columns: …"</code>.</p>
+          <p class="docs-desc">Opt-in two-pane split (CSS grid, not flex — <code>fr</code> columns give exact, content-independent ratios). Wrap exactly two children: <code>wui-split-main</code> (primary pane) and <code>wui-split-panel</code> (secondary pane). Default is 50/50 with the panel on the right; ratio classes and <code>panel-start</code> change the geometry. Column changes animate over 320ms.</p>
 
-          <div class="docs-subsection-title">Panel right (default) — ratio-3-1</div>
-          <div class="docs-example stacked" style="padding:0;overflow:hidden">
-            <div class="wui-split ratio-3-1" style="height:120px">
-              <div class="wui-split-main" style="background:var(--color-60);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:600">
-                .wui-split-main
-              </div>
-              <div class="wui-split-panel" style="background:var(--color-10);display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);color:var(--color-on-accent)">
-                .wui-split-panel
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;!-- Default: panel on the right --&gt;
-&lt;div class="wui-split ratio-3-1"&gt;
-  &lt;div class="wui-split-main"&gt;…main content…&lt;/div&gt;
-  &lt;div class="wui-split-panel"&gt;…detail panel…&lt;/div&gt;
-&lt;/div&gt;</pre>
-
-          <div class="docs-subsection-title">Panel left (.panel-start)</div>
-          <div class="docs-example stacked" style="padding:0;overflow:hidden">
-            <div class="wui-split panel-start ratio-2-3" style="height:120px">
-              <div class="wui-split-panel" style="background:var(--color-10);display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);color:var(--color-on-accent)">
-                .wui-split-panel
-              </div>
-              <div class="wui-split-main" style="background:var(--color-60);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:600">
-                .wui-split-main
+          <div class="docs-subsection-title">Default — 50 / 50, panel right</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default: no ratio class, panel on the right -->
+              <div class="wui-split lay-frame sm" style="height:200px">
+                <div class="wui-split-main lay-box fill">.wui-split-main</div>
+                <div class="wui-split-panel lay-box alt fill">.wui-split-panel</div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;!-- Panel on the left --&gt;
-&lt;div class="wui-split panel-start ratio-2-3"&gt;
-  &lt;div class="wui-split-panel"&gt;…nav/sidebar…&lt;/div&gt;
-  &lt;div class="wui-split-main"&gt;…content…&lt;/div&gt;
-&lt;/div&gt;</pre>
 
-          <div class="docs-subsection-title">Ratio classes</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Class</th><th>Main : Panel</th><th>Use case</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">ratio-3-2</span></td><td>3 : 2</td><td>Balanced split</td></tr>
-              <tr><td><span class="docs-token-name">ratio-2-1</span></td><td>2 : 1</td><td>Standard record list + detail</td></tr>
-              <tr><td><span class="docs-token-name">ratio-3-1</span></td><td>3 : 1</td><td>Wide main with narrow panel</td></tr>
-              <tr><td><span class="docs-token-name">ratio-4-1</span></td><td>4 : 1</td><td>Full board with thin sidebar</td></tr>
-              <tr><td><span class="docs-token-name">ratio-2-3</span></td><td>2 : 3</td><td>Detail-heavy panel</td></tr>
-            </tbody>
-          </table>
-
-          <div class="docs-subsection-title">Collapsed state (.is-collapsed)</div>
-          <p class="docs-desc">Animates the panel column to 0fr (320ms). Toggle with <code>[data-wui-panel-close]</code> or <code>WUI.open/close</code>.</p>
-          <pre class="docs-code">&lt;!-- Collapse the panel --&gt;
-&lt;div class="wui-split ratio-3-1 is-collapsed"&gt;…&lt;/div&gt;
-
-&lt;!-- Declarative: clicking this closes the split panel + clears active --&gt;
-&lt;button data-wui-panel-close="#my-split"&gt;Close Panel&lt;/button&gt;</pre>
-        </div>
-
-        <!-- ── wui-toolbar ─────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">toolbar</span>wui-toolbar</div>
-          <p class="docs-desc">Flex bar with surface chrome (background + border). <code>.plain</code> removes chrome for a borderless bar.</p>
-
-          <div class="docs-example stacked">
-            <div class="wui-toolbar">
-              <div class="wui-toolbar-group">
-                <button class="wui-btn ghost secondary wui-btn-sm icon-only" title="List"><span class="material-symbols-outlined">list</span></button>
-                <button class="wui-btn ghost secondary wui-btn-sm icon-only" title="Grid"><span class="material-symbols-outlined">grid_view</span></button>
+          <div class="docs-subsection-title">Ratio variants (main : panel)</div>
+          <p class="docs-desc">Ratios are token-driven (<code>--wui-split-main</code> / <code>--wui-split-panel</code>) and can also be set inline for arbitrary or animated values. Every ratio class in the CSS is shown below.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- ratio-3-2 — 3 : 2 balanced -->
+              <div class="wui-split ratio-3-2" style="height:56px;margin-bottom:var(--space-3)">
+                <div class="wui-split-main lay-box fill">ratio-3-2 · main</div>
+                <div class="wui-split-panel lay-box alt fill">panel</div>
               </div>
-              <div class="wui-toolbar-sep"></div>
-              <div class="wui-toolbar-group">
-                <button class="wui-btn ghost secondary wui-btn-sm">
-                  <span class="material-symbols-outlined">filter_list</span> Filter
+              <!-- ratio-2-1 — 2 : 1 (map) -->
+              <div class="wui-split ratio-2-1" style="height:56px;margin-bottom:var(--space-3)">
+                <div class="wui-split-main lay-box fill">ratio-2-1 · main</div>
+                <div class="wui-split-panel lay-box alt fill">panel</div>
+              </div>
+              <!-- ratio-3-1 — 3 : 1 -->
+              <div class="wui-split ratio-3-1" style="height:56px;margin-bottom:var(--space-3)">
+                <div class="wui-split-main lay-box fill">ratio-3-1 · main</div>
+                <div class="wui-split-panel lay-box alt fill">panel</div>
+              </div>
+              <!-- ratio-4-1 — 4 : 1 (thin rail) -->
+              <div class="wui-split ratio-4-1" style="height:56px;margin-bottom:var(--space-3)">
+                <div class="wui-split-main lay-box fill">ratio-4-1 · main</div>
+                <div class="wui-split-panel lay-box alt fill">panel</div>
+              </div>
+              <!-- ratio-2-3 — 2 : 3 (detail-heavy panel) -->
+              <div class="wui-split ratio-2-3" style="height:56px">
+                <div class="wui-split-main lay-box fill">ratio-2-3 · main</div>
+                <div class="wui-split-panel lay-box alt fill">panel</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">panel-start — dock panel on the left</div>
+          <p class="docs-desc">Swaps the column order (panel first) and moves the divider to the panel's right edge. Use for a filter rail or nav sidebar. Combines with any ratio class.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- panel-start + ratio-2-3 — narrow panel docked left -->
+              <div class="wui-split panel-start ratio-2-3 lay-frame sm" style="height:200px">
+                <div class="wui-split-panel lay-box alt fill">.wui-split-panel (left)</div>
+                <div class="wui-split-main lay-box fill">.wui-split-main</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">is-collapsed — panel slid shut</div>
+          <p class="docs-desc">Collapses the panel column to <code>0fr</code> so the main pane fills. Kept as a real 0fr column (not <code>display:none</code>) so the change animates. The static structure is below; the button next to it is a live, JS-driven collapse toggle.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Static is-collapsed state — panel hidden, main fills -->
+              <div class="wui-split ratio-3-1 is-collapsed lay-frame sm" style="height:200px">
+                <div class="wui-split-main lay-box fill">.wui-split-main (panel collapsed)</div>
+                <div class="wui-split-panel lay-box alt fill">.wui-split-panel</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Declarative collapse toggle (data-wui-panel-close)</div>
+          <p class="docs-desc">Interactivity is JS-driven and handled by <code>weoc-ui.js</code>. A <code>[data-wui-panel-close="#id"]</code> button toggles the target split's close class (default <code>is-collapsed</code>) and clears any linked active items — no page script needed. Live demo:</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Declarative: this button collapses/reopens the split below -->
+              <div class="wui-toolbar plain" style="margin-bottom:var(--space-2)">
+                <button class="wui-btn outline secondary wui-btn-sm" data-wui-panel-close="#demo-split-collapse">
+                  <span class="material-symbols-outlined">right_panel_close</span> Toggle panel
                 </button>
               </div>
-              <div class="wui-toolbar-spacer"></div>
-              <div class="wui-toolbar-group">
-                <button class="wui-btn primary wui-btn-sm">
-                  <span class="material-symbols-outlined">add</span> New
-                </button>
+              <div class="wui-split ratio-2-1 lay-frame sm" id="demo-split-collapse" style="height:200px">
+                <div class="wui-split-main lay-box fill">.wui-split-main</div>
+                <div class="wui-split-panel lay-box alt fill">.wui-split-panel</div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-toolbar"&gt;
-  &lt;div class="wui-toolbar-group"&gt;…buttons…&lt;/div&gt;
-  &lt;div class="wui-toolbar-sep"&gt;&lt;/div&gt;       &lt;!-- vertical divider --&gt;
-  &lt;div class="wui-toolbar-group"&gt;…&lt;/div&gt;
-  &lt;div class="wui-toolbar-spacer"&gt;&lt;/div&gt;    &lt;!-- flex:1 spacer --&gt;
-  &lt;div class="wui-toolbar-group"&gt;…&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- No chrome --&gt;
-&lt;div class="wui-toolbar plain"&gt;…&lt;/div&gt;</pre>
+          <p class="docs-desc">Programmatic control (<code>WUI.open</code> / <code>WUI.close</code> / <code>WUI.toggle</code>) and the full attribute reference are on the <a href="js-api.html">JS API</a> page. <code>panel-active</code> is a narrow-screen (max-width 900px) modifier that hands the single visible pane to the panel; it only takes effect below that breakpoint, so it is documented but not previewable at desktop width.</p>
         </div>
 
-        <!-- ── wui-field-row ───────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-scroll-area ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">table_rows</span>wui-field-row</div>
-          <p class="docs-desc">2-column grid for form layout. <code>wui-field-item</code> spans one column; modifiers change span.</p>
+          <div class="docs-section-title"><span class="material-symbols-outlined">swap_vert</span>wui-scroll-area</div>
+          <p class="docs-desc">Independently scrollable record feed. <code>flex:1; overflow-y:auto</code> — fills the remaining height in a flex-column parent and scrolls while siblings stay put. Reserves a stable scrollbar gutter (no layout shift). Density modifiers change the gap; <code>is-grid</code> turns it into a responsive card gallery.</p>
 
-          <div class="docs-example stacked">
-            <div class="wui-field-row">
-              <div class="wui-field-item">
-                <label class="wui-field-label">First Name <span class="wui-required">*</span></label>
-                <input type="text" placeholder="First name" style="width:100%;padding:var(--space-2) var(--space-3);border:1px solid rgba(0,0,0,0.2);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-30);color:inherit">
-              </div>
-              <div class="wui-field-item">
-                <label class="wui-field-label">Last Name</label>
-                <input type="text" placeholder="Last name" style="width:100%;padding:var(--space-2) var(--space-3);border:1px solid rgba(0,0,0,0.2);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-30);color:inherit">
-              </div>
-              <div class="wui-field-item full">
-                <label class="wui-field-label">Notes</label>
-                <textarea placeholder="Notes…" style="width:100%;padding:var(--space-2) var(--space-3);border:1px solid rgba(0,0,0,0.2);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-30);color:inherit;height:80px"></textarea>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-field-row"&gt;
-  &lt;div class="wui-field-item"&gt;
-    &lt;label class="wui-field-label"&gt;Field &lt;span class="wui-required"&gt;*&lt;/span&gt;&lt;/label&gt;
-    &lt;input type="text"&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-field-item"&gt;…&lt;/div&gt;
-  &lt;div class="wui-field-item full"&gt;…spans full width…&lt;/div&gt;
-&lt;/div&gt;
-&lt;!-- Item span modifiers: .full | .col1 | .col3 | .col4 --&gt;</pre>
-        </div>
-
-        <!-- ── wui-scroll-area / wui-fill-area ─────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">swap_vert</span>wui-scroll-area &amp; wui-fill-area</div>
-          <p class="docs-desc"><code>wui-scroll-area</code>: <code>flex:1; overflow-y:auto</code> — fills remaining height, content scrolls. <code>wui-fill-area</code>: same but non-scrolling. Density: <code>.is-tight</code> / <code>.is-roomy</code>. Gallery: <code>.is-grid</code>.</p>
-
-          <pre class="docs-code">&lt;!-- Record feed that fills and scrolls --&gt;
-&lt;div class="wui-scroll-area"&gt;
-  &lt;div class="wui-card is-record"&gt;…&lt;/div&gt;
-  &lt;div class="wui-card is-record"&gt;…&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Tight/roomy density --&gt;
-&lt;div class="wui-scroll-area is-tight"&gt;…&lt;/div&gt;
-&lt;div class="wui-scroll-area is-roomy"&gt;…&lt;/div&gt;
-
-&lt;!-- Responsive card gallery --&gt;
-&lt;div class="wui-scroll-area is-grid"&gt;
-  &lt;div class="wui-card"&gt;…&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Non-scrolling fill --&gt;
-&lt;div class="wui-fill-area"&gt;…&lt;/div&gt;</pre>
-        </div>
-
-        <!-- ── wui-bento ───────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">grid_4x4</span>wui-bento</div>
-          <p class="docs-desc">Dashboard mosaic grid. Set column/row counts and cell sizes on the container. Each tile uses <code>.wui-w-CxR</code> classes for spanning.</p>
-
-          <div class="docs-example stacked">
-            <div class="wui-bento cols-4 cell-md">
-              <div class="wui-bento-tile wui-w-2x2">
-                <div class="wui-card" style="height:100%;box-sizing:border-box">
-                  <div class="wui-card-body"><div class="wui-card-label">2×2 tile</div></div>
-                </div>
-              </div>
-              <div class="wui-bento-tile wui-w-1x1">
-                <div class="wui-card is-metric" style="height:100%;box-sizing:border-box">
-                  <div class="wui-card-body"><div class="wui-card-value">47</div><div class="wui-card-label">Open</div></div>
-                </div>
-              </div>
-              <div class="wui-bento-tile wui-w-1x1">
-                <div class="wui-card is-metric" style="height:100%;box-sizing:border-box">
-                  <div class="wui-card-body"><div class="wui-card-value">12</div><div class="wui-card-label">Critical</div></div>
-                </div>
-              </div>
-              <div class="wui-bento-tile wui-w-2x1">
-                <div class="wui-card" style="height:100%;box-sizing:border-box">
-                  <div class="wui-card-body"><div class="wui-card-label">2×1 tile</div></div>
+          <div class="docs-subsection-title">Default feed (fills &amp; scrolls)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-scroll-area inside a fixed-height flex column -->
+              <div class="wui-fill-area lay-frame sm" style="height:200px">
+                <div class="wui-scroll-area">
+                  <div class="lay-box">record 1</div>
+                  <div class="lay-box">record 2</div>
+                  <div class="lay-box">record 3</div>
+                  <div class="lay-box">record 4</div>
+                  <div class="lay-box">record 5</div>
+                  <div class="lay-box">record 6</div>
                 </div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-bento cols-4 rows-2 cell-md"&gt;
-  &lt;div class="wui-bento-tile wui-w-2x2"&gt;…2 cols × 2 rows…&lt;/div&gt;
-  &lt;div class="wui-bento-tile wui-w-1x1"&gt;…1×1…&lt;/div&gt;
-  &lt;div class="wui-bento-tile wui-w-2x1"&gt;…2 cols × 1 row…&lt;/div&gt;
-&lt;/div&gt;
 
-&lt;!-- Columns: cols-1 through cols-8 --&gt;
-&lt;!-- Rows: rows-1 through rows-6 --&gt;
-&lt;!-- Cell size: cell-sm | cell-md | cell-lg --&gt;
-&lt;!-- Tile sizes: wui-w-1x1, wui-w-2x1, wui-w-1x2, wui-w-2x2, wui-w-3x1, wui-w-4x2, etc. --&gt;
-&lt;!-- Full-page bento: add .is-page for viewport-filling grid --&gt;</pre>
-        </div>
-
-        <!-- ── List / stacks / grids ────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">view_list</span>Lists, stacks &amp; card grids</div>
-          <p class="docs-desc">Four column/grid primitives for record feeds. <code>wui-list</code> scrolls internally (thin scrollbar); <code>wui-card-stack</code> grows with content (place inside a scroll parent); <code>wui-cards-grid</code> is a responsive auto-fill grid (override min card width with <code>--wui-card-min</code>).</p>
-          <div class="docs-subsection-title">wui-cards-grid</div>
-          <div class="docs-example stacked">
-            <div class="wui-cards-grid" style="--wui-card-min:200px">
-              <div class="wui-card"><div class="wui-card-body"><div class="wui-card-label">Card A</div></div></div>
-              <div class="wui-card"><div class="wui-card-body"><div class="wui-card-label">Card B</div></div></div>
-              <div class="wui-card"><div class="wui-card-body"><div class="wui-card-label">Card C</div></div></div>
+          <div class="docs-subsection-title">Density — is-tight / is-roomy</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- is-tight — smaller gap -->
+              <div class="wui-scroll-area is-tight" style="height:96px;margin-bottom:var(--space-3)">
+                <div class="lay-box">tight · gap = space-2</div>
+                <div class="lay-box">tight · gap = space-2</div>
+                <div class="lay-box">tight · gap = space-2</div>
+              </div>
+              <!-- is-roomy — larger gap -->
+              <div class="wui-scroll-area is-roomy" style="height:120px">
+                <div class="lay-box">roomy · gap = space-4</div>
+                <div class="lay-box">roomy · gap = space-4</div>
+              </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-list"&gt;…&lt;/div&gt;                  &lt;!-- internal scroll --&gt;
-&lt;div class="wui-card-stack"&gt;…&lt;/div&gt;            &lt;!-- grows; scroll parent --&gt;
-&lt;div class="wui-cards-grid" style="--wui-card-min:320px"&gt;…&lt;/div&gt;</pre>
-        </div>
 
-        <!-- ── Two-col / sidebar ────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">splitscreen</span>Two-column &amp; sidebar</div>
-          <p class="docs-desc"><code>wui-two-col</code> is an equal-width grid (add <code>align-stretch</code> to fill height). <code>wui-sidebar-layout</code> is a fixed rail + fluid main (override the rail with <code>--wui-sidebar-width</code>).</p>
-          <div class="docs-subsection-title">wui-two-col</div>
-          <div class="docs-example stacked">
-            <div class="wui-two-col">
-              <div class="wui-panel"><div class="wui-panel-body">Left</div></div>
-              <div class="wui-panel"><div class="wui-panel-body">Right</div></div>
+          <div class="docs-subsection-title">is-grid — responsive card gallery</div>
+          <p class="docs-desc">Switches to a CSS grid of auto-filled columns. Override the min column width with <code>--wui-scroll-col</code> (default 280px).</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- is-grid — auto-fill gallery -->
+              <div class="wui-scroll-area is-grid" style="--wui-scroll-col:150px;height:180px">
+                <div class="lay-box">tile A</div>
+                <div class="lay-box">tile B</div>
+                <div class="lay-box">tile C</div>
+                <div class="lay-box">tile D</div>
+                <div class="lay-box">tile E</div>
+                <div class="lay-box">tile F</div>
+              </div>
             </div>
           </div>
-          <div class="docs-subsection-title">wui-sidebar-layout</div>
-          <div class="docs-example stacked">
-            <div class="wui-sidebar-layout" style="--wui-sidebar-width:160px">
-              <aside class="wui-panel"><div class="wui-panel-body">Sidebar</div></aside>
-              <main class="wui-panel"><div class="wui-panel-body">Main content</div></main>
+        </div>
+
+        <!-- ══════════════════════════ wui-fill-area ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">fit_screen</span>wui-fill-area</div>
+          <p class="docs-desc">Non-scrolling counterpart to <code>wui-scroll-area</code>. Fills the remaining height in a flex-column parent (<code>flex:1; overflow:hidden</code>) but does not scroll — use it to wrap a grid or a fixed-height layout that manages its own overflow. Add a <code>wui-gap-*</code> utility if you need spacing between direct children.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-fill-area — clips, does not scroll -->
+              <div class="wui-main-div lay-frame sm" style="height:200px;padding:var(--space-2)">
+                <div class="lay-box info" style="margin-bottom:var(--space-2)">header (fixed)</div>
+                <div class="wui-fill-area">
+                  <div class="lay-box ok fill">.wui-fill-area — fills remaining height, no scroll</div>
+                </div>
+              </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-two-col"&gt;…&lt;/div&gt;
-
-&lt;div class="wui-sidebar-layout" style="--wui-sidebar-width:260px"&gt;
-  &lt;aside&gt;…&lt;/aside&gt;
-  &lt;main&gt;…&lt;/main&gt;
-&lt;/div&gt;</pre>
         </div>
 
-        <!-- ── Details panel ────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ Tab shell ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">dock_to_right</span>wui-details-panel</div>
-          <p class="docs-desc">Master-detail panel for grid views. Hidden by default; add <code>visible</code> to slide it in on selection. Holds <code>wui-det-body</code> → <code>wui-tab-panel</code> (active tab gets <code>active</code>). Content goes directly inside the panel — no <code>page-center</code> or <code>wui-det-inner</code> (panel width already constrains the layout).</p>
-          <pre class="docs-code">&lt;div class="wui-details-panel visible"&gt;
-  &lt;button class="wui-panel-close-btn"&gt;&lt;span class="material-symbols-outlined"&gt;close&lt;/span&gt;&lt;/button&gt;
-  &lt;div class="wui-det-body"&gt;
-    &lt;div class="wui-tab-panel active"&gt;
-      &lt;div class="wui-panel-wrap"&gt;…panel content…&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div class="wui-tab-panel"&gt;
-      &lt;div class="wui-panel-wrap"&gt;…second tab…&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
-        </div>
-
-        <!-- ── wui-det-inner ────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">center_focus_strong</span>wui-det-inner — input view content frame</div>
-          <p class="docs-desc">Single centering wrapper for full-page input-view body sections. Mirrors <code>wui-hdr-inner</code> / <code>wui-ftr-inner</code>: one <code>max-width:1100px</code> column, horizontally centered. Lives inside <code>form.input-form</code>, wraps <code>wui-det-body</code>. Replaces per-tab <code>page-center</code> divs — centering applied once, not on every panel.</p>
+          <div class="docs-section-title"><span class="material-symbols-outlined">view_agenda</span>Tab shell — wui-det-body · wui-det-inner · wui-tab-panel</div>
+          <p class="docs-desc">The details / input tab shell. <code>wui-det-body</code> is the <code>flex:1; overflow:hidden</code> region that holds the panels. <code>wui-det-inner</code> is a single <code>max-width:1100px</code> centering column placed once between header and footer (so every panel shares the header/footer alignment instead of each carrying its own <code>page-center</code>). <code>wui-tab-panel</code> is <code>display:none</code> until it gets <code>active</code>, then it becomes the scroll container. <code>is-form</code> removes the inner <code>page-center</code> padding for edge-to-edge forms.</p>
 
           <div class="docs-subsection-title">DOM nesting</div>
-          <pre class="docs-code">form.input-form          → flex:1 column (styled by weoc-forms.css)
-  └── .wui-det-inner    → max-width:1100px, centered, flex column ← THIS ELEMENT
-        └── .wui-det-body    → flex:1, overflow:hidden
-              └── .wui-tab-panel.active   → display:block, scrolls
-                    └── .wui-panel-wrap → .wui-panel   (no page-center)</pre>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Nesting: det-inner → det-body → tab-panel.active -->
+              <div class="wui-det-inner" style="background:var(--color-30);border:1px dashed var(--color-secondary);border-radius:var(--radius-sm);padding:var(--space-2)">
+                <div class="wui-det-body" style="border:1px dashed var(--color-10);border-radius:var(--radius-sm);padding:var(--space-2)">
+                  <!-- Only the .active panel is visible -->
+                  <div class="wui-tab-panel active">
+                    <div class="lay-box ok">.wui-tab-panel.active — visible, scrolls</div>
+                  </div>
+                  <!-- Inactive panels: display:none (shown here labelled for reference) -->
+                  <div class="wui-tab-panel">
+                    <div class="lay-box">.wui-tab-panel — hidden (display:none)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <div class="docs-subsection-title">Why it exists</div>
-          <p class="docs-desc">Before this component, every tab panel had its own <code>&lt;div class="page-center"&gt;</code>. That created a different centering context than the header/footer (which center via <code>wui-hdr-inner</code> / <code>wui-ftr-inner</code>), causing misalignment when the form inherited viewport padding. <code>wui-det-inner</code> solves this: one element, same max-width column, aligned with the header and footer.</p>
+          <div class="docs-subsection-title">Active vs inactive panels (contained)</div>
+          <p class="docs-desc">Tab switching is JS-driven: script moves the <code>active</code> class between the header tab and its panel. See the tab/list toggle pattern below and the <a href="js-api.html">JS API</a> page. The structure is static here — the first panel carries <code>active</code>.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Static: panel 1 active, panels 2/3 hidden -->
+              <div class="wui-det-body lay-frame sm" style="height:200px;border:1px dashed var(--color-10);border-radius:var(--radius-sm);padding:var(--space-2)">
+                <!-- Details tab — active -->
+                <div class="wui-tab-panel active">
+                  <div class="lay-box ok" style="height:100%">Details panel — .active</div>
+                </div>
+                <!-- Info tab — inactive -->
+                <div class="wui-tab-panel">
+                  <div class="lay-box">Info panel — hidden</div>
+                </div>
+                <!-- Attachments tab — inactive -->
+                <div class="wui-tab-panel">
+                  <div class="lay-box">Attachments panel — hidden</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-          <pre class="docs-code">&lt;form class="input-form" data-validate-hidden="true" data-tab-panel="true"&gt;
-  &lt;!-- insertfields / updatefields / hidden inputs --&gt;
-  &lt;div class="wui-det-inner"&gt;
-    &lt;div class="wui-det-body"&gt;
-      &lt;div class="wui-tab-panel active" id="panel-details"&gt;
-        &lt;div class="wui-panel-wrap"&gt;
-          &lt;div class="wui-panel"&gt;…&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div style="display: none"&gt;&lt;savebutton/&gt;&lt;/div&gt;
-&lt;/form&gt;</pre>
+          <div class="docs-subsection-title">is-list-mode — stack all panels in one scroll</div>
+          <p class="docs-desc">A JS toggle (<code>toggleViewMode()</code>) adds <code>is-list-mode</code> to <code>wui-det-body</code>: header tabs hide, every <code>wui-tab-panel</code> becomes <code>display:block; height:auto</code>, and the <code>det-body</code> itself becomes the scroll container. Below is the static list-mode structure — all panels visible and stacked.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Static is-list-mode — all panels stacked, det-body scrolls -->
+              <div class="wui-det-body is-list-mode lay-frame sm" style="height:200px;border:1px dashed var(--color-10);border-radius:var(--radius-sm);padding:var(--space-2)">
+                <div class="wui-tab-panel">
+                  <div class="lay-box" style="margin-bottom:var(--space-2)">Details panel</div>
+                </div>
+                <div class="wui-tab-panel">
+                  <div class="lay-box" style="margin-bottom:var(--space-2)">Info panel</div>
+                </div>
+                <div class="wui-tab-panel">
+                  <div class="lay-box">Attachments panel</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="docs-desc"><code>wui-det-inner .wui-tab-panel</code> gets vertical breathing room automatically; add <code>is-form</code> to a panel (<code>wui-tab-panel is-form</code>) when the inner <code>page-center</code> should have zero padding so a form runs to the edge.</p>
         </div>
 
-        <!-- ── Input view scaffold ──────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-toolbar ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">assignment</span>Input view scaffold</div>
-          <p class="docs-desc">Canonical HTML skeleton for a full-page WebEOC input view. Form is <code>form.input-form</code> (flex column child of the shell — <code>weoc-forms.css</code> provides the flex rules). <code>wui-det-inner</code> centers the body. Footer is <code>wui-ftr-wrap.centered</code> outside the form.</p>
+          <div class="docs-section-title"><span class="material-symbols-outlined">toolbar</span>wui-toolbar</div>
+          <p class="docs-desc">Horizontal bar for grouping actions and controls. Base has surface chrome (background + border). Compose with <code>wui-toolbar-group</code> (a tight cluster), <code>wui-toolbar-sep</code> (a vertical divider), and <code>wui-toolbar-spacer</code> (pushes following items to the far end).</p>
 
-          <div class="docs-subsection-title">Single-panel (no tabs)</div>
-          <pre class="docs-code">&lt;div class="wui-page-shell"&gt;
-  &lt;div class="wui-hdr-wrap centered"&gt;
-    &lt;div class="wui-hdr-inner"&gt;
-      &lt;div class="wui-hdr-top"&gt;…title…&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+          <div class="docs-subsection-title">Full toolbar — groups, separator, spacer</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Chromed bar with two left groups, a divider, a spacer, and a right group -->
+              <div class="wui-toolbar">
+                <div class="wui-toolbar-group">
+                  <button class="wui-btn ghost secondary wui-btn-sm icon-only" title="List"><span class="material-symbols-outlined">list</span></button>
+                  <button class="wui-btn ghost secondary wui-btn-sm icon-only" title="Grid"><span class="material-symbols-outlined">grid_view</span></button>
+                </div>
+                <!-- Vertical divider between groups -->
+                <div class="wui-toolbar-sep"></div>
+                <div class="wui-toolbar-group">
+                  <button class="wui-btn ghost secondary wui-btn-sm"><span class="material-symbols-outlined">filter_list</span> Filter</button>
+                </div>
+                <!-- Spacer pushes the next group to the far end -->
+                <div class="wui-toolbar-spacer"></div>
+                <div class="wui-toolbar-group">
+                  <button class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">add</span> New</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
-  &lt;form class="input-form" data-validate-hidden="true"&gt;
-    &lt;!-- insertfields / updatefields / hidden inputs --&gt;
-    &lt;div class="wui-det-inner"&gt;
-      &lt;div class="wui-det-body"&gt;
-        &lt;div class="wui-panel-wrap"&gt;
-          &lt;div class="wui-panel"&gt;…fields…&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div style="display: none"&gt;&lt;savebutton id="bOriginalSave"/&gt;&lt;/div&gt;
-  &lt;/form&gt;
-
-  &lt;div class="wui-ftr-wrap centered"&gt;
-    &lt;div class="wui-ftr-inner"&gt;
-      &lt;div class="wui-ftr-body"&gt;
-        &lt;div class="wui-ftr-left"&gt;&lt;/div&gt;
-        &lt;div class="wui-ftr-actions"&gt;
-          &lt;returnlink&gt;&lt;button class="wui-btn outline danger" type="button"&gt;Cancel&lt;/button&gt;&lt;/returnlink&gt;
-          &lt;button id="bSave" class="wui-btn primary" type="button"&gt;Save&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
-
-          <div class="docs-subsection-title">Multi-tab with header tabs</div>
-          <pre class="docs-code">&lt;div class="wui-page-shell"&gt;
-  &lt;div class="wui-hdr-wrap centered"&gt;
-    &lt;div class="wui-hdr-inner"&gt;
-      &lt;div class="wui-hdr-top"&gt;…title…&lt;/div&gt;
-      &lt;div class="wui-hdr-tabs"&gt;
-        &lt;div class="wui-hdr-tab active" id="tab-details" onclick="switchTab('details')"&gt;Details&lt;/div&gt;
-        &lt;div class="wui-hdr-tab" id="tab-info" onclick="switchTab('info')"&gt;Info&lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-
-  &lt;form class="input-form" data-validate-hidden="true" data-tab-panel="true"&gt;
-    &lt;!-- insertfields / updatefields / hidden inputs --&gt;
-    &lt;div class="wui-det-inner"&gt;
-      &lt;div class="wui-det-body"&gt;
-        &lt;div class="wui-tab-panel active" id="panel-details"&gt;
-          &lt;div class="wui-panel-wrap"&gt;&lt;div class="wui-panel"&gt;…&lt;/div&gt;&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="wui-tab-panel" id="panel-info"&gt;
-          &lt;div class="wui-panel-wrap"&gt;&lt;div class="wui-panel"&gt;…&lt;/div&gt;&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;div style="display: none"&gt;&lt;savebutton id="bOriginalSave"/&gt;&lt;/div&gt;
-  &lt;/form&gt;
-
-  &lt;div class="wui-ftr-wrap centered"&gt;
-    &lt;div class="wui-ftr-inner"&gt;
-      &lt;div class="wui-ftr-body"&gt;
-        &lt;div class="wui-ftr-left"&gt;&lt;/div&gt;
-        &lt;div class="wui-ftr-actions"&gt;
-          &lt;returnlink&gt;&lt;button class="wui-btn outline danger" type="button"&gt;Cancel&lt;/button&gt;&lt;/returnlink&gt;
-          &lt;button id="bSave" class="wui-btn primary" type="button"&gt;Save&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
-
-          <div class="docs-subsection-title">CSS required</div>
-          <table class="docs-token-table">
-            <thead><tr><th>File</th><th>What it provides</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">weoc-ui-core.css</span></td><td>Full library — shell, layout, panels, buttons, navigation</td></tr>
-              <tr><td><span class="docs-token-name">weoc-forms.css</span></td><td><code>form.input-form</code> flex rules + <code>.wui-ftr-wrap.centered</code> padding flush</td></tr>
-            </tbody>
-          </table>
+          <div class="docs-subsection-title">plain — no chrome</div>
+          <p class="docs-desc"><code>.plain</code> drops the background, border, and padding, leaving just the flex layout. Useful for a borderless action row.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Plain toolbar — flex layout only, no surface -->
+              <div class="wui-toolbar plain">
+                <div class="wui-toolbar-group">
+                  <button class="wui-btn outline secondary wui-btn-sm"><span class="material-symbols-outlined">sort</span> Sort</button>
+                  <button class="wui-btn outline secondary wui-btn-sm"><span class="material-symbols-outlined">download</span> Export</button>
+                </div>
+                <div class="wui-toolbar-spacer"></div>
+                <div class="wui-toolbar-group">
+                  <button class="wui-btn ghost secondary wui-btn-sm icon-only" title="More"><span class="material-symbols-outlined">more_horiz</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- ── Tab / List toggle ────────────────────────────────────────── -->
+        <!-- ══════════════════════════ Lists & card stack ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">view_agenda</span>Tab / List toggle pattern</div>
-          <p class="docs-desc">Lets a user switch a multi-tab input view between <em>tab mode</em> (one panel at a time, header tabs navigate) and <em>list mode</em> (all panels stacked vertically in one scroll, header tabs hidden). State persists in <code>localStorage</code> per board. CSS: <code>.wui-det-body.is-list-mode</code> modifier in <code>weoc-layout.css</code>.</p>
+          <div class="docs-section-title"><span class="material-symbols-outlined">view_list</span>wui-list &amp; wui-card-stack</div>
+          <p class="docs-desc">Two vertical column primitives. <code>wui-list</code> is a self-scrolling card column (<code>overflow-y:auto</code>) — use it when the column owns its own scroll. <code>wui-card-stack</code> is a non-scrolling column that grows with its content — place it inside a <code>wui-det-body</code> / <code>wui-tab-panel</code> that handles the scroll. Both are flex columns with a gap.</p>
 
-          <div class="docs-subsection-title">Toggle button — place in wui-hdr-right</div>
-          <pre class="docs-code">&lt;div class="wui-hdr-right"&gt;
-  &lt;button type="button" id="btn-view-toggle" class="wui-btn outline wui-btn-sm"
-          onclick="toggleViewMode()" title="Switch view mode"&gt;
-    &lt;span class="material-symbols-outlined" id="view-toggle-icon"&gt;view_agenda&lt;/span&gt;
-    &lt;span id="view-toggle-label"&gt;List Form&lt;/span&gt;
-  &lt;/button&gt;
-&lt;/div&gt;</pre>
+          <div class="docs-subsection-title">wui-list — self-scrolling column</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-list — scrolls internally -->
+              <div class="wui-list" style="height:180px">
+                <div class="lay-box">list item 1</div>
+                <div class="lay-box">list item 2</div>
+                <div class="lay-box">list item 3</div>
+                <div class="lay-box">list item 4</div>
+                <div class="lay-box">list item 5</div>
+              </div>
+            </div>
+          </div>
 
-          <div class="docs-subsection-title">JavaScript</div>
-          <pre class="docs-code">let currentTab = 'details';          // tracks active tab in tab mode
-let isListMode = false;
-const VIEW_MODE_KEY = 'myBoardViewMode';  // unique key per board
+          <div class="docs-subsection-title">wui-card-stack — grows with content</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-card-stack — non-scrolling, grows; place in a scroll parent -->
+              <div class="wui-card-stack">
+                <div class="lay-box">stacked card 1</div>
+                <div class="lay-box">stacked card 2</div>
+                <div class="lay-box">stacked card 3</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-function switchTab(tab) {
-  currentTab = tab;
-  if (!isListMode) {
-    $('.wui-hdr-tab').removeClass('active');
-    $('.wui-tab-panel').removeClass('active');
-    $('#tab-' + tab).addClass('active');
-    $('#panel-' + tab).addClass('active');
-  }
-}
+        <!-- ══════════════════════════ wui-grid-view ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">dashboard</span>wui-grid-view &amp; wui-details-panel</div>
+          <p class="docs-desc">The classic master-detail grid (list / map or list / detail). <code>wui-grid-view</code> is a 2-column grid with named areas <code>list</code> and <code>right</code>. The left child (a <code>wui-list</code> card column or a table) fills <code>list</code>; <code>wui-details-panel</code> slides into <code>right</code> when a record is selected. Add <code>list-only</code> to collapse to a single column when the panel is hidden. <code>wui-split</code> supersedes this for boards that opt in, but <code>wui-grid-view</code> is kept for boards on the older grid.</p>
 
-function toggleViewMode() {
-  isListMode = !isListMode;
-  applyViewMode();
-  localStorage.setItem(VIEW_MODE_KEY, isListMode ? 'list' : 'tabs');
-}
+          <div class="docs-subsection-title">Two-column (record selected)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-grid-view — list left, details-panel visible on the right -->
+              <div class="wui-grid-view lay-frame sm" style="height:200px;padding:var(--space-2)">
+                <div class="wui-list" style="grid-area:list">
+                  <div class="lay-box">record 1</div>
+                  <div class="lay-box">record 2</div>
+                  <div class="lay-box">record 3</div>
+                </div>
+                <!-- wui-details-panel.visible — slides into the "right" area -->
+                <div class="wui-details-panel visible">
+                  <!-- wui-panel-close-btn — anchored top-left inside the panel -->
+                  <button class="wui-action-btn wui-panel-close-btn" title="Close"><span class="material-symbols-outlined">close</span></button>
+                  <div class="lay-box alt" style="height:100%;border:none;border-radius:0">.wui-details-panel — selected record</div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-function applyViewMode() {
-  if (isListMode) {
-    $('.wui-hdr-tabs').hide();
-    $('.wui-tab-panel').addClass('active');
-    $('.wui-det-body').addClass('is-list-mode');
-    $('#view-toggle-icon').text('tab');
-    $('#view-toggle-label').text('Tab Form');
-  } else {
-    $('.wui-hdr-tabs').show();
-    $('.wui-tab-panel').removeClass('active');
-    $('.wui-det-body').removeClass('is-list-mode');
-    $('.wui-hdr-tab').removeClass('active');
-    $('#panel-' + currentTab).addClass('active');
-    $('#tab-' + currentTab).addClass('active');
-    $('#view-toggle-icon').text('view_agenda');
-    $('#view-toggle-label').text('List Form');
-  }
-}
+          <div class="docs-subsection-title">list-only (no selection)</div>
+          <p class="docs-desc">With <code>list-only</code> the grid collapses to a single full-height column; the details panel stays hidden. JS adds <code>visible</code> to the panel and removes <code>list-only</code> when a row is opened.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-grid-view.list-only — single column, panel hidden -->
+              <div class="wui-grid-view list-only lay-frame sm" style="height:200px;padding:var(--space-2)">
+                <div class="wui-list">
+                  <div class="lay-box">record 1</div>
+                  <div class="lay-box">record 2</div>
+                  <div class="lay-box">record 3</div>
+                  <div class="lay-box">record 4</div>
+                </div>
+                <!-- Panel present but hidden (no .visible) -->
+                <div class="wui-details-panel"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-// Restore saved mode on page load
-$(function () {
-  var saved = localStorage.getItem(VIEW_MODE_KEY);
-  if (saved === 'list') { isListMode = true; applyViewMode(); }
-});</pre>
+        <!-- ══════════════════════════ Generic templates ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">grid_view</span>wui-cards-grid</div>
+          <p class="docs-desc">Responsive auto-fill card wall. Columns are <code>repeat(auto-fill, minmax(var(--wui-card-min, 260px), 1fr))</code> — set <code>--wui-card-min</code> to change the card breakpoint.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-cards-grid — override min card width via --wui-card-min -->
+              <div class="wui-cards-grid" style="--wui-card-min:160px">
+                <div class="lay-box">card A</div>
+                <div class="lay-box">card B</div>
+                <div class="lay-box">card C</div>
+                <div class="lay-box">card D</div>
+                <div class="lay-box">card E</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <div class="docs-subsection-title">How it works</div>
-          <table class="docs-token-table">
-            <thead><tr><th>State</th><th>CSS modifier</th><th>Effect</th></tr></thead>
-            <tbody>
-              <tr><td>Tab mode (default)</td><td><em>none</em></td><td>Only <code>.wui-tab-panel.active</code> visible; <code>wui-hdr-tabs</code> shown</td></tr>
-              <tr><td>List mode</td><td><code>.wui-det-body.is-list-mode</code></td><td>All panels <code>display:block; height:auto</code>; det-body scrolls; tabs hidden</td></tr>
-            </tbody>
-          </table>
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">splitscreen</span>wui-two-col</div>
+          <p class="docs-desc">Equal-width two-column grid for previews, config panels, and side-by-side content. Default <code>align-items:start</code>; add <code>align-stretch</code> to make both columns fill the row height.</p>
+          <div class="docs-subsection-title">Default (align-items: start)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-two-col — equal columns, top-aligned -->
+              <div class="wui-two-col">
+                <div class="lay-box" style="min-height:64px">left column</div>
+                <div class="lay-box" style="min-height:96px">right column (taller)</div>
+              </div>
+            </div>
+          </div>
+          <div class="docs-subsection-title">align-stretch (fill height)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-two-col.align-stretch — both columns match the tallest -->
+              <div class="wui-two-col align-stretch">
+                <div class="lay-box">left (stretched)</div>
+                <div class="lay-box" style="min-height:96px">right (taller)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">side_navigation</span>wui-sidebar-layout</div>
+          <p class="docs-desc">Fixed sidebar rail + fluid content. Columns are <code>var(--wui-sidebar-width, 300px) 1fr</code> — override the rail width with <code>--wui-sidebar-width</code>.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-sidebar-layout — override rail via --wui-sidebar-width -->
+              <div class="wui-sidebar-layout" style="--wui-sidebar-width:140px">
+                <aside class="lay-box alt" style="min-height:96px">sidebar (140px)</aside>
+                <main class="lay-box" style="min-height:96px">main content (1fr)</main>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">vertical_split</span>wui-split-pane</div>
+          <p class="docs-desc">Asymmetric grid split for scope views (list left : detail right). Default ratio is <code>5fr : 7fr</code> via <code>--wui-split-left</code> / <code>--wui-split-right</code>; both columns use <code>minmax(0, …)</code> so they can shrink. Fills its flex parent (<code>flex:1; overflow:hidden</code>). Distinct from <code>wui-split</code> — this is a plain grid template with no collapse/animation behavior.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-split-pane — override ratio via --wui-split-left / --wui-split-right -->
+              <div class="wui-split-pane lay-frame sm" style="height:200px">
+                <div class="lay-box fill">list (5fr)</div>
+                <div class="lay-box alt fill">detail (7fr)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-field-row ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">table_rows</span>wui-field-row</div>
+          <p class="docs-desc">Responsive grid for form field layout. Base is 2 columns; <code>full</code> / <code>col1</code> = single column, <code>col3</code> = three, <code>col4</code> = four. <code>wui-field-item</code> is a labelled field cell; <code>wui-field-label</code> is the uppercase caption; <code>wui-required</code> marks a required field in the danger color.</p>
+
+          <div class="docs-subsection-title">2-column (base) + full-width row</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default 2-col row -->
+              <div class="wui-field-row">
+                <div class="wui-field-item">
+                  <label class="wui-field-label">First Name <span class="wui-required">*</span></label>
+                  <input type="text" class="form-control" placeholder="First name">
+                </div>
+                <div class="wui-field-item">
+                  <label class="wui-field-label">Last Name</label>
+                  <input type="text" class="form-control" placeholder="Last name">
+                </div>
+              </div>
+              <!-- full — single column spanning the row -->
+              <div class="wui-field-row full">
+                <div class="wui-field-item">
+                  <label class="wui-field-label">Notes</label>
+                  <textarea class="form-control" placeholder="Notes…"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">col3 / col4 — three &amp; four columns</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- col3 — three columns -->
+              <div class="wui-field-row col3">
+                <div class="wui-field-item"><label class="wui-field-label">City</label><input type="text" class="form-control"></div>
+                <div class="wui-field-item"><label class="wui-field-label">State</label><input type="text" class="form-control"></div>
+                <div class="wui-field-item"><label class="wui-field-label">ZIP</label><input type="text" class="form-control"></div>
+              </div>
+              <!-- col4 — four columns -->
+              <div class="wui-field-row col4">
+                <div class="wui-field-item"><label class="wui-field-label">Q1</label><input type="text" class="form-control"></div>
+                <div class="wui-field-item"><label class="wui-field-label">Q2</label><input type="text" class="form-control"></div>
+                <div class="wui-field-item"><label class="wui-field-label">Q3</label><input type="text" class="form-control"></div>
+                <div class="wui-field-item"><label class="wui-field-label">Q4</label><input type="text" class="form-control"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-table-view ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">table_chart</span>wui-table-view</div>
+          <p class="docs-desc">Scrollable padded wrapper for a full-view table (<code>flex:1; overflow-y:auto; padding: space-3</code>). Use it as the content region of a display view whose body is a single table rather than a card feed. Table styling itself lives on the <a href="tables.html">Tables</a> page; <code>wui-table-view</code> only provides the scroll container.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-table-view — scroll container for a table body -->
+              <div class="wui-main-div lay-frame sm" style="height:200px;padding:var(--space-2)">
+                <div class="lay-box info" style="margin-bottom:var(--space-2)">header (fixed)</div>
+                <div class="wui-table-view" style="border:1px dashed var(--color-10);border-radius:var(--radius-sm)">
+                  <div class="lay-box" style="margin-bottom:var(--space-2);border:none;background:transparent">table row 1</div>
+                  <div class="lay-box" style="margin-bottom:var(--space-2);border:none;background:transparent">table row 2</div>
+                  <div class="lay-box" style="border:none;background:transparent">table row 3</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Dashboard note ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">widgets</span>Dashboard grid (wui-widget)</div>
+          <p class="docs-desc">The dashboard widget grid (<code>wui-widget</code>, <code>wui-widget-hdr</code>, <code>wui-widget-body</code>, drag handle, etc.) is <strong>not</strong> defined in <code>weoc-layout.css</code> — this stylesheet only carries a <code>TODO</code> placeholder for it. The real <code>wui-widget</code> component ships in <code>weoc-containers.css</code>, so it is documented on the <a href="containers.html">Cards &amp; Containers</a> page rather than here.</p>
         </div>
 
       </div>

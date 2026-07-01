@@ -75,6 +75,9 @@
                                        move updatesection onto the shown one
      [data-wui-row]                    expandable log/table row: toggles is-open (guards
                                        inner controls). Keep the detail as a sibling.
+     [data-wui-step="up|down"]         themed number stepper: steps the number input inside
+                                       the same .wui-number wrapper (honours min/max/step),
+                                       then fires input + change. See weoc-forms.css .wui-number.
      (sticky cards header)             EVERY .wui-table-cards auto-binds: <thead> gets
                                        .wui-sticky-managed (transparent at rest) + .is-stuck
                                        when pinned (CSS swaps it opaque). No attribute needed.
@@ -490,6 +493,26 @@
         if (stack[i].panel.contains(dismiss)) { e.preventDefault(); WUI.close(stack[i].panel); break; }
       }
     }
+  });
+
+  /* declarative: [data-wui-step="up|down"] — themed number stepper.
+     Native <input type=number> spinners can't be re-themed, so .wui-number
+     hides them (CSS) and supplies +/- buttons. Here we drive the input with
+     the native stepUp()/stepDown() (which respect min/max/step) and fire
+     input + change so validators / listeners react as if the user typed. */
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-wui-step]');
+    if (!btn) return;
+    var wrap = btn.closest('.wui-number');
+    var input = wrap && wrap.querySelector('input[type="number"]');
+    if (!input || input.disabled || input.readOnly) return;
+    e.preventDefault();
+    try {
+      if (btn.getAttribute('data-wui-step') === 'down') { input.stepDown(); }
+      else { input.stepUp(); }
+    } catch (err) { return; }   /* stepUp/Down throws on a malformed value */
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
   });
 
   /* ═══════════════════════════════════════════════════════════════════════

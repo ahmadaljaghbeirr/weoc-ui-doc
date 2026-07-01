@@ -20,96 +20,121 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Foundations</div>
+          <div class="docs-hero-eyebrow">Typography</div>
           <div class="docs-hero-title">Typography</div>
-          <div class="docs-hero-sub">Utility classes for size, weight, color, and truncation. These wrap the raw type tokens (see <a class="wui-link" href="./tokens.html">Design Tokens</a>) into ready-to-apply classes.</div>
+          <div class="docs-hero-sub">Text utilities: the type scale (<code>wui-text-2xs</code> … <code>wui-text-2xl</code>), font weights (<code>wui-extralight</code> … <code>wui-black</code>), semantic text colors (<code>wui-text-primary</code>, <code>wui-text-secondary</code>, <code>wui-text-ui</code>, <code>wui-text-danger</code>, <code>wui-text-brand</code>, <code>wui-label-text</code>), and single-line clamping with <code>wui-truncate</code>.</div>
         </div>
 
-        <!-- ── Sizes ────────────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ Type scale ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">format_size</span>Size classes</div>
-          <p class="docs-desc">Each sets <code>font-size</code> (and a matching line-height) from the type scale.</p>
-          <div class="docs-example stacked">
-            <span class="wui-text-2xs">wui-text-2xs — The quick brown fox</span>
-            <span class="wui-text-xs">wui-text-xs — The quick brown fox</span>
-            <span class="wui-text-sm">wui-text-sm — The quick brown fox</span>
-            <span class="wui-text-base">wui-text-base — The quick brown fox</span>
-            <span class="wui-text-md">wui-text-md — The quick brown fox</span>
-            <span class="wui-text-lg">wui-text-lg — The quick brown fox</span>
-            <span class="wui-text-xl">wui-text-xl — The quick brown fox</span>
-            <span class="wui-text-2xl">wui-text-2xl — Heading</span>
+          <div class="docs-section-title"><span class="material-symbols-outlined">format_size</span>Type scale</div>
+          <p class="docs-desc">Font-size utilities driven by the <code>--text-*</code> tokens, each pairing a matched <code>line-height</code>. Base body text is <code>wui-text-base</code>; the scale runs from <code>wui-text-2xs</code> up to <code>wui-text-2xl</code>. Every size is marked <code>!important</code> so it wins over inherited sizing.</p>
+
+          <div class="docs-subsection-title">2xs → 2xl (base = wui-text-base)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- 2xs -->
+              <div class="wui-text-2xs">wui-text-2xs: The quick brown fox jumps over the lazy dog</div>
+              <!-- xs -->
+              <div class="wui-text-xs">wui-text-xs: The quick brown fox jumps over the lazy dog</div>
+              <!-- sm -->
+              <div class="wui-text-sm">wui-text-sm: The quick brown fox jumps over the lazy dog</div>
+              <!-- base -->
+              <div class="wui-text-base">wui-text-base: The quick brown fox jumps over the lazy dog</div>
+              <!-- md -->
+              <div class="wui-text-md">wui-text-md: The quick brown fox jumps over the lazy dog</div>
+              <!-- lg -->
+              <div class="wui-text-lg">wui-text-lg: The quick brown fox jumps over the lazy dog</div>
+              <!-- xl -->
+              <div class="wui-text-xl">wui-text-xl: The quick brown fox jumps over the lazy dog</div>
+              <!-- 2xl -->
+              <div class="wui-text-2xl">wui-text-2xl: The quick brown fox</div>
+            </div>
           </div>
-          <table class="docs-token-table">
-            <thead><tr><th>Class</th><th>Token</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">wui-text-2xs</span></td><td><span class="docs-token-name">--text-2xs</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-xs</span></td><td><span class="docs-token-name">--text-xs</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-sm</span></td><td><span class="docs-token-name">--text-sm</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-base</span></td><td><span class="docs-token-name">--text-base</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-md</span></td><td><span class="docs-token-name">--text-md</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-lg</span></td><td><span class="docs-token-name">--text-lg</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-xl</span></td><td><span class="docs-token-name">--text-xl</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-2xl</span></td><td><span class="docs-token-name">--text-2xl</span></td></tr>
-            </tbody>
-          </table>
         </div>
 
-        <!-- ── Weights ──────────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ Font weights ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">line_weight</span>Weight classes</div>
-          <div class="docs-example stacked">
-            <span class="wui-text-lg wui-extralight">wui-extralight — 200</span>
-            <span class="wui-text-lg wui-light">wui-light — 300</span>
-            <span class="wui-text-lg wui-regular">wui-regular — 400</span>
-            <span class="wui-text-lg wui-medium">wui-medium — 500</span>
-            <span class="wui-text-lg wui-semibold">wui-semibold — 600</span>
-            <span class="wui-text-lg wui-bold">wui-bold — 700</span>
-            <span class="wui-text-lg wui-extrabold">wui-extrabold — 800</span>
-            <span class="wui-text-lg wui-black">wui-black — 900</span>
+          <div class="docs-section-title"><span class="material-symbols-outlined">line_weight</span>Font weights</div>
+          <p class="docs-desc">Weight utilities mapped to the <code>--font-*</code> tokens, from <code>wui-extralight</code> through <code>wui-black</code>. <code>wui-extralight</code>, <code>wui-light</code>, and <code>wui-regular</code> are plain declarations; <code>wui-medium</code> and heavier carry <code>!important</code>.</p>
+
+          <div class="docs-subsection-title">extralight → black</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- extralight -->
+              <div class="wui-extralight wui-text-lg">wui-extralight: Emergency Operations Center</div>
+              <!-- light -->
+              <div class="wui-light wui-text-lg">wui-light: Emergency Operations Center</div>
+              <!-- regular -->
+              <div class="wui-regular wui-text-lg">wui-regular: Emergency Operations Center</div>
+              <!-- medium -->
+              <div class="wui-medium wui-text-lg">wui-medium: Emergency Operations Center</div>
+              <!-- semibold -->
+              <div class="wui-semibold wui-text-lg">wui-semibold: Emergency Operations Center</div>
+              <!-- bold -->
+              <div class="wui-bold wui-text-lg">wui-bold: Emergency Operations Center</div>
+              <!-- extrabold -->
+              <div class="wui-extrabold wui-text-lg">wui-extrabold: Emergency Operations Center</div>
+              <!-- black -->
+              <div class="wui-black wui-text-lg">wui-black: Emergency Operations Center</div>
+            </div>
           </div>
-          <pre class="docs-code">&lt;span class="wui-text-lg wui-semibold"&gt;Semibold heading&lt;/span&gt;</pre>
         </div>
 
-        <!-- ── Colors ───────────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ Text colors ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Color classes</div>
-          <div class="docs-example stacked">
-            <span class="wui-text-base wui-text-primary">wui-text-primary — main body text</span>
-            <span class="wui-text-base wui-text-secondary">wui-text-secondary — muted</span>
-            <span class="wui-text-base wui-text-ui">wui-text-ui — UI / control text</span>
-            <span class="wui-text-base wui-text-brand">wui-text-brand — accent (--color-10)</span>
-            <span class="wui-text-base wui-text-danger">wui-text-danger — error / alert</span>
+          <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Text colors</div>
+          <p class="docs-desc">Semantic color utilities driven by theme tokens. <code>wui-text-primary</code>, <code>wui-text-secondary</code>, and <code>wui-text-ui</code> form the neutral text ramp; <code>wui-text-danger</code> flags errors; <code>wui-text-brand</code> applies the brand accent (<code>--color-10</code>); and <code>wui-label-text</code> is the muted color reused for form labels (same value as <code>wui-text-secondary</code>).</p>
+
+          <div class="docs-subsection-title">All text colors</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- primary -->
+              <div class="wui-text-primary wui-text-lg wui-semibold">wui-text-primary: primary body text</div>
+              <!-- secondary -->
+              <div class="wui-text-secondary wui-text-lg wui-semibold">wui-text-secondary: secondary / muted text</div>
+              <!-- ui -->
+              <div class="wui-text-ui wui-text-lg wui-semibold">wui-text-ui: subtle UI / control text</div>
+              <!-- danger -->
+              <div class="wui-text-danger wui-text-lg wui-semibold">wui-text-danger: error / destructive text</div>
+              <!-- brand -->
+              <div class="wui-text-brand wui-text-lg wui-semibold">wui-text-brand: brand accent text</div>
+              <!-- label-text -->
+              <div class="wui-label-text wui-text-lg wui-semibold">wui-label-text: form label text</div>
+            </div>
           </div>
-          <table class="docs-token-table">
-            <thead><tr><th>Class</th><th>Token</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">wui-text-primary</span></td><td><span class="docs-token-name">--color-text-primary</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-secondary</span></td><td><span class="docs-token-name">--color-text-secondary</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-ui</span></td><td><span class="docs-token-name">--color-text-ui</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-brand</span></td><td><span class="docs-token-name">--color-10</span></td></tr>
-              <tr><td><span class="docs-token-name">wui-text-danger</span></td><td><span class="docs-token-name">--color-danger</span></td></tr>
-            </tbody>
-          </table>
         </div>
 
-        <!-- ── Other ────────────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ Truncation ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">more_horiz</span>Truncation &amp; labels</div>
-          <p class="docs-desc"><code>wui-truncate</code> clips to a single line with an ellipsis. Default width is <code>20ch</code>; override per element with <code>style="--wui-truncate: 30ch"</code>. The DOM text stays intact (clip is visual only) — pair with <code>title</code> for a hover tooltip. <code>wui-label-text</code> applies the secondary label color.</p>
-          <div class="docs-example stacked">
-            <span class="wui-truncate" title="This full string stays in the DOM even though it is visually clipped" style="--wui-truncate: 28ch">wui-truncate — this long string is clipped with an ellipsis</span>
-            <label class="wui-label-text">wui-label-text — field caption</label>
-          </div>
-          <pre class="docs-code">&lt;span class="wui-truncate" title="full text" style="--wui-truncate: 28ch"&gt;
-  Long string clipped with an ellipsis
-&lt;/span&gt;
+          <div class="docs-section-title"><span class="material-symbols-outlined">more_horiz</span>wui-truncate</div>
+          <p class="docs-desc">Single-line clamp with ellipsis. Width-based (<code>max-width: var(--wui-truncate, 20ch)</code>) and non-destructive: it clips visually but leaves the DOM text intact, so a child link keeps its <code>onclick</code> and it survives WebEOC <code>updatesection</code> refreshes. Override per use with <code>style="--wui-truncate: 30ch"</code> and pair with <code>title="full text"</code> for a hover tooltip.</p>
 
-&lt;label class="wui-label-text"&gt;Field caption&lt;/label&gt;</pre>
+          <div class="docs-subsection-title">Clamping inside a fixed-width box</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default clamp inside a 220px box -->
+              <div style="max-width:220px">
+                <span class="wui-truncate" title="Incident 4471: structural collapse reported at Terminal 3, mutual aid requested">Incident 4471: structural collapse reported at Terminal 3, mutual aid requested</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Custom clamp width via --wui-truncate</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Wider 30ch clamp via the --wui-truncate override -->
+              <div style="max-width:320px">
+                <span class="wui-truncate" style="--wui-truncate: 30ch" title="Incident 4471: structural collapse reported at Terminal 3, mutual aid requested">Incident 4471: structural collapse reported at Terminal 3, mutual aid requested</span>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
     </div>
   </div>
+
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('typography');</script>
 </body>
