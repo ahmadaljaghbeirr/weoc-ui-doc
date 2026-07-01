@@ -18,6 +18,41 @@ html {
   background: transparent !important;
 }
 
+/* ─── Scrollbars (GLOBAL) ───
+   One thin, token-driven scrollbar for EVERY overflow surface in the
+   library — no per-component rules needed. Tune the whole system from the
+   --scrollbar-* tokens in agency-theme.css. Components that intentionally
+   HIDE their scrollbar (e.g. .wui-hdr-tabs → scrollbar-width:none /
+   display:none) override locally with higher specificity, so this never
+   re-shows them. Firefox reads scrollbar-width/color (inherited from html);
+   WebKit reads the ::-webkit-scrollbar pseudo-elements. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-radius);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 /* ─── Body ─── */
 
 body {

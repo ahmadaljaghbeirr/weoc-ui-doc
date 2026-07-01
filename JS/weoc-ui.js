@@ -30,6 +30,8 @@
      WUI.toggleTheme()                 flip light <-> dark
      WUI.nativeTheme                   true on Nexus (a native theme control exists)
      [data-wui-theme-toggle]           button → toggleTheme; auto-hidden on Nexus
+     WUI.applyTinyMCETheme(editor)     set the current theme on ONE TinyMCE editor's iframe
+     WUI.syncTinyMCETheme()            re-sync ALL live TinyMCE editors (auto-run on themechange)
    Utilities
      WUI.ready(fn)                     run after DOM is parsed
      WUI.debounce(fn, ms[, immediate]) trailing (or leading) debounce
@@ -185,6 +187,59 @@
     };
     if (document.readyState !== 'loading') wuiHideThemeToggles();
     else document.addEventListener('DOMContentLoaded', wuiHideThemeToggles);
+  }
+
+  /* ── TinyMCE theme sync ────────────────────────────────────────────────────
+     A TinyMCE editor renders its content in an <iframe> — a SEPARATE document
+     that inherits nothing from the page, so setting <html data-theme> here does
+     NOT reach it. tinymce-content-tokens.css (loaded via `content_css`) reads a
+     data-theme on the IFRAME's own <html>; these helpers put it there and keep
+     it in lock-step with the page. The .tox-* chrome lives in THIS document and
+     already follows the page theme via agency tokens — only the content iframe
+     needs the bridge.
+
+     Per editor, one line in your init (init_instance_callback fires once the
+     iframe exists AND content_css has applied — the reliable hook):
+       init_instance_callback: function (ed) { WUI.applyTinyMCETheme(ed); }
+     Live toggles are handled for you: wui:themechange re-syncs every editor. */
+  function wuiSetEditorTheme(ed, theme) {
+    try {
+      var doc = ed && ed.getDoc && ed.getDoc();
+      if (doc && doc.documentElement) doc.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {}
+  }
+
+  /* Apply the current page theme to one editor's content iframe. */
+  WUI.applyTinyMCETheme = function (ed) {
+    wuiSetEditorTheme(ed, WUI.getTheme());
+  };
+
+  /* Re-sync every editor to the current page theme. Uses tinymce.get() (the
+     stable API that returns the array of all editors) — NOT tinymce.editors,
+     which isn't a public property in TinyMCE 8, so the old code bailed here and
+     toggles never reached the iframe. wuiSetEditorTheme's getDoc() guard safely
+     skips any editor that isn't ready yet. */
+  WUI.syncTinyMCETheme = function () {
+    var tm = window.tinymce;
+    if (!tm) return;
+    var eds = (typeof tm.get === 'function') ? tm.get() : tm.editors;
+    if (!eds || !eds.length) return;
+    var theme = WUI.getTheme();
+    for (var i = 0; i < eds.length; i++) wuiSetEditorTheme(eds[i], theme);
+  };
+
+  /* Live toggle → re-theme all editors. If TinyMCE isn't present this is a no-op. */
+  document.documentElement.addEventListener('wui:themechange', function () {
+    WUI.syncTinyMCETheme();
+  });
+
+  /* If TinyMCE is already on the page, auto-apply the theme to every editor as it
+     initializes — so boards don't even need the setup one-liner. (When TinyMCE
+     loads later, use the setup hook above; wui:themechange still covers toggles.) */
+  if (window.tinymce && typeof window.tinymce.on === 'function') {
+    window.tinymce.on('AddEditor', function (e) {
+      if (e && e.editor) e.editor.on('init', function () { WUI.applyTinyMCETheme(e.editor); });
+    });
   }
 
   /* ═══════════════════════════════════════════════════════════════════════

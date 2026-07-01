@@ -828,19 +828,7 @@
   height: auto;
   width: 100%;
 }
-
-.wui-panel-body::-webkit-scrollbar {
-  width: 4px;
-}
-
-.wui-panel-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.wui-panel-body::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: calc(var(--border-radius) / 2);
-}
+/* Scrollbar styling is global — see weoc-reset.css (--scrollbar-* tokens). */
 
 /* Fill parent height and scroll body contents */
 .wui-panel.is-scrollable {

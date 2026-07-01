@@ -23,6 +23,7 @@
         { key: 'indicators', label: 'Indicators', file: 'indicators.html' },
         { key: 'cards', label: 'Cards & Forms', file: 'cards.html' },
         { key: 'forms', label: 'Forms', file: 'forms.html' },
+        { key: 'tinymce', label: 'Rich Text', file: 'tinymce.html' },
         { key: 'containers', label: 'Containers', file: 'containers.html' },
         { key: 'layout', label: 'Layout', file: 'layout.html' },
         { key: 'tables', label: 'Tables', file: 'tables.html' },
@@ -246,10 +247,15 @@
     // TomSelect + Flatpickr styles — needed on the Forms page but loaded here
     // site-wide because Barba never re-processes incoming <head> link tags.
     ['tom-select.min.css', 'tom-select-agency.css',
-     'flatpickr.min.css', 'flatpickr-agency.css'].forEach(function (f) {
+     'flatpickr.min.css', 'flatpickr-agency.css',
+     'tinymce-theme.css'].forEach(function (f) {
       ensureCSS(shared + 'CSS/' + f);
     });
     var jobs = [];
+    // TinyMCE — fully self-hosted in vendor/tinymce-8.6.0/ (engine + skins/
+    // themes/models/icons/plugins all resolve from that folder at runtime).
+    // content_css / iframe theming is applied in PAGE_INIT.tinymce.
+    if (!window.tinymce)     jobs.push(loadScript(root + 'vendor/tinymce-8.6.0/tinymce.min.js'));
     if (!window.gsap)        jobs.push(loadScript(shared + 'JS/gsap.min.js'));
     if (!window.barba)       jobs.push(loadScript(root + 'vendor/barba.min.js'));
     if (!window.WUICalendar) jobs.push(loadScript(shared + 'JS/weoc-calendar.js'));
@@ -343,6 +349,44 @@
         var ts = TomSelectFactory.get('demo-ts-child');
         if (ts) { ts.clearOptions(); ts.sync(); ts.clear(true); }
       };
+    },
+    tinymce: function () {
+      if (!window.tinymce) return;
+      var sel = '#demo-tinymce';
+      if (!document.querySelector(sel)) return;
+      // Barba re-enter: tear down any prior editor bound to a now-detached node.
+      try { window.tinymce.remove(sel); } catch (e) {}
+      // The editor iframe is a separate document, so the agency theme must be
+      // loaded INTO it (tokens + Cairo + light/dark) BEFORE our content styling,
+      // which consumes those tokens. Load agency-theme.css, NOT weoc-ui-core.css
+      // (the core reset's body rules would break the editor content body).
+      // Absolute URLs so they resolve correctly even after Barba navigation.
+      var contentCss = [
+        new URL('../../CSS/weoc-ui/agency-theme.css', document.baseURI).href,
+        new URL('../../CSS/tinymce-content-tokens.css', document.baseURI).href
+      ];
+      var applyTheme = function (ed) { if (window.WUI) window.WUI.applyTinyMCETheme(ed); };
+      window.tinymce.init({
+        selector: sel,
+        height: 380,
+        license_key: 'gpl',       // self-hosted GPL build — suppresses the API-key notice
+        // Engine + skin/theme/model/icons/plugins all resolve from the vendored
+        // tinymce-8.6.0/ folder automatically (base_url derives from the script src).
+        menubar: 'edit view insert format table',
+        plugins: 'lists link table code help wordcount autolink',
+        toolbar: 'undo redo | blocks | bold italic underline | forecolor | ' +
+                 'bullist numlist | link table | blockquote | removeformat | code',
+        content_css: contentCss,   // agency stylesheet injected INTO the editor iframe
+        branding: false,
+        promotion: false,
+        // init_instance_callback is the reliable "fully ready" hook — the iframe
+        // document exists and content_css has been applied, so the theme sticks.
+        init_instance_callback: applyTheme,
+        setup: function (ed) {
+          // Re-assert on content reloads (setValue, undo to empty, etc.).
+          ed.on('SetContent', function () { applyTheme(ed); });
+        }
+      });
     },
     interactive: function () {
       document.querySelectorAll('.wui-slider-input').forEach(function (input) {
