@@ -353,10 +353,12 @@
 .wui-items-baseline { align-items: baseline !important; }
 
 /* ── Align self (on children) ── */
-.wui-self-start   { align-self: flex-start !important; }
-.wui-self-end     { align-self: flex-end !important; }
-.wui-self-center  { align-self: center !important; }
-.wui-self-stretch { align-self: stretch !important; }
+.wui-self-auto     { align-self: auto !important; }     /* inherit container's align-items */
+.wui-self-start    { align-self: flex-start !important; }
+.wui-self-end      { align-self: flex-end !important; }
+.wui-self-center   { align-self: center !important; }
+.wui-self-stretch  { align-self: stretch !important; }
+.wui-self-baseline { align-self: baseline !important; }
 
 /* ── Flex child sizing ── */
 .wui-flex-1        { flex: 1 1 0% !important; }       /* grow + shrink, zero basis */

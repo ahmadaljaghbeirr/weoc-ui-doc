@@ -163,25 +163,60 @@
           <table class="docs-token-table">
             <thead><tr><th>Class</th><th>CSS</th></tr></thead>
             <tbody>
+              <tr><td colspan="2"><strong>Display</strong></td></tr>
               <tr><td><span class="docs-token-name">wui-flex</span></td><td>display: flex</td></tr>
               <tr><td><span class="docs-token-name">wui-inline-flex</span></td><td>display: inline-flex</td></tr>
+
+              <tr><td colspan="2"><strong>Direction</strong></td></tr>
               <tr><td><span class="docs-token-name">wui-flex-row</span></td><td>flex-direction: row</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-row-reverse</span></td><td>flex-direction: row-reverse</td></tr>
               <tr><td><span class="docs-token-name">wui-flex-col</span></td><td>flex-direction: column</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-col-reverse</span></td><td>flex-direction: column-reverse</td></tr>
+
+              <tr><td colspan="2"><strong>Wrap</strong></td></tr>
               <tr><td><span class="docs-token-name">wui-flex-wrap</span></td><td>flex-wrap: wrap</td></tr>
-              <tr><td><span class="docs-token-name">wui-justify-between</span></td><td>justify-content: space-between</td></tr>
-              <tr><td><span class="docs-token-name">wui-justify-center</span></td><td>justify-content: center</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-nowrap</span></td><td>flex-wrap: nowrap</td></tr>
+
+              <tr><td colspan="2"><strong>Justify content</strong> (main-axis, on container)</td></tr>
+              <tr><td><span class="docs-token-name">wui-justify-start</span></td><td>justify-content: flex-start</td></tr>
               <tr><td><span class="docs-token-name">wui-justify-end</span></td><td>justify-content: flex-end</td></tr>
-              <tr><td><span class="docs-token-name">wui-items-center</span></td><td>align-items: center</td></tr>
+              <tr><td><span class="docs-token-name">wui-justify-center</span></td><td>justify-content: center</td></tr>
+              <tr><td><span class="docs-token-name">wui-justify-between</span></td><td>justify-content: space-between</td></tr>
+              <tr><td><span class="docs-token-name">wui-justify-around</span></td><td>justify-content: space-around</td></tr>
+              <tr><td><span class="docs-token-name">wui-justify-evenly</span></td><td>justify-content: space-evenly</td></tr>
+
+              <tr><td colspan="2"><strong>Align items</strong> (cross-axis, on container)</td></tr>
               <tr><td><span class="docs-token-name">wui-items-start</span></td><td>align-items: flex-start</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-1</span></td><td>flex: 1</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-none</span></td><td>flex: none</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-grow</span></td><td>flex-grow: 1</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-shrink-0</span></td><td>flex-shrink: 0</td></tr>
-              <tr><td><span class="docs-token-name">wui-min-w-0</span></td><td>min-width: 0 (prevents flex overflow)</td></tr>
+              <tr><td><span class="docs-token-name">wui-items-end</span></td><td>align-items: flex-end</td></tr>
+              <tr><td><span class="docs-token-name">wui-items-center</span></td><td>align-items: center</td></tr>
+              <tr><td><span class="docs-token-name">wui-items-stretch</span></td><td>align-items: stretch</td></tr>
+              <tr><td><span class="docs-token-name">wui-items-baseline</span></td><td>align-items: baseline</td></tr>
+
+              <tr><td colspan="2"><strong>Align self</strong> (cross-axis, on a single child — overrides the container's align-items)</td></tr>
+              <tr><td><span class="docs-token-name">wui-self-auto</span></td><td>align-self: auto (inherit container)</td></tr>
+              <tr><td><span class="docs-token-name">wui-self-start</span></td><td>align-self: flex-start</td></tr>
+              <tr><td><span class="docs-token-name">wui-self-end</span></td><td>align-self: flex-end</td></tr>
+              <tr><td><span class="docs-token-name">wui-self-center</span></td><td>align-self: center</td></tr>
+              <tr><td><span class="docs-token-name">wui-self-stretch</span></td><td>align-self: stretch</td></tr>
+              <tr><td><span class="docs-token-name">wui-self-baseline</span></td><td>align-self: baseline</td></tr>
+
+              <tr><td colspan="2"><strong>Child sizing</strong></td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-1</span></td><td>flex: 1 1 0% (grow + shrink, zero basis)</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-auto</span></td><td>flex: 1 1 auto (grow + shrink, natural size)</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-none</span></td><td>flex: none (rigid)</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-grow</span></td><td>flex-grow: 1 (grow only)</td></tr>
+              <tr><td><span class="docs-token-name">wui-flex-shrink-0</span></td><td>flex-shrink: 0 (prevent shrinking)</td></tr>
+              <tr><td><span class="docs-token-name">wui-min-w-0</span></td><td>min-width: 0 (allow shrink below content / prevents flex overflow)</td></tr>
+
+              <tr><td colspan="2"><strong>Width / height shortcuts</strong></td></tr>
               <tr><td><span class="docs-token-name">wui-w-full</span></td><td>width: 100%</td></tr>
+              <tr><td><span class="docs-token-name">wui-w-auto</span></td><td>width: auto</td></tr>
+              <tr><td><span class="docs-token-name">wui-w-max</span></td><td>width: max-content</td></tr>
               <tr><td><span class="docs-token-name">wui-h-full</span></td><td>height: 100%</td></tr>
+              <tr><td><span class="docs-token-name">wui-h-auto</span></td><td>height: auto</td></tr>
             </tbody>
           </table>
+          <p class="docs-desc"><strong>Note:</strong> there is no <span class="docs-token-name">wui-justify-self-*</span> family. <code>justify-self</code> has no effect on flex children (it only applies to grid items), so use <span class="docs-token-name">wui-self-*</span> for cross-axis child alignment and margin utilities (e.g. <code>margin-left: auto</code>) to push a single item along the main axis.</p>
           <pre class="docs-code">&lt;div class="wui-flex wui-items-center wui-justify-between wui-gap-3"&gt;
   &lt;div class="wui-flex-1 wui-min-w-0"&gt;Flexible content (won't overflow)&lt;/div&gt;
   &lt;div class="wui-flex-shrink-0"&gt;Fixed end action&lt;/div&gt;
