@@ -250,6 +250,16 @@
   gap: var(--space-1);
 }
 
+/* no-desc — record row with NO description/content column. wui-card-primary is
+   flex:1, so it normally shares the row with a description sibling. Drop that
+   column and the primary grows to fill the whole row (the name stretches across
+   the card). Base caps the name to a set width; how the freed space is spread is
+   chosen with a spread-* modifier (see the Cards & Containers docs). Tune the
+   name width per board via --wui-record-name-w. */
+.wui-card.is-record.no-desc .wui-card-primary {
+  flex: 0 1 var(--wui-record-name-w, 20rem);
+}
+
 /* has-lead-fill — full-height colored lead strip (opt-in modifier on is-record cards)
   overflow:hidden clips the lead background to the card's border-radius on the left corners.
   Standard color classes applied to wui-card-lead; tier-* handled in board CSS. */

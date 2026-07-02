@@ -31,7 +31,9 @@
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">download</span>Setup</div>
           <p class="docs-desc">Deploy <code>weoc-anim.js</code> and <code>gsap.min.js</code> together in the same server folder. The board only needs two script tags — <code>weoc-anim.js</code> self-loads GSAP from its sibling directory at runtime. If GSAP fails to load, every method silently becomes a no-op; boards never need their own guard.</p>
-          <pre class="docs-code">&lt;!-- Deploy both to the same folder on the CDN --&gt;
+          <div class="wui-demo stacked" data-wui-demo>
+            <template class="wui-demo-js">
+&lt;!-- Deploy both to the same folder on the CDN --&gt;
 &lt;!--   Shared/JS/gsap.min.js        (download from gsap.com) --&gt;
 &lt;!--   Shared/JS/weoc-anim.js       (this library)           --&gt;
 
@@ -41,7 +43,9 @@
 
 &lt;!-- WUIAnim is available synchronously (stubs) immediately.
      Real methods replace them once GSAP finishes loading.
-     Safe to call before DOMContentLoaded. --&gt;</pre>
+     Safe to call before DOMContentLoaded. --&gt;
+            </template>
+          </div>
           <div class="wui-callout info">
             <span class="material-symbols-outlined">bolt</span>
             <div class="wui-callout-body">
@@ -70,26 +74,28 @@
           </table>
 
           <div class="docs-subsection-title">Live demo</div>
-          <div class="docs-example stacked">
-            <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap">
-              <button class="wui-btn primary wui-btn-sm" id="ring-play"><span class="material-symbols-outlined">play_arrow</span> 75%</button>
-              <button class="wui-btn outline secondary wui-btn-sm" id="ring-reset"><span class="material-symbols-outlined">replay</span> Reset</button>
-            </div>
-            <div style="display:flex;gap:var(--space-6);align-items:flex-start;flex-wrap:wrap">
-              <div class="wui-progress-ring primary" id="demo-ring-1" data-target-pct="75">
-                <svg viewBox="0 0 120 120" width="100" height="100">
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
-                    stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
-                </svg>
-                <div class="wui-progress-ring-center">
-                  <div class="wui-progress-ring-pct">0%</div>
-                  <div class="wui-progress-ring-label">Ring</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap">
+                <button class="wui-btn primary wui-btn-sm" id="ring-play"><span class="material-symbols-outlined">play_arrow</span> 75%</button>
+                <button class="wui-btn outline secondary wui-btn-sm" id="ring-reset"><span class="material-symbols-outlined">replay</span> Reset</button>
+              </div>
+              <div style="display:flex;gap:var(--space-6);align-items:flex-start;flex-wrap:wrap">
+                <div class="wui-progress-ring primary" id="demo-ring-1" data-target-pct="75">
+                  <svg viewBox="0 0 120 120" width="100" height="100">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Ring</div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <pre class="docs-code">const ring = document.getElementById('my-ring');
+            <template class="wui-demo-js">
+const ring = document.getElementById('my-ring');
 
 // Tween to 75% (reads current value from DOM)
 WUIAnim.ring(ring, 75);
@@ -98,7 +104,9 @@ WUIAnim.ring(ring, 75);
 WUIAnim.ring(ring, 50, { from: 0, duration: 1.2, counter: false });
 
 // Callback when done
-WUIAnim.ring(ring, 100, { onComplete: () => console.log('done') });</pre>
+WUIAnim.ring(ring, 100, { onComplete: () => console.log('done') });
+            </template>
+          </div>
         </div>
 
         <!-- ── ringEntrance() ─────────────────────────────────────────────────── -->
@@ -117,24 +125,31 @@ WUIAnim.ring(ring, 100, { onComplete: () => console.log('done') });</pre>
               <tr><td><span class="docs-api-method">opts.onComplete</span></td><td><span class="docs-api-type">function</span></td><td>—</td><td>Callback fired after the tween finishes.</td></tr>
             </tbody>
           </table>
-          <pre class="docs-code">&lt;!-- XSL sets data-target-pct; renders fill as empty (326.73) --&gt;
-&lt;div class="wui-progress-ring primary" data-target-pct="68"&gt;
-  &lt;svg viewBox="0 0 120 120" width="90" height="90"&gt;
-    &lt;circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/&gt;
-    &lt;circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
-      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/&gt;
-  &lt;/svg&gt;
-  &lt;div class="wui-progress-ring-center"&gt;
-    &lt;div class="wui-progress-ring-pct"&gt;0%&lt;/div&gt;
-    &lt;div class="wui-progress-ring-label"&gt;Capacity&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
 
+          <div class="docs-subsection-title">Markup + call</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- XSL sets data-target-pct; renders fill as empty (326.73) -->
+              <div class="wui-progress-ring primary" data-target-pct="68">
+                <svg viewBox="0 0 120 120" width="90" height="90">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">0%</div>
+                  <div class="wui-progress-ring-label">Capacity</div>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
 // Page load: animate from 0 → data-target-pct
 WUIAnim.ringEntrance(document.querySelector('.wui-progress-ring'));
 
 // After a per-row reload: animate from old value → new value
-WUIAnim.ringEntrance(ring, { from: 42 });</pre>
+WUIAnim.ringEntrance(ring, { from: 42 });
+            </template>
+          </div>
         </div>
 
         <!-- ── sectionEntrance() ──────────────────────────────────────────────── -->
@@ -155,64 +170,68 @@ WUIAnim.ringEntrance(ring, { from: 42 });</pre>
           </table>
 
           <div class="docs-subsection-title">Live demo</div>
-          <div class="docs-example stacked">
-            <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4)">
-              <button class="wui-btn primary wui-btn-sm" id="section-play"><span class="material-symbols-outlined">play_arrow</span> Play Entrance</button>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4)">
+                <button class="wui-btn primary wui-btn-sm" id="section-play"><span class="material-symbols-outlined">play_arrow</span> Play Entrance</button>
+              </div>
+              <div id="demo-section-container" style="display:flex;gap:var(--space-5);flex-wrap:wrap;align-items:flex-start">
+                <div class="wui-progress-ring primary sm" data-target-pct="80">
+                  <svg viewBox="0 0 120 120" width="70" height="70">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Power</div>
+                  </div>
+                </div>
+                <div class="wui-progress-ring success sm" data-target-pct="55">
+                  <svg viewBox="0 0 120 120" width="70" height="70">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Water</div>
+                  </div>
+                </div>
+                <div class="wui-progress-ring warning sm" data-target-pct="30">
+                  <svg viewBox="0 0 120 120" width="70" height="70">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Fuel</div>
+                  </div>
+                </div>
+                <div class="wui-progress-ring info sm" data-target-pct="65">
+                  <svg viewBox="0 0 120 120" width="70" height="70">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Comms</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div id="demo-section-container" style="display:flex;gap:var(--space-5);flex-wrap:wrap;align-items:flex-start">
-              <div class="wui-progress-ring primary sm" data-target-pct="80">
-                <svg viewBox="0 0 120 120" width="70" height="70">
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
-                    stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
-                </svg>
-                <div class="wui-progress-ring-center">
-                  <div class="wui-progress-ring-pct">0%</div>
-                  <div class="wui-progress-ring-label">Power</div>
-                </div>
-              </div>
-              <div class="wui-progress-ring success sm" data-target-pct="55">
-                <svg viewBox="0 0 120 120" width="70" height="70">
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
-                    stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
-                </svg>
-                <div class="wui-progress-ring-center">
-                  <div class="wui-progress-ring-pct">0%</div>
-                  <div class="wui-progress-ring-label">Water</div>
-                </div>
-              </div>
-              <div class="wui-progress-ring warning sm" data-target-pct="30">
-                <svg viewBox="0 0 120 120" width="70" height="70">
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
-                    stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
-                </svg>
-                <div class="wui-progress-ring-center">
-                  <div class="wui-progress-ring-pct">0%</div>
-                  <div class="wui-progress-ring-label">Fuel</div>
-                </div>
-              </div>
-              <div class="wui-progress-ring info sm" data-target-pct="65">
-                <svg viewBox="0 0 120 120" width="70" height="70">
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
-                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
-                    stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
-                </svg>
-                <div class="wui-progress-ring-center">
-                  <div class="wui-progress-ring-pct">0%</div>
-                  <div class="wui-progress-ring-label">Comms</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">// After reloadSection() or any innerHTML swap:
+            <template class="wui-demo-js">
+// After reloadSection() or any innerHTML swap:
 await reloadSection('items-body');
 const container = document.getElementById('items-body');
 WUIAnim.sectionEntrance(container);
 
 // Custom stagger + delay
-WUIAnim.sectionEntrance(container, { stagger: 0.10, delay: 0.2 });</pre>
+WUIAnim.sectionEntrance(container, { stagger: 0.10, delay: 0.2 });
+            </template>
+          </div>
         </div>
 
         <!-- ── completion() ───────────────────────────────────────────────────── -->
@@ -231,28 +250,32 @@ WUIAnim.sectionEntrance(container, { stagger: 0.10, delay: 0.2 });</pre>
           </table>
 
           <div class="docs-subsection-title">Live demo</div>
-          <div class="docs-example stacked">
-            <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4)">
-              <button class="wui-btn success wui-btn-sm" id="completion-play"><span class="material-symbols-outlined">check</span> Complete</button>
-              <button class="wui-btn outline secondary wui-btn-sm" id="completion-reset"><span class="material-symbols-outlined">replay</span> Reset</button>
-            </div>
-            <div class="wui-progress-ring success" id="demo-ring-completion">
-              <svg viewBox="0 0 120 120" width="100" height="100">
-                <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
-                <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
-                  stroke-dasharray="326.73" style="stroke-dashoffset:163.37" transform="rotate(-90 60 60)"/>
-              </svg>
-              <div class="wui-progress-ring-center">
-                <div class="wui-progress-ring-pct">50%</div>
-                <div class="wui-progress-ring-label">Tasks</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4)">
+                <button class="wui-btn success wui-btn-sm" id="completion-play"><span class="material-symbols-outlined">check</span> Complete</button>
+                <button class="wui-btn outline secondary wui-btn-sm" id="completion-reset"><span class="material-symbols-outlined">replay</span> Reset</button>
+              </div>
+              <div class="wui-progress-ring success" id="demo-ring-completion">
+                <svg viewBox="0 0 120 120" width="100" height="100">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:163.37" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">50%</div>
+                  <div class="wui-progress-ring-label">Tasks</div>
+                </div>
               </div>
             </div>
-          </div>
-          <pre class="docs-code">// When an incident status changes to Complete:
+            <template class="wui-demo-js">
+// When an incident status changes to Complete:
 const ring = document.querySelector('.wui-progress-ring');
 WUIAnim.completion(ring, {
   onComplete: () => showSuccessBanner(),
-});</pre>
+});
+            </template>
+          </div>
         </div>
 
         <!-- ── counter() ──────────────────────────────────────────────────────── -->
@@ -274,32 +297,34 @@ WUIAnim.completion(ring, {
           </table>
 
           <div class="docs-subsection-title">Live demo</div>
-          <div class="docs-example stacked">
-            <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4)">
-              <button class="wui-btn primary wui-btn-sm" id="counter-play"><span class="material-symbols-outlined">play_arrow</span> Count Up</button>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4)">
+                <button class="wui-btn primary wui-btn-sm" id="counter-play"><span class="material-symbols-outlined">play_arrow</span> Count Up</button>
+              </div>
+              <div style="display:flex;gap:var(--space-6);flex-wrap:wrap">
+                <div class="wui-card" style="min-width:110px">
+                  <div class="wui-card-body" style="align-items:center;text-align:center">
+                    <div class="wui-card-num" id="demo-counter-1" style="font-size:2rem;font-weight:700;color:var(--color-10)">0</div>
+                    <div class="wui-card-sub">Incidents</div>
+                  </div>
+                </div>
+                <div class="wui-card" style="min-width:110px">
+                  <div class="wui-card-body" style="align-items:center;text-align:center">
+                    <div class="wui-card-num" id="demo-counter-2" style="font-size:2rem;font-weight:700;color:var(--color-success)">0</div>
+                    <div class="wui-card-sub">Resolved</div>
+                  </div>
+                </div>
+                <div class="wui-card" style="min-width:110px">
+                  <div class="wui-card-body" style="align-items:center;text-align:center">
+                    <div class="wui-card-num" id="demo-counter-3" style="font-size:2rem;font-weight:700;color:var(--color-warning)">0%</div>
+                    <div class="wui-card-sub">Capacity</div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div style="display:flex;gap:var(--space-6);flex-wrap:wrap">
-              <div class="wui-card" style="min-width:110px">
-                <div class="wui-card-body" style="align-items:center;text-align:center">
-                  <div class="wui-card-num" id="demo-counter-1" style="font-size:2rem;font-weight:700;color:var(--color-10)">0</div>
-                  <div class="wui-card-sub">Incidents</div>
-                </div>
-              </div>
-              <div class="wui-card" style="min-width:110px">
-                <div class="wui-card-body" style="align-items:center;text-align:center">
-                  <div class="wui-card-num" id="demo-counter-2" style="font-size:2rem;font-weight:700;color:var(--color-success)">0</div>
-                  <div class="wui-card-sub">Resolved</div>
-                </div>
-              </div>
-              <div class="wui-card" style="min-width:110px">
-                <div class="wui-card-body" style="align-items:center;text-align:center">
-                  <div class="wui-card-num" id="demo-counter-3" style="font-size:2rem;font-weight:700;color:var(--color-warning)">0%</div>
-                  <div class="wui-card-sub">Capacity</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">const stat = document.getElementById('incident-count');
+            <template class="wui-demo-js">
+const stat = document.getElementById('incident-count');
 
 // Basic tick from 0 to 142
 WUIAnim.counter(stat, 0, 142);
@@ -308,7 +333,9 @@ WUIAnim.counter(stat, 0, 142);
 WUIAnim.counter(stat, 0, 78, { suffix: '%', duration: 1.0 });
 
 // On section reload: animate from old value to new
-WUIAnim.counter(stat, oldVal, newVal, { duration: 0.5 });</pre>
+WUIAnim.counter(stat, oldVal, newVal, { duration: 0.5 });
+            </template>
+          </div>
         </div>
 
         <!-- ── bar() ──────────────────────────────────────────────────────────── -->
@@ -328,18 +355,20 @@ WUIAnim.counter(stat, oldVal, newVal, { duration: 0.5 });</pre>
           </table>
 
           <div class="docs-subsection-title">Live demo</div>
-          <div class="docs-example stacked">
-            <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap">
-              <button class="wui-btn primary wui-btn-sm" id="bar-play-40"><span class="material-symbols-outlined">play_arrow</span> 40%</button>
-              <button class="wui-btn warning wui-btn-sm" id="bar-play-75">75%</button>
-              <button class="wui-btn success wui-btn-sm" id="bar-play-100">100%</button>
-              <button class="wui-btn outline secondary wui-btn-sm" id="bar-reset"><span class="material-symbols-outlined">replay</span> Reset</button>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap">
+                <button class="wui-btn primary wui-btn-sm" id="bar-play-40"><span class="material-symbols-outlined">play_arrow</span> 40%</button>
+                <button class="wui-btn warning wui-btn-sm" id="bar-play-75">75%</button>
+                <button class="wui-btn success wui-btn-sm" id="bar-play-100">100%</button>
+                <button class="wui-btn outline secondary wui-btn-sm" id="bar-reset"><span class="material-symbols-outlined">replay</span> Reset</button>
+              </div>
+              <div class="wui-progress-bar primary" id="demo-bar" style="max-width:420px">
+                <div class="wui-progress-bar-fill" style="width:0%"></div>
+              </div>
             </div>
-            <div class="wui-progress-bar primary" id="demo-bar" style="max-width:420px">
-              <div class="wui-progress-bar-fill" style="width:0%"></div>
-            </div>
-          </div>
-          <pre class="docs-code">const bar = document.getElementById('capacity-bar');
+            <template class="wui-demo-js">
+const bar = document.getElementById('capacity-bar');
 
 // Animate fill to 60%
 WUIAnim.bar(bar, 60);
@@ -348,7 +377,9 @@ WUIAnim.bar(bar, 60);
 WUIAnim.bar(bar.querySelector('.wui-progress-bar-fill'), 60);
 
 // After a data reload
-WUIAnim.bar(bar, newPct, { duration: 0.6, onComplete: refreshLabel });</pre>
+WUIAnim.bar(bar, newPct, { duration: 0.6, onComplete: refreshLabel });
+            </template>
+          </div>
         </div>
 
         <!-- ── Constants & Internals ──────────────────────────────────────────── -->
@@ -386,7 +417,11 @@ WUIAnim.bar(bar, newPct, { duration: 0.6, onComplete: refreshLabel });</pre>
               </tr>
             </tbody>
           </table>
-          <pre class="docs-code">// Use duration constants for consistency
+
+          <div class="docs-subsection-title">Usage</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <template class="wui-demo-js">
+// Use duration constants for consistency
 gsap.to(myEl, { opacity: 1, duration: WUIAnim.DUR.base });
 
 // Gate any custom animation on reduced-motion
@@ -395,7 +430,9 @@ if (!WUIAnim.reducedMotion()) {
 }
 
 // Compute dashoffset for a static inline style (XSL template)
-const offset = WUIAnim.pctToOffset(68); // → 104.55</pre>
+const offset = WUIAnim.pctToOffset(68); // → 104.55
+            </template>
+          </div>
 
           <div class="wui-callout success">
             <span class="material-symbols-outlined">accessibility_new</span>

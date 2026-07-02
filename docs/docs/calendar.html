@@ -36,54 +36,55 @@
         <!-- ── Live interactive demo ─────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">calendar_month</span>Live calendar</div>
-          <p class="docs-desc">Switch views with the toolbar segments, page with the arrows, click an event card to open its popup, click an empty slot or day cell to fire <code>wui:cal:slotclick</code>. Marking an event <em>done</em> or deleting it from the popup mutates the calendar live.</p>
+          <p class="docs-desc">Switch views with the toolbar segments, page with the arrows, click an event card to open its popup, click an empty slot or day cell to fire <code>wui:cal:slotclick</code>. Marking an event <em>done</em> or deleting it from the popup mutates the calendar live. This host is instantiated for you by the docs shell; the JavaScript box below is the exact snippet a board would write.</p>
 
-          <div class="docs-example" style="display:block;padding:0;overflow:hidden">
-            <div id="cal-demo" style="height:640px"></div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div id="cal-demo" style="height:640px"></div>
+            </div>
+            <template class="wui-demo-js">
+var cal = WUICalendar.create('#cal-demo', {
+  view: 'week',
+  events: [
+    { id: 1, title: 'EOC Activation Brief',
+      start: '2026-06-24T09:00', end: '2026-06-24T10:00',
+      variant: 'tier-3', location: 'Command Room A', status: 'Active',
+      attendees: ['Aisha Rahman', 'Samir Khan'],
+      description: 'Tier-3 standup.' }
+    // …more events…
+  ],
+  actions: [
+    { key: 'open',     label: 'Open record', icon: 'open_in_new', variant: 'primary' },
+    { key: 'complete', label: 'Mark done',   icon: 'check_circle', variant: 'success' },
+    { key: 'delete',   label: 'Delete',      icon: 'delete',      variant: 'danger' }
+  ]
+});
+
+cal.on('action', function (e) {
+  if (e.detail.action === 'complete')
+    cal.updateEvent(e.detail.event.id, { done: true, variant: 'success' });
+});
+            </template>
           </div>
 
-          <div class="docs-example row" style="margin-top:var(--space-3);align-items:center">
-            <span class="docs-desc" style="margin:0">Drive it from outside its toolbar:</span>
-            <button class="wui-btn outline secondary wui-btn-sm" data-cal-ext-view="month">Month</button>
-            <button class="wui-btn outline secondary wui-btn-sm" data-cal-ext-view="week">Week</button>
-            <button class="wui-btn outline secondary wui-btn-sm" data-cal-ext-view="day">Day</button>
-            <button class="wui-btn outline secondary wui-btn-sm" data-cal-ext-view="agenda">Agenda</button>
-            <button class="wui-btn ghost primary wui-btn-sm" onclick="window.WUICalendar.get('#cal-demo') &amp;&amp; window.WUICalendar.get('#cal-demo').openEvent(1)">
-              <span class="material-symbols-outlined">open_in_full</span> Open a popup
-            </button>
+          <div class="docs-subsection-title">Drive it from outside its toolbar</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- External view switches (wired by the shell via data-cal-ext-view) -->
+              <button class="wui-btn outline secondary wui-btn-sm" data-cal-ext-view="month">Month</button>
+              <button class="wui-btn outline secondary wui-btn-sm" data-cal-ext-view="week">Week</button>
+              <button class="wui-btn outline secondary wui-btn-sm" data-cal-ext-view="day">Day</button>
+              <button class="wui-btn outline secondary wui-btn-sm" data-cal-ext-view="agenda">Agenda</button>
+              <!-- Open a popup programmatically -->
+              <button class="wui-btn ghost primary wui-btn-sm" onclick="window.WUICalendar.get('#cal-demo') &amp;&amp; window.WUICalendar.get('#cal-demo').openEvent(1)">
+                <span class="material-symbols-outlined">open_in_full</span> Open a popup
+              </button>
+            </div>
           </div>
 
           <div class="docs-subsection-title">Emitted events</div>
           <p class="docs-desc">The calendar dispatches bubbling <code>CustomEvent</code>s on its host element. Last event:</p>
           <pre class="docs-code" id="cal-event-log" style="margin-top:0">interact with the calendar above…</pre>
-
-          <div class="docs-subsection-title">Create it</div>
-          <pre class="docs-code">&lt;div id="cal"&gt;&lt;/div&gt;
-
-&lt;script src="weoc-calendar.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-  var cal = WUICalendar.create('#cal', {
-    view: 'week',                 // month | week | day | agenda
-    weekStartsOn: 0,              // 0 = Sunday, 1 = Monday
-    events: [
-      { id: 1, title: 'EOC Activation Brief',
-        start: '2026-06-24T09:00', end: '2026-06-24T10:00',
-        variant: 'tier-3', location: 'Command Room A', status: 'Active',
-        attendees: ['Aisha Rahman', 'Samir Khan'],
-        description: 'Tier-3 standup.' }
-    ],
-    actions: [
-      { key: 'open',     label: 'Open record', icon: 'open_in_new', variant: 'primary' },
-      { key: 'complete', label: 'Mark done',   icon: 'check_circle', variant: 'success' },
-      { key: 'delete',   label: 'Delete',      icon: 'delete',      variant: 'danger' }
-    ]
-  });
-
-  cal.on('action', function (e) {
-    if (e.detail.action === 'complete')
-      cal.updateEvent(e.detail.event.id, { done: true, variant: 'success' });
-  });
-&lt;/script&gt;</pre>
         </div>
 
         <!-- ── Views ─────────────────────────────────────────────────────────── -->
@@ -96,53 +97,53 @@
             <div class="wui-info-item"><div class="wui-info-label">day</div><div class="wui-info-value">single-column timegrid, same machinery as week</div></div>
             <div class="wui-info-item"><div class="wui-info-label">agenda</div><div class="wui-info-value">chronological list grouped by day for the current month</div></div>
           </div>
-          <pre class="docs-code">// restrict the switcher and the navigation step
-WUICalendar.create('#cal', { views: ['week', 'day'], view: 'week' });</pre>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <template class="wui-demo-js">
+// restrict the switcher and the navigation step
+WUICalendar.create('#cal', { views: ['week', 'day'], view: 'week' });
+              </template>
+            </div>
+          </div>
         </div>
 
         <!-- ── Accent variants ───────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Accent variants</div>
           <p class="docs-desc">Each event carries one <code>variant</code> that sets its accent rail + tint. Six semantic colors plus the four activation tiers. These are static <code>.wui-cal-event</code> cards (the compact form used in month cells):</p>
-          <div class="docs-example" style="display:block">
-            <div class="wui-cal-month" style="border:none">
-              <div class="wui-cal-events" style="gap:4px;max-width:280px">
-                <button class="wui-cal-event wui-cal-accent-primary"><span class="wui-cal-event-time">09:00</span><span class="wui-cal-event-title">primary</span></button>
-                <button class="wui-cal-event wui-cal-accent-success"><span class="wui-cal-event-time">10:00</span><span class="wui-cal-event-title">success</span></button>
-                <button class="wui-cal-event wui-cal-accent-warning"><span class="wui-cal-event-time">11:00</span><span class="wui-cal-event-title">warning</span></button>
-                <button class="wui-cal-event wui-cal-accent-danger"><span class="wui-cal-event-time">12:00</span><span class="wui-cal-event-title">danger</span></button>
-                <button class="wui-cal-event wui-cal-accent-info"><span class="wui-cal-event-time">13:00</span><span class="wui-cal-event-title">info</span></button>
-                <button class="wui-cal-event wui-cal-accent-secondary"><span class="wui-cal-event-time">14:00</span><span class="wui-cal-event-title">secondary</span></button>
-                <button class="wui-cal-event is-solid wui-cal-accent-tier-1"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">tier-1 (all-day / solid)</span></button>
-                <button class="wui-cal-event is-solid wui-cal-accent-tier-2"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">tier-2 (all-day / solid)</span></button>
-                <button class="wui-cal-event is-solid wui-cal-accent-tier-3"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">tier-3 (all-day / solid)</span></button>
-                <button class="wui-cal-event is-solid wui-cal-accent-tier-4"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">tier-4 (all-day / solid)</span></button>
-                <button class="wui-cal-event is-done wui-cal-accent-success"><span class="wui-cal-event-time">15:00</span><span class="wui-cal-event-title">done (struck through)</span></button>
-                <button class="wui-cal-event is-cancelled wui-cal-accent-secondary"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">cancelled</span></button>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-cal-month" style="border:none">
+                <div class="wui-cal-events" style="gap:4px;max-width:280px">
+                  <!-- Compact (tinted rail) — timed events -->
+                  <button class="wui-cal-event wui-cal-accent-primary"><span class="wui-cal-event-time">09:00</span><span class="wui-cal-event-title">primary</span></button>
+                  <button class="wui-cal-event wui-cal-accent-success"><span class="wui-cal-event-time">10:00</span><span class="wui-cal-event-title">success</span></button>
+                  <button class="wui-cal-event wui-cal-accent-warning"><span class="wui-cal-event-time">11:00</span><span class="wui-cal-event-title">warning</span></button>
+                  <button class="wui-cal-event wui-cal-accent-danger"><span class="wui-cal-event-time">12:00</span><span class="wui-cal-event-title">danger</span></button>
+                  <button class="wui-cal-event wui-cal-accent-info"><span class="wui-cal-event-time">13:00</span><span class="wui-cal-event-title">info</span></button>
+                  <button class="wui-cal-event wui-cal-accent-secondary"><span class="wui-cal-event-time">14:00</span><span class="wui-cal-event-title">secondary</span></button>
+                  <!-- Solid (filled) — all-day events -->
+                  <button class="wui-cal-event is-solid wui-cal-accent-tier-1"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">tier-1 (all-day / solid)</span></button>
+                  <button class="wui-cal-event is-solid wui-cal-accent-tier-2"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">tier-2 (all-day / solid)</span></button>
+                  <button class="wui-cal-event is-solid wui-cal-accent-tier-3"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">tier-3 (all-day / solid)</span></button>
+                  <button class="wui-cal-event is-solid wui-cal-accent-tier-4"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">tier-4 (all-day / solid)</span></button>
+                  <!-- Status flags: .is-done (strike) · .is-cancelled (dim + strike) -->
+                  <button class="wui-cal-event is-done wui-cal-accent-success"><span class="wui-cal-event-time">15:00</span><span class="wui-cal-event-title">done (struck through)</span></button>
+                  <button class="wui-cal-event is-cancelled wui-cal-accent-secondary"><span class="wui-cal-event-dot"></span><span class="wui-cal-event-title">cancelled</span></button>
+                </div>
               </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;!-- compact (tinted rail) — timed events --&gt;
-&lt;button class="wui-cal-event wui-cal-accent-danger"&gt;
-  &lt;span class="wui-cal-event-time"&gt;12:00&lt;/span&gt;
-  &lt;span class="wui-cal-event-title"&gt;Damage report&lt;/span&gt;
-&lt;/button&gt;
-
-&lt;!-- solid (filled) — all-day events --&gt;
-&lt;button class="wui-cal-event is-solid wui-cal-accent-tier-3"&gt;
-  &lt;span class="wui-cal-event-dot"&gt;&lt;/span&gt;
-  &lt;span class="wui-cal-event-title"&gt;EOC staffed&lt;/span&gt;
-&lt;/button&gt;
-
-&lt;!-- status flags: .is-done (strike) · .is-cancelled (dim + strike) --&gt;
-&lt;!-- variants: primary success warning danger info secondary tier-1..tier-4 --&gt;</pre>
         </div>
 
         <!-- ── Event model ───────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">data_object</span>Event model</div>
           <p class="docs-desc"><code>start</code>/<code>end</code> accept a <code>Date</code>, an epoch number, or a string (<code>YYYY-MM-DD</code> = all-day, <code>YYYY-MM-DDTHH:mm</code> = local time). A bare date with no time is treated as all-day automatically.</p>
-          <pre class="docs-code">{
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <template class="wui-demo-js">
+{
   id: 42,                       // any unique value (auto-generated if omitted)
   title: 'Shelter capacity check',
   start: '2026-06-24T11:30',    // Date | number | ISO-ish string
@@ -158,14 +159,20 @@ WUICalendar.create('#cal', { views: ['week', 'day'], view: 'week' });</pre>
   actions: [ /* override the popup footer for this event */ ],
   done: false,                  // strike-through
   cancelled: false              // dim + strike-through
-}</pre>
+}
+              </template>
+            </div>
+          </div>
         </div>
 
         <!-- ── Popup ─────────────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">open_in_new</span>Event popup</div>
           <p class="docs-desc">Clicking any event card opens a popup built into a <code>.wui-modal</code>: an accent header band (icon + title + when), detail rows (status badge, location, custom <code>meta</code>, attendee chips), the description, and a footer of action buttons. Configure the footer globally with the <code>actions</code> option or per event with <code>event.actions</code>. Each click emits <code>wui:cal:action</code> with <code>{ action, event }</code> and closes the popup (set <code>keepOpen: true</code> to keep it open).</p>
-          <pre class="docs-code">WUICalendar.create('#cal', {
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <template class="wui-demo-js">
+WUICalendar.create('#cal', {
   actions: [
     { key: 'open',     label: 'Open record', icon: 'open_in_new', variant: 'primary' },
     { key: 'complete', label: 'Mark done',   icon: 'check_circle', variant: 'success' },
@@ -178,7 +185,10 @@ cal.on('action', function (e) {
 });
 
 // open a popup programmatically
-cal.openEvent(42);</pre>
+cal.openEvent(42);
+              </template>
+            </div>
+          </div>
           <div class="wui-callout warning">
             <span class="material-symbols-outlined">warning</span>
             <div class="wui-callout-body">
@@ -192,82 +202,100 @@ cal.openEvent(42);</pre>
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">bolt</span>Declarative auto-init</div>
           <p class="docs-desc">Drop <code>data-wui-calendar</code> on an element and the engine instantiates it on load (and via <code>WUICalendar.init()</code> after AJAX/Barba refreshes). Seed events inline with a <code>data-events</code> JSON array — ideal for WebEOC views that already render their records to JSON.</p>
-          <div class="docs-example" style="display:block;padding:0;overflow:hidden">
-            <div id="cal-auto"
-                 data-wui-calendar
-                 data-view="agenda"
-                 data-events='[
-                   {"id":"a1","title":"Morning briefing","start":"2026-06-24T08:00","end":"2026-06-24T08:30","variant":"primary","location":"Command Room","status":"Done","done":true},
-                   {"id":"a2","title":"Resource request review","start":"2026-06-24T10:00","end":"2026-06-24T11:00","variant":"warning","status":"Pending"},
-                   {"id":"a3","title":"Evening situation report","start":"2026-06-25T17:00","end":"2026-06-25T18:00","variant":"info","location":"PIO Desk"}
-                 ]'
-                 style="height:360px"></div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Declarative: auto-inits on load; seed events with data-events JSON -->
+              <div id="cal-auto"
+                   data-wui-calendar
+                   data-view="agenda"
+                   data-events='[
+                     {"id":"a1","title":"Morning briefing","start":"2026-06-24T08:00","end":"2026-06-24T08:30","variant":"primary","location":"Command Room","status":"Done","done":true},
+                     {"id":"a2","title":"Resource request review","start":"2026-06-24T10:00","end":"2026-06-24T11:00","variant":"warning","status":"Pending"},
+                     {"id":"a3","title":"Evening situation report","start":"2026-06-25T17:00","end":"2026-06-25T18:00","variant":"info","location":"PIO Desk"}
+                   ]'
+                   style="height:360px"></div>
+            </div>
           </div>
-          <pre class="docs-code">&lt;div data-wui-calendar
-     data-view="agenda"
-     data-week-starts-on="1"
-     data-events='[{"id":1,"title":"Briefing","start":"2026-06-24T08:00","variant":"primary"}]'&gt;
-&lt;/div&gt;
-
-&lt;script src="weoc-calendar.js"&gt;&lt;/script&gt;
-&lt;!-- auto-inits on load; call WUICalendar.init() after a dynamic refresh --&gt;</pre>
         </div>
 
         <!-- ── JS API ────────────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">code</span>JS API</div>
           <div class="docs-subsection-title">Factory</div>
-          <pre class="docs-code">WUICalendar.create(elOrSelector, options)   // → instance (idempotent per element)
-WUICalendar.get(elOrSelector)                // → existing instance or null
-WUICalendar.init(rootEl?)                    // auto-init every [data-wui-calendar]
-WUICalendar.closePopup()                     // close the shared detail popup</pre>
+          <table class="docs-table">
+            <thead><tr><th>Call</th><th>Returns</th></tr></thead>
+            <tbody>
+              <tr><td><code>WUICalendar.create(elOrSelector, options)</code></td><td>instance (idempotent per element)</td></tr>
+              <tr><td><code>WUICalendar.get(elOrSelector)</code></td><td>existing instance or <code>null</code></td></tr>
+              <tr><td><code>WUICalendar.init(rootEl?)</code></td><td>auto-init every <code>[data-wui-calendar]</code></td></tr>
+              <tr><td><code>WUICalendar.closePopup()</code></td><td>close the shared detail popup</td></tr>
+            </tbody>
+          </table>
           <div class="docs-subsection-title">Instance methods</div>
-          <pre class="docs-code">cal.setView('month'|'week'|'day'|'agenda')   cal.getView()
-cal.next()  cal.prev()  cal.today()
-cal.setDate(dateOrISO)                       cal.getDate()
-cal.setEvents(array)                         cal.getEvents()
-cal.addEvent(obj)
-cal.updateEvent(id, patch)                   cal.removeEvent(id)
-cal.openEvent(id)                            cal.refresh()
-cal.on(type, handler)  cal.off(type, handler)
-cal.destroy()</pre>
+          <table class="docs-table">
+            <thead><tr><th>Method</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>cal.setView('month'|'week'|'day'|'agenda')</code> · <code>cal.getView()</code></td><td>switch / read the active view</td></tr>
+              <tr><td><code>cal.next()</code> · <code>cal.prev()</code> · <code>cal.today()</code></td><td>page the navigation step</td></tr>
+              <tr><td><code>cal.setDate(dateOrISO)</code> · <code>cal.getDate()</code></td><td>set / read the focus date</td></tr>
+              <tr><td><code>cal.setEvents(array)</code> · <code>cal.getEvents()</code></td><td>replace / read the event array</td></tr>
+              <tr><td><code>cal.addEvent(obj)</code></td><td>append a single event</td></tr>
+              <tr><td><code>cal.updateEvent(id, patch)</code> · <code>cal.removeEvent(id)</code></td><td>mutate one event by id</td></tr>
+              <tr><td><code>cal.openEvent(id)</code> · <code>cal.refresh()</code></td><td>open the popup / re-render</td></tr>
+              <tr><td><code>cal.on(type, handler)</code> · <code>cal.off(type, handler)</code></td><td>subscribe / unsubscribe</td></tr>
+              <tr><td><code>cal.destroy()</code></td><td>tear the instance down</td></tr>
+            </tbody>
+          </table>
           <div class="docs-subsection-title">Options</div>
-          <pre class="docs-code">{
-  view: 'month',          // initial view
-  date: new Date(),       // initial focus date
-  events: [],             // event array
-  views: ['month','week','day','agenda'],
-  weekStartsOn: 0,        // 0 = Sun, 1 = Mon
-  hourStart: 0, hourEnd: 24,   // timegrid bounds (week/day)
-  slotHeight: 48,         // px per hour
-  maxPerDay: 3,           // month chips before "+N more"
-  locale: undefined,      // Intl locale (e.g. 'en-GB')
-  hour12: true,           // 12h vs 24h clock
-  nowIndicator: true,     // red current-time line
-  popup: true,            // open the built-in popup on event click
-  defaultVariant: 'primary',
-  actions: [ /* popup footer */ ],
-  // callbacks (mirror the CustomEvents):
-  onEventClick, onSlotClick, onAction, onNavigate, onViewChange
-}</pre>
+          <table class="docs-table">
+            <thead><tr><th>Option</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><code>view</code></td><td><code>'month'</code></td><td>initial view</td></tr>
+              <tr><td><code>date</code></td><td><code>new Date()</code></td><td>initial focus date</td></tr>
+              <tr><td><code>events</code></td><td><code>[]</code></td><td>event array</td></tr>
+              <tr><td><code>views</code></td><td><code>['month','week','day','agenda']</code></td><td>switcher entries</td></tr>
+              <tr><td><code>weekStartsOn</code></td><td><code>0</code></td><td>0 = Sun, 1 = Mon</td></tr>
+              <tr><td><code>hourStart</code> · <code>hourEnd</code></td><td><code>0</code> · <code>24</code></td><td>timegrid bounds (week/day)</td></tr>
+              <tr><td><code>slotHeight</code></td><td><code>48</code></td><td>px per hour</td></tr>
+              <tr><td><code>maxPerDay</code></td><td><code>3</code></td><td>month chips before "+N more"</td></tr>
+              <tr><td><code>locale</code></td><td><code>undefined</code></td><td>Intl locale (e.g. <code>'en-GB'</code>)</td></tr>
+              <tr><td><code>hour12</code></td><td><code>true</code></td><td>12h vs 24h clock</td></tr>
+              <tr><td><code>nowIndicator</code></td><td><code>true</code></td><td>red current-time line</td></tr>
+              <tr><td><code>popup</code></td><td><code>true</code></td><td>open the built-in popup on event click</td></tr>
+              <tr><td><code>defaultVariant</code></td><td><code>'primary'</code></td><td>fallback accent</td></tr>
+              <tr><td><code>actions</code></td><td><code>[]</code></td><td>popup footer buttons</td></tr>
+              <tr><td><code>onEventClick</code>, <code>onSlotClick</code>, <code>onAction</code>, <code>onNavigate</code>, <code>onViewChange</code></td><td>—</td><td>callbacks that mirror the CustomEvents</td></tr>
+            </tbody>
+          </table>
           <div class="docs-subsection-title">Events (bubble on the host element)</div>
-          <pre class="docs-code">wui:cal:viewchange   detail { view }
-wui:cal:navigate     detail { date, view, rangeStart, rangeEnd }
-wui:cal:eventclick   detail { event, el }
-wui:cal:slotclick    detail { date, allDay }
-wui:cal:action       detail { action, event }</pre>
+          <table class="docs-table">
+            <thead><tr><th>Event</th><th>detail</th></tr></thead>
+            <tbody>
+              <tr><td><code>wui:cal:viewchange</code></td><td><code>{ view }</code></td></tr>
+              <tr><td><code>wui:cal:navigate</code></td><td><code>{ date, view, rangeStart, rangeEnd }</code></td></tr>
+              <tr><td><code>wui:cal:eventclick</code></td><td><code>{ event, el }</code></td></tr>
+              <tr><td><code>wui:cal:slotclick</code></td><td><code>{ date, allDay }</code></td></tr>
+              <tr><td><code>wui:cal:action</code></td><td><code>{ action, event }</code></td></tr>
+            </tbody>
+          </table>
         </div>
 
         <!-- ── Sizing ────────────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">aspect_ratio</span>Sizing &amp; layout</div>
           <p class="docs-desc"><code>.wui-calendar</code> is <code>height: 100%</code> and flex-column: the toolbar is fixed and the active view scrolls inside. Give it a sized parent (an explicit height, a <code>wui-split-main</code>, or a <code>wui-fill-area</code>). Per-instance knobs are exposed as CSS custom properties:</p>
-          <pre class="docs-code">.wui-calendar {
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <template class="wui-demo-js">
+.wui-calendar {
   --wui-cal-slot-h: 48px;      /* px per hour in week/day */
   --wui-cal-gutter-w: 56px;    /* time-label gutter width */
   --wui-cal-min-day-h: 96px;   /* min height of a month cell */
 }
-/* the JS sets --wui-cal-slot-h from the slotHeight option */</pre>
+/* the JS sets --wui-cal-slot-h from the slotHeight option */
+              </template>
+            </div>
+          </div>
           <div class="wui-callout success">
             <span class="material-symbols-outlined">dark_mode</span>
             <div class="wui-callout-body">

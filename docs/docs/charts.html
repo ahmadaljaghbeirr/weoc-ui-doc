@@ -18,6 +18,11 @@
   <script src="../../JS/wui-charts.js"></script>
   <style>
     .demo-chart-wrap {
+      /* Fill the flex .wui-demo-preview row. Without this the wrap collapses to
+         its content width — and on the line demo the "Update data" button drags
+         the host down to ~button width, so uPlot renders squished. */
+      width: 100%;
+      box-sizing: border-box;
       background: var(--color-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--border-radius);
@@ -194,49 +199,50 @@ console.log(tokens.border);    // e.g. '#ebebeb'</pre>
         <!-- ── Live example: line chart ───────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">show_chart</span>Example — Line Chart</div>
-          <p class="docs-desc">Two series tracking personnel and equipment availability over a 12-hour incident window. Click "Update data" to simulate a live feed pushing new values.</p>
+          <p class="docs-desc">Two series tracking resource availability and deployment over a 24-hour incident window. Click "Update data" to simulate a live feed pushing new values.</p>
 
-          <div class="demo-chart-wrap">
-            <div id="demo-line-chart"></div>
-            <button class="wui-btn primary demo-update-btn" id="demo-line-update">Update data</button>
-          </div>
-
-          <pre class="docs-code">// Seed data: Unix timestamps (seconds) + two value arrays
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Line chart host -->
+                <div id="demo-line-chart"></div>
+                <!-- Live-update trigger -->
+                <button class="wui-btn primary demo-update-btn" id="demo-line-update">Update data</button>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+// Seed data: Unix timestamps (seconds) + two value arrays
 var now = Math.floor(Date.now() / 1000);
-var timestamps = [];
-var personnel  = [];
-var equipment  = [];
-
-for (var i = 0; i &lt; 12; i++) {
-  timestamps.push(now - (11 - i) * 3600);
-  personnel.push(80 + Math.round(Math.random() * 40));
-  equipment.push(60 + Math.round(Math.random() * 30));
+var times = [], available = [], deployed = [];
+for (var i = 0; i &lt; 24; i++) {
+  times.push(now - (23 - i) * 3600);
+  available.push(Math.round(60 + Math.random() * 30));
+  deployed.push(Math.round(40 + Math.random() * 40));
 }
 
 var lineChart = WUI.chart('#demo-line-chart', {
   type:   'line',
   height: 220,
   cursor: true,
-  legend: false,
+  legend: true,
   series: [
-    { label: 'Personnel',  color: 'primary' },
-    { label: 'Equipment',  color: 'warning' }
+    { label: 'Resources Available', color: 'primary' },
+    { label: 'Resources Deployed',  color: 'warning' }
   ],
-  data: [timestamps, personnel, equipment]
+  data: [times, available, deployed]
 });
 
-// Simulate live update
+// Simulate a live update — feed fresh values on click
 document.getElementById('demo-line-update').addEventListener('click', function () {
-  // Shift window: drop oldest, add newest
-  timestamps.shift();
-  personnel.shift();
-  equipment.shift();
-  timestamps.push(timestamps[timestamps.length - 1] + 3600);
-  personnel.push(80 + Math.round(Math.random() * 40));
-  equipment.push(60 + Math.round(Math.random() * 30));
-  lineChart.update([timestamps, personnel, equipment]);
-});</pre>
-
+  var newA = [], newB = [];
+  for (var j = 0; j &lt; 24; j++) {
+    newA.push(Math.round(50 + Math.random() * 40));
+    newB.push(Math.round(30 + Math.random() * 50));
+  }
+  lineChart.update([times, newA, newB]);
+});
+            </template>
+          </div>
         </div>
 
         <!-- ── Live example: area chart ───────────────────────────────────── -->
@@ -244,19 +250,27 @@ document.getElementById('demo-line-update').addEventListener('click', function (
           <div class="docs-section-title"><span class="material-symbols-outlined">area_chart</span>Example — Area Chart</div>
           <p class="docs-desc">Same data contract as line; set <code>type: 'area'</code>. The fill is a semi-transparent version of each series stroke color, derived automatically.</p>
 
-          <div class="demo-chart-wrap">
-            <div id="demo-area-chart"></div>
-          </div>
-
-          <pre class="docs-code">var areaChart = WUI.chart('#resource-area', {
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Area chart host -->
+                <div id="demo-area-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.chart('#demo-area-chart', {
   type:   'area',
   height: 220,
+  cursor: true,
+  legend: true,
   series: [
-    { label: 'Active Incidents', color: 'danger' },
+    { label: 'Incident Reports', color: 'danger' },
     { label: 'Resolved',         color: 'success' }
   ],
-  data: [timestamps, activeIncidents, resolvedIncidents]
-});</pre>
+  data: [timestamps, incidentReports, resolved]
+});
+            </template>
+          </div>
         </div>
 
         <!-- ── Live example: bar chart ───────────────────────────────────── -->
@@ -264,11 +278,15 @@ document.getElementById('demo-line-update').addEventListener('click', function (
           <div class="docs-section-title"><span class="material-symbols-outlined">bar_chart</span>Example — Bar Chart</div>
           <p class="docs-desc">Set <code>type: 'bar'</code>. Uses <code>uPlot.paths.bars()</code>, which ships in the uPlot IIFE bundle — no extra file needed. Multi-series bars share the same x-slot and render semi-transparent so both are visible.</p>
 
-          <div class="demo-chart-wrap">
-            <div id="demo-bar-chart"></div>
-          </div>
-
-          <pre class="docs-code">WUI.chart('#incidents-bar', {
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Bar chart host -->
+                <div id="demo-bar-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.chart('#demo-bar-chart', {
   type:   'bar',
   height: 220,
   cursor: true,
@@ -278,7 +296,9 @@ document.getElementById('demo-line-update').addEventListener('click', function (
     { label: 'Incidents Closed', color: 'success' }
   ],
   data: [timestamps, opened, closed]
-});</pre>
+});
+            </template>
+          </div>
 
           <div class="wui-callout secondary" style="margin-top: var(--space-4)">
             <span class="material-symbols-outlined">info</span>
@@ -294,11 +314,15 @@ document.getElementById('demo-line-update').addEventListener('click', function (
           <div class="docs-section-title"><span class="material-symbols-outlined">stacked_line_chart</span>Example — Stepped Chart</div>
           <p class="docs-desc">Set <code>type: 'stepped'</code>. The current value holds as a flat horizontal segment until the next data point — ideal for discrete state changes: activation tiers, resource status, alert levels. Uses <code>uPlot.paths.stepped({ align: 1 })</code>.</p>
 
-          <div class="demo-chart-wrap">
-            <div id="demo-stepped-chart"></div>
-          </div>
-
-          <pre class="docs-code">WUI.chart('#activation-level', {
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Stepped chart host -->
+                <div id="demo-stepped-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.chart('#demo-stepped-chart', {
   type:   'stepped',
   height: 180,
   cursor: true,
@@ -307,7 +331,9 @@ document.getElementById('demo-line-update').addEventListener('click', function (
     { label: 'Activation Level', color: 'warning' }
   ],
   data: [timestamps, activationLevels]
-});</pre>
+});
+            </template>
+          </div>
 
           <p class="docs-desc" style="margin-top: var(--space-4)">The <code>align: 1</code> stepping means the value at timestamp <em>T</em> applies from <em>T</em> rightward until the next data point — matching how activation levels work in practice (the tier holds until officially changed).</p>
         </div>
@@ -388,18 +414,24 @@ document.getElementById('demo-line-update').addEventListener('click', function (
           <div class="docs-section-title"><span class="material-symbols-outlined">pie_chart</span>Example — Pie Chart</div>
           <p class="docs-desc">Resource distribution snapshot — static categories, not time-series. The legend is rendered as HTML below the canvas and re-generates on theme switch.</p>
 
-          <div class="demo-chart-wrap">
-            <div id="demo-pie-chart"></div>
-          </div>
-
-          <pre class="docs-code">WUI.pie('#resource-distribution', {
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Pie chart host -->
+                <div id="demo-pie-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.pie('#demo-pie-chart', {
   height: 240,
   data: [
     { label: 'Active',    value: 42, color: 'danger' },
     { label: 'Standby',   value: 28, color: 'warning' },
     { label: 'Released',  value: 30, color: 'success' }
   ]
-});</pre>
+});
+            </template>
+          </div>
         </div>
 
         <!-- ── Live example: donut chart ──────────────────────────────────── -->
@@ -407,11 +439,15 @@ document.getElementById('demo-line-update').addEventListener('click', function (
           <div class="docs-section-title"><span class="material-symbols-outlined">donut_large</span>Example — Donut Chart</div>
           <p class="docs-desc">Same data contract as pie. Set <code>opts.center</code> to overlay a summary value in the hole — useful for total resource counts or overall completion percentage on a dashboard widget.</p>
 
-          <div class="demo-chart-wrap">
-            <div id="demo-donut-chart"></div>
-          </div>
-
-          <pre class="docs-code">WUI.donut('#capacity-donut', {
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Donut chart host -->
+                <div id="demo-donut-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.donut('#demo-donut-chart', {
   height: 240,
   data: [
     { label: 'Personnel',  value: 65, color: 'primary' },
@@ -419,7 +455,9 @@ document.getElementById('demo-line-update').addEventListener('click', function (
     { label: 'Facilities', value: 22, color: 'success' }
   ],
   center: { label: '135', sub: 'Resources' }
-});</pre>
+});
+            </template>
+          </div>
 
           <div class="wui-callout primary" style="margin-top: var(--space-4)">
             <span class="material-symbols-outlined">info</span>

@@ -39,9 +39,10 @@
         <!-- ── Live editor ──────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">edit_note</span>Live editor</div>
-          <p class="docs-desc">A fully themed editor. Toggle light/dark from the header, top-right — the toolbar, menus, and the typed content all switch together. Try the <code>Format</code> menu, tables, lists, and the <code>&lt;/&gt;</code> source view; every surface is agency-tokened.</p>
-          <div class="docs-example stacked">
-            <textarea id="demo-tinymce">&lt;h2&gt;Situation Report — Sector 4&lt;/h2&gt;
+          <p class="docs-desc">A fully themed editor. Toggle light/dark from the header, top-right — the toolbar, menus, and the typed content all switch together. Try the <code>Format</code> menu, tables, lists, and the <code>&lt;/&gt;</code> source view; every surface is agency-tokened. The <strong>JavaScript</strong> box below the editor is the board-side init that drives it (load order plus the <code>tinymce.init</code> theme bridge) — shown for reference, not re-run here.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <textarea id="demo-tinymce">&lt;h2&gt;Situation Report — Sector 4&lt;/h2&gt;
 &lt;p&gt;The &lt;strong&gt;Emergency Operations Centre&lt;/strong&gt; is staffed and operating at &lt;a href="#"&gt;Tier 3&lt;/a&gt;. Damage assessment is underway across the eastern grid.&lt;/p&gt;
 &lt;blockquote&gt;All field teams report to the staging area by 0900.&lt;/blockquote&gt;
 &lt;h3&gt;Immediate actions&lt;/h3&gt;
@@ -60,6 +61,30 @@
 &lt;p&gt;Inline &lt;code&gt;code&lt;/code&gt; and a short code block:&lt;/p&gt;
 &lt;pre&gt;status: ACTIVE
 tier: 3&lt;/pre&gt;</textarea>
+            </div>
+            <template class="wui-demo-js">
+// 1 · agency tokens are already on the page (weoc-ui-core.css @imports agency-theme.css)
+// 2 · engine  <script src="vendor/tinymce-8.6.0/tinymce.min.js"></script>
+// 3 · chrome  <link rel="stylesheet" href="CSS/tinymce-theme.css">
+// 4 · bridge  <script src="JS/weoc-ui.js"></script>
+
+tinymce.init({
+  selector: '#demo-tinymce',
+  license_key: 'gpl',                              // self-hosted GPL build
+  content_css: [                                   // → both injected into the editor iframe
+    'CSS/weoc-ui/agency-theme.css',                //   agency tokens + Cairo + light/dark
+    'CSS/tinymce-content-tokens.css'               //   content styling (consumes those tokens)
+  ],
+  plugins: 'lists link table code help wordcount autolink',
+  toolbar: 'undo redo | blocks | bold italic underline | forecolor | ' +
+           'bullist numlist | link table | blockquote | removeformat | code',
+  branding: false,
+  promotion: false,
+  // bridge the page theme into the content iframe (fires after content_css applies);
+  // WUI.setTheme emits wui:themechange, and weoc-ui.js re-themes every open editor
+  init_instance_callback: function (ed) { WUI.applyTinyMCETheme(ed); }
+});
+            </template>
           </div>
         </div>
 
@@ -83,22 +108,7 @@ tier: 3&lt;/pre&gt;</textarea>
         <!-- ── Init ─────────────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">terminal</span>Initialise + theme bridge</div>
-          <p class="docs-desc">One line in <code>init_instance_callback</code> syncs the iframe to the current theme once the editor is fully ready. Live toggles are handled for you: <code>WUI.setTheme</code> fires <code>wui:themechange</code>, and weoc-ui.js re-themes every open editor.</p>
-          <pre class="docs-code">tinymce.init({
-  selector: '#report-body',
-  license_key: 'gpl',                              // self-hosted GPL build
-  content_css: [                                   // → both injected into the editor iframe
-    'CSS/weoc-ui/agency-theme.css',                //   agency tokens + Cairo + light/dark
-    'CSS/tinymce-content-tokens.css'               //   content styling (consumes those tokens)
-  ],
-  plugins: 'lists link table code help wordcount autolink',
-  toolbar: 'undo redo | blocks | bold italic underline | forecolor | ' +
-           'bullist numlist | link table | blockquote | removeformat | code',
-  branding: false,
-  promotion: false,
-  // bridge the page theme into the content iframe (fires after content_css applies)
-  init_instance_callback: function (ed) { WUI.applyTinyMCETheme(ed); }
-});</pre>
+          <p class="docs-desc">One line in <code>init_instance_callback</code> syncs the iframe to the current theme once the editor is fully ready. Live toggles are handled for you: <code>WUI.setTheme</code> fires <code>wui:themechange</code>, and weoc-ui.js re-themes every open editor. The <strong>Live editor</strong> section above shows this exact init as its JavaScript box.</p>
           <div class="docs-subsection-title">Theme API (weoc-ui.js)</div>
           <p class="docs-desc"><code>WUI.applyTinyMCETheme(editor)</code> sets the current theme on one editor's iframe. <code>WUI.syncTinyMCETheme()</code> re-syncs every live editor (this is what runs on <code>wui:themechange</code>). If TinyMCE is present before weoc-ui.js binds, editors are auto-synced on init and you can drop the <code>setup</code> line entirely.</p>
         </div>

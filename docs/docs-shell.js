@@ -991,8 +991,10 @@
      The .wui-demo-preview holds the LIVE markup (the source of truth). We read
      its innerHTML and render it as the Markup code box, so the code shown is
      exactly what produced the preview — they cannot drift. An optional
-     <template class="wui-demo-js"> becomes a JavaScript box; data-wui-demo-run
-     also executes it, so JS demos are single-source too. Idempotent. */
+     <template class="wui-demo-css"> becomes a CSS box (for override snippets) and
+     an optional <template class="wui-demo-js"> becomes a JavaScript box;
+     data-wui-demo-run also executes the JS, so JS demos are single-source too.
+     2+ boxes render as tabs (Markup / CSS / JavaScript). Idempotent. */
   function escapeHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
@@ -1061,9 +1063,14 @@
       demo.setAttribute('data-demo-ready', '1');
 
       var preview = demo.querySelector('.wui-demo-preview');
+      var cssTpl = demo.querySelector('template.wui-demo-css');
       var jsTpl = demo.querySelector('template.wui-demo-js');
       var boxes = [];
       if (preview) boxes.push({ label: 'Markup', icon: 'code', code: dedent(preview.innerHTML) });
+      if (cssTpl) {
+        var cssText = dedent(cssTpl.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
+        boxes.push({ label: 'CSS', icon: 'css', code: cssText });
+      }
       if (jsTpl) {
         var jsText = dedent(jsTpl.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
         boxes.push({ label: 'JavaScript', icon: 'javascript', code: jsText });

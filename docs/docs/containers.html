@@ -11,6 +11,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <style>
+    /* ── TRIAL: no-desc spacing candidates (page-local until one is chosen). ──
+       Base .no-desc (in weoc-containers.css) only caps the name column; these
+       decide how the freed space is distributed. Promote the winner to core and
+       delete the losers + this block once decided. */
+
+    /* A — Proportional fill: name left, status right, middle columns grow equally */
+    .wui-card.is-record.no-desc.spread-fill > :not(.wui-card-lead):not(.wui-card-primary):not(.wui-card-status) {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    /* B — Even gaps: equal gap between every column, first flush-left / last flush-right */
+    .wui-card.is-record.no-desc.spread-even {
+      justify-content: space-between;
+    }
+    /* C — Equal columns: every non-lead column gets an equal share (table-like) */
+    .wui-card.is-record.no-desc.spread-cols > :not(.wui-card-lead) {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    /* Full record row demo: let the description column grow (mirrors the board
+       override shown in that demo's CSS tab). Scoped so it doesn't affect the
+       is-record demos that nest wui-card-content inside wui-card-primary. */
+    .wui-card.is-record.record-full > .wui-card-content {
+      flex: 1;
+      min-width: 0;
+    }
+  </style>
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
@@ -54,6 +83,28 @@
                 </div>
                 <div class="wui-card-footer justify-end">
                   <button class="wui-btn ghost secondary wui-btn-sm">Dismiss</button>
+                  <button class="wui-btn primary wui-btn-sm">Open</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Footer alignment — justify-end / justify-between</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- justify-end — actions pushed to the right (default pairing) -->
+              <div class="wui-card" style="width:320px">
+                <div class="wui-card-body">Footer with <code>justify-end</code>.</div>
+                <div class="wui-card-footer justify-end">
+                  <button class="wui-btn ghost secondary wui-btn-sm">Dismiss</button>
+                  <button class="wui-btn primary wui-btn-sm">Open</button>
+                </div>
+              </div>
+              <!-- justify-between — meta on the left, actions on the right -->
+              <div class="wui-card" style="width:320px">
+                <div class="wui-card-body">Footer with <code>justify-between</code>.</div>
+                <div class="wui-card-footer justify-between">
+                  <span class="wui-card-id">Updated 15:47</span>
                   <button class="wui-btn primary wui-btn-sm">Open</button>
                 </div>
               </div>
@@ -139,6 +190,46 @@
                 <div class="wui-card-body">
                   <strong>Flood Advisory</strong>
                   <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">River gauge rising near Bridge Road.</div>
+                </div>
+              </div>
+              <!-- Success side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side success">
+                  <div class="wui-icon-bubble solid success"><span class="material-symbols-outlined">check_circle</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>All Clear — Sector 2</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Evacuation zone reopened to residents.</div>
+                </div>
+              </div>
+              <!-- Primary side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side primary">
+                  <div class="wui-icon-bubble solid primary"><span class="material-symbols-outlined">assignment</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>New Mission Assigned</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Damage assessment — Task Force Bravo.</div>
+                </div>
+              </div>
+              <!-- Info side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side info">
+                  <div class="wui-icon-bubble solid info"><span class="material-symbols-outlined">campaign</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>Public Information Update</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Press briefing scheduled for 16:00.</div>
+                </div>
+              </div>
+              <!-- Secondary side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side secondary">
+                  <div class="wui-icon-bubble solid secondary"><span class="material-symbols-outlined">draft</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>Draft SITREP #14</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Awaiting review before distribution.</div>
                 </div>
               </div>
             </div>
@@ -315,6 +406,188 @@
             </div>
           </div>
 
+          <div class="docs-subsection-title">Template: is-record without a description column — spacing options</div>
+          <p class="docs-desc">Real log rows (Event Reports, Information Sharing) put the description in its own <code>wui-card-content</code> column beside <code>wui-card-primary</code>. Drop that column and <code>wui-card-primary</code> — which is <code>flex: 1</code> — grows to fill the entire row, so the name stretches across most of the card. Add <code>no-desc</code>: the base caps the name (tune with <code>--wui-record-name-w</code>), then a <code>spread-*</code> modifier decides how the freed space is distributed. Three candidates are shown below — the <strong>CSS</strong> tab holds each one's rule. <strong>Pick one to keep.</strong></p>
+
+          <div class="docs-subsection-title" style="opacity:.8">Option A — Proportional fill (<code>spread-fill</code>) · recommended</div>
+          <p class="docs-desc">Name pinned left, status pinned right; the middle columns (reporter, date/time) grow equally to absorb the free space. Scales cleanly at any width.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Long name -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>Chemical spill — Berth 4</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div>
+                  <span class="wui-card-id">#EVT-2043 · Port Zone</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">AM</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">A. Mansoori</span><span class="wui-person-sub">Duty Officer</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 14:12</div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span></div>
+              </div>
+              <!-- Short name — columns stay aligned with the row above -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead success"><span class="wui-icon-bubble solid-reverse sm ripple circle success"><span class="material-symbols-outlined">check_circle</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>All clear — Sector 2</strong></span><span class="wui-badge success wui-badge-sm">Resolved</span></div>
+                  <span class="wui-card-id">#EVT-2044 · Sector 2</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">RK</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">R. Khan</span><span class="wui-person-sub">Ops Lead</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 15:40</div></div>
+                <div class="wui-card-status"><span class="wui-badge success wui-badge-sm">Closed</span></div>
+              </div>
+            </div>
+            <template class="wui-demo-css">
+/* Option A — Proportional fill. Base no-desc caps the name; the middle
+   columns (everything except lead / name / status) grow equally to fill. */
+.wui-card.is-record.no-desc.spread-fill > :not(.wui-card-lead):not(.wui-card-primary):not(.wui-card-status) {
+  flex: 1 1 0;
+  min-width: 0;
+}
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" style="opacity:.8">Option B — Even gaps (<code>spread-even</code>)</div>
+          <p class="docs-desc">Equal gap between every column (first flush-left, last flush-right). Balanced on medium rows; on very wide panels the items drift far apart and the lead detaches from the name.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-card is-record no-desc spread-even" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>Chemical spill — Berth 4</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div>
+                  <span class="wui-card-id">#EVT-2043 · Port Zone</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">AM</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">A. Mansoori</span><span class="wui-person-sub">Duty Officer</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 14:12</div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span></div>
+              </div>
+              <div class="wui-card is-record no-desc spread-even" style="width:100%">
+                <div class="wui-card-lead success"><span class="wui-icon-bubble solid-reverse sm ripple circle success"><span class="material-symbols-outlined">check_circle</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>All clear — Sector 2</strong></span><span class="wui-badge success wui-badge-sm">Resolved</span></div>
+                  <span class="wui-card-id">#EVT-2044 · Sector 2</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">RK</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">R. Khan</span><span class="wui-person-sub">Ops Lead</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 15:40</div></div>
+                <div class="wui-card-status"><span class="wui-badge success wui-badge-sm">Closed</span></div>
+              </div>
+            </div>
+            <template class="wui-demo-css">
+/* Option B — Even gaps. Space distributed equally between all columns. */
+.wui-card.is-record.no-desc.spread-even {
+  justify-content: space-between;
+}
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" style="opacity:.8">Option C — Equal columns (<code>spread-cols</code>)</div>
+          <p class="docs-desc">Every non-lead column gets an equal share (table-like). Most rigidly aligned across rows, but wastes width on short columns like status and squeezes the name.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-card is-record no-desc spread-cols" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>Chemical spill — Berth 4</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div>
+                  <span class="wui-card-id">#EVT-2043 · Port Zone</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">AM</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">A. Mansoori</span><span class="wui-person-sub">Duty Officer</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 14:12</div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span></div>
+              </div>
+              <div class="wui-card is-record no-desc spread-cols" style="width:100%">
+                <div class="wui-card-lead success"><span class="wui-icon-bubble solid-reverse sm ripple circle success"><span class="material-symbols-outlined">check_circle</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>All clear — Sector 2</strong></span><span class="wui-badge success wui-badge-sm">Resolved</span></div>
+                  <span class="wui-card-id">#EVT-2044 · Sector 2</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">RK</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">R. Khan</span><span class="wui-person-sub">Ops Lead</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 15:40</div></div>
+                <div class="wui-card-status"><span class="wui-badge success wui-badge-sm">Closed</span></div>
+              </div>
+            </div>
+            <template class="wui-demo-css">
+/* Option C — Equal columns. Every non-lead column shares width equally. */
+.wui-card.is-record.no-desc.spread-cols > :not(.wui-card-lead) {
+  flex: 1 1 0;
+  min-width: 0;
+}
+            </template>
+          </div>
+
+          <div class="docs-subsection-title">Record leads — proper wui-icon-bubble usage</div>
+          <p class="docs-desc">The lead holds a <code>wui-icon-bubble</code>. Event Reports uses <code>solid-reverse sm ripple circle</code> plus a tier/semantic color, on a <code>wui-card-lead</code> that carries the same color for context. All four tiers and the six semantic colors work identically.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Tier 1 -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-1"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-1"><span class="material-symbols-outlined">info</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Advisory issued</strong></span><span class="wui-badge tier-1 wui-badge-sm">Tier 1</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge secondary wui-badge-sm">Monitoring</span></div>
+              </div>
+              <!-- Tier 2 -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-2"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-2"><span class="material-symbols-outlined">notifications_active</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Localised incident</strong></span><span class="wui-badge tier-2 wui-badge-sm">Tier 2</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge warning wui-badge-sm">Watch</span></div>
+              </div>
+              <!-- Tier 3 -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Major escalation</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span></div>
+              </div>
+              <!-- Tier 4 -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-4"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-4"><span class="material-symbols-outlined">crisis_alert</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Full activation</strong></span><span class="wui-badge tier-4 wui-badge-sm">Tier 4</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge animate danger wui-badge-sm">Activated</span></div>
+              </div>
+              <!-- Semantic example: info -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead info"><span class="wui-icon-bubble solid-reverse sm ripple circle info"><span class="material-symbols-outlined">campaign</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Public information update</strong></span><span class="wui-badge info wui-badge-sm">Notice</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge info wui-badge-sm">Sent</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Full record row — as used in Event Reports / Information Sharing</div>
+          <p class="docs-desc">The complete row <strong>with</strong> the description column: severity lead, the stacked <code>wui-card-primary</code> (elapsed, title + tier badge, classification / record no. / location lines), the <code>wui-card-content</code> description block (the flex filler), the <code>wui-person</code> reporter, the <code>wui-card-meta</code> dates, and the <code>wui-card-status</code> badges. This is the record log the <code>no-desc</code> variants above are derived from — here nothing is removed, so no spacing modifier is needed. The <strong>CSS</strong> tab shows the one override boards apply: letting the description column grow.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-card is-record has-lead-fill tier-3 record-full" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary">
+                  <span class="wui-elapsed danger"><span class="material-symbols-outlined">history</span> 2h ago</span>
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>Chemical spill — Berth 4</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div>
+                  <span class="wui-card-id"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">category</span> Hazmat</span>
+                  <span class="wui-card-id"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">fork_right</span> Chemical release</span>
+                  <span class="wui-card-id wui-text-brand"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">tag</span> EVT-2043</span>
+                  <span class="wui-card-id"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">location_on</span> Port Zone</span>
+                </div>
+                <div class="wui-card-content">
+                  <div class="wui-update-entry">
+                    <div class="wui-card-id">Description</div>
+                    <div class="wui-update-desc">Vapour cloud reported near Berth 4; hazmat team dispatched and a 200 m cordon established. Air monitoring in progress.</div>
+                    <div class="wui-card-id">A. Mansoori as Duty Officer on 01/07/2026 14:12</div>
+                    <button class="wui-link" type="button">Show history</button>
+                  </div>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">AM</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">A. Mansoori</span><span class="wui-person-sub">Duty Officer</span><span class="wui-person-sub">01/07/2026 14:12</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 14:12</div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span><span class="wui-badge animate danger wui-badge-sm">Activated</span></div>
+              </div>
+            </div>
+            <template class="wui-demo-css">
+/* The description is the flex filler that shares the row with the name.
+   wui-card-content is content-sized by default, so let the description column
+   grow (direct child, so nested content inside wui-card-primary is unaffected): */
+.wui-card.is-record > .wui-card-content {
+  flex: 1;
+  min-width: 0;
+}
+            </template>
+          </div>
+
           <div class="docs-subsection-title">Template: is-item (gallery tile) — band + fields</div>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -378,6 +651,21 @@
                     <div class="wui-card-field span-2"><span class="wui-card-field-label">Objective:</span> Establish perimeter and staging area</div>
                     <div class="wui-card-field"><span class="wui-card-field-label">ETA:</span> 12m</div>
                     <div class="wui-card-field span-full is-stacked"><span class="wui-card-field-label">Notes</span> Access road partially blocked; reroute via Gate B.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- cols-4 with a span-2 and a span-full field -->
+              <div class="wui-card" style="width:100%">
+                <div class="wui-card-body">
+                  <div class="wui-card-fields cols-4">
+                    <div class="wui-card-field"><span class="wui-card-field-label">Engines:</span> 8</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Ladders:</span> 3</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Medics:</span> 12</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Chiefs:</span> 2</div>
+                    <div class="wui-card-field span-2"><span class="wui-card-field-label">Staging:</span> Municipal Lot C</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Radio:</span> TAC-3</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">ETA:</span> 12m</div>
+                    <div class="wui-card-field span-full is-stacked"><span class="wui-card-field-label">Notes</span> Four-column grid for dense resource summaries.</div>
                   </div>
                 </div>
               </div>

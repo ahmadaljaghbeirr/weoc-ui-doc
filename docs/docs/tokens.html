@@ -22,263 +22,472 @@
         <div class="docs-hero">
           <div class="docs-hero-eyebrow">Foundations</div>
           <div class="docs-hero-title">Design Tokens</div>
-          <div class="docs-hero-sub">All visual values are CSS custom properties defined in <code>agency-theme.css</code>. Every component consumes tokens — never hardcoded values. Override any token in that file to retheme the entire library.</div>
+          <div class="docs-hero-sub">Every visual value is a CSS custom property defined in <code>agency-theme.css</code>. Components consume tokens, never hardcoded values, so overriding one token in that file rethemes the whole library. Each group below is a live sample; the auto Markup box shows the exact <code>var(--token)</code> usage.</div>
         </div>
 
-        <!-- ── Color Palette ─────────────────────────────── -->
+        <!-- ══════════════════════════ Brand Palette ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Color Palette</div>
+          <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Brand Palette</div>
+          <p class="docs-desc">The surface and accent triad plus text/border tokens. <code>--color-10</code> is the primary accent; <code>--color-30</code>/<code>--color-60</code> are the surface and background. Each carries <code>-light</code>/<code>-muted</code>/<code>-glow</code> sub-tokens for tints and focus rings.</p>
 
-          <div class="docs-subsection-title">Brand Colors</div>
-          <div class="docs-swatch-grid">
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-10)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Primary</span><span class="docs-swatch-var">--color-10</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-30)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Surface</span><span class="docs-swatch-var">--color-30</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-60)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Background</span><span class="docs-swatch-var">--color-60</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-on-accent)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">On Accent</span><span class="docs-swatch-var">--color-on-accent</span></div></div>
+          <div class="docs-subsection-title">Surface &amp; accent</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --color-10 (primary accent) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-10)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Primary accent</span><span class="docs-swatch-var">--color-10</span></div></div>
+              <!-- --color-30 (surface) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-30)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Surface</span><span class="docs-swatch-var">--color-30</span></div></div>
+              <!-- --color-60 (background) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-60)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Background</span><span class="docs-swatch-var">--color-60</span></div></div>
+              <!-- --color-on-accent (always white) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-on-accent)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">On accent</span><span class="docs-swatch-var">--color-on-accent</span></div></div>
+            </div>
           </div>
+
+          <div class="docs-subsection-title">Primary sub-tokens (--color-10-*)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --color-10-light (soft tint) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-10-light)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Light tint</span><span class="docs-swatch-var">--color-10-light</span></div></div>
+              <!-- --color-10-muted (subtle) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-10-muted)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Muted</span><span class="docs-swatch-var">--color-10-muted</span></div></div>
+              <!-- --color-10-glow (focus ring) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-10-glow)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Glow</span><span class="docs-swatch-var">--color-10-glow</span></div></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Text &amp; border</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --color-text-primary -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-text-primary)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Text primary</span><span class="docs-swatch-var">--color-text-primary</span></div></div>
+              <!-- --color-text-ui -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-text-ui)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Text UI</span><span class="docs-swatch-var">--color-text-ui</span></div></div>
+              <!-- --color-text-secondary -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-text-secondary)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Text secondary</span><span class="docs-swatch-var">--color-text-secondary</span></div></div>
+              <!-- --color-border -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-border)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Border</span><span class="docs-swatch-var">--color-border</span></div></div>
+            </div>
+          </div>
+
           <div class="wui-callout info">
             <span class="material-symbols-outlined">info</span>
             <div class="wui-callout-body">
               <div class="wui-callout-title">--color-on-accent is always white</div>
-              It does NOT follow color-30 in dark mode. Always use it for text/icons on solid accent fills (primary, danger, success, info).
+              It does NOT follow <code>--color-30</code> in dark mode. Use it for text/icons on solid accent fills (primary, danger, success, info).
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Semantic Colors ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">category</span>Semantic Colors</div>
+          <p class="docs-desc">Six intent colors, each with a solid value plus <code>-glow</code>, <code>-light</code>, <code>-muted</code>, and <code>-text</code> sub-tokens. All values re-resolve automatically in dark mode.</p>
+
+          <div class="docs-subsection-title">Solid values</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --color-success -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-success)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Success</span><span class="docs-swatch-var">--color-success</span></div></div>
+              <!-- --color-warning -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-warning)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Warning</span><span class="docs-swatch-var">--color-warning</span></div></div>
+              <!-- --color-danger -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-danger)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Danger</span><span class="docs-swatch-var">--color-danger</span></div></div>
+              <!-- --color-info -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-info)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Info</span><span class="docs-swatch-var">--color-info</span></div></div>
+              <!-- --color-secondary -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-secondary)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Secondary</span><span class="docs-swatch-var">--color-secondary</span></div></div>
+              <!-- --color-primary (alias of --color-10) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-primary)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Primary</span><span class="docs-swatch-var">--color-primary</span></div></div>
             </div>
           </div>
 
-          <div class="docs-subsection-title">Semantic Colors</div>
-          <div class="docs-swatch-grid">
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-success)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Success</span><span class="docs-swatch-var">--color-success</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-warning)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Warning</span><span class="docs-swatch-var">--color-warning</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-danger)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Danger</span><span class="docs-swatch-var">--color-danger</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-info)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Info</span><span class="docs-swatch-var">--color-info</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-secondary)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Secondary</span><span class="docs-swatch-var">--color-secondary</span></div></div>
+          <div class="docs-subsection-title">Sub-tokens — success example (-glow / -light / -muted / -text)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --color-success-glow -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-success-glow)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Glow</span><span class="docs-swatch-var">--color-success-glow</span></div></div>
+              <!-- --color-success-light -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-success-light)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Light</span><span class="docs-swatch-var">--color-success-light</span></div></div>
+              <!-- --color-success-muted -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-success-muted)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Muted</span><span class="docs-swatch-var">--color-success-muted</span></div></div>
+              <!-- --color-success-text -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-success-text)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Text</span><span class="docs-swatch-var">--color-success-text</span></div></div>
+            </div>
           </div>
-
-          <div class="docs-subsection-title">Each semantic color has 5 sub-tokens</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Token pattern</th><th>Example (success)</th><th>Usage</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">--color-{variant}</span></td><td><span class="docs-token-name">--color-success</span></td><td>Solid fill / border</td></tr>
-              <tr><td><span class="docs-token-name">--color-{variant}-glow</span></td><td><span class="docs-token-name">--color-success-glow</span></td><td>Box-shadow / focus ring</td></tr>
-              <tr><td><span class="docs-token-name">--color-{variant}-light</span></td><td><span class="docs-token-name">--color-success-light</span></td><td>Soft background tint</td></tr>
-              <tr><td><span class="docs-token-name">--color-{variant}-muted</span></td><td><span class="docs-token-name">--color-success-muted</span></td><td>Subtle / disabled state</td></tr>
-              <tr><td><span class="docs-token-name">--color-{variant}-text</span></td><td><span class="docs-token-name">--color-success-text</span></td><td>Text on light background</td></tr>
-            </tbody>
-          </table>
-
-          <div class="docs-subsection-title">EOC Tier Colors</div>
-          <div class="docs-swatch-grid">
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-1-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 1 — Normal</span><span class="docs-swatch-var">--tier-1-color</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-2-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 2 — Elevated</span><span class="docs-swatch-var">--tier-2-color</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-3-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 3 — High</span><span class="docs-swatch-var">--tier-3-color</span></div></div>
-            <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-4-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 4 — Critical</span><span class="docs-swatch-var">--tier-4-color</span></div></div>
-          </div>
-          <p class="docs-desc">Tier colors follow the same 5-token pattern: <code>--tier-N-color / -glow / -light / -muted / -text</code>. Both light and dark values are defined in <code>agency-theme.css</code>.</p>
-
-          <div class="docs-subsection-title">Interaction Tokens</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Token</th><th>Light value</th><th>Dark value</th><th>Usage</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">--color-hover</span></td><td>rgba(128,128,128,0.06)</td><td>rgba(255,255,255,0.06)</td><td>Generic hover background (buttons, rows)</td></tr>
-              <tr><td><span class="docs-token-name">--color-overlay</span></td><td>rgba(0,0,0,0.45)</td><td>rgba(0,0,0,0.45)</td><td>Modal / drawer backdrop</td></tr>
-              <tr><td><span class="docs-token-name">--color-switch-thumb</span></td><td>var(--color-on-accent)</td><td>var(--color-on-accent)</td><td>Toggle switch thumb fill</td></tr>
-            </tbody>
-          </table>
+          <p class="docs-desc">Warning, danger, info and primary follow the identical pattern: <code>--color-{intent}-glow</code>, <code>-light</code>, <code>-muted</code>, <code>-text</code>. Secondary omits <code>-text</code> (uses <code>--color-text-secondary</code> instead).</p>
         </div>
 
-        <!-- ── Spacing Scale ─────────────────────────────── -->
+        <!-- ══════════════════════════ EOC Tier Colors ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">shield</span>EOC Tier Colors</div>
+          <p class="docs-desc">Events-Reporting activation tiers. Each tier follows the same 5-token pattern as semantic colors: <code>--tier-N-color</code>, <code>-glow</code>, <code>-light</code>, <code>-muted</code>, <code>-text</code>.</p>
+
+          <div class="docs-subsection-title">Tier solids</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --tier-1-color (Normal) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-1-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 1 — Normal</span><span class="docs-swatch-var">--tier-1-color</span></div></div>
+              <!-- --tier-2-color (Elevated) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-2-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 2 — Elevated</span><span class="docs-swatch-var">--tier-2-color</span></div></div>
+              <!-- --tier-3-color (High) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-3-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 3 — High</span><span class="docs-swatch-var">--tier-3-color</span></div></div>
+              <!-- --tier-4-color (Critical) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-4-color)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Tier 4 — Critical</span><span class="docs-swatch-var">--tier-4-color</span></div></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Tier 4 sub-tokens (pattern applies to all tiers)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --tier-4-glow -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-4-glow)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Glow</span><span class="docs-swatch-var">--tier-4-glow</span></div></div>
+              <!-- --tier-4-light -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-4-light)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Light</span><span class="docs-swatch-var">--tier-4-light</span></div></div>
+              <!-- --tier-4-muted -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-4-muted)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Muted</span><span class="docs-swatch-var">--tier-4-muted</span></div></div>
+              <!-- --tier-4-text -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--tier-4-text)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Text</span><span class="docs-swatch-var">--tier-4-text</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Surface & Widget Tokens ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">dashboard</span>Surface &amp; Widget Tokens</div>
+          <p class="docs-desc">Semantic surface aliases used by page chrome, widgets and edit-mode banners. They resolve to the brand palette so a single retheme cascades everywhere.</p>
+
+          <div class="docs-subsection-title">Surfaces</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --color-bg (page background) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-bg)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Page bg</span><span class="docs-swatch-var">--color-bg</span></div></div>
+              <!-- --color-surface (cards / cells) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-surface)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Surface</span><span class="docs-swatch-var">--color-surface</span></div></div>
+              <!-- --widget-bg -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--widget-bg)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Widget bg</span><span class="docs-swatch-var">--widget-bg</span></div></div>
+              <!-- --widget-header-bg -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--widget-header-bg)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Widget header</span><span class="docs-swatch-var">--widget-header-bg</span></div></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Edit-mode banner</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Banner using --edit-banner-bg / -border / -text -->
+              <div style="background:var(--edit-banner-bg);border:var(--border-2xs) solid var(--edit-banner-border);color:var(--edit-banner-text);border-radius:var(--border-radius);padding:var(--space-3) var(--space-4);font-weight:var(--font-medium)">Edit mode active — unsaved changes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Spacing Scale ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">space_bar</span>Spacing Scale</div>
-          <p class="docs-desc">Numeric tokens from <code>--space-0</code> to <code>--space-12</code> cover 0–8rem. Semantic aliases map commonly-used steps to readable names.</p>
-          <div class="docs-space-grid">
-            <div class="docs-space-row"><span class="docs-space-label">--space-0</span><div class="docs-space-bar" style="width:2px"></div><span class="docs-space-value">0</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-1</span><div class="docs-space-bar" style="width:4px"></div><span class="docs-space-value">0.25rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-2</span><div class="docs-space-bar" style="width:8px"></div><span class="docs-space-value">0.5rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-3</span><div class="docs-space-bar" style="width:12px"></div><span class="docs-space-value">0.75rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-4</span><div class="docs-space-bar" style="width:16px"></div><span class="docs-space-value">1rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-5</span><div class="docs-space-bar" style="width:24px"></div><span class="docs-space-value">1.5rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-6</span><div class="docs-space-bar" style="width:32px"></div><span class="docs-space-value">2rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-7</span><div class="docs-space-bar" style="width:40px"></div><span class="docs-space-value">2.5rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-8</span><div class="docs-space-bar" style="width:48px"></div><span class="docs-space-value">3rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-9</span><div class="docs-space-bar" style="width:64px"></div><span class="docs-space-value">4rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-10</span><div class="docs-space-bar" style="width:80px"></div><span class="docs-space-value">5rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-11</span><div class="docs-space-bar" style="width:96px"></div><span class="docs-space-value">6rem</span></div>
-            <div class="docs-space-row"><span class="docs-space-label">--space-12</span><div class="docs-space-bar" style="width:128px"></div><span class="docs-space-value">8rem</span></div>
+          <p class="docs-desc">Numeric steps <code>--space-0</code> to <code>--space-12</code> span 0 to 8rem. Bar width equals the token value so the ramp is literal.</p>
+
+          <div class="docs-subsection-title">Numeric scale (--space-0 … --space-12)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --space-0 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-0</span><div class="docs-space-bar" style="width:var(--space-0)"></div><span class="docs-space-value">0</span></div>
+              <!-- --space-1 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-1</span><div class="docs-space-bar" style="width:var(--space-1)"></div><span class="docs-space-value">0.25rem</span></div>
+              <!-- --space-2 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-2</span><div class="docs-space-bar" style="width:var(--space-2)"></div><span class="docs-space-value">0.5rem</span></div>
+              <!-- --space-3 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-3</span><div class="docs-space-bar" style="width:var(--space-3)"></div><span class="docs-space-value">0.75rem</span></div>
+              <!-- --space-4 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-4</span><div class="docs-space-bar" style="width:var(--space-4)"></div><span class="docs-space-value">1rem</span></div>
+              <!-- --space-5 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-5</span><div class="docs-space-bar" style="width:var(--space-5)"></div><span class="docs-space-value">1.5rem</span></div>
+              <!-- --space-6 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-6</span><div class="docs-space-bar" style="width:var(--space-6)"></div><span class="docs-space-value">2rem</span></div>
+              <!-- --space-7 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-7</span><div class="docs-space-bar" style="width:var(--space-7)"></div><span class="docs-space-value">2.5rem</span></div>
+              <!-- --space-8 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-8</span><div class="docs-space-bar" style="width:var(--space-8)"></div><span class="docs-space-value">3rem</span></div>
+              <!-- --space-9 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-9</span><div class="docs-space-bar" style="width:var(--space-9)"></div><span class="docs-space-value">4rem</span></div>
+              <!-- --space-10 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-10</span><div class="docs-space-bar" style="width:var(--space-10)"></div><span class="docs-space-value">5rem</span></div>
+              <!-- --space-11 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-11</span><div class="docs-space-bar" style="width:var(--space-11)"></div><span class="docs-space-value">6rem</span></div>
+              <!-- --space-12 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-12</span><div class="docs-space-bar" style="width:var(--space-12)"></div><span class="docs-space-value">8rem</span></div>
+            </div>
           </div>
-          <div class="docs-subsection-title">Semantic Aliases</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Alias</th><th>Maps to</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">--space-xs</span></td><td><span class="docs-token-name">--space-1</span></td><td>0.25rem</td></tr>
-              <tr><td><span class="docs-token-name">--space-sm</span></td><td><span class="docs-token-name">--space-2</span></td><td>0.5rem</td></tr>
-              <tr><td><span class="docs-token-name">--space-md</span></td><td><span class="docs-token-name">--space-4</span></td><td>1rem</td></tr>
-              <tr><td><span class="docs-token-name">--space-lg</span></td><td><span class="docs-token-name">--space-6</span></td><td>2rem</td></tr>
-              <tr><td><span class="docs-token-name">--space-xl</span></td><td><span class="docs-token-name">--space-8</span></td><td>3rem</td></tr>
-              <tr><td><span class="docs-token-name">--space-2xl</span></td><td><span class="docs-token-name">--space-10</span></td><td>5rem</td></tr>
-              <tr><td><span class="docs-token-name">--space-3xl</span></td><td><span class="docs-token-name">--space-12</span></td><td>8rem</td></tr>
-            </tbody>
-          </table>
+
+          <div class="docs-subsection-title">Semantic aliases</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --space-xs → --space-1 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-xs</span><div class="docs-space-bar" style="width:var(--space-xs)"></div><span class="docs-space-value">0.25rem</span></div>
+              <!-- --space-sm → --space-2 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-sm</span><div class="docs-space-bar" style="width:var(--space-sm)"></div><span class="docs-space-value">0.5rem</span></div>
+              <!-- --space-md → --space-4 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-md</span><div class="docs-space-bar" style="width:var(--space-md)"></div><span class="docs-space-value">1rem</span></div>
+              <!-- --space-lg → --space-6 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-lg</span><div class="docs-space-bar" style="width:var(--space-lg)"></div><span class="docs-space-value">2rem</span></div>
+              <!-- --space-xl → --space-8 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-xl</span><div class="docs-space-bar" style="width:var(--space-xl)"></div><span class="docs-space-value">3rem</span></div>
+              <!-- --space-2xl → --space-10 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-2xl</span><div class="docs-space-bar" style="width:var(--space-2xl)"></div><span class="docs-space-value">5rem</span></div>
+              <!-- --space-3xl → --space-12 -->
+              <div class="docs-space-row"><span class="docs-space-label">--space-3xl</span><div class="docs-space-bar" style="width:var(--space-3xl)"></div><span class="docs-space-value">8rem</span></div>
+            </div>
+          </div>
         </div>
 
-        <!-- ── Border Radius ─────────────────────────────── -->
+        <!-- ══════════════════════════ Typography ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">text_fields</span>Typography</div>
+
+          <div class="docs-subsection-title">Font families (--font-*)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --font-body / --font-cairo (default UI + body) -->
+              <div style="font-family:var(--font-body);font-size:var(--text-lg)">--font-body / --font-cairo — The quick brown fox jumps</div>
+              <!-- --font-display -->
+              <div style="font-family:var(--font-display);font-size:var(--text-lg)">--font-display — The quick brown fox jumps</div>
+              <!-- --font-serif -->
+              <div style="font-family:var(--font-serif);font-size:var(--text-lg)">--font-serif — The quick brown fox jumps</div>
+              <!-- --font-mono -->
+              <div style="font-family:var(--font-mono);font-size:var(--text-lg)">--font-mono — The quick brown fox jumps</div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Font sizes (--text-2xs … --text-6xl)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --text-2xs (10px) -->
+              <div style="font-size:var(--text-2xs)">--text-2xs · 0.625rem — The quick brown fox</div>
+              <!-- --text-xs (12px) -->
+              <div style="font-size:var(--text-xs)">--text-xs · 0.75rem — The quick brown fox</div>
+              <!-- --text-sm (14px) -->
+              <div style="font-size:var(--text-sm)">--text-sm · 0.875rem — The quick brown fox</div>
+              <!-- --text-base (16px) -->
+              <div style="font-size:var(--text-base)">--text-base · 1rem — The quick brown fox</div>
+              <!-- --text-md (18px) -->
+              <div style="font-size:var(--text-md)">--text-md · 1.125rem — The quick brown fox</div>
+              <!-- --text-lg (20px) -->
+              <div style="font-size:var(--text-lg)">--text-lg · 1.25rem — The quick brown fox</div>
+              <!-- --text-xl (24px) -->
+              <div style="font-size:var(--text-xl)">--text-xl · 1.5rem — The quick brown fox</div>
+              <!-- --text-2xl (30px) -->
+              <div style="font-size:var(--text-2xl)">--text-2xl · 1.875rem — Heading</div>
+              <!-- --text-3xl (36px) -->
+              <div style="font-size:var(--text-3xl)">--text-3xl · 2.25rem — Heading</div>
+              <!-- --text-4xl (48px) -->
+              <div style="font-size:var(--text-4xl)">--text-4xl · 3rem — Hero</div>
+              <!-- --text-5xl (60px) -->
+              <div style="font-size:var(--text-5xl)">--text-5xl · 3.75rem — XL</div>
+              <!-- --text-6xl (72px) -->
+              <div style="font-size:var(--text-6xl)">--text-6xl · 4.5rem — XL</div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Font weights (--font-extralight … --font-black)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --font-extralight (200) -->
+              <div style="font-weight:var(--font-extralight);font-size:var(--text-lg)">--font-extralight · 200 — Extra Light</div>
+              <!-- --font-light (300) -->
+              <div style="font-weight:var(--font-light);font-size:var(--text-lg)">--font-light · 300 — Light</div>
+              <!-- --font-regular (400) -->
+              <div style="font-weight:var(--font-regular);font-size:var(--text-lg)">--font-regular · 400 — Regular</div>
+              <!-- --font-medium (500) -->
+              <div style="font-weight:var(--font-medium);font-size:var(--text-lg)">--font-medium · 500 — Medium</div>
+              <!-- --font-semibold (600) -->
+              <div style="font-weight:var(--font-semibold);font-size:var(--text-lg)">--font-semibold · 600 — Semibold</div>
+              <!-- --font-bold (700) -->
+              <div style="font-weight:var(--font-bold);font-size:var(--text-lg)">--font-bold · 700 — Bold</div>
+              <!-- --font-extrabold (800) -->
+              <div style="font-weight:var(--font-extrabold);font-size:var(--text-lg)">--font-extrabold · 800 — Extra Bold</div>
+              <!-- --font-black (900) -->
+              <div style="font-weight:var(--font-black);font-size:var(--text-lg)">--font-black · 900 — Black</div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Line heights (--leading-none … --leading-loose)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --leading-none (1) -->
+              <div style="line-height:var(--leading-none);max-width:32rem">--leading-none · 1 — This paragraph shows the line height so wrapped lines sit at the given multiple of the font size for comparison.</div>
+              <!-- --leading-tight (1.25) -->
+              <div style="line-height:var(--leading-tight);max-width:32rem">--leading-tight · 1.25 — This paragraph shows the line height so wrapped lines sit at the given multiple of the font size for comparison.</div>
+              <!-- --leading-snug (1.375) -->
+              <div style="line-height:var(--leading-snug);max-width:32rem">--leading-snug · 1.375 — This paragraph shows the line height so wrapped lines sit at the given multiple of the font size for comparison.</div>
+              <!-- --leading-normal (1.5) -->
+              <div style="line-height:var(--leading-normal);max-width:32rem">--leading-normal · 1.5 — This paragraph shows the line height so wrapped lines sit at the given multiple of the font size for comparison.</div>
+              <!-- --leading-relaxed (1.625) -->
+              <div style="line-height:var(--leading-relaxed);max-width:32rem">--leading-relaxed · 1.625 — This paragraph shows the line height so wrapped lines sit at the given multiple of the font size for comparison.</div>
+              <!-- --leading-loose (2) -->
+              <div style="line-height:var(--leading-loose);max-width:32rem">--leading-loose · 2 — This paragraph shows the line height so wrapped lines sit at the given multiple of the font size for comparison.</div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Letter spacing (--tracking-tight … --tracking-widest)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --tracking-tight (-0.025em) -->
+              <div style="letter-spacing:var(--tracking-tight);font-size:var(--text-lg)">--tracking-tight · -0.025em — SITUATION REPORT</div>
+              <!-- --tracking-normal (0) -->
+              <div style="letter-spacing:var(--tracking-normal);font-size:var(--text-lg)">--tracking-normal · 0 — SITUATION REPORT</div>
+              <!-- --tracking-wide (0.025em) -->
+              <div style="letter-spacing:var(--tracking-wide);font-size:var(--text-lg)">--tracking-wide · 0.025em — SITUATION REPORT</div>
+              <!-- --tracking-wider (0.05em) -->
+              <div style="letter-spacing:var(--tracking-wider);font-size:var(--text-lg)">--tracking-wider · 0.05em — SITUATION REPORT</div>
+              <!-- --tracking-widest (0.1em) -->
+              <div style="letter-spacing:var(--tracking-widest);font-size:var(--text-lg)">--tracking-widest · 0.1em — SITUATION REPORT</div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Icon sizes (--icon-xs … --icon-xl)</div>
+          <p class="docs-desc">Use these for <code>font-size</code> on <code>.material-symbols-outlined</code> so icon sizing tunes independently of text.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --icon-xs (16px) -->
+              <span class="material-symbols-outlined" style="font-size:var(--icon-xs)">info</span>
+              <!-- --icon-sm (18px) -->
+              <span class="material-symbols-outlined" style="font-size:var(--icon-sm)">info</span>
+              <!-- --icon-md (20px) -->
+              <span class="material-symbols-outlined" style="font-size:var(--icon-md)">info</span>
+              <!-- --icon-lg (24px) -->
+              <span class="material-symbols-outlined" style="font-size:var(--icon-lg)">info</span>
+              <!-- --icon-xl (32px) -->
+              <span class="material-symbols-outlined" style="font-size:var(--icon-xl)">info</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Border Radius ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">rounded_corner</span>Border Radius</div>
-          <div class="docs-radius-grid">
-            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-none)"></div><span class="docs-radius-label">--radius-none<br>0</span></div>
-            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-2xs)"></div><span class="docs-radius-label">--radius-2xs<br>0.125rem</span></div>
-            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-xs)"></div><span class="docs-radius-label">--radius-xs<br>0.25rem</span></div>
-            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-sm)"></div><span class="docs-radius-label">--radius-sm<br>0.375rem</span></div>
-            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--border-radius)"></div><span class="docs-radius-label">--border-radius<br>0.5rem (base)</span></div>
-            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-lg)"></div><span class="docs-radius-label">--radius-lg<br>0.75rem</span></div>
-            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-xl)"></div><span class="docs-radius-label">--radius-xl<br>1rem</span></div>
-            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-2xl)"></div><span class="docs-radius-label">--radius-2xl<br>1.5rem</span></div>
-            <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-pill)"></div><span class="docs-radius-label">--radius-pill<br>9999px</span></div>
+          <p class="docs-desc"><code>--border-radius</code> (0.5rem) is the base corner; <code>--radius-md</code> aliases it. Change <code>--border-radius</code> to retheme every standard corner at once.</p>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --radius-none -->
+              <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-none)"></div><span class="docs-radius-label">--radius-none<br>0</span></div>
+              <!-- --radius-2xs -->
+              <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-2xs)"></div><span class="docs-radius-label">--radius-2xs<br>0.125rem</span></div>
+              <!-- --radius-xs -->
+              <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-xs)"></div><span class="docs-radius-label">--radius-xs<br>0.25rem</span></div>
+              <!-- --radius-sm -->
+              <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-sm)"></div><span class="docs-radius-label">--radius-sm<br>0.375rem</span></div>
+              <!-- --border-radius (base) / --radius-md -->
+              <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--border-radius)"></div><span class="docs-radius-label">--border-radius<br>0.5rem (base)</span></div>
+              <!-- --radius-lg -->
+              <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-lg)"></div><span class="docs-radius-label">--radius-lg<br>0.75rem</span></div>
+              <!-- --radius-xl -->
+              <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-xl)"></div><span class="docs-radius-label">--radius-xl<br>1rem</span></div>
+              <!-- --radius-2xl -->
+              <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-2xl)"></div><span class="docs-radius-label">--radius-2xl<br>1.5rem</span></div>
+              <!-- --radius-pill -->
+              <div class="docs-radius-item"><div class="docs-radius-box" style="border-radius:var(--radius-pill)"></div><span class="docs-radius-label">--radius-pill<br>9999px</span></div>
+            </div>
           </div>
-          <p class="docs-desc"><code>--radius-md</code> is an alias for <code>--border-radius</code> (the agency's base corner radius). Change <code>--border-radius</code> to retheme all standard corners at once.</p>
         </div>
 
-        <!-- ── Border Thickness ──────────────────────────── -->
+        <!-- ══════════════════════════ Border Thickness ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">line_weight</span>Border Thickness</div>
-          <p class="docs-desc">Border width tokens in rem — use instead of raw <code>px</code> values on borders, outlines, and scrollbar widths.</p>
-          <table class="docs-token-table">
-            <thead><tr><th>Token</th><th>Value</th><th>px equiv</th><th>Preview</th></tr></thead>
-            <tbody>
-              <tr>
-                <td><span class="docs-token-name">--border-2xs</span></td><td>0.0625rem</td><td>1px</td>
-                <td><div style="height:var(--border-2xs);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
-              </tr>
-              <tr>
-                <td><span class="docs-token-name">--border-xs</span></td><td>0.125rem</td><td>2px</td>
-                <td><div style="height:var(--border-xs);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
-              </tr>
-              <tr>
-                <td><span class="docs-token-name">--border-sm</span></td><td>0.1875rem</td><td>3px</td>
-                <td><div style="height:var(--border-sm);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
-              </tr>
-              <tr>
-                <td><span class="docs-token-name">--border-md</span></td><td>0.25rem</td><td>4px</td>
-                <td><div style="height:var(--border-md);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
-              </tr>
-              <tr>
-                <td><span class="docs-token-name">--border-lg</span></td><td>0.375rem</td><td>6px</td>
-                <td><div style="height:var(--border-lg);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
-              </tr>
-              <tr>
-                <td><span class="docs-token-name">--border-xl</span></td><td>0.5rem</td><td>8px</td>
-                <td><div style="height:var(--border-xl);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
-              </tr>
-              <tr>
-                <td><span class="docs-token-name">--border-2xl</span></td><td>0.75rem</td><td>12px</td>
-                <td><div style="height:var(--border-2xl);background:var(--color-10);width:120px;border-radius:var(--radius-pill)"></div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- ── Shadow Scale ──────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">layers</span>Shadow Scale</div>
-          <p class="docs-desc">Shadow tokens automatically resolve to stronger values in dark mode — no manual <code>[data-theme="dark"]</code> overrides needed in components.</p>
-          <div style="display:flex;flex-wrap:wrap;gap:var(--space-4);padding:var(--space-4) 0;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
-              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-xs)"></div>
-              <span class="docs-radius-label" style="text-align:center;">--shadow-xs<br><span style="opacity:0.6;font-size:var(--text-2xs)">Subtle lift</span></span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
-              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-sm)"></div>
-              <span class="docs-radius-label" style="text-align:center;">--shadow-sm<br><span style="opacity:0.6;font-size:var(--text-2xs)">Cards, panels</span></span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
-              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-md)"></div>
-              <span class="docs-radius-label" style="text-align:center;">--shadow-md<br><span style="opacity:0.6;font-size:var(--text-2xs)">Dropdowns, FABs</span></span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
-              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-lg)"></div>
-              <span class="docs-radius-label" style="text-align:center;">--shadow-lg<br><span style="opacity:0.6;font-size:var(--text-2xs)">Popovers, map pins</span></span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);">
-              <div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-xl)"></div>
-              <span class="docs-radius-label" style="text-align:center;">--shadow-xl<br><span style="opacity:0.6;font-size:var(--text-2xs)">Modals, drawers</span></span>
+          <p class="docs-desc">Border-width tokens in rem — use instead of raw <code>px</code> on borders, outlines and scrollbar widths. Each bar's height is the token value.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --border-2xs (1px) -->
+              <div style="display:flex;align-items:center;gap:var(--space-4)"><span class="docs-space-label">--border-2xs</span><div style="height:var(--border-2xs);width:160px;background:var(--color-10);border-radius:var(--radius-pill)"></div><span class="docs-space-value">1px</span></div>
+              <!-- --border-xs (2px) -->
+              <div style="display:flex;align-items:center;gap:var(--space-4)"><span class="docs-space-label">--border-xs</span><div style="height:var(--border-xs);width:160px;background:var(--color-10);border-radius:var(--radius-pill)"></div><span class="docs-space-value">2px</span></div>
+              <!-- --border-sm (3px) -->
+              <div style="display:flex;align-items:center;gap:var(--space-4)"><span class="docs-space-label">--border-sm</span><div style="height:var(--border-sm);width:160px;background:var(--color-10);border-radius:var(--radius-pill)"></div><span class="docs-space-value">3px</span></div>
+              <!-- --border-md (4px) -->
+              <div style="display:flex;align-items:center;gap:var(--space-4)"><span class="docs-space-label">--border-md</span><div style="height:var(--border-md);width:160px;background:var(--color-10);border-radius:var(--radius-pill)"></div><span class="docs-space-value">4px</span></div>
+              <!-- --border-lg (6px) -->
+              <div style="display:flex;align-items:center;gap:var(--space-4)"><span class="docs-space-label">--border-lg</span><div style="height:var(--border-lg);width:160px;background:var(--color-10);border-radius:var(--radius-pill)"></div><span class="docs-space-value">6px</span></div>
+              <!-- --border-xl (8px) -->
+              <div style="display:flex;align-items:center;gap:var(--space-4)"><span class="docs-space-label">--border-xl</span><div style="height:var(--border-xl);width:160px;background:var(--color-10);border-radius:var(--radius-pill)"></div><span class="docs-space-value">8px</span></div>
+              <!-- --border-2xl (12px) -->
+              <div style="display:flex;align-items:center;gap:var(--space-4)"><span class="docs-space-label">--border-2xl</span><div style="height:var(--border-2xl);width:160px;background:var(--color-10);border-radius:var(--radius-pill)"></div><span class="docs-space-value">12px</span></div>
             </div>
           </div>
-          <p class="docs-desc"><code>--widget-shadow</code> is a semantic alias (resolves to <code>--shadow-sm</code>) used for widget surface elevation — override it in <code>agency-theme.css</code> to adjust all widget shadows at once.</p>
         </div>
 
-        <!-- ── Typography Scale ──────────────────────────── -->
+        <!-- ══════════════════════════ Shadow Scale ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">text_fields</span>Typography Scale</div>
+          <div class="docs-section-title"><span class="material-symbols-outlined">layers</span>Shadow Scale</div>
+          <p class="docs-desc">Shadow tokens resolve to stronger values in dark mode automatically, so components need no manual <code>[data-theme="dark"]</code> overrides.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --shadow-xs (subtle lift) -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)"><div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-xs)"></div><span class="docs-radius-label" style="text-align:center">--shadow-xs<br><span style="opacity:0.6;font-size:var(--text-2xs)">Subtle lift</span></span></div>
+              <!-- --shadow-sm (cards, panels) -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)"><div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-sm)"></div><span class="docs-radius-label" style="text-align:center">--shadow-sm<br><span style="opacity:0.6;font-size:var(--text-2xs)">Cards, panels</span></span></div>
+              <!-- --shadow-md (dropdowns, FABs) -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)"><div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-md)"></div><span class="docs-radius-label" style="text-align:center">--shadow-md<br><span style="opacity:0.6;font-size:var(--text-2xs)">Dropdowns, FABs</span></span></div>
+              <!-- --shadow-lg (popovers, map pins) -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)"><div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-lg)"></div><span class="docs-radius-label" style="text-align:center">--shadow-lg<br><span style="opacity:0.6;font-size:var(--text-2xs)">Popovers, pins</span></span></div>
+              <!-- --shadow-xl (modals, drawers) -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)"><div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--shadow-xl)"></div><span class="docs-radius-label" style="text-align:center">--shadow-xl<br><span style="opacity:0.6;font-size:var(--text-2xs)">Modals, drawers</span></span></div>
+              <!-- --widget-shadow (semantic alias → --shadow-sm) -->
+              <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)"><div style="width:96px;height:64px;border-radius:var(--border-radius);background:var(--color-30);box-shadow:var(--widget-shadow)"></div><span class="docs-radius-label" style="text-align:center">--widget-shadow<br><span style="opacity:0.6;font-size:var(--text-2xs)">Widget alias</span></span></div>
+            </div>
+          </div>
+        </div>
 
-          <div class="docs-subsection-title">Font Sizes</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Token</th><th>Value</th><th>Preview</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">--text-2xs</span></td><td>0.625rem (10px)</td><td><span style="font-size:var(--text-2xs)">The quick brown fox</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-xs</span></td><td>0.75rem (12px)</td><td><span style="font-size:var(--text-xs)">The quick brown fox</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-sm</span></td><td>0.875rem (14px)</td><td><span style="font-size:var(--text-sm)">The quick brown fox</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-base</span></td><td>1rem (16px)</td><td><span style="font-size:var(--text-base)">The quick brown fox</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-md</span></td><td>1.125rem (18px)</td><td><span style="font-size:var(--text-md)">The quick brown fox</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-lg</span></td><td>1.25rem (20px)</td><td><span style="font-size:var(--text-lg)">The quick brown fox</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-xl</span></td><td>1.5rem (24px)</td><td><span style="font-size:var(--text-xl)">The quick brown fox</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-2xl</span></td><td>1.875rem (30px)</td><td><span style="font-size:var(--text-2xl)">Heading</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-3xl</span></td><td>2.25rem (36px)</td><td><span style="font-size:var(--text-3xl)">Heading</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-4xl</span></td><td>3rem (48px)</td><td><span style="font-size:var(--text-4xl)">Hero</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-5xl</span></td><td>3.75rem (60px)</td><td><span style="font-size:var(--text-5xl)">XL</span></td></tr>
-              <tr><td><span class="docs-token-name">--text-6xl</span></td><td>4.5rem (72px)</td><td><span style="font-size:var(--text-6xl)">XL</span></td></tr>
-            </tbody>
-          </table>
+        <!-- ══════════════════════════ Interaction Tokens ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">touch_app</span>Interaction Tokens</div>
+          <p class="docs-desc">Overlay and hover surfaces used across interactive components. <code>--color-hover</code> is a translucent wash layered over any surface; <code>--color-overlay</code> is the modal/drawer backdrop; <code>--color-switch-thumb</code> fills toggle knobs.</p>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --color-hover (over surface) -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-30)"><div style="width:100%;height:100%;background:var(--color-hover)"></div></div><div class="docs-swatch-info"><span class="docs-swatch-name">Hover wash</span><span class="docs-swatch-var">--color-hover</span></div></div>
+              <!-- --color-overlay -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-overlay)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Overlay</span><span class="docs-swatch-var">--color-overlay</span></div></div>
+              <!-- --color-switch-thumb -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--color-switch-thumb)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Switch thumb</span><span class="docs-swatch-var">--color-switch-thumb</span></div></div>
+            </div>
+          </div>
+        </div>
 
-          <div class="docs-subsection-title">Icon Sizes</div>
-          <p class="docs-desc">Use these for <code>font-size</code> on <code>.material-symbols-outlined</code> elements — not <code>--text-*</code> — so icon sizes can be tuned independently of text.</p>
-          <table class="docs-token-table">
-            <thead><tr><th>Token</th><th>Value</th><th>Preview</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">--icon-xs</span></td><td>1rem (16px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-xs)">info</span></td></tr>
-              <tr><td><span class="docs-token-name">--icon-sm</span></td><td>1.125rem (18px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-sm)">info</span></td></tr>
-              <tr><td><span class="docs-token-name">--icon-md</span></td><td>1.25rem (20px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-md)">info</span></td></tr>
-              <tr><td><span class="docs-token-name">--icon-lg</span></td><td>1.5rem (24px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-lg)">info</span></td></tr>
-              <tr><td><span class="docs-token-name">--icon-xl</span></td><td>2rem (32px)</td><td><span class="material-symbols-outlined" style="font-size:var(--icon-xl)">info</span></td></tr>
-            </tbody>
-          </table>
+        <!-- ══════════════════════════ Scrollbar Tokens ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">unfold_more</span>Scrollbar Tokens</div>
+          <p class="docs-desc">One source of truth for every overflow surface. <code>--scrollbar-size</code> is the track width (4px, aliasing <code>--border-md</code>); thumb colours reference theme tokens so they follow light/dark automatically. The box below applies them directly.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Live overflow surface driven by scrollbar tokens -->
+              <div class="wui-scroll-area" style="height:120px;width:100%;border:var(--border-2xs) solid var(--color-border);border-radius:var(--border-radius);padding:var(--space-3);scrollbar-color:var(--scrollbar-thumb) var(--scrollbar-track)">
+                <div style="height:340px;background:linear-gradient(var(--color-10-light),var(--color-30));border-radius:var(--scrollbar-radius)">Scroll me — the thumb uses --scrollbar-thumb / --scrollbar-thumb-hover, sized by --scrollbar-size, rounded by --scrollbar-radius, over --scrollbar-track.</div>
+              </div>
+            </div>
+          </div>
+          <div class="wui-callout info">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title">Token set</div>
+              <code>--scrollbar-size</code>, <code>--scrollbar-track</code>, <code>--scrollbar-thumb</code>, <code>--scrollbar-thumb-hover</code>, <code>--scrollbar-radius</code>. Applied globally via the <code>weoc-reset.css</code> scrollbar rule.
+            </div>
+          </div>
+        </div>
 
-          <div class="docs-subsection-title">Font Weights</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Token</th><th>Weight</th><th>Preview</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">--font-extralight</span></td><td>200</td><td><span style="font-weight:var(--font-extralight)">Extra Light Text</span></td></tr>
-              <tr><td><span class="docs-token-name">--font-light</span></td><td>300</td><td><span style="font-weight:var(--font-light)">Light Text</span></td></tr>
-              <tr><td><span class="docs-token-name">--font-regular</span></td><td>400</td><td><span style="font-weight:var(--font-regular)">Regular Text</span></td></tr>
-              <tr><td><span class="docs-token-name">--font-medium</span></td><td>500</td><td><span style="font-weight:var(--font-medium)">Medium Text</span></td></tr>
-              <tr><td><span class="docs-token-name">--font-semibold</span></td><td>600</td><td><span style="font-weight:var(--font-semibold)">Semibold Text</span></td></tr>
-              <tr><td><span class="docs-token-name">--font-bold</span></td><td>700</td><td><span style="font-weight:var(--font-bold)">Bold Text</span></td></tr>
-              <tr><td><span class="docs-token-name">--font-extrabold</span></td><td>800</td><td><span style="font-weight:var(--font-extrabold)">Extra Bold Text</span></td></tr>
-              <tr><td><span class="docs-token-name">--font-black</span></td><td>900</td><td><span style="font-weight:var(--font-black)">Black Text</span></td></tr>
-            </tbody>
-          </table>
-
-          <div class="docs-subsection-title">Line Heights</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">--leading-none</span></td><td>1</td><td>Tight display / hero text</td></tr>
-              <tr><td><span class="docs-token-name">--leading-tight</span></td><td>1.25</td><td>Large headings, UI labels</td></tr>
-              <tr><td><span class="docs-token-name">--leading-snug</span></td><td>1.375</td><td>Subheadings, card titles</td></tr>
-              <tr><td><span class="docs-token-name">--leading-normal</span></td><td>1.5</td><td>Body text (default)</td></tr>
-              <tr><td><span class="docs-token-name">--leading-relaxed</span></td><td>1.625</td><td>Long-form reading</td></tr>
-              <tr><td><span class="docs-token-name">--leading-loose</span></td><td>2</td><td>Accessibility / large print</td></tr>
-            </tbody>
-          </table>
-
-          <div class="docs-subsection-title">Letter Spacing</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Token</th><th>Value</th><th>Usage</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">--tracking-tight</span></td><td>-0.025em</td><td>Display / hero text</td></tr>
-              <tr><td><span class="docs-token-name">--tracking-normal</span></td><td>0</td><td>Body text (default)</td></tr>
-              <tr><td><span class="docs-token-name">--tracking-wide</span></td><td>0.025em</td><td>Subtext, UI labels</td></tr>
-              <tr><td><span class="docs-token-name">--tracking-wider</span></td><td>0.05em</td><td>Caps labels</td></tr>
-              <tr><td><span class="docs-token-name">--tracking-widest</span></td><td>0.1em</td><td>Uppercase badge labels</td></tr>
-            </tbody>
-          </table>
+        <!-- ══════════════════════════ Bootstrap Overrides ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">swap_horiz</span>Bootstrap Overrides</div>
+          <p class="docs-desc">The theme remaps Bootstrap and Tom Select variables onto agency tokens so legacy WebEOC chrome inherits the palette. These are pass-through aliases, not new values.</p>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- --bs-primary → --color-10 -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--bs-primary)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Bootstrap primary</span><span class="docs-swatch-var">--bs-primary</span></div></div>
+              <!-- --bs-success → --color-success -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--bs-success)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Bootstrap success</span><span class="docs-swatch-var">--bs-success</span></div></div>
+              <!-- --bs-warning → --color-warning -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--bs-warning)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Bootstrap warning</span><span class="docs-swatch-var">--bs-warning</span></div></div>
+              <!-- --bs-danger → --color-danger -->
+              <div class="docs-swatch"><div class="docs-swatch-color" style="background:var(--bs-danger)"></div><div class="docs-swatch-info"><span class="docs-swatch-name">Bootstrap danger</span><span class="docs-swatch-var">--bs-danger</span></div></div>
+            </div>
+          </div>
+          <p class="docs-desc">Also remapped: <code>--bs-body-*</code> (font, size, weight, colour, bg), <code>--bs-border-color</code>, the full <code>--bs-border-radius-*</code> ramp, and <code>--ts-border</code> for Tom Select. All resolve to the agency tokens shown above.</p>
         </div>
 
       </div>
