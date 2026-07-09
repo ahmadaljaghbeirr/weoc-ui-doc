@@ -56,7 +56,7 @@
     {
       group: 'Feedback',
       items: [
-        { key: 'feedback', label: 'Feedback', file: 'feedback.html', kw: 'alert callout banner alarm skeleton empty-state loader spinner notification' },
+        { key: 'feedback', label: 'Feedback', file: 'feedback.html', kw: 'alert callout banner toast snackbar alarm skeleton empty-state loader spinner notification' },
         { key: 'progress', label: 'Progress', file: 'progress.html', kw: 'progress bar ring semicircle segmented percentage' }
       ]
     },
@@ -339,7 +339,16 @@
      'tinymce-theme.css'].forEach(function (f) {
       ensureCSS(shared + 'CSS/' + f);
     });
+    // Prism syntax-highlight theme (token-driven, follows light/dark). Docs-only.
+    ensureCSS(root + 'prism-agency.css');
     var jobs = [];
+    // Prism.js — self-hosted, MANUAL mode (we drive highlighting after each
+    // demo/page render, never on DOMContentLoaded). Set the flag BEFORE the
+    // script loads so Prism honours it. Default bundle = markup + css + js.
+    if (!window.Prism) {
+      window.Prism = { manual: true };
+      jobs.push(loadScript(root + 'vendor/prism/prism.min.js'));
+    }
     // TinyMCE — fully self-hosted in vendor/tinymce-8.6.0/ (engine + skins/
     // themes/models/icons/plugins all resolve from that folder at runtime).
     // content_css / iframe theming is applied in PAGE_INIT.tinymce.
@@ -990,7 +999,10 @@
   /* ── wui-demo: single-source live example + code ──────────────────────────
      The .wui-demo-preview holds the LIVE markup (the source of truth). We read
      its innerHTML and render it as the Markup code box, so the code shown is
-     exactly what produced the preview — they cannot drift. An optional
+     exactly what produced the preview — they cannot drift. LAYOUT demos may
+     instead supply <template class="wui-demo-markup"> to OVERRIDE that Markup box
+     with an authored version (real component + placeholder comments) when the
+     literal scaffolding is noise; the live preview still renders as-is. An optional
      <template class="wui-demo-css"> becomes a CSS box (for override snippets) and
      an optional <template class="wui-demo-js"> becomes a JavaScript box;
      data-wui-demo-run also executes the JS, so JS demos are single-source too.
@@ -1011,7 +1023,28 @@
     for (var j = 0; j < lines.length; j++) lines[j] = lines[j].slice(min);
     return lines.join('\n');
   }
-  function codeBox(label, icon, codeText) {
+  /* Prism highlight, idempotent + safe if Prism isn't loaded. Operates on the
+     element in place (works on <code class="language-*"> or a bare tagged <pre>).
+     Copy still returns exact source — textContent is unchanged by tokenising. */
+  function highlightEl(el) {
+    if (!el || el.getAttribute('data-prism-done') === '1') return;
+    if (window.Prism && window.Prism.highlightElement) {
+      el.setAttribute('data-prism-done', '1');
+      try { window.Prism.highlightElement(el); } catch (e) {}
+    }
+  }
+  /* Build the <pre class="docs-code"><code class="language-*"> shell for a snippet. */
+  function codePre(codeText, lang, extraCls) {
+    var pre = document.createElement('pre');
+    pre.className = 'docs-code' + (extraCls ? ' ' + extraCls : '');
+    var code = document.createElement('code');
+    code.className = 'language-' + (lang || 'markup');
+    code.textContent = codeText;           // textContent = safe, exact
+    pre.appendChild(code);
+    highlightEl(code);
+    return pre;
+  }
+  function codeBox(label, icon, codeText, lang) {
     var wrap = document.createElement('div');
     var bar = document.createElement('div');
     bar.className = 'wui-demo-codebar';
@@ -1020,11 +1053,8 @@
         icon + '</span>' + label + '</span>' +
       '<button class="wui-demo-copy" type="button" data-demo-copy>' +
         '<span class="material-symbols-outlined">content_copy</span>Copy</button>';
-    var pre = document.createElement('pre');
-    pre.className = 'docs-code';
-    pre.textContent = codeText;            // textContent = safe, exact
     wrap.appendChild(bar);
-    wrap.appendChild(pre);
+    wrap.appendChild(codePre(codeText, lang));
     return wrap;
   }
   /* Two+ code boxes (Markup + JavaScript) rendered as tabs, so the demo doesn't
@@ -1045,10 +1075,8 @@
       '<span class="material-symbols-outlined">content_copy</span>Copy</button>';
     wrap.appendChild(bar);
     for (var j = 0; j < boxes.length; j++) {
-      var pre = document.createElement('pre');
-      pre.className = 'docs-code wui-demo-pane' + (j === 0 ? ' is-active' : '');
+      var pre = codePre(boxes[j].code, boxes[j].lang, 'wui-demo-pane' + (j === 0 ? ' is-active' : ''));
       pre.setAttribute('data-demo-pane', j);
-      pre.textContent = boxes[j].code;
       wrap.appendChild(pre);
     }
     return wrap;
@@ -1063,23 +1091,34 @@
       demo.setAttribute('data-demo-ready', '1');
 
       var preview = demo.querySelector('.wui-demo-preview');
+      var markupTpl = demo.querySelector('template.wui-demo-markup');
       var cssTpl = demo.querySelector('template.wui-demo-css');
       var jsTpl = demo.querySelector('template.wui-demo-js');
       var boxes = [];
-      if (preview) boxes.push({ label: 'Markup', icon: 'code', code: dedent(preview.innerHTML) });
+      // Markup box source: an explicit <template class="wui-demo-markup"> OVERRIDES
+      // the live preview (used for LAYOUT demos where serialising the visible
+      // scaffolding — filler boxes etc. — is noise; the override shows the real
+      // component with authored placeholder comments). Everywhere else, code ==
+      // the exact live preview (single-source invariant preserved).
+      if (markupTpl) {
+        var mText = dedent(markupTpl.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
+        boxes.push({ label: 'Markup', icon: 'code', lang: 'markup', code: mText });
+      } else if (preview) {
+        boxes.push({ label: 'Markup', icon: 'code', lang: 'markup', code: dedent(preview.innerHTML) });
+      }
       if (cssTpl) {
         var cssText = dedent(cssTpl.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
-        boxes.push({ label: 'CSS', icon: 'css', code: cssText });
+        boxes.push({ label: 'CSS', icon: 'css', lang: 'css', code: cssText });
       }
       if (jsTpl) {
         var jsText = dedent(jsTpl.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
-        boxes.push({ label: 'JavaScript', icon: 'javascript', code: jsText });
+        boxes.push({ label: 'JavaScript', icon: 'javascript', lang: 'javascript', code: jsText });
       }
       var group = document.createElement('div');
       group.className = 'wui-demo-code-group';
       // 1 box (markup-only) = plain labeled box; 2+ (markup + JS) = tabbed, to
       // avoid a long stacked scroll (user request).
-      if (boxes.length === 1) group.appendChild(codeBox(boxes[0].label, boxes[0].icon, boxes[0].code));
+      if (boxes.length === 1) group.appendChild(codeBox(boxes[0].label, boxes[0].icon, boxes[0].code, boxes[0].lang));
       else if (boxes.length > 1) group.appendChild(tabbedCode(boxes));
       demo.appendChild(group);
 
@@ -1134,10 +1173,20 @@
     });
   }
 
+  /* Highlight hand-authored code blocks (js-api / lists integration samples)
+     tagged <pre class="docs-code language-*">. Demo-generated boxes are already
+     highlighted as they're built (codePre); highlightEl's guard skips them. */
+  function highlightStatic(root) {
+    var scope = root || document;
+    var els = scope.querySelectorAll('pre.docs-code[class*="language-"], .docs-code code[class*="language-"]');
+    for (var i = 0; i < els.length; i++) highlightEl(els[i]);
+  }
+
   function runPageInit(ns) {
     renderDemos(document);
     bindDemoCopy();
     if (PAGE_INIT[ns]) { try { PAGE_INIT[ns](); } catch (e) {} }
+    highlightStatic(document);
   }
 
   /* Live-update the home theme readout on toggle — bound once globally. */

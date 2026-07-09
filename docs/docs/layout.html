@@ -67,6 +67,16 @@
                 </div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- body.wui-body-shell — 100vh · overflow:hidden · flex column -->
+              <div class="wui-body-shell lay-frame" style="height:280px;border:1px dashed var(--color-secondary);border-radius:var(--radius-md);padding:var(--space-2)">
+                <!-- wui-main-div — padded flex column, fills the shell -->
+                <div class="wui-main-div" style="height:auto;flex:1;padding:var(--space-2)">
+                  <!-- Header row (shrinks to content) -->
+                  <!-- Content region (flex:1, fills remaining height) -->
+                </div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">wui-view-body — scrollable display content</div>
@@ -86,6 +96,16 @@
                 </div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- Fixed header + independently scrolling body -->
+              <div class="wui-main-div lay-frame" style="height:200px;padding:var(--space-2)">
+                <!-- Fixed header -->
+                <!-- wui-view-body — flex:1; overflow-y:auto -->
+                <div class="wui-view-body" style="padding:var(--space-2)">
+                  <!-- Scrolling rows here -->
+                </div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">page-center — max-width content column</div>
@@ -97,6 +117,12 @@
                 <div class="lay-box" style="border:none;background:transparent">page-center — centered, max-width 1100px</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- page-center — centered max-width column -->
+              <div class="page-center" style="background:var(--color-30);border:1px dashed var(--color-10);border-radius:var(--radius-sm)">
+                <!-- Centered content (max-width 1100px) -->
+              </div>
+            </template>
           </div>
         </div>
 
@@ -114,6 +140,13 @@
                 <div class="wui-split-panel lay-box alt fill">.wui-split-panel</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- Default: no ratio class, panel on the right -->
+              <div class="wui-split lay-frame sm" style="height:200px">
+                <div class="wui-split-main"><!-- Main pane --></div>
+                <div class="wui-split-panel"><!-- Secondary panel --></div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">Ratio variants (main : panel)</div>
@@ -146,6 +179,33 @@
                 <div class="wui-split-panel lay-box alt fill">panel</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- ratio-3-2 — 3 : 2 balanced -->
+              <div class="wui-split ratio-3-2" style="height:56px;margin-bottom:var(--space-3)">
+                <div class="wui-split-main"><!-- Main pane --></div>
+                <div class="wui-split-panel"><!-- Panel --></div>
+              </div>
+              <!-- ratio-2-1 — 2 : 1 (map) -->
+              <div class="wui-split ratio-2-1" style="height:56px;margin-bottom:var(--space-3)">
+                <div class="wui-split-main"><!-- Main pane --></div>
+                <div class="wui-split-panel"><!-- Panel --></div>
+              </div>
+              <!-- ratio-3-1 — 3 : 1 -->
+              <div class="wui-split ratio-3-1" style="height:56px;margin-bottom:var(--space-3)">
+                <div class="wui-split-main"><!-- Main pane --></div>
+                <div class="wui-split-panel"><!-- Panel --></div>
+              </div>
+              <!-- ratio-4-1 — 4 : 1 (thin rail) -->
+              <div class="wui-split ratio-4-1" style="height:56px;margin-bottom:var(--space-3)">
+                <div class="wui-split-main"><!-- Main pane --></div>
+                <div class="wui-split-panel"><!-- Panel --></div>
+              </div>
+              <!-- ratio-2-3 — 2 : 3 (detail-heavy panel) -->
+              <div class="wui-split ratio-2-3" style="height:56px">
+                <div class="wui-split-main"><!-- Main pane --></div>
+                <div class="wui-split-panel"><!-- Panel --></div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">panel-start — dock panel on the left</div>
@@ -158,6 +218,13 @@
                 <div class="wui-split-main lay-box fill">.wui-split-main</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- panel-start + ratio-2-3 — narrow panel docked left -->
+              <div class="wui-split panel-start ratio-2-3 lay-frame sm" style="height:200px">
+                <div class="wui-split-panel"><!-- Panel (docked left) --></div>
+                <div class="wui-split-main"><!-- Main pane --></div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">is-collapsed — panel slid shut</div>
@@ -170,6 +237,13 @@
                 <div class="wui-split-panel lay-box alt fill">.wui-split-panel</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- Static is-collapsed state — panel hidden, main fills -->
+              <div class="wui-split ratio-3-1 is-collapsed lay-frame sm" style="height:200px">
+                <div class="wui-split-main"><!-- Main pane (panel collapsed) --></div>
+                <div class="wui-split-panel"><!-- Panel --></div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">Declarative collapse toggle (data-wui-panel-close)</div>
@@ -187,6 +261,18 @@
                 <div class="wui-split-panel lay-box alt fill">.wui-split-panel</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- Declarative: this button collapses/reopens the split below -->
+              <div class="wui-toolbar plain" style="margin-bottom:var(--space-2)">
+                <button class="wui-btn outline secondary wui-btn-sm" data-wui-panel-close="#demo-split-collapse">
+                  <span class="material-symbols-outlined">right_panel_close</span> Toggle panel
+                </button>
+              </div>
+              <div class="wui-split ratio-2-1 lay-frame sm" id="demo-split-collapse" style="height:200px">
+                <div class="wui-split-main"><!-- Main pane --></div>
+                <div class="wui-split-panel"><!-- Panel --></div>
+              </div>
+            </template>
           </div>
           <p class="docs-desc">Programmatic control (<code>WUI.open</code> / <code>WUI.close</code> / <code>WUI.toggle</code>) and the full attribute reference are on the <a href="js-api.html">JS API</a> page. <code>panel-active</code> is a narrow-screen (max-width 900px) modifier that hands the single visible pane to the panel; it only takes effect below that breakpoint, so it is documented but not previewable at desktop width.</p>
         </div>
@@ -211,6 +297,14 @@
                 </div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-scroll-area inside a fixed-height flex column -->
+              <div class="wui-fill-area lay-frame sm" style="height:200px">
+                <div class="wui-scroll-area">
+                  <!-- Record cards here -->
+                </div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">Density — is-tight / is-roomy</div>
@@ -228,6 +322,16 @@
                 <div class="lay-box">roomy · gap = space-4</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- is-tight — smaller gap -->
+              <div class="wui-scroll-area is-tight" style="height:96px;margin-bottom:var(--space-3)">
+                <!-- Record cards here -->
+              </div>
+              <!-- is-roomy — larger gap -->
+              <div class="wui-scroll-area is-roomy" style="height:120px">
+                <!-- Record cards here -->
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">is-grid — responsive card gallery</div>
@@ -244,6 +348,12 @@
                 <div class="lay-box">tile F</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- is-grid — auto-fill gallery -->
+              <div class="wui-scroll-area is-grid" style="--wui-scroll-col:150px;height:180px">
+                <!-- Card tiles here -->
+              </div>
+            </template>
           </div>
         </div>
 
@@ -261,6 +371,15 @@
                 </div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-fill-area — clips, does not scroll -->
+              <div class="wui-main-div lay-frame sm" style="height:200px;padding:var(--space-2)">
+                <!-- Fixed header -->
+                <div class="wui-fill-area">
+                  <!-- Fills remaining height, no scroll -->
+                </div>
+              </div>
+            </template>
           </div>
         </div>
 
@@ -286,6 +405,21 @@
                 </div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- Nesting: det-inner → det-body → tab-panel.active -->
+              <div class="wui-det-inner" style="background:var(--color-30);border:1px dashed var(--color-secondary);border-radius:var(--radius-sm);padding:var(--space-2)">
+                <div class="wui-det-body" style="border:1px dashed var(--color-10);border-radius:var(--radius-sm);padding:var(--space-2)">
+                  <!-- Only the .active panel is visible -->
+                  <div class="wui-tab-panel active">
+                    <!-- Active panel content (scrolls) -->
+                  </div>
+                  <!-- Inactive panels: display:none -->
+                  <div class="wui-tab-panel">
+                    <!-- Hidden panel content -->
+                  </div>
+                </div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">Active vs inactive panels (contained)</div>
@@ -308,6 +442,23 @@
                 </div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- Static: panel 1 active, panels 2/3 hidden -->
+              <div class="wui-det-body lay-frame sm" style="height:200px;border:1px dashed var(--color-10);border-radius:var(--radius-sm);padding:var(--space-2)">
+                <!-- Details tab — active -->
+                <div class="wui-tab-panel active">
+                  <!-- Active panel content -->
+                </div>
+                <!-- Info tab — inactive -->
+                <div class="wui-tab-panel">
+                  <!-- Hidden panel content -->
+                </div>
+                <!-- Attachments tab — inactive -->
+                <div class="wui-tab-panel">
+                  <!-- Hidden panel content -->
+                </div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">is-list-mode — stack all panels in one scroll</div>
@@ -327,6 +478,20 @@
                 </div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- Static is-list-mode — all panels stacked, det-body scrolls -->
+              <div class="wui-det-body is-list-mode lay-frame sm" style="height:200px;border:1px dashed var(--color-10);border-radius:var(--radius-sm);padding:var(--space-2)">
+                <div class="wui-tab-panel">
+                  <!-- Details panel -->
+                </div>
+                <div class="wui-tab-panel">
+                  <!-- Info panel -->
+                </div>
+                <div class="wui-tab-panel">
+                  <!-- Attachments panel -->
+                </div>
+              </div>
+            </template>
           </div>
           <p class="docs-desc"><code>wui-det-inner .wui-tab-panel</code> gets vertical breathing room automatically; add <code>is-form</code> to a panel (<code>wui-tab-panel is-form</code>) when the inner <code>page-center</code> should have zero padding so a form runs to the edge.</p>
         </div>
@@ -395,6 +560,12 @@
                 <div class="lay-box">list item 5</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-list — scrolls internally -->
+              <div class="wui-list" style="height:180px">
+                <!-- List item cards here -->
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">wui-card-stack — grows with content</div>
@@ -407,6 +578,12 @@
                 <div class="lay-box">stacked card 3</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-card-stack — non-scrolling, grows; place in a scroll parent -->
+              <div class="wui-card-stack">
+                <!-- Stacked cards here -->
+              </div>
+            </template>
           </div>
         </div>
 
@@ -433,6 +610,20 @@
                 </div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-grid-view — list left, details-panel visible on the right -->
+              <div class="wui-grid-view lay-frame sm" style="height:200px;padding:var(--space-2)">
+                <div class="wui-list" style="grid-area:list">
+                  <!-- Record cards here -->
+                </div>
+                <!-- wui-details-panel.visible — slides into the "right" area -->
+                <div class="wui-details-panel visible">
+                  <!-- wui-panel-close-btn — anchored top-left inside the panel -->
+                  <button class="wui-action-btn wui-panel-close-btn" title="Close"><span class="material-symbols-outlined">close</span></button>
+                  <!-- Selected record detail -->
+                </div>
+              </div>
+            </template>
           </div>
 
           <div class="docs-subsection-title">list-only (no selection)</div>
@@ -451,6 +642,16 @@
                 <div class="wui-details-panel"></div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-grid-view.list-only — single column, panel hidden -->
+              <div class="wui-grid-view list-only lay-frame sm" style="height:200px;padding:var(--space-2)">
+                <div class="wui-list">
+                  <!-- Record cards here -->
+                </div>
+                <!-- Panel present but hidden (no .visible) -->
+                <div class="wui-details-panel"></div>
+              </div>
+            </template>
           </div>
         </div>
 
@@ -469,6 +670,12 @@
                 <div class="lay-box">card E</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-cards-grid — override min card width via --wui-card-min -->
+              <div class="wui-cards-grid" style="--wui-card-min:160px">
+                <!-- Card cells here -->
+              </div>
+            </template>
           </div>
         </div>
 
@@ -484,6 +691,13 @@
                 <div class="lay-box" style="min-height:96px">right column (taller)</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-two-col — equal columns, top-aligned -->
+              <div class="wui-two-col">
+                <!-- Left column -->
+                <!-- Right column -->
+              </div>
+            </template>
           </div>
           <div class="docs-subsection-title">align-stretch (fill height)</div>
           <div class="wui-demo stacked" data-wui-demo>
@@ -494,6 +708,13 @@
                 <div class="lay-box" style="min-height:96px">right (taller)</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-two-col.align-stretch — both columns match the tallest -->
+              <div class="wui-two-col align-stretch">
+                <!-- Left column (stretched) -->
+                <!-- Right column -->
+              </div>
+            </template>
           </div>
         </div>
 
@@ -508,6 +729,13 @@
                 <main class="lay-box" style="min-height:96px">main content (1fr)</main>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-sidebar-layout — override rail via --wui-sidebar-width -->
+              <div class="wui-sidebar-layout" style="--wui-sidebar-width:140px">
+                <!-- Sidebar rail -->
+                <!-- Main content -->
+              </div>
+            </template>
           </div>
         </div>
 
@@ -522,6 +750,13 @@
                 <div class="lay-box alt fill">detail (7fr)</div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-split-pane — override ratio via --wui-split-left / --wui-split-right -->
+              <div class="wui-split-pane lay-frame sm" style="height:200px">
+                <!-- List column (5fr) -->
+                <!-- Detail column (7fr) -->
+              </div>
+            </template>
           </div>
         </div>
 
@@ -590,6 +825,15 @@
                 </div>
               </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- wui-table-view — scroll container for a table body -->
+              <div class="wui-main-div lay-frame sm" style="height:200px;padding:var(--space-2)">
+                <!-- Fixed header -->
+                <div class="wui-table-view" style="border:1px dashed var(--color-10);border-radius:var(--radius-sm)">
+                  <!-- Table rows here -->
+                </div>
+              </div>
+            </template>
           </div>
         </div>
 

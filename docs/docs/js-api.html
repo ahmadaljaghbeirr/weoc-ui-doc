@@ -268,6 +268,55 @@ drawer.addEventListener('wui:close', () => {
 });</pre>
         </div>
 
+        <!-- ── Toast / Snackbar ────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">notifications</span>Toast &amp; Snackbar</div>
+          <p class="docs-desc">Transient notifications, created imperatively. The library builds and tears down the DOM; skinned by <code>weoc-feedback.css</code>. See the <a href="feedback.html">Feedback</a> page for live demos.</p>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Method</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-api-method">WUI.toast(message, opts?)</span></td>
+                <td>Show a corner toast. Returns a handle <code>{ el, dismiss }</code>. Auto-dismisses after <code>opts.duration</code> (default 4000 ms; <code>0</code> = sticky); pauses while hovered.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">WUI.snackbar(message, opts?)</span></td>
+                <td>Bottom-center, single-at-a-time preset with an inline action. A new call replaces the open snackbar. Default duration 6000 ms.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">WUI.dismissToast(handle|el)</span></td>
+                <td>Dismiss one toast by its handle or element.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">WUI.dismissToasts()</span></td>
+                <td>Dismiss every live toast and snackbar.</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="docs-desc"><strong>opts:</strong> <code>variant</code> (<code>primary</code>/<code>info</code>/<code>success</code>/<code>warning</code>/<code>danger</code>) · <code>position</code> (6 corners; toast only) · <code>duration</code> (ms, <code>0</code>=sticky) · <code>icon</code> (material-symbol name, <code>null</code> to omit) · <code>title</code> · <code>dismissible</code> (default true) · <code>action</code> (<code>'Label'</code> or <code>{ label, onClick(handle) }</code>).</p>
+          <pre class="docs-code language-javascript">// Simple success toast
+WUI.toast('Incident #4471 submitted', { variant: 'success' });
+
+// Sticky toast with an Undo action
+const t = WUI.toast('Record archived', {
+  variant: 'warning',
+  duration: 0,
+  action: { label: 'Undo', onClick: () => restore() }
+});
+// t.dismiss();  // dismiss programmatically
+
+// Snackbar (bottom-center, single-at-a-time)
+WUI.snackbar('Item deleted', {
+  action: { label: 'Undo', onClick: () => undoDelete() }
+});
+
+// Listen for the action
+document.addEventListener('wui:toast:action', e => {
+  console.log('action on', e.detail.toast);
+});</pre>
+        </div>
+
         <!-- ── Class helpers ───────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">style</span>Class Helpers</div>
@@ -437,6 +486,9 @@ WUI.anchor(floating, trigger, {
               <tr><td><span class="docs-api-method">wui:panelclose</span></td><td>Split element</td><td>—</td></tr>
               <tr><td><span class="docs-api-method">wui:themechange</span></td><td><code>document.documentElement</code></td><td><code>{ dark: boolean }</code></td></tr>
               <tr><td><span class="docs-api-method">wui:sectionrefresh</span></td><td>Section element</td><td><code>{ el: Element }</code></td></tr>
+              <tr><td><span class="docs-api-method">wui:toast:show</span></td><td>Toast element</td><td><code>{ toast: Element }</code></td></tr>
+              <tr><td><span class="docs-api-method">wui:toast:dismiss</span></td><td>Toast element</td><td><code>{ toast: Element }</code></td></tr>
+              <tr><td><span class="docs-api-method">wui:toast:action</span></td><td>Toast element</td><td><code>{ toast: Element }</code></td></tr>
             </tbody>
           </table>
           <pre class="docs-code">// Listen for segment selection

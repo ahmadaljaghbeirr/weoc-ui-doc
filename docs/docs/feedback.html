@@ -22,7 +22,7 @@
         <div class="docs-hero">
           <div class="docs-hero-eyebrow">Feedback</div>
           <div class="docs-hero-title">Feedback</div>
-          <div class="docs-hero-sub">Components that tell the user what is happening: contextual notices <code>wui-callout</code>, the pulsing <code>wui-alarm</code>, shimmer placeholders <code>wui-skeleton</code>, empty placeholders <code>wui-empty-state</code>, and the <code>.spin</code> loader. Every variant, size, and state is shown below with its exact markup.</div>
+          <div class="docs-hero-sub">Components that tell the user what is happening: contextual notices <code>wui-callout</code>, page-level <code>wui-banner</code>, transient <code>wui-toast</code> and <code>wui-snackbar</code> (driven by <code>WUI.toast</code> / <code>WUI.snackbar</code>), the pulsing <code>wui-alarm</code>, shimmer placeholders <code>wui-skeleton</code>, empty placeholders <code>wui-empty-state</code>, and the <code>.spin</code> loader. Every variant, size, and state is shown below with its exact markup.</div>
         </div>
 
         <!-- ══════════════════════════ wui-callout ══════════════════════════ -->
@@ -185,6 +185,100 @@
                   <div class="wui-banner-text">This board is read-only for your role.</div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-toast ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">notifications</span>wui-toast</div>
+          <p class="docs-desc">Transient corner notification, created imperatively from JavaScript — there is no static markup to author. Call <code>WUI.toast(message, opts)</code>; the library builds the DOM, animates it in, auto-dismisses after <code>opts.duration</code> ms (default 4000; <code>0</code> = sticky), and tears it down after the exit transition. Returns a handle <code>{ el, dismiss }</code>. Auto-dismiss pauses while the pointer is over the toast. Each demo button below runs the exact call shown in its Markup box.</p>
+
+          <div class="docs-subsection-title">Severity variants</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Neutral (no variant) -->
+              <button class="wui-btn outline secondary" onclick="WUI.toast('Draft auto-saved')">Neutral</button>
+              <!-- Primary -->
+              <button class="wui-btn primary" onclick="WUI.toast('Report queued for review', { variant: 'primary' })">Primary</button>
+              <!-- Info -->
+              <button class="wui-btn info" onclick="WUI.toast('New SITREP available', { variant: 'info' })">Info</button>
+              <!-- Success -->
+              <button class="wui-btn success" onclick="WUI.toast('Incident #4471 submitted', { variant: 'success' })">Success</button>
+              <!-- Warning -->
+              <button class="wui-btn warning" onclick="WUI.toast('Shelter at 92% capacity', { variant: 'warning' })">Warning</button>
+              <!-- Danger -->
+              <button class="wui-btn danger" onclick="WUI.toast('Failed to save record', { variant: 'danger' })">Danger</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">With a title</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- opts.title renders a bold heading above the message -->
+              <button class="wui-btn primary" onclick="WUI.toast('All response teams report to their sectors.', { variant: 'danger', title: 'EOC activated — Level 4' })">Titled toast</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Positions</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default is top-right; six positions are supported -->
+              <button class="wui-btn outline primary" onclick="WUI.toast('top-right (default)')">top-right</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('top-left', { position: 'top-left' })">top-left</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('top-center', { position: 'top-center' })">top-center</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('bottom-right', { position: 'bottom-right' })">bottom-right</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('bottom-left', { position: 'bottom-left' })">bottom-left</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('bottom-center', { position: 'bottom-center' })">bottom-center</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Sticky + action button</div>
+          <p class="docs-desc"><code>duration: 0</code> keeps the toast until dismissed. <code>action</code> takes a string label, or <code>{ label, onClick(handle) }</code> — the callback fires <code>wui:toast:action</code> and then dismisses the toast.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Sticky toast with an Undo action -->
+              <button class="wui-btn warning" onclick="WUI.toast('Record moved to archive', { variant: 'warning', duration: 0, action: { label: 'Undo', onClick: function () { WUI.toast('Restore complete', { variant: 'success' }); } } })">Sticky + action</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Dismiss all</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Stack a few, then clear them all -->
+              <button class="wui-btn outline info" onclick="WUI.toast('One'); WUI.toast('Two', { variant: 'info' }); WUI.toast('Three', { variant: 'success' })">Stack three</button>
+              <button class="wui-btn outline danger" onclick="WUI.dismissToasts()">Dismiss all</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-snackbar ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">bottom_navigation</span>wui-snackbar</div>
+          <p class="docs-desc">A bottom-center, single-at-a-time notification with an optional inline action — the Material-style sibling of the toast. <code>WUI.snackbar(message, opts)</code> is a preset over the same engine: position is always bottom-center, a new snackbar replaces the open one, the surface is the inverted neutral skin, and the default duration is 6000 ms. Same <code>opts</code> as toast (<code>variant</code>, <code>title</code>, <code>duration</code>, <code>dismissible</code>, <code>action</code>).</p>
+
+          <div class="docs-subsection-title">Default</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Plain confirmation -->
+              <button class="wui-btn primary" onclick="WUI.snackbar('Changes saved')">Show snackbar</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">With an action</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Undo pattern -->
+              <button class="wui-btn primary" onclick="WUI.snackbar('Item deleted', { action: { label: 'Undo', onClick: function () { WUI.snackbar('Item restored'); } } })">Delete with Undo</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Single-at-a-time</div>
+          <p class="docs-desc">Triggering a snackbar while one is open replaces it — only one shows at a time. Click twice in quick succession to see the swap.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Second call replaces the first -->
+              <button class="wui-btn info" onclick="WUI.snackbar('Uploading… ' + new Date().toLocaleTimeString(), { variant: 'info' })">Fire snackbar</button>
             </div>
           </div>
         </div>

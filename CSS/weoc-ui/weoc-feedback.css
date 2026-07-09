@@ -1,8 +1,9 @@
 /* =============================================
    weoc-feedback.css
    User-facing state communication components:
-   banner (inline alerts) and alarm (active
-   system alerts).
+   banner (inline alerts), alarm (active system
+   alerts), skeleton, callout, and the transient
+   toast / snackbar system (driven by weoc-ui.js).
    Loaded via weoc-ui.css barrel.
    Requires: agency-theme.css (loaded by barrel).
    ============================================= */
@@ -355,3 +356,148 @@
 .wui-callout-body li {
   margin-bottom: 2px;
 }
+
+/* ============================================================
+   5) TOAST / SNACKBAR (wui-toast / wui-snackbar)
+   Transient, JS-created notifications. The DOM is built and
+   torn down by weoc-ui.js (WUI.toast / WUI.snackbar); this file
+   only skins it. Region = fixed positioned stack; each toast
+   animates in/out via class toggles (.is-visible / .is-leaving).
+   Token-pure — dark mode automatic. No GSAP dependency.
+   ============================================================ */
+
+/* ─── Region: fixed stack, one per active corner ─── */
+.wui-toast-region {
+  position: fixed;
+  z-index: 10000;                 /* above overlays/modals (max 9999) */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: min(92vw, 24rem);
+  pointer-events: none;           /* let clicks through the gaps */
+}
+.wui-toast-region > * { pointer-events: auto; }
+
+.wui-toast-region.top-right    { top: var(--space-4); right: var(--space-4); align-items: flex-end; }
+.wui-toast-region.top-left     { top: var(--space-4); left: var(--space-4);  align-items: flex-start; }
+.wui-toast-region.top-center   { top: var(--space-4); left: 50%; transform: translateX(-50%); align-items: center; }
+/* bottom regions grow upward: newest sits nearest the edge */
+.wui-toast-region.bottom-right  { bottom: var(--space-4); right: var(--space-4); align-items: flex-end;   flex-direction: column-reverse; }
+.wui-toast-region.bottom-left   { bottom: var(--space-4); left: var(--space-4);  align-items: flex-start; flex-direction: column-reverse; }
+.wui-toast-region.bottom-center { bottom: var(--space-4); left: 50%; transform: translateX(-50%); align-items: center; flex-direction: column-reverse; }
+
+/* ─── Toast card ─── */
+.wui-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-left: var(--border-sm) solid var(--_accent, var(--color-text-ui));
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  /* enter/exit — direction-agnostic fade + scale */
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.wui-toast.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+.wui-toast.is-leaving { opacity: 0; transform: scale(0.98); }
+
+/* ─── Severity variants (neutral default; --_accent drives rail + icon) ─── */
+.wui-toast.primary { --_accent: var(--color-10); }
+.wui-toast.info    { --_accent: var(--color-info-text); }
+.wui-toast.success { --_accent: var(--color-success-text); }
+.wui-toast.warning { --_accent: var(--color-warning-text); }
+.wui-toast.danger  { --_accent: var(--color-danger-text); }
+
+/* ─── Atoms ─── */
+.wui-toast-icon {
+  font-size: var(--text-lg);
+  line-height: 1;
+  color: var(--_accent, var(--color-text-ui));
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.wui-toast-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wui-toast-title {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  line-height: 1.35;
+}
+
+.wui-toast-msg {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* action button — text button in the accent colour */
+.wui-toast-action {
+  align-self: flex-start;
+  margin-top: var(--space-1);
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--_accent, var(--color-10));
+  cursor: pointer;
+}
+.wui-toast-action:hover { text-decoration: underline; }
+
+/* close button */
+.wui-toast-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  margin: -2px calc(-1 * var(--space-1)) 0 0;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.wui-toast-close:hover { background: var(--color-hover); color: var(--color-text-primary); }
+.wui-toast-close .material-symbols-outlined { font-size: var(--icon-sm); }
+
+/* ─── Snackbar preset (bottom, neutral, inline action) ─── */
+.wui-snackbar {
+  align-items: center;
+  gap: var(--space-4);
+  border-left-width: 1px;                 /* no accent rail — neutral */
+  border-left-color: var(--color-border);
+  background: var(--color-text-primary);  /* inverted surface, Material-style */
+  color: var(--color-30);
+}
+.wui-snackbar .wui-toast-title,
+.wui-snackbar .wui-toast-msg { color: inherit; }
+.wui-snackbar .wui-toast-msg { opacity: 0.85; }
+.wui-snackbar .wui-toast-action {
+  align-self: center;
+  margin-top: 0;
+  color: var(--color-info);
+}
+.wui-snackbar .wui-toast-close { color: inherit; }
+.wui-snackbar .wui-toast-close:hover { background: rgba(255, 255, 255, 0.12); }
