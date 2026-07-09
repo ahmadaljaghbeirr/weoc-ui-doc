@@ -169,7 +169,8 @@
 
           <!-- Abstract skeleton -->
           <div class="docs-subsection-title">Abstract skeleton — Type A</div>
-          <pre class="docs-code">&lt;div class="wui-main-div"&gt;
+          <div class="wui-demo" data-wui-demo>
+            <template class="wui-demo-markup">&lt;div class="wui-main-div"&gt;
 
   &lt;!-- ── SPLIT is the full-page shell ─────────────────────────── --&gt;
   &lt;div class="wui-split ratio-3-2 is-collapsed" id="main-split"&gt;
@@ -271,7 +272,8 @@
 
   &lt;/div&gt;&lt;!-- /wui-split --&gt;
 
-&lt;/div&gt;&lt;!-- /wui-main-div --&gt;</pre>
+&lt;/div&gt;&lt;!-- /wui-main-div --&gt;</template>
+          </div>
 
           <!-- zone notes table -->
           <div class="docs-subsection-title">Zone reference</div>
@@ -449,7 +451,8 @@
             </div>
           </div>
 
-          <pre class="docs-code">&lt;!-- wui-gap-3 matches the gap: var(--space-3) on .wui-split-main --&gt;
+          <div class="wui-demo" data-wui-demo>
+            <template class="wui-demo-markup">&lt;!-- wui-gap-3 matches the gap: var(--space-3) on .wui-split-main --&gt;
 &lt;div class="wui-main-div wui-gap-3"&gt;
 
   &lt;!-- HEADER --&gt;
@@ -482,7 +485,8 @@
     &lt;/div&gt;
   &lt;/div&gt;
 
-&lt;/div&gt;&lt;!-- /wui-main-div --&gt;</pre>
+&lt;/div&gt;&lt;!-- /wui-main-div --&gt;</template>
+          </div>
 
         </div><!-- /docs-section: Display Views -->
 
@@ -564,7 +568,8 @@
 
           <!-- Abstract skeleton -->
           <div class="docs-subsection-title">Abstract skeleton — Variant 1</div>
-          <pre class="docs-code">&lt;div class="wui-page-shell"&gt;
+          <div class="wui-demo" data-wui-demo>
+            <template class="wui-demo-markup">&lt;div class="wui-page-shell"&gt;
 
   &lt;!-- ── HEADER ───────────────────────────────────────────────── --&gt;
   &lt;div class="wui-hdr-wrap centered"&gt;
@@ -644,7 +649,8 @@
     &lt;/div&gt;
   &lt;/div&gt;
 
-&lt;/div&gt;&lt;!-- /wui-page-shell --&gt;</pre>
+&lt;/div&gt;&lt;!-- /wui-page-shell --&gt;</template>
+          </div>
 
           <!-- ── VARIANT 2 ─────────────────────────────────────── -->
           <div class="docs-subsection-title" style="margin-top:var(--space-8)">Variant 2 — Multi-tab</div>
@@ -685,7 +691,8 @@
 
           <!-- Abstract skeleton -->
           <div class="docs-subsection-title">Abstract skeleton — Variant 2 (deltas from Variant 1)</div>
-          <pre class="docs-code">&lt;div class="wui-hdr-inner"&gt;
+          <div class="wui-demo" data-wui-demo>
+            <template class="wui-demo-markup">&lt;div class="wui-hdr-inner"&gt;
   &lt;div class="wui-hdr-top"&gt;
     &lt;div class="wui-hdr-left"&gt;&lt;h1 class="wui-hdr-title"&gt;New / Edit Record&lt;/h1&gt;&lt;/div&gt;
 
@@ -724,7 +731,8 @@
     &lt;/div&gt;
   &lt;/div&gt;
   &lt;div style="display:none"&gt;&lt;savebutton id="bOriginalSave"/&gt;&lt;/div&gt;
-&lt;/form&gt;</pre>
+&lt;/form&gt;</template>
+          </div>
 
           <!-- Toggle JS -->
           <div class="docs-subsection-title">Tab / List toggle — JavaScript</div>
@@ -734,7 +742,8 @@
             which forces every panel to <code>display:block; height:auto</code> and makes the body itself scroll;
             the tab strip is hidden. State persists per board in <code>localStorage</code>.
           </p>
-          <pre class="docs-code">let currentTab = 'details';
+          <div class="wui-demo" data-wui-demo>
+            <template class="wui-demo-js">let currentTab = 'details';
 let isListMode = false;
 const VIEW_MODE_KEY = 'myBoardViewMode';   // unique key per board
 
@@ -774,7 +783,8 @@ function applyViewMode() {
 // Restore saved mode on load
 $(function () {
   if (localStorage.getItem(VIEW_MODE_KEY) === 'list') { isListMode = true; applyViewMode(); }
-});</pre>
+});</template>
+          </div>
 
           <!-- Zone reference -->
           <div class="docs-subsection-title">Zone reference</div>
@@ -899,7 +909,8 @@ $(function () {
 
           <!-- Abstract skeleton -->
           <div class="docs-subsection-title">Abstract skeleton — Variant 1</div>
-          <pre class="docs-code">&lt;div class="wui-page-shell"&gt;
+          <div class="wui-demo" data-wui-demo>
+            <template class="wui-demo-markup">&lt;div class="wui-page-shell"&gt;
 
   &lt;!-- ── HEADER ───────────────────────────────────────────────── --&gt;
   &lt;div class="wui-hdr-wrap centered"&gt;
@@ -949,7 +960,8 @@ $(function () {
     &lt;/div&gt;
   &lt;/div&gt;
 
-&lt;/div&gt;&lt;!-- /wui-page-shell --&gt;</pre>
+&lt;/div&gt;&lt;!-- /wui-page-shell --&gt;</template>
+          </div>
 
           <!-- ── VARIANT 2 ─────────────────────────────────────── -->
           <div class="docs-subsection-title" style="margin-top:var(--space-8)">Variant 2 — Multi-tab (scrollable strip)</div>
@@ -985,7 +997,8 @@ $(function () {
 
           <!-- Abstract skeleton -->
           <div class="docs-subsection-title">Abstract skeleton — Variant 2 (tab strip + body)</div>
-          <pre class="docs-code">&lt;!-- header tab strip --&gt;
+          <div class="wui-demo" data-wui-demo>
+            <template class="wui-demo-markup">&lt;!-- header tab strip --&gt;
 &lt;div class="wui-hdr-tabs-wrap" id="det-tabs-scroll-wrap"&gt;
   &lt;button type="button" class="wui-fab secondary neon-outline tabs-scroll-left" id="tabs-scroll-left"&gt;
     &lt;span class="material-symbols-outlined"&gt;chevron_left&lt;/span&gt;
@@ -1013,11 +1026,13 @@ $(function () {
       &lt;div class="wui-panel-wrap"&gt;&lt;div class="wui-panel"&gt;&lt;!-- ... --&gt;&lt;/div&gt;&lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-&lt;/div&gt;</pre>
+&lt;/div&gt;</template>
+          </div>
 
           <!-- JS -->
           <div class="docs-subsection-title">JavaScript</div>
-          <pre class="docs-code">// Switch header tabs (multi-tab only)
+          <div class="wui-demo" data-wui-demo>
+            <template class="wui-demo-js">// Switch header tabs (multi-tab only)
 function switchTab(tab) {
   $('.wui-hdr-tab').removeClass('active');
   $('.wui-tab-panel').removeClass('active');
@@ -1052,7 +1067,8 @@ function setupTabsScrollShadow() {
 $(function () {
   applyEmptyStates();
   setupTabsScrollShadow();   // omit for the single-panel variant
-});</pre>
+});</template>
+          </div>
 
           <!-- Zone reference -->
           <div class="docs-subsection-title">Zone reference</div>
