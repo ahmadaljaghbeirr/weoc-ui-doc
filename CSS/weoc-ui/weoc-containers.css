@@ -224,7 +224,7 @@
   Standard color classes applied to wui-card-lead; tier-* handled in board CSS. */
 
 .wui-card.is-record.has-lead-fill {
-  padding-left: 0;
+  padding-inline-start: 0; /* logical: lead strip flush at the start edge (flips to the right in RTL) */
   overflow: hidden;
 }
 

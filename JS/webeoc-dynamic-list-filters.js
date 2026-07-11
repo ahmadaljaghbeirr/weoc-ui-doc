@@ -582,10 +582,27 @@
    * search input handler with spinner feedback, and clean stray "to" text nodes.
    * Call from the page's initialize() with a page-specific placeholder string.
    */
-  window.initDynamicSearchBar = function (placeholder) {
+  // Re-localize the WebEOC search input placeholder on every language toggle,
+  // so a view never needs its own wui:langchange handler for it. The search
+  // input is WebEOC-generated, so we stamp data-i18n-placeholder on it (below)
+  // and refresh from WUI.i18n here.
+  try {
+    document.documentElement.addEventListener('wui:langchange', function () {
+      if (!window.WUI || !window.WUI.i18n) return;
+      $('[name*="searchfield_"][data-i18n-placeholder]').each(function () {
+        var k = this.getAttribute('data-i18n-placeholder');
+        if (k) this.setAttribute('placeholder', WUI.i18n.t(k, this.getAttribute('placeholder')));
+      });
+    });
+  } catch (e) {}
+
+  window.initDynamicSearchBar = function (placeholder, placeholderKey) {
     $('#search-bar').show();
+    var ph = placeholder || 'Search...';
+    if (placeholderKey && window.WUI && window.WUI.i18n) ph = WUI.i18n.t(placeholderKey, ph);
     $('[name*="searchfield_"]')
-      .attr('placeholder', placeholder || 'Search...')
+      .attr('placeholder', ph)
+      .attr('data-i18n-placeholder', placeholderKey || null)
       .addClass('wui-filter-search-filter');
 
     $('[name*="searchfrom_"]').each(function () {

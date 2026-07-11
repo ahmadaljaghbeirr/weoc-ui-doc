@@ -50,6 +50,28 @@ const TomSelectFactory = (function () {
 
   /** @type {Record<string, TomSelect>} */
   const instances = {};
+
+  /* ── Localized placeholders ────────────────────────────────────────────────
+     Views tag a select's placeholder the normal i18n way:
+       data-placeholder="Sort by..." data-wui-i18n-attr="data-placeholder:Key"
+     WUI.i18n keeps the data-placeholder attribute fresh (on load + every toggle),
+     and the factory reads data-placeholder at init — so the INITIAL render is
+     already localized. TomSelect renders its own placeholder element, so here we
+     push the current data-placeholder into every live control whenever the
+     language changes. Covers every TomSelect (factory-, dynamic-filter-, or
+     hand-created) — a view needs no wui:langchange handler of its own. */
+  function relocalizeTomSelectPlaceholders() {
+    document.querySelectorAll('[data-wui-i18n-attr]').forEach((el) => {
+      const ts = el.tomselect;
+      if (!ts) return;
+      if ((el.getAttribute('data-wui-i18n-attr') || '').indexOf('data-placeholder') === -1) return;
+      const ph = el.getAttribute('data-placeholder') || ts.settings.placeholder;
+      ts.settings.placeholder = ph;
+      if (typeof ts.updatePlaceholder === 'function') ts.updatePlaceholder();
+      else if (ts.control_input) ts.control_input.placeholder = ph;
+    });
+  }
+  try { document.documentElement.addEventListener('wui:langchange', relocalizeTomSelectPlaceholders); } catch (e) {}
   /** @type {Map<string, HTMLSelectElement>} */
   const elementByKey = new Map();
   /** @type {Record<string, object>} */

@@ -130,6 +130,36 @@ test('i18n: data-wui-lang-toggle flips language on click', () => {
   assert.equal(WUI.i18n.getLang(), 'ar');
 });
 
+test('i18n: cross-frame storage event applies language without persisting', () => {
+  const dom = loadWUI();
+  const { WUI, window, document } = dom.window;
+  assert.equal(WUI.i18n.getLang(), 'en');
+  // simulate another frame having changed the shared key, then the storage event
+  window.localStorage.setItem('wui-lang', 'ar');
+  window.dispatchEvent(new window.StorageEvent('storage', { key: 'wui-lang', newValue: 'ar' }));
+  assert.equal(WUI.i18n.getLang(), 'ar');
+  assert.equal(document.documentElement.getAttribute('dir'), 'rtl');
+  // unrelated keys are ignored
+  WUI.i18n.setLang('en');
+  window.dispatchEvent(new window.StorageEvent('storage', { key: 'other', newValue: 'ar' }));
+  assert.equal(WUI.i18n.getLang(), 'en');
+});
+
+test('i18n: mountTopToggle injects into WebEOC right-menu, no-op otherwise', () => {
+  const dom = loadWUI();
+  const { WUI, document } = dom.window;
+  assert.equal(WUI.i18n.mountTopToggle(), false); // no WebEOC chrome present
+  const menu = document.createElement('div');
+  menu.setAttribute('data-test', 'right-menu');
+  document.body.appendChild(menu);
+  assert.equal(WUI.i18n.mountTopToggle(), true);
+  const btn = document.getElementById('wui-lang-toggle-top');
+  assert.ok(btn, 'toggle injected into chrome');
+  assert.ok((btn.getAttribute('onclick') || '').indexOf("localStorage.setItem(k,n)") !== -1, 'inline flip handler present');
+  assert.equal(WUI.i18n.mountTopToggle(), true); // idempotent
+  assert.equal(document.querySelectorAll('#wui-lang-toggle-top').length, 1);
+});
+
 test('i18n: getResource + splitCurrentLang shims', () => {
   const dom = loadWUI();
   const { WUI, window } = dom.window;

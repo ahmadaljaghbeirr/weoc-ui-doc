@@ -387,6 +387,72 @@
    }
    if (document.readyState !== 'loading') wuiI18nInit();else document.addEventListener('DOMContentLoaded', wuiI18nInit);
 
+   // --- cross-frame / cross-tab sync -----------------------------------------
+   // WebEOC runs board views in nested same-origin iframes. When ANY frame (or a
+   // toggle injected into the top chrome) changes the persisted language, every
+   // other frame gets a `storage` event and re-applies live, with no reload.
+   // Apply with persist:false so we don't write storage again (no echo loop).
+   try {
+     window.addEventListener('storage', function (e) {
+       if (!e || e.key !== WUI.LANG_KEY || !e.newValue) return;
+       var next = e.newValue === 'ar' ? 'ar' : 'en';
+       if (next !== WUI.i18n.getLang()) WUI.i18n.setLang(next, {
+         persist: false
+       });
+     });
+   } catch (e) {}
+
+   // --- top-chrome language toggle (WebEOC) ----------------------------------
+   // Board views run in nested same-origin iframes; inject the toggle into the TOP
+   // instance chrome (div[data-test="right-menu"]) so it rides on the outer header
+   // regardless of which board frame you are in. The click handler is a SELF-
+   // CONTAINED inline onclick that runs in the top document's realm and only flips
+   // localStorage['wui-lang'] — the storage sync above re-applies the language in
+   // every frame with no reload, and new frames read it on boot. Safe no-op where
+   // that chrome selector is absent (docs site, standalone pages).
+   function wuiTopDoc() {
+     try {
+       if (window.parent && window.parent.parent && window.parent.parent !== window) {
+         return window.parent.parent.document;
+       }
+     } catch (e) {}
+     try {
+       return window.top.document;
+     } catch (e2) {}
+     return null;
+   }
+   WUI.i18n.mountTopToggle = function () {
+     var doc = wuiTopDoc();
+     if (!doc) return false;
+     if (doc.getElementById('wui-lang-toggle-top')) return true; // another frame mounted it
+     var menu = doc.querySelector('div[data-test="right-menu"]') || doc.querySelector('[data-test="right-menu"]');
+     if (!menu) return false;
+     var a = doc.createElement('a');
+     a.id = 'wui-lang-toggle-top';
+     a.className = 'link';
+     a.style.cursor = 'pointer';
+     a.setAttribute('title', 'Language / اللغة');
+     a.innerHTML = '<i class="fas fa-globe-asia" style="font-family:\'FontAwesome\'"></i> <span class="wui-lang-lbl"></span>';
+     a.setAttribute('onclick', "try{var k='wui-lang';var c=localStorage.getItem(k)==='ar'?'ar':'en';var n=c==='ar'?'en':'ar';" + "localStorage.setItem(k,n);var s=this.querySelector('.wui-lang-lbl');" + "if(s)s.textContent=(n==='ar'?'English':'\\u0627\\u0644\\u0639\\u0631\\u0628\\u064a\\u0629');}catch(e){}");
+     menu.insertBefore(a, menu.firstChild); // prepend, like the legacy button
+     var lbl = a.querySelector('.wui-lang-lbl');
+     if (lbl) lbl.textContent = WUI.i18n.getLang() === 'ar' ? 'English' : 'العربية';
+     return true;
+   };
+   (function () {
+     var tries = 15;
+     function attempt() {
+       var done;
+       try {
+         done = WUI.i18n.mountTopToggle();
+       } catch (e) {
+         done = false;
+       }
+       if (!done && --tries > 0) setTimeout(attempt, 400);
+     }
+     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', attempt);else attempt();
+   })();
+
    /* ═══════════════════════════════════════════════════════════════════════
       1) UTILITIES
       ═══════════════════════════════════════════════════════════════════════ */

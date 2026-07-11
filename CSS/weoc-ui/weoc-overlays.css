@@ -490,6 +490,24 @@
   transform: translateX(0);
 }
 
+/* RTL: the wrapper's flex justification already flips the docking edge
+   (flex-end = left in RTL). Mirror the slide transform + rounded inner edge so
+   the panel hides/opens toward the correct edge and the advanced-filter drawer
+   opens from the opposite side automatically — no per-view config. */
+[dir="rtl"] .wui-drawer-panel {
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  transform: translateX(-100%);
+}
+
+[dir="rtl"] .wui-drawer.start .wui-drawer-panel {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  transform: translateX(100%);
+}
+
+[dir="rtl"] .wui-drawer.is-open .wui-drawer-panel {
+  transform: translateX(0);
+}
+
 /* Regions */
 .wui-drawer-header {
   display: flex;
