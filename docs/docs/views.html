@@ -44,19 +44,19 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Patterns</div>
-          <div class="docs-hero-title">Board Views</div>
-          <div class="docs-hero-sub">Abstract layout skeletons and paste-ready structure for the four WebEOC board view types — Display, Input, Details, and Remove.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_views_1">Patterns</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_views_2">Board Views</div>
+          <div class="docs-hero-sub" data-wui-i18n="docs_views_3">Abstract layout skeletons and paste-ready structure for the four WebEOC board view types — Display, Input, Details, and Remove.</div>
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════
              SECTION 1 — DISPLAY VIEWS
         ════════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title">
+          <div class="docs-section-title" data-wui-i18n-html="docs_views_4">
             <span class="material-symbols-outlined">list_alt</span>Display Views
           </div>
-          <p class="docs-desc">
+          <p class="docs-desc" data-wui-i18n-html="docs_views_5">
             Display views render a filterable, sortable list of board records. The <code>wui-split</code> is the
             full-page shell — it spans the entire viewport height from the very top. The header, KPI row, filter bar,
             and table all live <em>inside</em> <code>wui-split-main</code> (left column), not above the split.
@@ -65,7 +65,7 @@
           </p>
 
           <!-- ── Variant overview ─────────────────────────────── -->
-          <div class="docs-subsection-title">Variants at a glance</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_6">Variants at a glance</div>
           <div class="docs-example stacked" style="gap: var(--space-5)">
 
             <!-- Variant chips -->
@@ -73,9 +73,9 @@
               <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
                 <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
                   <span class="wui-badge primary">Type A</span>
-                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Standard list</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)" data-wui-i18n="docs_views_7">Standard list</span>
                 </div>
-                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0" data-wui-i18n-html="docs_views_8">
                   <code>wui-split</code> shell. KPI row + filter bar + table on the left.
                   Collapsible detail panel on the right.
                 </p>
@@ -83,9 +83,9 @@
               <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
                 <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
                   <span class="wui-badge info">Type B</span>
-                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Map list</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)" data-wui-i18n="docs_views_9">Map list</span>
                 </div>
-                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0" data-wui-i18n-html="docs_views_10">
                   Type A + a map panel that shares the right column with the detail panel.
                   A toggle in the header switches between the two.
                 </p>
@@ -93,9 +93,9 @@
               <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
                 <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
                   <span class="wui-badge secondary">Type C</span>
-                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Flat list</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)" data-wui-i18n="docs_views_11">Flat list</span>
                 </div>
-                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0" data-wui-i18n-html="docs_views_12">
                   No <code>wui-split</code>. Full-width table. Used for simpler or read-only boards
                   that don't need a detail panel.
                 </p>
@@ -105,8 +105,8 @@
           </div>
 
           <!-- ── TYPE A ────────────────────────────────────────── -->
-          <div class="docs-subsection-title">Type A — Standard list</div>
-          <p class="docs-desc">
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_13">Type A — Standard list</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_views_14">
             The dominant pattern. A <code>wui-split ratio-3-2</code> divides the board into a main column
             (header, KPI row, filter bar, table) and a collapsible right panel (detail embed).
             Panel starts collapsed; a row click opens it and loads the detail view via BoardScript.
@@ -168,7 +168,7 @@
           </div>
 
           <!-- Abstract skeleton -->
-          <div class="docs-subsection-title">Abstract skeleton — Type A</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_15">Abstract skeleton — Type A</div>
           <div class="wui-demo" data-wui-demo>
             <template class="wui-demo-markup">&lt;div class="wui-main-div"&gt;
 
@@ -276,7 +276,7 @@
           </div>
 
           <!-- zone notes table -->
-          <div class="docs-subsection-title">Zone reference</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_16">Zone reference</div>
           <table class="wui-table-standard" style="margin-top:var(--space-2)">
             <thead>
               <tr>
@@ -326,8 +326,8 @@
 
 
           <!-- ── TYPE B ────────────────────────────────────────── -->
-          <div class="docs-subsection-title" style="margin-top:var(--space-8)">Type B — Map list</div>
-          <p class="docs-desc">
+          <div class="docs-subsection-title" style="margin-top:var(--space-8)" data-wui-i18n="docs_views_17">Type B — Map list</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_views_18">
             Type A extended with a map panel. The right column of the split hosts two states: the detail embed (default) and a map view.
             A toggle button in the header switches between them. View state persists to <code>localStorage</code> so the user's
             preferred mode survives page refreshes.
@@ -386,7 +386,7 @@
 
           <div class="wui-callout info" style="margin-top:var(--space-3)">
             <span class="material-symbols-outlined">info</span>
-            <div class="wui-callout-body">
+            <div class="wui-callout-body" data-wui-i18n-html="docs_views_19">
               <span class="wui-callout-title">What changes vs Type A</span>
               The right column hosts two swappable states instead of one. The header gains a
               <code>wui-view-toggle-btn</code> (map ↔ list). Panel default state comes from
@@ -397,8 +397,8 @@
 
 
           <!-- ── TYPE C ────────────────────────────────────────── -->
-          <div class="docs-subsection-title" style="margin-top:var(--space-8)">Type C — Flat list</div>
-          <p class="docs-desc">
+          <div class="docs-subsection-title" style="margin-top:var(--space-8)" data-wui-i18n="docs_views_20">Type C — Flat list</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_views_21">
             No <code>wui-split</code> — the content is a single flex column the full page width.
             Header, KPI row, filter bar, and table stack vertically without any right panel.
             Used for read-only boards, audit logs, or views where opening a record navigates to
@@ -407,7 +407,7 @@
 
           <div class="wui-callout info" style="margin-bottom:var(--space-3)">
             <span class="material-symbols-outlined">info</span>
-            <div class="wui-callout-body">
+            <div class="wui-callout-body" data-wui-i18n-html="docs_views_22">
               <span class="wui-callout-title">Spacing alignment</span>
               In Types A and B, the vertical gap between header, KPI row, filter bar, and table comes from
               <code>.wui-split-main { gap: var(--space-3) }</code>. Type C has no split, so
@@ -495,10 +495,10 @@
              SECTION 2 — INPUT VIEWS
         ════════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title">
+          <div class="docs-section-title" data-wui-i18n-html="docs_views_23">
             <span class="material-symbols-outlined">edit_note</span>Input Views
           </div>
-          <p class="docs-desc">
+          <p class="docs-desc" data-wui-i18n-html="docs_views_24">
             Full-page forms for creating and editing records. The <code>wui-page-shell</code> is the full-page
             flex column: a sticky <strong>header</strong> (title + optional tab row), a scrolling
             <strong>form body</strong> centered by <code>wui-det-inner</code>, and a sticky <strong>footer</strong>
@@ -508,15 +508,15 @@
           </p>
 
           <!-- ── Variant overview ─────────────────────────────── -->
-          <div class="docs-subsection-title">Variants at a glance</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_25">Variants at a glance</div>
           <div class="docs-example stacked" style="gap: var(--space-5)">
             <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
               <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
                 <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
                   <span class="wui-badge primary">Variant 1</span>
-                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Single panel</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)" data-wui-i18n="docs_views_26">Single panel</span>
                 </div>
-                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0" data-wui-i18n-html="docs_views_27">
                   One <code>wui-det-body</code> with stacked <code>wui-panel-wrap</code> sections. No tabs.
                   Best for short forms (one or two sections).
                 </p>
@@ -524,9 +524,9 @@
               <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
                 <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
                   <span class="wui-badge info">Variant 2</span>
-                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Multi-tab</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)" data-wui-i18n="docs_views_28">Multi-tab</span>
                 </div>
-                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0" data-wui-i18n-html="docs_views_29">
                   A <code>wui-hdr-tabs</code> row; each tab is a <code>wui-tab-panel</code>, <code>switchTab()</code>
                   navigates. Optional <strong>Tab / List toggle</strong> flattens every tab into one scroll.
                 </p>
@@ -535,8 +535,8 @@
           </div>
 
           <!-- ── VARIANT 1 ─────────────────────────────────────── -->
-          <div class="docs-subsection-title">Variant 1 — Single panel</div>
-          <p class="docs-desc">
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_30">Variant 1 — Single panel</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_views_31">
             No tabs. The form body is one <code>wui-det-body</code> holding stacked <code>wui-panel-wrap</code>
             sections, centered by <code>wui-det-inner</code>. The body scrolls; header and footer stay fixed.
           </p>
@@ -567,7 +567,7 @@
           </div>
 
           <!-- Abstract skeleton -->
-          <div class="docs-subsection-title">Abstract skeleton — Variant 1</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_32">Abstract skeleton — Variant 1</div>
           <div class="wui-demo" data-wui-demo>
             <template class="wui-demo-markup">&lt;div class="wui-page-shell"&gt;
 
@@ -653,8 +653,8 @@
           </div>
 
           <!-- ── VARIANT 2 ─────────────────────────────────────── -->
-          <div class="docs-subsection-title" style="margin-top:var(--space-8)">Variant 2 — Multi-tab</div>
-          <p class="docs-desc">
+          <div class="docs-subsection-title" style="margin-top:var(--space-8)" data-wui-i18n="docs_views_33">Variant 2 — Multi-tab</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_views_34">
             The header gains a <code>wui-hdr-tabs</code> row; the body holds one <code>wui-tab-panel</code> per tab
             (first gets <code>.active</code>). The form needs <code>data-tab-panel="true"</code> so hidden-tab
             validation still fires. An optional <strong>Tab / List toggle</strong> in <code>wui-hdr-right</code>
@@ -690,7 +690,7 @@
           </div>
 
           <!-- Abstract skeleton -->
-          <div class="docs-subsection-title">Abstract skeleton — Variant 2 (deltas from Variant 1)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_35">Abstract skeleton — Variant 2 (deltas from Variant 1)</div>
           <div class="wui-demo" data-wui-demo>
             <template class="wui-demo-markup">&lt;div class="wui-hdr-inner"&gt;
   &lt;div class="wui-hdr-top"&gt;
@@ -735,8 +735,8 @@
           </div>
 
           <!-- Toggle JS -->
-          <div class="docs-subsection-title">Tab / List toggle — JavaScript</div>
-          <p class="docs-desc">
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_36">Tab / List toggle — JavaScript</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_views_37">
             Tab mode shows one <code>wui-tab-panel.active</code> at a time. List mode adds
             <code>.is-list-mode</code> to <code>wui-det-body</code> (defined in <code>weoc-layout.css</code>),
             which forces every panel to <code>display:block; height:auto</code> and makes the body itself scroll;
@@ -787,7 +787,7 @@ $(function () {
           </div>
 
           <!-- Zone reference -->
-          <div class="docs-subsection-title">Zone reference</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_38">Zone reference</div>
           <table class="wui-table-standard" style="margin-top:var(--space-2)">
             <thead>
               <tr><th class="wui-col-md">Zone</th><th class="wui-col-primary">Class(es)</th><th>Notes</th></tr>
@@ -828,7 +828,7 @@ $(function () {
 
           <div class="wui-callout info" style="margin-top:var(--space-3)">
             <span class="material-symbols-outlined">info</span>
-            <div class="wui-callout-body">
+            <div class="wui-callout-body" data-wui-i18n-html="docs_views_39">
               <span class="wui-callout-title">CSS required</span>
               Input views load <code>weoc-ui-core.css</code> <strong>and</strong> <code>weoc-forms.css</code>
               (the form flex rules + footer padding flush). The display/details views do not need
@@ -842,10 +842,10 @@ $(function () {
              SECTION 3 — DETAILS VIEWS
         ════════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title">
+          <div class="docs-section-title" data-wui-i18n-html="docs_views_40">
             <span class="material-symbols-outlined">info</span>Details Views
           </div>
-          <p class="docs-desc">
+          <p class="docs-desc" data-wui-i18n-html="docs_views_41">
             Read-only record views. Same <code>wui-page-shell</code> skeleton as an input view but with
             <strong>no <code>&lt;form&gt;</code> and no footer save bar</strong>. The header carries the record
             title, number, and a status badge; the body presents fields with the read-only
@@ -855,15 +855,15 @@ $(function () {
           </p>
 
           <!-- ── Variant overview ─────────────────────────────── -->
-          <div class="docs-subsection-title">Variants at a glance</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_42">Variants at a glance</div>
           <div class="docs-example stacked" style="gap: var(--space-5)">
             <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
               <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
                 <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
                   <span class="wui-badge primary">Variant 1</span>
-                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Single panel</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)" data-wui-i18n="docs_views_43">Single panel</span>
                 </div>
-                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0" data-wui-i18n-html="docs_views_44">
                   Stacked <code>wui-panel-wrap</code> sections of <code>wui-info-grid</code>. No tabs.
                   Common for short records embedded in the Display panel.
                 </p>
@@ -871,9 +871,9 @@ $(function () {
               <div class="wui-card" style="flex:1;min-width:180px;padding:var(--space-3) var(--space-4)">
                 <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-1)">
                   <span class="wui-badge info">Variant 2</span>
-                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)">Multi-tab</span>
+                  <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--color-text-primary)" data-wui-i18n="docs_views_45">Multi-tab</span>
                 </div>
-                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0">
+                <p style="font-size:var(--text-xs);color:var(--color-text-secondary);margin:0" data-wui-i18n-html="docs_views_46">
                   Scrollable <code>wui-hdr-tabs-wrap</code> strip with arrow FABs + edge shadows.
                   One <code>wui-tab-panel</code> per tab; <code>switchTab()</code> navigates.
                 </p>
@@ -882,8 +882,8 @@ $(function () {
           </div>
 
           <!-- ── VARIANT 1 ─────────────────────────────────────── -->
-          <div class="docs-subsection-title">Variant 1 — Single panel</div>
-          <p class="docs-desc">
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_47">Variant 1 — Single panel</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_views_48">
             No tabs. The body is one <code>wui-det-body</code> with stacked <code>wui-panel-wrap</code> sections,
             each a <code>wui-info-grid</code> of read-only label/value pairs.
           </p>
@@ -908,7 +908,7 @@ $(function () {
           </div>
 
           <!-- Abstract skeleton -->
-          <div class="docs-subsection-title">Abstract skeleton — Variant 1</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_49">Abstract skeleton — Variant 1</div>
           <div class="wui-demo" data-wui-demo>
             <template class="wui-demo-markup">&lt;div class="wui-page-shell"&gt;
 
@@ -964,8 +964,8 @@ $(function () {
           </div>
 
           <!-- ── VARIANT 2 ─────────────────────────────────────── -->
-          <div class="docs-subsection-title" style="margin-top:var(--space-8)">Variant 2 — Multi-tab (scrollable strip)</div>
-          <p class="docs-desc">
+          <div class="docs-subsection-title" style="margin-top:var(--space-8)" data-wui-i18n="docs_views_50">Variant 2 — Multi-tab (scrollable strip)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_views_51">
             Details views carry their tab strip in <code>wui-hdr-tabs-wrap</code> with two arrow FABs — the strip
             scrolls horizontally and reveals edge shadows (<code>has-left</code> / <code>has-right</code>) when it
             overflows. Each tab maps id <code>tab-X</code> to panel <code>panel-X</code> via <code>switchTab('X')</code>.
@@ -996,7 +996,7 @@ $(function () {
           </div>
 
           <!-- Abstract skeleton -->
-          <div class="docs-subsection-title">Abstract skeleton — Variant 2 (tab strip + body)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_52">Abstract skeleton — Variant 2 (tab strip + body)</div>
           <div class="wui-demo" data-wui-demo>
             <template class="wui-demo-markup">&lt;!-- header tab strip --&gt;
 &lt;div class="wui-hdr-tabs-wrap" id="det-tabs-scroll-wrap"&gt;
@@ -1030,7 +1030,7 @@ $(function () {
           </div>
 
           <!-- JS -->
-          <div class="docs-subsection-title">JavaScript</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_53">JavaScript</div>
           <div class="wui-demo" data-wui-demo>
             <template class="wui-demo-js">// Switch header tabs (multi-tab only)
 function switchTab(tab) {
@@ -1071,7 +1071,7 @@ $(function () {
           </div>
 
           <!-- Zone reference -->
-          <div class="docs-subsection-title">Zone reference</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_views_54">Zone reference</div>
           <table class="wui-table-standard" style="margin-top:var(--space-2)">
             <thead>
               <tr><th class="wui-col-md">Zone</th><th class="wui-col-primary">Class(es)</th><th>Notes</th></tr>
@@ -1102,7 +1102,7 @@ $(function () {
 
           <div class="wui-callout info" style="margin-top:var(--space-3)">
             <span class="material-symbols-outlined">compare_arrows</span>
-            <div class="wui-callout-body">
+            <div class="wui-callout-body" data-wui-i18n-html="docs_views_55">
               <span class="wui-callout-title">Input vs Details — what changes</span>
               No <code>&lt;form&gt;</code> and no footer (display is read-only). Fields use
               <code>wui-info-grid</code> instead of <code>field-row</code> / <code>field-item</code>. Tabs use the
@@ -1117,13 +1117,13 @@ $(function () {
              SECTION 4 — REMOVE VIEWS
         ════════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title">
+          <div class="docs-section-title" data-wui-i18n-html="docs_views_56">
             <span class="material-symbols-outlined">delete</span>Remove Views
           </div>
-          <p class="docs-desc">Confirmation dialogs for record deletion — always opened as a modal or embed from a row action.</p>
+          <p class="docs-desc" data-wui-i18n="docs_views_57">Confirmation dialogs for record deletion — always opened as a modal or embed from a row action.</p>
           <div class="vz-board" style="height:120px">
             <div class="vz-zone vz-stub" style="flex:1;display:flex;align-items:center;justify-content:center">
-              <span style="font-size:var(--text-sm);font-style:italic">Coming soon — layout sketch pending</span>
+              <span style="font-size:var(--text-sm);font-style:italic" data-wui-i18n="docs_views_58">Coming soon — layout sketch pending</span>
             </div>
           </div>
         </div>

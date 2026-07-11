@@ -20,40 +20,40 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Combobox</div>
-          <div class="docs-hero-title">Select / Combobox</div>
-          <div class="docs-hero-sub">The <code>tom-select-factory.js</code> combobox. Add <code>class="tomselect"</code> to any <code>&lt;select&gt;</code>, drive every behavior through <code>data-*</code> attributes, and call <code>TomSelectFactory.init()</code>. The factory injects a blank placeholder option, resyncs dependent cascades, mounts pinned dropdown header/footer slots, and follows the agency theme. Every capability is demoed below with the exact markup and the exact init call.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_combobox_1">Combobox</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_combobox_2">Select / Combobox</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_combobox_3">The <code>tom-select-factory.js</code> combobox. Add <code>class="tomselect"</code> to any <code>&lt;select&gt;</code>, drive every behavior through <code>data-*</code> attributes, and call <code>TomSelectFactory.init()</code>. The factory injects a blank placeholder option, resyncs dependent cascades, mounts pinned dropdown header/footer slots, and follows the agency theme. Every capability is demoed below with the exact markup and the exact init call.</div>
         </div>
 
         <!-- ══════════════════════════ Load order + API ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">bolt</span>How it initializes</div>
-          <p class="docs-desc">The factory binds every <code>&lt;select class="tomselect"&gt;</code> in scope. Call <code>TomSelectFactory.init()</code> once after the DOM is ready. It also starts a <code>MutationObserver</code>, so late-injected selects (WebEOC repeat regions, modals) initialize automatically. Retrieve a live instance with <code>TomSelectFactory.get('idOrName')</code>; drive it with <code>refresh</code>, <code>destroy</code>, <code>enable</code>, <code>disable</code>.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_4"><span class="material-symbols-outlined">bolt</span>How it initializes</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_5">The factory binds every <code>&lt;select class="tomselect"&gt;</code> in scope. Call <code>TomSelectFactory.init()</code> once after the DOM is ready. It also starts a <code>MutationObserver</code>, so late-injected selects (WebEOC repeat regions, modals) initialize automatically. Retrieve a live instance with <code>TomSelectFactory.get('idOrName')</code>; drive it with <code>refresh</code>, <code>destroy</code>, <code>enable</code>, <code>disable</code>.</p>
 
           <div class="wui-callout info">
             <span class="material-symbols-outlined">info</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title">Load order</div>
-              <code>tom-select.min.css</code> → <code>tom-select-agency.css</code> in <code>&lt;head&gt;</code>, then <code>tom-select.complete.min.js</code> → <code>tom-select-factory.js</code>. On this docs site the vendor CSS/JS is loaded site-wide by the shell; you only call <code>TomSelectFactory.init()</code>.
+              <div class="wui-callout-title" data-wui-i18n="docs_combobox_6">Load order</div>
+              <span data-wui-i18n-html="docs_combobox_7"><code>tom-select.min.css</code> → <code>tom-select-agency.css</code> in <code>&lt;head&gt;</code>, then <code>tom-select.complete.min.js</code> → <code>tom-select-factory.js</code>. On this docs site the vendor CSS/JS is loaded site-wide by the shell; you only call <code>TomSelectFactory.init()</code>.</span>
             </div>
           </div>
 
           <div class="wui-callout" style="margin-top:var(--space-3)">
             <span class="material-symbols-outlined">key</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title">Instance key</div>
-              The key is the select's <code>id</code>, or its <code>name</code> if there is no id (an auto <code>data-ts-key</code> is stamped only when both are absent). Use that key with <code>TomSelectFactory.get()</code> / <code>enable()</code> / <code>disable()</code> / <code>destroy()</code> / <code>refresh()</code>.
+              <div class="wui-callout-title" data-wui-i18n="docs_combobox_8">Instance key</div>
+              <span data-wui-i18n-html="docs_combobox_9">The key is the select's <code>id</code>, or its <code>name</code> if there is no id (an auto <code>data-ts-key</code> is stamped only when both are absent). Use that key with <code>TomSelectFactory.get()</code> / <code>enable()</code> / <code>disable()</code> / <code>destroy()</code> / <code>refresh()</code>.</span>
             </div>
           </div>
         </div>
 
         <!-- ══════════════════════════ Single select ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">arrow_drop_down_circle</span>Single select</div>
-          <p class="docs-desc">One item, with a built-in dropdown search field (<code>dropdown_input</code> plugin). The factory injects a blank placeholder option, so a fresh record shows the placeholder rather than auto-selecting the first real option. <code>data-placeholder</code> sets the placeholder text.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_10"><span class="material-symbols-outlined">arrow_drop_down_circle</span>Single select</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_11">One item, with a built-in dropdown search field (<code>dropdown_input</code> plugin). The factory injects a blank placeholder option, so a fresh record shows the placeholder rather than auto-selecting the first real option. <code>data-placeholder</code> sets the placeholder text.</p>
 
-          <div class="docs-subsection-title">Basic single (required — placeholder only)</div>
-          <p class="docs-desc">Without <code>data-allow-empty</code>, the placeholder shows on load but the user cannot re-select blank once a value is chosen. This is the correct pattern for required fields.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_12">Basic single (required — placeholder only)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_13">Without <code>data-allow-empty</code>, the placeholder shows on load but the user cannot re-select blank once a value is chosen. This is the correct pattern for required fields.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Single select, required — placeholder shows on load, no re-clear -->
@@ -69,8 +69,8 @@ TomSelectFactory.init(); // binds every select.tomselect on the page
 </template>
           </div>
 
-          <div class="docs-subsection-title">Clearable single (data-allow-empty)</div>
-          <p class="docs-desc"><code>data-allow-empty="true"</code> keeps the empty option selectable in the dropdown, so the user can actively re-clear the field. The clear-all "×" also appears once a value is chosen.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_14">Clearable single (data-allow-empty)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_15"><code>data-allow-empty="true"</code> keeps the empty option selectable in the dropdown, so the user can actively re-clear the field. The clear-all "×" also appears once a value is chosen.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Clearable single — user can re-select blank from the dropdown -->
@@ -85,8 +85,8 @@ TomSelectFactory.init();
 </template>
           </div>
 
-          <div class="docs-subsection-title">Preselected value (edit mode)</div>
-          <p class="docs-desc">An <code>&lt;option selected&gt;</code> carrying the native <code>selected</code> attribute is honored — the factory only force-clears when no option has an explicit <code>selected</code> attribute (a browser default), so saved records repopulate correctly.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_16">Preselected value (edit mode)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_17">An <code>&lt;option selected&gt;</code> carrying the native <code>selected</code> attribute is honored — the factory only force-clears when no option has an explicit <code>selected</code> attribute (a browser default), so saved records repopulate correctly.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Preselected — the explicit `selected` attribute survives placeholder injection -->
@@ -104,10 +104,10 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ Multi-select ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">checklist</span>Multi-select</div>
-          <p class="docs-desc">Add <code>multiple</code> (or <code>data-multi="true"</code>). Selections render as removable chips (the <code>remove_button</code> plugin adds a per-chip "×"), and an inline search field is always visible. The right-rail plus icon replaces the chevron. In a WebEOC edit view, restore comma-separated values with <code>repopulateMultiSelect('FieldName', xslValue)</code> — WebEOC does not restore multi-select natively.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_18"><span class="material-symbols-outlined">checklist</span>Multi-select</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_19">Add <code>multiple</code> (or <code>data-multi="true"</code>). Selections render as removable chips (the <code>remove_button</code> plugin adds a per-chip "×"), and an inline search field is always visible. The right-rail plus icon replaces the chevron. In a WebEOC edit view, restore comma-separated values with <code>repopulateMultiSelect('FieldName', xslValue)</code> — WebEOC does not restore multi-select natively.</p>
 
-          <div class="docs-subsection-title">Multiple (chips + remove)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_20">Multiple (chips + remove)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Multi-select — chips with per-chip remove, always-on search -->
@@ -125,8 +125,8 @@ TomSelectFactory.init();
 </template>
           </div>
 
-          <div class="docs-subsection-title">data-multi="true" (attribute form)</div>
-          <p class="docs-desc"><code>data-multi="true"</code> is equivalent to the native <code>multiple</code> attribute. Useful when the markup is generated by a system that will not emit a bare boolean attribute.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_21">data-multi="true" (attribute form)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_22"><code>data-multi="true"</code> is equivalent to the native <code>multiple</code> attribute. Useful when the markup is generated by a system that will not emit a bare boolean attribute.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Multi via data-multi (no native `multiple` attribute) -->
@@ -142,8 +142,8 @@ TomSelectFactory.init();
 </template>
           </div>
 
-          <div class="docs-subsection-title">Multi with preselected chips (edit mode)</div>
-          <p class="docs-desc">Options carrying <code>selected</code> render as chips on load. For WebEOC, the page-level <code>repopulateMultiSelect</code> helper splits the saved comma-separated string, sets the native value, then calls <code>.sync()</code>.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_23">Multi with preselected chips (edit mode)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_24">Options carrying <code>selected</code> render as chips on load. For WebEOC, the page-level <code>repopulateMultiSelect</code> helper splits the saved comma-separated string, sets the native value, then calls <code>.sync()</code>.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Two options preselected — render as chips on init -->
@@ -162,10 +162,10 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ Creatable / tags ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">new_label</span>Creatable / tags</div>
-          <p class="docs-desc"><code>data-create="true"</code> lets the user type a new value and add it with Enter or Tab. The factory also enables <code>createOnBlur</code>, so tabbing away commits the typed entry automatically. Works on both single and multi selects; multi is the common "tags" pattern.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_25"><span class="material-symbols-outlined">new_label</span>Creatable / tags</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_26"><code>data-create="true"</code> lets the user type a new value and add it with Enter or Tab. The factory also enables <code>createOnBlur</code>, so tabbing away commits the typed entry automatically. Works on both single and multi selects; multi is the common "tags" pattern.</p>
 
-          <div class="docs-subsection-title">Creatable multi (tags)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_27">Creatable multi (tags)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Creatable tags — type + Enter/Tab to add a new value -->
@@ -181,8 +181,8 @@ TomSelectFactory.init();
 </template>
           </div>
 
-          <div class="docs-subsection-title">Creatable single</div>
-          <p class="docs-desc">The same <code>data-create</code> flag on a single select lets the user commit one free-text value that is not in the option list.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_28">Creatable single</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_29">The same <code>data-create</code> flag on a single select lets the user commit one free-text value that is not in the option list.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Creatable single — accepts one free-text value -->
@@ -200,18 +200,18 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ Remote / autocomplete ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">cloud_download</span>Remote / autocomplete (data-src="api")</div>
-          <p class="docs-desc"><code>data-src="api"</code> turns the control into a remote autocomplete. The factory fetches <code>data-url?&lt;data-url-param&gt;=&lt;query&gt;</code> and maps each row through <code>data-value-field</code> / <code>data-label-field</code>. <code>data-preload="true"</code> loads once immediately; <code>data-preload="focus"</code> loads on first focus; omit to load only on keystroke. Placeholder injection and force-clear are skipped for API selects (options arrive asynchronously).</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_30"><span class="material-symbols-outlined">cloud_download</span>Remote / autocomplete (data-src="api")</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_31"><code>data-src="api"</code> turns the control into a remote autocomplete. The factory fetches <code>data-url?&lt;data-url-param&gt;=&lt;query&gt;</code> and maps each row through <code>data-value-field</code> / <code>data-label-field</code>. <code>data-preload="true"</code> loads once immediately; <code>data-preload="focus"</code> loads on first focus; omit to load only on keystroke. Placeholder injection and force-clear are skipped for API selects (options arrive asynchronously).</p>
 
           <div class="wui-callout warning">
             <span class="material-symbols-outlined">warning</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title">Live endpoint required</div>
-              This demo points at a placeholder <code>data-url</code>. With no reachable endpoint the control renders and searches, but returns no rows. Point <code>data-url</code> at a real JSON endpoint that echoes an array of <code>{ id, text }</code> objects to see results.
+              <div class="wui-callout-title" data-wui-i18n="docs_combobox_32">Live endpoint required</div>
+              <span data-wui-i18n-html="docs_combobox_33">This demo points at a placeholder <code>data-url</code>. With no reachable endpoint the control renders and searches, but returns no rows. Point <code>data-url</code> at a real JSON endpoint that echoes an array of <code>{ id, text }</code> objects to see results.</span>
             </div>
           </div>
 
-          <div class="docs-subsection-title">Remote search — load on keystroke</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_34">Remote search — load on keystroke</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Remote autocomplete — fetches /api/users?q=<query>, maps id/text -->
@@ -228,8 +228,8 @@ TomSelectFactory.init();
 </template>
           </div>
 
-          <div class="docs-subsection-title">Remote — preload on focus</div>
-          <p class="docs-desc"><code>data-preload="focus"</code> fetches the initial result set the first time the control is focused, so an empty query already shows options.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_35">Remote — preload on focus</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_36"><code>data-preload="focus"</code> fetches the initial result set the first time the control is focused, so an empty query already shows options.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Remote autocomplete — preload on first focus -->
@@ -250,8 +250,8 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ Optgroups ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">segment</span>Optgroups</div>
-          <p class="docs-desc">Native <code>&lt;optgroup label="…"&gt;</code> elements are honored — Tom Select renders each group with a pinned <code>optgroup-header</code>. Works with single and multi. No extra attributes are needed.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_37"><span class="material-symbols-outlined">segment</span>Optgroups</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_38">Native <code>&lt;optgroup label="…"&gt;</code> elements are honored — Tom Select renders each group with a pinned <code>optgroup-header</code>. Works with single and multi. No extra attributes are needed.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Optgroups — native <optgroup> renders grouped headers -->
@@ -278,8 +278,8 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ Custom renderers ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Custom option / item renderers</div>
-          <p class="docs-desc">Register a render template with <code>TomSelectFactory.registerTemplate(name, def)</code> <strong>before</strong> <code>init()</code>, then point a select at it with <code>data-render="name"</code>. Tom Select copies every <code>data-*</code> attribute from each <code>&lt;option&gt;</code> into the option data object, so the template can render rich rows. Supported keys: <code>option</code>, <code>item</code>, <code>option_create</code>, <code>no_results</code>, <code>not_loading</code>, <code>optgroup</code>, <code>optgroup_header</code>, <code>loading</code>, <code>dropdown</code>. The agency CSS ships <code>.ts-person-option</code> / <code>.ts-person-name</code> / <code>.ts-person-meta</code> for this pattern.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_39"><span class="material-symbols-outlined">palette</span>Custom option / item renderers</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_40">Register a render template with <code>TomSelectFactory.registerTemplate(name, def)</code> <strong>before</strong> <code>init()</code>, then point a select at it with <code>data-render="name"</code>. Tom Select copies every <code>data-*</code> attribute from each <code>&lt;option&gt;</code> into the option data object, so the template can render rich rows. Supported keys: <code>option</code>, <code>item</code>, <code>option_create</code>, <code>no_results</code>, <code>not_loading</code>, <code>optgroup</code>, <code>optgroup_header</code>, <code>loading</code>, <code>dropdown</code>. The agency CSS ships <code>.ts-person-option</code> / <code>.ts-person-name</code> / <code>.ts-person-meta</code> for this pattern.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Custom renderer — two-line person rows from data-* on each option -->
@@ -309,8 +309,8 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ Dependent / cascading ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">account_tree</span>Dependent / cascading selects</div>
-          <p class="docs-desc">Two wiring styles. In WebEOC the board engine swaps the child's <code>&lt;option&gt;</code> list when the parent changes — mark the child with <code>data-parent="ParentName"</code> (or <code>parent="…"</code>) and the factory rebuilds the child from the currently visible native options. Outside WebEOC, wire <code>data-on-change="GlobalFn"</code> on the parent to a function that rebuilds the child options and calls <code>TomSelectFactory.get('child').clearOptions()</code> then <code>.sync()</code>. The live demo below uses the <code>data-on-change</code> style.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_41"><span class="material-symbols-outlined">account_tree</span>Dependent / cascading selects</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_42">Two wiring styles. In WebEOC the board engine swaps the child's <code>&lt;option&gt;</code> list when the parent changes — mark the child with <code>data-parent="ParentName"</code> (or <code>parent="…"</code>) and the factory rebuilds the child from the currently visible native options. Outside WebEOC, wire <code>data-on-change="GlobalFn"</code> on the parent to a function that rebuilds the child options and calls <code>TomSelectFactory.get('child').clearOptions()</code> then <code>.sync()</code>. The live demo below uses the <code>data-on-change</code> style.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Parent — fires data-on-change (window.docsFilterChild) with the value -->
@@ -349,18 +349,18 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ Dropdown slots ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">vertical_split</span>Dropdown slots (header / footer)</div>
-          <p class="docs-desc">Mount arbitrary markup as a pinned header and/or footer inside the dropdown. Stage a hidden <code>&lt;div class="ts-dropdown-slot"&gt;</code> in the page and point the select at it with <code>data-dropdown-header="#id"</code> / <code>data-dropdown-footer="#id"</code>. The factory <em>moves</em> the node (not a clone, so ids stay unique) into the dropdown and shields it from Tom Select's select/close handlers, so controls inside the slot stay interactive. Pair with <code>data-stay-open="true"</code> so picking an option does not close the dropdown while the user is also using the slot controls. Slots are also mountable manually via <code>TomSelectFactory.mountDropdownSlots(ts, el)</code>.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_43"><span class="material-symbols-outlined">vertical_split</span>Dropdown slots (header / footer)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_44">Mount arbitrary markup as a pinned header and/or footer inside the dropdown. Stage a hidden <code>&lt;div class="ts-dropdown-slot"&gt;</code> in the page and point the select at it with <code>data-dropdown-header="#id"</code> / <code>data-dropdown-footer="#id"</code>. The factory <em>moves</em> the node (not a clone, so ids stay unique) into the dropdown and shields it from Tom Select's select/close handlers, so controls inside the slot stay interactive. Pair with <code>data-stay-open="true"</code> so picking an option does not close the dropdown while the user is also using the slot controls. Slots are also mountable manually via <code>TomSelectFactory.mountDropdownSlots(ts, el)</code>.</p>
 
           <div class="wui-callout warning">
             <span class="material-symbols-outlined">warning</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title">Mount once</div>
-              The slot node is consumed into the dropdown, so a select that is destroyed and re-initialized loses its slot. Mount already-initialized controls.
+              <div class="wui-callout-title" data-wui-i18n="docs_combobox_45">Mount once</div>
+              <span data-wui-i18n="docs_combobox_46">The slot node is consumed into the dropdown, so a select that is destroyed and re-initialized loses its slot. Mount already-initialized controls.</span>
             </div>
           </div>
 
-          <div class="docs-subsection-title">Header slot + footer slot (stay-open)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_combobox_47">Header slot + footer slot (stay-open)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Select with a pinned dropdown header + footer; stays open on select -->
@@ -399,8 +399,8 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ Change callback ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">bolt</span>Change callback (data-on-change)</div>
-          <p class="docs-desc"><code>data-on-change="GlobalFn"</code> calls <code>window.GlobalFn(value, key, instance)</code> on every change — the value, the instance key, and the live Tom Select instance. Use it to drive dependent UI without touching the factory internals.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_48"><span class="material-symbols-outlined">bolt</span>Change callback (data-on-change)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_49"><code>data-on-change="GlobalFn"</code> calls <code>window.GlobalFn(value, key, instance)</code> on every change — the value, the instance key, and the live Tom Select instance. Use it to drive dependent UI without touching the factory internals.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- On-change callback writes the picked value into the readout below -->
@@ -423,8 +423,8 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ Dropdown parent ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">open_in_full</span>Dropdown parent (data-dropdown-parent)</div>
-          <p class="docs-desc">The dropdown teleports to <code>&lt;body&gt;</code> by default so it is never clipped by an <code>overflow:hidden</code> ancestor. Override the mount target with <code>data-dropdown-parent="&lt;selector&gt;"</code> when the dropdown must live inside a specific scroll container or modal.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_50"><span class="material-symbols-outlined">open_in_full</span>Dropdown parent (data-dropdown-parent)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_51">The dropdown teleports to <code>&lt;body&gt;</code> by default so it is never clipped by an <code>overflow:hidden</code> ancestor. Override the mount target with <code>data-dropdown-parent="&lt;selector&gt;"</code> when the dropdown must live inside a specific scroll container or modal.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Dropdown mounted to <body> (default) — stated explicitly for clarity -->
@@ -443,8 +443,8 @@ TomSelectFactory.init();
 
         <!-- ══════════════════════════ States: disabled & readonly ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">block</span>States — disabled &amp; readonly</div>
-          <p class="docs-desc">Disabled (native <code>disabled</code> attribute, or <code>TomSelectFactory.disable('key')</code>) renders at reduced opacity, fully inert with no tab stop. Readonly (add <code>.is-readonly</code> to the <code>.ts-wrapper</code> after init) matches the form-control readonly style: dashed border, muted surface, text still selectable and copyable, and no dropdown opens.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_combobox_52"><span class="material-symbols-outlined">block</span>States — disabled &amp; readonly</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_combobox_53">Disabled (native <code>disabled</code> attribute, or <code>TomSelectFactory.disable('key')</code>) renders at reduced opacity, fully inert with no tab stop. Readonly (add <code>.is-readonly</code> to the <code>.ts-wrapper</code> after init) matches the form-control readonly style: dashed border, muted surface, text still selectable and copyable, and no dropdown opens.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Disabled — native attribute; inert, no tab stop -->

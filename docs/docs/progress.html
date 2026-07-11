@@ -20,17 +20,17 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Feedback</div>
-          <div class="docs-hero-title">Progress</div>
-          <div class="docs-hero-sub">SVG radial rings and CSS horizontal bars for capacity, completion, and resource tracking: <code>wui-progress-ring</code>, <code>wui-progress-bar</code>, and the shared <code>wui-progress-legend</code>. Every fill below is a <strong>static</strong> value baked into the markup so the demos render without JavaScript.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_progress_1">Feedback</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_progress_2">Progress</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_progress_3">SVG radial rings and CSS horizontal bars for capacity, completion, and resource tracking: <code>wui-progress-ring</code>, <code>wui-progress-bar</code>, and the shared <code>wui-progress-legend</code>. Every fill below is a <strong>static</strong> value baked into the markup so the demos render without JavaScript.</div>
         </div>
 
         <!-- ══════════════════════════ wui-progress-ring ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">donut_large</span>wui-progress-ring</div>
-          <p class="docs-desc">SVG radial progress. <code>viewBox="0 0 120 120"</code>, <code>cx="60" cy="60" r="52"</code>, circumference <code>326.73</code> (2π × 52). The fill is drawn by <code>stroke-dashoffset</code> on <code>.wui-progress-ring-fill</code>: offset = <code>326.73 × (1 − pct/100)</code>. Set it as an inline <code>style</code> (CSS beats the SVG presentation attribute). These demos hardcode the offset; live animation is handled by <code>WUIAnim</code> and documented on the Animation page. Compose one <em>color</em> (<code>primary</code> … <code>info</code>) and an optional <em>size</em> (<code>xs</code>/<code>sm</code>/<code>md</code>/base/<code>lg</code>/<code>xl</code>).</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_progress_4"><span class="material-symbols-outlined">donut_large</span>wui-progress-ring</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_5">SVG radial progress. <code>viewBox="0 0 120 120"</code>, <code>cx="60" cy="60" r="52"</code>, circumference <code>326.73</code> (2π × 52). The fill is drawn by <code>stroke-dashoffset</code> on <code>.wui-progress-ring-fill</code>: offset = <code>326.73 × (1 − pct/100)</code>. Set it as an inline <code>style</code> (CSS beats the SVG presentation attribute). These demos hardcode the offset; live animation is handled by <code>WUIAnim</code> and documented on the Animation page. Compose one <em>color</em> (<code>primary</code> … <code>info</code>) and an optional <em>size</em> (<code>xs</code>/<code>sm</code>/<code>md</code>/base/<code>lg</code>/<code>xl</code>).</p>
 
-          <div class="docs-subsection-title">Color variants (base size, 136px)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_6">Color variants (base size, 136px)</div>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Primary · 75% → offset 326.73 × 0.25 = 81.68 -->
@@ -108,8 +108,8 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Sizes — xs → xl (base = 136px)</div>
-          <p class="docs-desc"><code>xs</code> (36px) and <code>sm</code> (56px) hide the <code>.wui-progress-ring-label</code> automatically. <code>xl</code> (220px) drops the stroke-width to 8 so the arc does not look heavy. All at 65% (offset 114.36).</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_7">Sizes — xs → xl (base = 136px)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_8"><code>xs</code> (36px) and <code>sm</code> (56px) hide the <code>.wui-progress-ring-label</code> automatically. <code>xl</code> (220px) drops the stroke-width to 8 so the arc does not look heavy. All at 65% (offset 114.36).</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- xs · 36px · label hidden by CSS · omit center for a pure indicator -->
@@ -183,8 +183,8 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Center parts — pct + label</div>
-          <p class="docs-desc"><code>.wui-progress-ring-center</code> is an absolutely positioned overlay holding <code>.wui-progress-ring-pct</code> (the big number) and <code>.wui-progress-ring-label</code> (the caption). Include the label for a titled metric, or drop it (and drop the whole center) for a bare indicator.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_9">Center parts — pct + label</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_10"><code>.wui-progress-ring-center</code> is an absolutely positioned overlay holding <code>.wui-progress-ring-pct</code> (the big number) and <code>.wui-progress-ring-label</code> (the caption). Include the label for a titled metric, or drop it (and drop the whole center) for a bare indicator.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- pct + label -->
@@ -221,8 +221,8 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Segmented ring — wui-progress-ring-segment</div>
-          <p class="docs-desc">Stack multiple <code>.wui-progress-ring-segment</code> arcs on one track to show a breakdown. Each arc is a full <code>&lt;circle&gt;</code> drawn by <code>stroke-dasharray="ARC CIRC"</code> and rotated to start where the previous ended: arc = <code>326.73 × (pct/100)</code>, start = <code>-90 + (cumulative prior pct × 3.6)</code>. <code>stroke-linecap: butt</code> is applied automatically for clean joins. Pair with a <code>wui-progress-legend</code> as the color key.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_11">Segmented ring — wui-progress-ring-segment</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_12">Stack multiple <code>.wui-progress-ring-segment</code> arcs on one track to show a breakdown. Each arc is a full <code>&lt;circle&gt;</code> drawn by <code>stroke-dasharray="ARC CIRC"</code> and rotated to start where the previous ended: arc = <code>326.73 × (pct/100)</code>, start = <code>-90 + (cumulative prior pct × 3.6)</code>. <code>stroke-linecap: butt</code> is applied automatically for clean joins. Pair with a <code>wui-progress-legend</code> as the color key.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Task breakdown: 42 / 35 / 23 -->
@@ -313,10 +313,10 @@
 
         <!-- ══════════════════════════ wui-progress-bar ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">linear_scale</span>wui-progress-bar</div>
-          <p class="docs-desc">Horizontal CSS bar. The fill is a child <code>.wui-progress-bar-fill</code> whose <code>width</code> (as a %) is the value; these demos hardcode <code>style="width:X%"</code>. An optional <code>.wui-progress-bar-info</code> row carries <code>.wui-progress-bar-label</code> and <code>.wui-progress-bar-pct</code>. Compose one <em>color</em> and an optional <em>size</em> (<code>xs</code>/<code>sm</code>/base/<code>lg</code>/<code>xl</code>).</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_progress_13"><span class="material-symbols-outlined">linear_scale</span>wui-progress-bar</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_14">Horizontal CSS bar. The fill is a child <code>.wui-progress-bar-fill</code> whose <code>width</code> (as a %) is the value; these demos hardcode <code>style="width:X%"</code>. An optional <code>.wui-progress-bar-info</code> row carries <code>.wui-progress-bar-label</code> and <code>.wui-progress-bar-pct</code>. Compose one <em>color</em> and an optional <em>size</em> (<code>xs</code>/<code>sm</code>/base/<code>lg</code>/<code>xl</code>).</p>
 
-          <div class="docs-subsection-title">Color variants (with info row)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_15">Color variants (with info row)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Primary · 78% -->
@@ -378,8 +378,8 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Sizes — xs → xl (base = 8px track)</div>
-          <p class="docs-desc">Five track heights: <code>xs</code> (3px), <code>sm</code> (5px), base (8px), <code>lg</code> (12px), <code>xl</code> (16px). Only the track height changes; the info row is independent and optional at any size. All at 65%.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_16">Sizes — xs → xl (base = 8px track)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_17">Five track heights: <code>xs</code> (3px), <code>sm</code> (5px), base (8px), <code>lg</code> (12px), <code>xl</code> (16px). Only the track height changes; the info row is independent and optional at any size. All at 65%.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- xs · 3px -->
@@ -435,8 +435,8 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Info row parts — label + pct</div>
-          <p class="docs-desc"><code>.wui-progress-bar-info</code> is a flex row that space-betweens <code>.wui-progress-bar-label</code> (uppercase caption, left) and <code>.wui-progress-bar-pct</code> (bold value, right). Either child is optional.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_18">Info row parts — label + pct</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_19"><code>.wui-progress-bar-info</code> is a flex row that space-betweens <code>.wui-progress-bar-label</code> (uppercase caption, left) and <code>.wui-progress-bar-pct</code> (bold value, right). Either child is optional.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- label + pct -->
@@ -467,8 +467,8 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Segmented bar — track.multi</div>
-          <p class="docs-desc">Add <code>.multi</code> to <code>.wui-progress-bar-track</code> and give each <code>.wui-progress-bar-fill</code> its own color class and width. Widths are plain percentages summing to ≤ 100 — any remainder shows the track background. All size modifiers apply as-is. Pair with a <code>wui-progress-legend</code>.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_20">Segmented bar — track.multi</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_21">Add <code>.multi</code> to <code>.wui-progress-bar-track</code> and give each <code>.wui-progress-bar-fill</code> its own color class and width. Widths are plain percentages summing to ≤ 100 — any remainder shows the track background. All size modifiers apply as-is. Pair with a <code>wui-progress-legend</code>.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Task breakdown: 42 / 35 / 23 = 100 -->
@@ -532,10 +532,10 @@
 
         <!-- ══════════════════════════ wui-progress-legend ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">legend_toggle</span>wui-progress-legend</div>
-          <p class="docs-desc">A wrapping color key used beside a segmented ring or bar. Each <code>.wui-progress-legend-item</code> holds a colored <code>.wui-progress-legend-dot</code> (same color classes as the components), a <code>.wui-progress-legend-label</code>, and an optional bold <code>.wui-progress-legend-value</code>. It stands alone — no ring or bar required.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_progress_22"><span class="material-symbols-outlined">legend_toggle</span>wui-progress-legend</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_23">A wrapping color key used beside a segmented ring or bar. Each <code>.wui-progress-legend-item</code> holds a colored <code>.wui-progress-legend-dot</code> (same color classes as the components), a <code>.wui-progress-legend-label</code>, and an optional bold <code>.wui-progress-legend-value</code>. It stands alone — no ring or bar required.</p>
 
-          <div class="docs-subsection-title">All dot colors (label + value)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_24">All dot colors (label + value)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <div class="wui-progress-legend">
@@ -579,7 +579,7 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Label only (no value)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_25">Label only (no value)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <div class="wui-progress-legend">
@@ -605,8 +605,8 @@
 
         <!-- ══════════════════════════ Usage in a table ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">table</span>Usage in a table</div>
-          <p class="docs-desc">An <code>.xs</code> ring (36px, no center content) fits a standard table row, and an <code>.xs</code> bar works as a compact progress column without an info row. Fills are static, as everywhere on this page.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_progress_26"><span class="material-symbols-outlined">table</span>Usage in a table</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_27">An <code>.xs</code> ring (36px, no center content) fits a standard table row, and an <code>.xs</code> bar works as a compact progress column without an info row. Fills are static, as everywhere on this page.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <div class="wui-table-wrap">

@@ -457,16 +457,4 @@ form.input-form {
   justify-content: center;
 }
 
-.form-footer .page-center {
-  background: var(--color-30);
-  border-radius: var(--border-radius);
-  box-shadow: var(--widget-shadow);
-  padding: var(--space-3) 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-sm);
-  width: 100%;
-}
-
 /* End: Form Footer */

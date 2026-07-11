@@ -42,18 +42,18 @@
         </style>
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Layout</div>
-          <div class="docs-hero-title">Layout &amp; Shell</div>
-          <div class="docs-hero-sub">The full-height app shell (<code>wui-body-shell</code>, <code>wui-page-shell</code>, <code>wui-main-div</code>, <code>wui-view-body</code>), the two-pane <code>wui-split</code>, scroll / fill primitives (<code>wui-scroll-area</code>, <code>wui-fill-area</code>), the tab shell (<code>wui-det-body</code>, <code>wui-det-inner</code>, <code>wui-tab-panel</code>), <code>wui-toolbar</code>, and the generic grid templates. Shell primitives fill their parent height; the demos below wrap them in a fixed-height frame so the structure is visible on the page.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_layout_1">Layout</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_layout_2">Layout &amp; Shell</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_layout_3">The full-height app shell (<code>wui-body-shell</code>, <code>wui-page-shell</code>, <code>wui-main-div</code>, <code>wui-view-body</code>), the two-pane <code>wui-split</code>, scroll / fill primitives (<code>wui-scroll-area</code>, <code>wui-fill-area</code>), the tab shell (<code>wui-det-body</code>, <code>wui-det-inner</code>, <code>wui-tab-panel</code>), <code>wui-toolbar</code>, and the generic grid templates. Shell primitives fill their parent height; the demos below wrap them in a fixed-height frame so the structure is visible on the page.</div>
         </div>
 
         <!-- ══════════════════════════ App shell ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">wysiwyg</span>App shell — wui-body-shell · wui-page-shell · wui-main-div · wui-view-body</div>
-          <p class="docs-desc">Every board nests the same full-height chain. <code>body.wui-body-shell</code> is <code>100vh · overflow:hidden · flex-column</code> (replaces the per-board body reset). Inside it, either <code>wui-main-div</code> (a padded flex column that fills the viewport) or <code>wui-page-shell</code> (a gapped, padded flex column used for input scaffolds) holds a shrink-to-content header plus a <code>flex:1</code> content region. <code>wui-view-body</code> is the scrollable content zone for display views — <code>flex:1; overflow-y:auto</code>, no padding of its own.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_4"><span class="material-symbols-outlined">wysiwyg</span>App shell — wui-body-shell · wui-page-shell · wui-main-div · wui-view-body</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_5">Every board nests the same full-height chain. <code>body.wui-body-shell</code> is <code>100vh · overflow:hidden · flex-column</code> (replaces the per-board body reset). Inside it, either <code>wui-main-div</code> (a padded flex column that fills the viewport) or <code>wui-page-shell</code> (a gapped, padded flex column used for input scaffolds) holds a shrink-to-content header plus a <code>flex:1</code> content region. <code>wui-view-body</code> is the scrollable content zone for display views — <code>flex:1; overflow-y:auto</code>, no padding of its own.</p>
 
-          <div class="docs-subsection-title">Shell nesting (contained)</div>
-          <p class="docs-desc">This is the real shell chain rendered at a contained height. In a live board the outer <code>body.wui-body-shell</code> fills the viewport.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_6">Shell nesting (contained)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_7">This is the real shell chain rendered at a contained height. In a live board the outer <code>body.wui-body-shell</code> fills the viewport.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- body.wui-body-shell — 100vh · overflow:hidden · flex column -->
@@ -79,8 +79,8 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">wui-view-body — scrollable display content</div>
-          <p class="docs-desc">Wraps the scrolling card/grid area of a display view so the header + filter bar stay fixed while the body scrolls independently. Padding comes from the inner layout, not from <code>wui-view-body</code>.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_8">wui-view-body — scrollable display content</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_9">Wraps the scrolling card/grid area of a display view so the header + filter bar stay fixed while the body scrolls independently. Padding comes from the inner layout, not from <code>wui-view-body</code>.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Fixed header + independently scrolling body -->
@@ -108,30 +108,14 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">page-center — max-width content column</div>
-          <p class="docs-desc"><code>page-center</code> centers a <code>max-width:1100px</code> content column with top padding. Boards used to define it locally; it now lives in the library. Details views also constrain it to <code>1092px</code> inside a tab panel.</p>
-          <div class="wui-demo stacked" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- page-center — centered max-width column -->
-              <div class="page-center" style="background:var(--color-30);border:1px dashed var(--color-10);border-radius:var(--radius-sm)">
-                <div class="lay-box" style="border:none;background:transparent">page-center — centered, max-width 1100px</div>
-              </div>
-            </div>
-            <template class="wui-demo-markup">
-              <!-- page-center — centered max-width column -->
-              <div class="page-center">
-                <!-- Centered content (max-width 1100px) -->
-              </div>
-            </template>
-          </div>
         </div>
 
         <!-- ══════════════════════════ wui-split ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">view_column</span>wui-split</div>
-          <p class="docs-desc">Opt-in two-pane split (CSS grid, not flex — <code>fr</code> columns give exact, content-independent ratios). Wrap exactly two children: <code>wui-split-main</code> (primary pane) and <code>wui-split-panel</code> (secondary pane). Default is 50/50 with the panel on the right; ratio classes and <code>panel-start</code> change the geometry. Column changes animate over 320ms.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_10"><span class="material-symbols-outlined">view_column</span>wui-split</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_11">Opt-in two-pane split (CSS grid, not flex — <code>fr</code> columns give exact, content-independent ratios). Wrap exactly two children: <code>wui-split-main</code> (primary pane) and <code>wui-split-panel</code> (secondary pane). Default is 50/50 with the panel on the right; ratio classes and <code>panel-start</code> change the geometry. Column changes animate over 320ms.</p>
 
-          <div class="docs-subsection-title">Default — 50 / 50, panel right</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_12">Default — 50 / 50, panel right</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Default: no ratio class, panel on the right -->
@@ -149,8 +133,8 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">Ratio variants (main : panel)</div>
-          <p class="docs-desc">Ratios are token-driven (<code>--wui-split-main</code> / <code>--wui-split-panel</code>) and can also be set inline for arbitrary or animated values. Every ratio class in the CSS is shown below.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_13">Ratio variants (main : panel)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_14">Ratios are token-driven (<code>--wui-split-main</code> / <code>--wui-split-panel</code>) and can also be set inline for arbitrary or animated values. Every ratio class in the CSS is shown below.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- ratio-3-2 — 3 : 2 balanced -->
@@ -208,8 +192,8 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">panel-start — dock panel on the left</div>
-          <p class="docs-desc">Swaps the column order (panel first) and moves the divider to the panel's right edge. Use for a filter rail or nav sidebar. Combines with any ratio class.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_15">panel-start — dock panel on the left</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_16">Swaps the column order (panel first) and moves the divider to the panel's right edge. Use for a filter rail or nav sidebar. Combines with any ratio class.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- panel-start + ratio-2-3 — narrow panel docked left -->
@@ -227,8 +211,8 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">is-collapsed — panel slid shut</div>
-          <p class="docs-desc">Collapses the panel column to <code>0fr</code> so the main pane fills. Kept as a real 0fr column (not <code>display:none</code>) so the change animates. The static structure is below; the button next to it is a live, JS-driven collapse toggle.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_17">is-collapsed — panel slid shut</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_18">Collapses the panel column to <code>0fr</code> so the main pane fills. Kept as a real 0fr column (not <code>display:none</code>) so the change animates. The static structure is below; the button next to it is a live, JS-driven collapse toggle.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Static is-collapsed state — panel hidden, main fills -->
@@ -246,8 +230,8 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">Declarative collapse toggle (data-wui-panel-close)</div>
-          <p class="docs-desc">Interactivity is JS-driven and handled by <code>weoc-ui.js</code>. A <code>[data-wui-panel-close="#id"]</code> button toggles the target split's close class (default <code>is-collapsed</code>) and clears any linked active items — no page script needed. Live demo:</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_19">Declarative collapse toggle (data-wui-panel-close)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_20">Interactivity is JS-driven and handled by <code>weoc-ui.js</code>. A <code>[data-wui-panel-close="#id"]</code> button toggles the target split's close class (default <code>is-collapsed</code>) and clears any linked active items — no page script needed. Live demo:</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Declarative: this button collapses/reopens the split below -->
@@ -274,15 +258,15 @@
               </div>
             </template>
           </div>
-          <p class="docs-desc">Programmatic control (<code>WUI.open</code> / <code>WUI.close</code> / <code>WUI.toggle</code>) and the full attribute reference are on the <a href="js-api.html">JS API</a> page. <code>panel-active</code> is a narrow-screen (max-width 900px) modifier that hands the single visible pane to the panel; it only takes effect below that breakpoint, so it is documented but not previewable at desktop width.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_21">Programmatic control (<code>WUI.open</code> / <code>WUI.close</code> / <code>WUI.toggle</code>) and the full attribute reference are on the <a href="js-api.html">JS API</a> page. <code>panel-active</code> is a narrow-screen (max-width 900px) modifier that hands the single visible pane to the panel; it only takes effect below that breakpoint, so it is documented but not previewable at desktop width.</p>
         </div>
 
         <!-- ══════════════════════════ wui-scroll-area ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">swap_vert</span>wui-scroll-area</div>
-          <p class="docs-desc">Independently scrollable record feed. <code>flex:1; overflow-y:auto</code> — fills the remaining height in a flex-column parent and scrolls while siblings stay put. Reserves a stable scrollbar gutter (no layout shift). Density modifiers change the gap; <code>is-grid</code> turns it into a responsive card gallery.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_22"><span class="material-symbols-outlined">swap_vert</span>wui-scroll-area</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_23">Independently scrollable record feed. <code>flex:1; overflow-y:auto</code> — fills the remaining height in a flex-column parent and scrolls while siblings stay put. Reserves a stable scrollbar gutter (no layout shift). Density modifiers change the gap; <code>is-grid</code> turns it into a responsive card gallery.</p>
 
-          <div class="docs-subsection-title">Default feed (fills &amp; scrolls)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_24">Default feed (fills &amp; scrolls)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-scroll-area inside a fixed-height flex column -->
@@ -307,7 +291,7 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">Density — is-tight / is-roomy</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_25">Density — is-tight / is-roomy</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- is-tight — smaller gap -->
@@ -334,8 +318,8 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">is-grid — responsive card gallery</div>
-          <p class="docs-desc">Switches to a CSS grid of auto-filled columns. Override the min column width with <code>--wui-scroll-col</code> (default 280px).</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_26">is-grid — responsive card gallery</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_27">Switches to a CSS grid of auto-filled columns. Override the min column width with <code>--wui-scroll-col</code> (default 280px).</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- is-grid — auto-fill gallery -->
@@ -359,8 +343,8 @@
 
         <!-- ══════════════════════════ wui-fill-area ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">fit_screen</span>wui-fill-area</div>
-          <p class="docs-desc">Non-scrolling counterpart to <code>wui-scroll-area</code>. Fills the remaining height in a flex-column parent (<code>flex:1; overflow:hidden</code>) but does not scroll — use it to wrap a grid or a fixed-height layout that manages its own overflow. Add a <code>wui-gap-*</code> utility if you need spacing between direct children.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_28"><span class="material-symbols-outlined">fit_screen</span>wui-fill-area</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_29">Non-scrolling counterpart to <code>wui-scroll-area</code>. Fills the remaining height in a flex-column parent (<code>flex:1; overflow:hidden</code>) but does not scroll — use it to wrap a grid or a fixed-height layout that manages its own overflow. Add a <code>wui-gap-*</code> utility if you need spacing between direct children.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-fill-area — clips, does not scroll -->
@@ -385,10 +369,10 @@
 
         <!-- ══════════════════════════ Tab shell ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">view_agenda</span>Tab shell — wui-det-body · wui-det-inner · wui-tab-panel</div>
-          <p class="docs-desc">The details / input tab shell. <code>wui-det-body</code> is the <code>flex:1; overflow:hidden</code> region that holds the panels. <code>wui-det-inner</code> is a single <code>max-width:1100px</code> centering column placed once between header and footer (so every panel shares the header/footer alignment instead of each carrying its own <code>page-center</code>). <code>wui-tab-panel</code> is <code>display:none</code> until it gets <code>active</code>, then it becomes the scroll container. <code>is-form</code> removes the inner <code>page-center</code> padding for edge-to-edge forms.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_30"><span class="material-symbols-outlined">view_agenda</span>Tab shell — wui-det-body · wui-det-inner · wui-tab-panel</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_31">The details / input tab shell. <code>wui-det-body</code> is the <code>flex:1; overflow:hidden</code> region that holds the panels. <code>wui-det-inner</code> is a single <code>max-width:1100px</code> centering column placed once between header and footer, so every panel shares the header/footer alignment. <code>wui-tab-panel</code> is <code>display:none</code> until it gets <code>active</code>, then it becomes the scroll container.</p>
 
-          <div class="docs-subsection-title">DOM nesting</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_32">DOM nesting</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Nesting: det-inner → det-body → tab-panel.active -->
@@ -422,8 +406,8 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">Active vs inactive panels (contained)</div>
-          <p class="docs-desc">Tab switching is JS-driven: script moves the <code>active</code> class between the header tab and its panel. See the tab/list toggle pattern below and the <a href="js-api.html">JS API</a> page. The structure is static here — the first panel carries <code>active</code>.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_33">Active vs inactive panels (contained)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_34">Tab switching is JS-driven: script moves the <code>active</code> class between the header tab and its panel. See the tab/list toggle pattern below and the <a href="js-api.html">JS API</a> page. The structure is static here — the first panel carries <code>active</code>.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Static: panel 1 active, panels 2/3 hidden -->
@@ -461,8 +445,8 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">is-list-mode — stack all panels in one scroll</div>
-          <p class="docs-desc">A JS toggle (<code>toggleViewMode()</code>) adds <code>is-list-mode</code> to <code>wui-det-body</code>: header tabs hide, every <code>wui-tab-panel</code> becomes <code>display:block; height:auto</code>, and the <code>det-body</code> itself becomes the scroll container. Below is the static list-mode structure — all panels visible and stacked.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_35">is-list-mode — stack all panels in one scroll</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_36">A JS toggle (<code>toggleViewMode()</code>) adds <code>is-list-mode</code> to <code>wui-det-body</code>: header tabs hide, every <code>wui-tab-panel</code> becomes <code>display:block; height:auto</code>, and the <code>det-body</code> itself becomes the scroll container. Below is the static list-mode structure — all panels visible and stacked.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Static is-list-mode — all panels stacked, det-body scrolls -->
@@ -493,15 +477,15 @@
               </div>
             </template>
           </div>
-          <p class="docs-desc"><code>wui-det-inner .wui-tab-panel</code> gets vertical breathing room automatically; add <code>is-form</code> to a panel (<code>wui-tab-panel is-form</code>) when the inner <code>page-center</code> should have zero padding so a form runs to the edge.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_37"><code>wui-det-inner .wui-tab-panel</code> gets vertical breathing room automatically.</p>
         </div>
 
         <!-- ══════════════════════════ wui-toolbar ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">toolbar</span>wui-toolbar</div>
-          <p class="docs-desc">Horizontal bar for grouping actions and controls. Base has surface chrome (background + border). Compose with <code>wui-toolbar-group</code> (a tight cluster), <code>wui-toolbar-sep</code> (a vertical divider), and <code>wui-toolbar-spacer</code> (pushes following items to the far end).</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_38"><span class="material-symbols-outlined">toolbar</span>wui-toolbar</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_39">Horizontal bar for grouping actions and controls. Base has surface chrome (background + border). Compose with <code>wui-toolbar-group</code> (a tight cluster), <code>wui-toolbar-sep</code> (a vertical divider), and <code>wui-toolbar-spacer</code> (pushes following items to the far end).</p>
 
-          <div class="docs-subsection-title">Full toolbar — groups, separator, spacer</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_40">Full toolbar — groups, separator, spacer</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Chromed bar with two left groups, a divider, a spacer, and a right group -->
@@ -524,8 +508,8 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">plain — no chrome</div>
-          <p class="docs-desc"><code>.plain</code> drops the background, border, and padding, leaving just the flex layout. Useful for a borderless action row.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_41">plain — no chrome</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_42"><code>.plain</code> drops the background, border, and padding, leaving just the flex layout. Useful for a borderless action row.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Plain toolbar — flex layout only, no surface -->
@@ -545,10 +529,10 @@
 
         <!-- ══════════════════════════ Lists & card stack ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">view_list</span>wui-list &amp; wui-card-stack</div>
-          <p class="docs-desc">Two vertical column primitives. <code>wui-list</code> is a self-scrolling card column (<code>overflow-y:auto</code>) — use it when the column owns its own scroll. <code>wui-card-stack</code> is a non-scrolling column that grows with its content — place it inside a <code>wui-det-body</code> / <code>wui-tab-panel</code> that handles the scroll. Both are flex columns with a gap.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_43"><span class="material-symbols-outlined">view_list</span>wui-list &amp; wui-card-stack</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_44">Two vertical column primitives. <code>wui-list</code> is a self-scrolling card column (<code>overflow-y:auto</code>) — use it when the column owns its own scroll. <code>wui-card-stack</code> is a non-scrolling column that grows with its content — place it inside a <code>wui-det-body</code> / <code>wui-tab-panel</code> that handles the scroll. Both are flex columns with a gap.</p>
 
-          <div class="docs-subsection-title">wui-list — self-scrolling column</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_45">wui-list — self-scrolling column</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-list — scrolls internally -->
@@ -568,7 +552,7 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">wui-card-stack — grows with content</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_46">wui-card-stack — grows with content</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-card-stack — non-scrolling, grows; place in a scroll parent -->
@@ -589,10 +573,10 @@
 
         <!-- ══════════════════════════ wui-grid-view ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">dashboard</span>wui-grid-view &amp; wui-details-panel</div>
-          <p class="docs-desc">The classic master-detail grid (list / map or list / detail). <code>wui-grid-view</code> is a 2-column grid with named areas <code>list</code> and <code>right</code>. The left child (a <code>wui-list</code> card column or a table) fills <code>list</code>; <code>wui-details-panel</code> slides into <code>right</code> when a record is selected. Add <code>list-only</code> to collapse to a single column when the panel is hidden. <code>wui-split</code> supersedes this for boards that opt in, but <code>wui-grid-view</code> is kept for boards on the older grid.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_47"><span class="material-symbols-outlined">dashboard</span>wui-grid-view &amp; wui-details-panel</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_48">The classic master-detail grid (list / map or list / detail). <code>wui-grid-view</code> is a 2-column grid with named areas <code>list</code> and <code>right</code>. The left child (a <code>wui-list</code> card column or a table) fills <code>list</code>; <code>wui-details-panel</code> slides into <code>right</code> when a record is selected. Add <code>list-only</code> to collapse to a single column when the panel is hidden. <code>wui-split</code> supersedes this for boards that opt in, but <code>wui-grid-view</code> is kept for boards on the older grid.</p>
 
-          <div class="docs-subsection-title">Two-column (record selected)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_49">Two-column (record selected)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-grid-view — list left, details-panel visible on the right -->
@@ -626,8 +610,8 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title">list-only (no selection)</div>
-          <p class="docs-desc">With <code>list-only</code> the grid collapses to a single full-height column; the details panel stays hidden. JS adds <code>visible</code> to the panel and removes <code>list-only</code> when a row is opened.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_50">list-only (no selection)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_51">With <code>list-only</code> the grid collapses to a single full-height column; the details panel stays hidden. JS adds <code>visible</code> to the panel and removes <code>list-only</code> when a row is opened.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-grid-view.list-only — single column, panel hidden -->
@@ -657,8 +641,8 @@
 
         <!-- ══════════════════════════ Generic templates ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">grid_view</span>wui-cards-grid</div>
-          <p class="docs-desc">Responsive auto-fill card wall. Columns are <code>repeat(auto-fill, minmax(var(--wui-card-min, 260px), 1fr))</code> — set <code>--wui-card-min</code> to change the card breakpoint.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_52"><span class="material-symbols-outlined">grid_view</span>wui-cards-grid</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_53">Responsive auto-fill card wall. Columns are <code>repeat(auto-fill, minmax(var(--wui-card-min, 260px), 1fr))</code> — set <code>--wui-card-min</code> to change the card breakpoint.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-cards-grid — override min card width via --wui-card-min -->
@@ -680,9 +664,9 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">splitscreen</span>wui-two-col</div>
-          <p class="docs-desc">Equal-width two-column grid for previews, config panels, and side-by-side content. Default <code>align-items:start</code>; add <code>align-stretch</code> to make both columns fill the row height.</p>
-          <div class="docs-subsection-title">Default (align-items: start)</div>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_54"><span class="material-symbols-outlined">splitscreen</span>wui-two-col</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_55">Equal-width two-column grid for previews, config panels, and side-by-side content. Default <code>align-items:start</code>; add <code>align-stretch</code> to make both columns fill the row height.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_56">Default (align-items: start)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-two-col — equal columns, top-aligned -->
@@ -699,7 +683,7 @@
               </div>
             </template>
           </div>
-          <div class="docs-subsection-title">align-stretch (fill height)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_57">align-stretch (fill height)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-two-col.align-stretch — both columns match the tallest -->
@@ -719,8 +703,8 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">side_navigation</span>wui-sidebar-layout</div>
-          <p class="docs-desc">Fixed sidebar rail + fluid content. Columns are <code>var(--wui-sidebar-width, 300px) 1fr</code> — override the rail width with <code>--wui-sidebar-width</code>.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_58"><span class="material-symbols-outlined">side_navigation</span>wui-sidebar-layout</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_59">Fixed sidebar rail + fluid content. Columns are <code>var(--wui-sidebar-width, 300px) 1fr</code> — override the rail width with <code>--wui-sidebar-width</code>.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-sidebar-layout — override rail via --wui-sidebar-width -->
@@ -740,8 +724,8 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">vertical_split</span>wui-split-pane</div>
-          <p class="docs-desc">Asymmetric grid split for scope views (list left : detail right). Default ratio is <code>5fr : 7fr</code> via <code>--wui-split-left</code> / <code>--wui-split-right</code>; both columns use <code>minmax(0, …)</code> so they can shrink. Fills its flex parent (<code>flex:1; overflow:hidden</code>). Distinct from <code>wui-split</code> — this is a plain grid template with no collapse/animation behavior.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_60"><span class="material-symbols-outlined">vertical_split</span>wui-split-pane</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_61">Asymmetric grid split for scope views (list left : detail right). Default ratio is <code>5fr : 7fr</code> via <code>--wui-split-left</code> / <code>--wui-split-right</code>; both columns use <code>minmax(0, …)</code> so they can shrink. Fills its flex parent (<code>flex:1; overflow:hidden</code>). Distinct from <code>wui-split</code> — this is a plain grid template with no collapse/animation behavior.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-split-pane — override ratio via --wui-split-left / --wui-split-right -->
@@ -762,10 +746,10 @@
 
         <!-- ══════════════════════════ wui-field-row ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">table_rows</span>wui-field-row</div>
-          <p class="docs-desc">Responsive grid for form field layout. Base is 2 columns; <code>full</code> / <code>col1</code> = single column, <code>col3</code> = three, <code>col4</code> = four. <code>wui-field-item</code> is a labelled field cell; <code>wui-field-label</code> is the uppercase caption; <code>wui-required</code> marks a required field in the danger color.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_62"><span class="material-symbols-outlined">table_rows</span>wui-field-row</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_63">Responsive grid for form field layout. Base is 2 columns; <code>full</code> / <code>col1</code> = single column, <code>col3</code> = three, <code>col4</code> = four. <code>wui-field-item</code> is a labelled field cell; <code>wui-field-label</code> is the uppercase caption; <code>wui-required</code> marks a required field in the danger color.</p>
 
-          <div class="docs-subsection-title">2-column (base) + full-width row</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_64">2-column (base) + full-width row</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Default 2-col row -->
@@ -789,7 +773,7 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">col3 / col4 — three &amp; four columns</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_layout_65">col3 / col4 — three &amp; four columns</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- col3 — three columns -->
@@ -811,8 +795,8 @@
 
         <!-- ══════════════════════════ wui-table-view ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">table_chart</span>wui-table-view</div>
-          <p class="docs-desc">Scrollable padded wrapper for a full-view table (<code>flex:1; overflow-y:auto; padding: space-3</code>). Use it as the content region of a display view whose body is a single table rather than a card feed. Table styling itself lives on the <a href="tables.html">Tables</a> page; <code>wui-table-view</code> only provides the scroll container.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_66"><span class="material-symbols-outlined">table_chart</span>wui-table-view</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_67">Scrollable padded wrapper for a full-view table (<code>flex:1; overflow-y:auto; padding: space-3</code>). Use it as the content region of a display view whose body is a single table rather than a card feed. Table styling itself lives on the <a href="tables.html">Tables</a> page; <code>wui-table-view</code> only provides the scroll container.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- wui-table-view — scroll container for a table body -->
@@ -839,8 +823,8 @@
 
         <!-- ══════════════════════════ Dashboard note ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">widgets</span>Dashboard grid (wui-widget)</div>
-          <p class="docs-desc">The dashboard widget grid (<code>wui-widget</code>, <code>wui-widget-hdr</code>, <code>wui-widget-body</code>, drag handle, etc.) is <strong>not</strong> defined in <code>weoc-layout.css</code> — this stylesheet only carries a <code>TODO</code> placeholder for it. The real <code>wui-widget</code> component ships in <code>weoc-containers.css</code>, so it is documented on the <a href="containers.html">Cards &amp; Containers</a> page rather than here.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_layout_68"><span class="material-symbols-outlined">widgets</span>Dashboard grid (wui-widget)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_layout_69">The dashboard widget grid (<code>wui-widget</code>, <code>wui-widget-hdr</code>, <code>wui-widget-body</code>, drag handle, etc.) is <strong>not</strong> defined in <code>weoc-layout.css</code> — this stylesheet only carries a <code>TODO</code> placeholder for it. The real <code>wui-widget</code> component ships in <code>weoc-containers.css</code>, so it is documented on the <a href="containers.html">Cards &amp; Containers</a> page rather than here.</p>
         </div>
 
       </div>

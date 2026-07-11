@@ -20,17 +20,17 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Typography</div>
-          <div class="docs-hero-title">Typography</div>
-          <div class="docs-hero-sub">Text utilities: the type scale (<code>wui-text-2xs</code> … <code>wui-text-2xl</code>), font weights (<code>wui-extralight</code> … <code>wui-black</code>), semantic text colors (<code>wui-text-primary</code>, <code>wui-text-secondary</code>, <code>wui-text-ui</code>, <code>wui-text-danger</code>, <code>wui-text-brand</code>, <code>wui-label-text</code>), and single-line clamping with <code>wui-truncate</code>.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_typography_1">Typography</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_typography_2">Typography</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_typography_3">Text utilities: the type scale (<code>wui-text-2xs</code> … <code>wui-text-2xl</code>), font weights (<code>wui-extralight</code> … <code>wui-black</code>), semantic text colors (<code>wui-text-primary</code>, <code>wui-text-secondary</code>, <code>wui-text-ui</code>, <code>wui-text-danger</code>, <code>wui-text-brand</code>, <code>wui-label-text</code>), and single-line clamping with <code>wui-truncate</code>.</div>
         </div>
 
         <!-- ══════════════════════════ Type scale ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">format_size</span>Type scale</div>
-          <p class="docs-desc">Font-size utilities driven by the <code>--text-*</code> tokens, each pairing a matched <code>line-height</code>. Base body text is <code>wui-text-base</code>; the scale runs from <code>wui-text-2xs</code> up to <code>wui-text-2xl</code>. Every size is marked <code>!important</code> so it wins over inherited sizing.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_typography_4"><span class="material-symbols-outlined">format_size</span>Type scale</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_typography_5">Font-size utilities driven by the <code>--text-*</code> tokens, each pairing a matched <code>line-height</code>. Base body text is <code>wui-text-base</code>; the scale runs from <code>wui-text-2xs</code> up to <code>wui-text-2xl</code>. Every size is marked <code>!important</code> so it wins over inherited sizing.</p>
 
-          <div class="docs-subsection-title">2xs → 2xl (base = wui-text-base)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_typography_6">2xs → 2xl (base = wui-text-base)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- 2xs -->
@@ -55,10 +55,10 @@
 
         <!-- ══════════════════════════ Font weights ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">line_weight</span>Font weights</div>
-          <p class="docs-desc">Weight utilities mapped to the <code>--font-*</code> tokens, from <code>wui-extralight</code> through <code>wui-black</code>. <code>wui-extralight</code>, <code>wui-light</code>, and <code>wui-regular</code> are plain declarations; <code>wui-medium</code> and heavier carry <code>!important</code>.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_typography_7"><span class="material-symbols-outlined">line_weight</span>Font weights</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_typography_8">Weight utilities mapped to the <code>--font-*</code> tokens, from <code>wui-extralight</code> through <code>wui-black</code>. <code>wui-extralight</code>, <code>wui-light</code>, and <code>wui-regular</code> are plain declarations; <code>wui-medium</code> and heavier carry <code>!important</code>.</p>
 
-          <div class="docs-subsection-title">extralight → black</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_typography_9">extralight → black</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- extralight -->
@@ -83,10 +83,10 @@
 
         <!-- ══════════════════════════ Text colors ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Text colors</div>
-          <p class="docs-desc">Semantic color utilities driven by theme tokens. <code>wui-text-primary</code>, <code>wui-text-secondary</code>, and <code>wui-text-ui</code> form the neutral text ramp; <code>wui-text-danger</code> flags errors; <code>wui-text-brand</code> applies the brand accent (<code>--color-10</code>); and <code>wui-label-text</code> is the muted color reused for form labels (same value as <code>wui-text-secondary</code>).</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_typography_10"><span class="material-symbols-outlined">palette</span>Text colors</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_typography_11">Semantic color utilities driven by theme tokens. <code>wui-text-primary</code>, <code>wui-text-secondary</code>, and <code>wui-text-ui</code> form the neutral text ramp; <code>wui-text-danger</code> flags errors; <code>wui-text-brand</code> applies the brand accent (<code>--color-10</code>); and <code>wui-label-text</code> is the muted color reused for form labels (same value as <code>wui-text-secondary</code>).</p>
 
-          <div class="docs-subsection-title">All text colors</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_typography_12">All text colors</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- primary -->
@@ -107,10 +107,10 @@
 
         <!-- ══════════════════════════ Truncation ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">more_horiz</span>wui-truncate</div>
-          <p class="docs-desc">Single-line clamp with ellipsis. Width-based (<code>max-width: var(--wui-truncate, 20ch)</code>) and non-destructive: it clips visually but leaves the DOM text intact, so a child link keeps its <code>onclick</code> and it survives WebEOC <code>updatesection</code> refreshes. Override per use with <code>style="--wui-truncate: 30ch"</code> and pair with <code>title="full text"</code> for a hover tooltip.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_typography_13"><span class="material-symbols-outlined">more_horiz</span>wui-truncate</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_typography_14">Single-line clamp with ellipsis. Width-based (<code>max-width: var(--wui-truncate, 20ch)</code>) and non-destructive: it clips visually but leaves the DOM text intact, so a child link keeps its <code>onclick</code> and it survives WebEOC <code>updatesection</code> refreshes. Override per use with <code>style="--wui-truncate: 30ch"</code> and pair with <code>title="full text"</code> for a hover tooltip.</p>
 
-          <div class="docs-subsection-title">Clamping inside a fixed-width box</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_typography_15">Clamping inside a fixed-width box</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Default clamp inside a 220px box -->
@@ -120,7 +120,7 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Custom clamp width via --wui-truncate</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_typography_16">Custom clamp width via --wui-truncate</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Wider 30ch clamp via the --wui-truncate override -->

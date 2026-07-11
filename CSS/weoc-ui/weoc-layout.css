@@ -46,19 +46,7 @@
 
 /* ─── Content Wrappers ───────────────────────────────────────── */
 
-/*
-  .page-center — max-width content column, centered.
-  NOTE: Several board CSS files define this locally. Those local copies are
-  redundant once the board imports weoc-ui-core and can be deleted on migration.
-  Boards with local copies: EventReporting/details, Checklists/details,
-  FacilitiesManagement/details, SystemCheck/details, AAR/details.
-*/
-.page-center {
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: var(--space-4) 0 0 0;
-}
+/* .page-center removed — superseded by .wui-det-inner (centering once per view). */
 
 /* ─── Toolbar ────────────────────────────────────────────────── */
 /*
@@ -113,10 +101,9 @@
 }
 
 /*
-  Scrollable main content zone for display views.
-  Wraps .page-center inside a .wui-main-div to make the card/grid area scroll
-  independently while header + filter bar stay fixed.
-  No padding — padding comes from .page-center or inner layout.
+  Scrollable main content zone for display views. Makes the card/grid area scroll
+  independently while header + filter bar stay fixed. No padding — padding comes
+  from the inner layout.
 */
 .wui-view-body {
   flex: 1;
@@ -193,18 +180,6 @@
   box-sizing: border-box;
 }
 
-/* Details views use 20px padding on .page-center inside the panel */
-.wui-tab-panel .page-center {
-  padding: var(--space-2) 0;
-  box-sizing: border-box;
-  max-width: 1092px;
-}
-
-/* Input views want padding: 0 (form continues to edge) — override with .is-form */
-.wui-tab-panel.is-form .page-center {
-  padding: 0;
-  box-sizing: border-box;
-}
 
 .wui-tab-panel.active {
   display: block;

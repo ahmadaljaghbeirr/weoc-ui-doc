@@ -20,17 +20,17 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Navigation</div>
-          <div class="docs-hero-title">Navigation</div>
-          <div class="docs-hero-sub">Structural chrome for a board: the sticky header bar <code>wui-hdr-wrap</code> with scrollable <code>wui-hdr-tabs</code>, the inline text link <code>wui-link</code>, and the status strip <code>wui-band-wrap</code>. Every variant and modifier is shown with its exact markup.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_navigation_1">Navigation</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_navigation_2">Navigation</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_navigation_3">Structural chrome for a board: the sticky header bar <code>wui-hdr-wrap</code> with scrollable <code>wui-hdr-tabs</code>, the inline text link <code>wui-link</code>, and the status strip <code>wui-band-wrap</code>. Every variant and modifier is shown with its exact markup.</div>
         </div>
 
         <!-- ══════════════════════════ wui-hdr-wrap ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">web_asset</span>wui-hdr-wrap</div>
-          <p class="docs-desc">Sticky board header. Structure: <code>wui-hdr-wrap</code> → <code>wui-hdr-inner</code> → <code>wui-hdr-top</code> (the row holding <code>wui-hdr-left</code> = icon + title block, and <code>wui-hdr-right</code> = actions/status). An optional <code>wui-hdr-tabs-wrap</code> sits below <code>wui-hdr-top</code> inside the same inner. The <code>.centered</code> variant turns <code>wui-hdr-inner</code> into a max-width (1100px) card.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_navigation_4"><span class="material-symbols-outlined">web_asset</span>wui-hdr-wrap</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_navigation_5">Sticky board header. Structure: <code>wui-hdr-wrap</code> → <code>wui-hdr-inner</code> → <code>wui-hdr-top</code> (the row holding <code>wui-hdr-left</code> = icon + title block, and <code>wui-hdr-right</code> = actions/status). An optional <code>wui-hdr-tabs-wrap</code> sits below <code>wui-hdr-top</code> inside the same inner. The <code>.centered</code> variant turns <code>wui-hdr-inner</code> into a max-width (1100px) card.</p>
 
-          <div class="docs-subsection-title">Realistic EOC board header — icon, title block, stats, actions</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_6">Realistic EOC board header — icon, title block, stats, actions</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Full header: inner > top > (left: icon + title-row + subtitle) + (right: stats + actions) -->
@@ -63,8 +63,8 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Header stats (wui-hdr-stats)</div>
-          <p class="docs-desc">A compact readout row for the header-right. Keep the header itself uncluttered — use one or two stats at most, or move counts into a <code>wui-band-wrap</code> strip below the header.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_7">Header stats (wui-hdr-stats)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_navigation_8">A compact readout row for the header-right. Keep the header itself uncluttered — use one or two stats at most, or move counts into a <code>wui-band-wrap</code> strip below the header.</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
               <div class="wui-hdr-stats">
@@ -76,7 +76,7 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Centered variant (.centered) — inner becomes a max-width card</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_9">Centered variant (.centered) — inner becomes a max-width card</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- .centered: transparent chrome, inner is a 1100px centered card -->
@@ -105,10 +105,10 @@
 
         <!-- ══════════════════════════ wui-hdr-tabs ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">tab</span>wui-hdr-tabs</div>
-          <p class="docs-desc">Tab strip that lives inside <code>wui-hdr-tabs-wrap</code> (below <code>wui-hdr-top</code>). <code>wui-hdr-tabs</code> is a horizontal <code>overflow-x</code> scroller with the scrollbar hidden; each <code>wui-hdr-tab</code> is uppercase and gains an accent bottom-border when <code>.active</code> (and lifts to primary text on hover). The wrap paints fade-out edges via <code>::before</code>/<code>::after</code>, revealed by adding <code>.has-left</code> / <code>.has-right</code> when the strip is scrolled.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_navigation_10"><span class="material-symbols-outlined">tab</span>wui-hdr-tabs</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_navigation_11">Tab strip that lives inside <code>wui-hdr-tabs-wrap</code> (below <code>wui-hdr-top</code>). <code>wui-hdr-tabs</code> is a horizontal <code>overflow-x</code> scroller with the scrollbar hidden; each <code>wui-hdr-tab</code> is uppercase and gains an accent bottom-border when <code>.active</code> (and lifts to primary text on hover). The wrap paints fade-out edges via <code>::before</code>/<code>::after</code>, revealed by adding <code>.has-left</code> / <code>.has-right</code> when the strip is scrolled.</p>
 
-          <div class="docs-subsection-title">Static tab bar — active + hover states</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_12">Static tab bar — active + hover states</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <div class="wui-hdr-wrap" style="width:100%">
@@ -138,8 +138,8 @@
             </div>
           </div>
 
-          <div class="docs-subsection-title">Interactive — click to switch tabs and panels (data-wui-demo-run)</div>
-          <p class="docs-desc">A self-contained vanilla click handler toggles the <code>.active</code> class between tabs and shows/hides the matching panel. It also demonstrates the <code>.has-left</code> / <code>.has-right</code> fade-edge classes being toggled from the scroller's scroll position.</p>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_13">Interactive — click to switch tabs and panels (data-wui-demo-run)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_navigation_14">A self-contained vanilla click handler toggles the <code>.active</code> class between tabs and shows/hides the matching panel. It also demonstrates the <code>.has-left</code> / <code>.has-right</code> fade-edge classes being toggled from the scroller's scroll position.</p>
           <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
             <div class="wui-demo-preview">
               <div class="wui-hdr-wrap" style="width:100%">
@@ -210,10 +210,10 @@ syncFades();
 
         <!-- ══════════════════════════ wui-link ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">link</span>wui-link</div>
-          <p class="docs-desc">Inline text link that looks and behaves like an <code>&lt;a&gt;</code>. Works on both <code>&lt;a&gt;</code> and <code>&lt;button&gt;</code> (button chrome is reset). It flows inline with surrounding text; colour comes from a modifier. Underline appears on hover by default.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_navigation_15"><span class="material-symbols-outlined">link</span>wui-link</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_navigation_16">Inline text link that looks and behaves like an <code>&lt;a&gt;</code>. Works on both <code>&lt;a&gt;</code> and <code>&lt;button&gt;</code> (button chrome is reset). It flows inline with surrounding text; colour comes from a modifier. Underline appears on hover by default.</p>
 
-          <div class="docs-subsection-title">Base + all color variants</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_17">Base + all color variants</div>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Base (primary) -->
@@ -233,7 +233,7 @@ syncFades();
             </div>
           </div>
 
-          <div class="docs-subsection-title">With icon (inline material symbol)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_18">With icon (inline material symbol)</div>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Leading icon -->
@@ -243,7 +243,7 @@ syncFades();
             </div>
           </div>
 
-          <div class="docs-subsection-title">Modifiers — underlined, plain, sm, xs</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_19">Modifiers — underlined, plain, sm, xs</div>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- underlined (always underlined) -->
@@ -257,7 +257,7 @@ syncFades();
             </div>
           </div>
 
-          <div class="docs-subsection-title">Disabled — attribute and .disabled class</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_20">Disabled — attribute and .disabled class</div>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Disabled via .disabled class on an anchor -->
@@ -267,7 +267,7 @@ syncFades();
             </div>
           </div>
 
-          <div class="docs-subsection-title">In flowing text</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_21">In flowing text</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Inline within a paragraph -->
@@ -278,10 +278,10 @@ syncFades();
 
         <!-- ══════════════════════════ wui-band-wrap ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">view_agenda</span>wui-band-wrap</div>
-          <p class="docs-desc">Horizontal status strip for EOC counts and KPIs. Structure: <code>wui-band-wrap</code> → one or more <code>wui-band-row</code> → <code>wui-band-seg</code> segments (each a <code>wui-band-label</code> + <code>wui-band-value</code>), separated by <code>wui-band-divider</code>, with <code>wui-band-spacer</code> pushing a trailing <code>wui-band-actions</code> slot to the end. Stacked segments use <code>wui-band-seg-stack</code> (label over value). Add <code>.stripe.{color}</code> for a diagonal-striped left edge + colored bottom border.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_navigation_22"><span class="material-symbols-outlined">view_agenda</span>wui-band-wrap</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_navigation_23">Horizontal status strip for EOC counts and KPIs. Structure: <code>wui-band-wrap</code> → one or more <code>wui-band-row</code> → <code>wui-band-seg</code> segments (each a <code>wui-band-label</code> + <code>wui-band-value</code>), separated by <code>wui-band-divider</code>, with <code>wui-band-spacer</code> pushing a trailing <code>wui-band-actions</code> slot to the end. Stacked segments use <code>wui-band-seg-stack</code> (label over value). Add <code>.stripe.{color}</code> for a diagonal-striped left edge + colored bottom border.</p>
 
-          <div class="docs-subsection-title">Basic band — segments, dividers, spacer, actions</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_24">Basic band — segments, dividers, spacer, actions</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <div class="wui-band-wrap" style="width:100%">
@@ -319,7 +319,7 @@ syncFades();
             </div>
           </div>
 
-          <div class="docs-subsection-title">Stacked segment (wui-band-seg-stack) — label over value</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_25">Stacked segment (wui-band-seg-stack) — label over value</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <div class="wui-band-wrap" style="width:100%">
@@ -344,7 +344,7 @@ syncFades();
             </div>
           </div>
 
-          <div class="docs-subsection-title">Multiple rows (wui-band-row + wui-band-row)</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_26">Multiple rows (wui-band-row + wui-band-row)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- A second wui-band-row gets a top border automatically -->
@@ -375,7 +375,7 @@ syncFades();
             </div>
           </div>
 
-          <div class="docs-subsection-title">Stripe variants — all 5 colors (.stripe.{color})</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_navigation_27">Stripe variants — all 5 colors (.stripe.{color})</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Primary -->

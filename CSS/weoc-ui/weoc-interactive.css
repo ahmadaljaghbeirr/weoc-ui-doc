@@ -240,6 +240,17 @@
   color: var(--color-text-secondary);
 }
 
+/* ─── Pressed / active toggle state ───
+   For outline buttons used as toggles (filter groups, segmented sets).
+   Fills with the accent; add `is-active` on the pressed button and toggle it
+   from JS (mirrors the wui-card-option.is-active state convention). */
+.wui-btn.outline.is-active,
+.wui-btn.outline.is-active:hover:not(:disabled) {
+  background: var(--color-10);
+  border-color: var(--color-10);
+  color: var(--color-on-accent);
+}
+
 /* ─── Ghost Variants ─── */
 
 .wui-btn.ghost,

@@ -27,6 +27,7 @@
    utils before the modules that call WUI.ready() at load (disclosure, sticky). */
 import './core/wui.js';
 import './core/theme.js';
+import './core/i18n.js';
 import './core/utils.js';
 import './core/dom.js';
 

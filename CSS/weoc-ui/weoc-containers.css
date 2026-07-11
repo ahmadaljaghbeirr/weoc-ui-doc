@@ -125,7 +125,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: var(--space-sm);
+  padding-top: var(--space-5);
   border-top-left-radius: var(--border-radius);
   border-bottom-left-radius: var(--border-radius);
   overflow: hidden;
@@ -153,47 +153,6 @@
 
 .wui-card-side.secondary {
   background: var(--color-secondary);
-}
-
-/* Severity icon — for use inside .wui-card-side */
-.wui-severity-icon {
-  background: color-mix(in srgb, var(--color-30) 25%, transparent);
-  padding: var(--space-5);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.wui-severity-icon-inner {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--color-30);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.45);
-}
-
-.wui-severity-icon-inner .material-symbols-outlined {
-  font-size: var(--text-base);
-}
-
-.wui-severity-icon-inner.danger {
-  color: var(--color-danger);
-}
-
-.wui-severity-icon-inner.warning {
-  color: var(--color-warning);
-}
-
-.wui-severity-icon-inner.success {
-  color: var(--color-success);
-}
-
-.wui-severity-icon-inner.primary {
-  color: var(--color-10);
 }
 
 /* ─── Layer 2: Templates ─── */
@@ -768,10 +727,6 @@
 
 .wui-page-shell .wui-panel-wrap {
   padding: 0;
-}
-
-.page-center .wui-panel-wrap {
-  padding: var(--space-2) 0;
 }
 
 /* wui-det-inner context: restore inter-panel vertical spacing that

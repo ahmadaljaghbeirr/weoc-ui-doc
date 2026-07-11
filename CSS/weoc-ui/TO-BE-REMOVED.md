@@ -25,10 +25,13 @@ Deletion procedure per item:
   → superseded by `.wui-modal`. (`.wui-close-record-modal*` is a distinct component — KEEP.)
 - [ ] **`.field-row` / `.field-item` / `.field-label` / `.field-label .required`** (unprefixed) — `weoc-forms.css:205-249`
   → superseded by `.wui-field-*` (now consolidated in weoc-forms.css). Migration documented at old layout.css:630-643.
-- [ ] **`.form-footer` / `.form-footer .page-center`** — `weoc-forms.css:352-368`
-  → superseded by the `.wui-ftr-*` footer system.
-- [ ] **`.page-center`** (non-namespaced) — `weoc-layout.css:56` (refs: `weoc-containers.css:763`, `weoc-forms.css:358`)
-  → replace with a `.wui-*` equivalent. Cross-file; migrate all three refs together.
+- [~] **`.form-footer` / `.form-footer .page-center`** — `.form-footer .page-center` REMOVED 2026-07-09
+  (page-center pass). `.form-footer` base rule still LIVE, pending its own migration to `.wui-ftr-*`.
+- [x] **`.page-center`** (non-namespaced) — REMOVED 2026-07-09. Migrated 11 eoc-makeover views
+  (9 `Blank Page` loaders → `wui-det-inner` wrap; 2 Checklists `Remove` → `wui-det-inner`). Deleted rules from
+  weoc-layout.css (base + `.wui-tab-panel .page-center` + `.is-form`), weoc-containers.css (`.page-center .wui-panel-wrap`),
+  weoc-forms.css (`.form-footer .page-center`) + docs (layout.html demo, forms.html form-footer demo).
+  NOTE: `.wui-tab-panel.is-form` is now a dead class — its only rule was the page-center padding override.
 - [ ] **bare `map-*` / `location-*` classes** — `weoc-maps.css` (`.map-pop-badges`, `.map-wrapper`, `.location-map-wrap`, etc.)
   → superseded by the `wui-map-*` set. Includes the duplicate fullscreen block (`.location-map-wrap.is-fs` vs `.map-wrapper.is-fs` — keep whichever is emitted).
 - [ ] **`.wui-scrollbar`** no-op alias — `weoc-layout.css:127-133`
@@ -39,13 +42,11 @@ Deletion procedure per item:
   → `-md` equals the base `.wui-btn` size; the explicit `.wui-btn-md` rules are no-ops. Remove once no markup relies on the alias.
 - [ ] **`body.no-scroll`** — `weoc-reset.css:70-72`
   → superseded by `.wui-scroll-locked` (library JS uses only that). Confirm no legacy board toggles `no-scroll`, then delete.
-- [ ] **`.wui-severity-icon` / `.wui-severity-icon-inner`** (+ color variants) — `weoc-containers.css`
-  → **deprecated, superseded by `wui-icon-bubble`** (user decision 2026-07-01). Removed from the
-  docs (Cards & Containers now uses `wui-icon-bubble` in card examples). STILL USED BY BOARDS —
-  migrate then delete: `EventReporting/…/Projector - Event Reports.weoc`, `EventReporting/board/board.web`,
-  and local defs in `TaskManagement/CSS/display.css` + `EventReporting/CSS/projector.css` (check whether
-  those local copies make the library rule already-safe to drop). Replace each usage with a
-  `wui-icon-bubble solid <color>`.
+- [x] **`.wui-severity-icon` / `.wui-severity-icon-inner`** (+ color variants) — REMOVED 2026-07-09.
+  Migrated `EventReporting/…/Projector - Event Reports.weoc` to `wui-icon-bubble solid <color>`
+  (Tier4→danger, 3→warning, 2→primary, 1→success). Deleted library rule (weoc-containers.css) + local defs
+  (`TaskManagement/CSS/display.css`, `EventReporting/CSS/projector.css`). `board.web` regenerates on deploy.
+  NOTE: dropped the projector icon scale-up rule — projector icons now render at default `wui-icon-bubble` size.
 
 ---
 

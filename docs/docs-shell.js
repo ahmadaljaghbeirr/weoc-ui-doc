@@ -11,7 +11,8 @@
         { key: 'home', label: 'Introduction', file: null, kw: 'intro overview install getting started load order' },
         { key: 'motion', label: 'Animation', file: 'motion.html', kw: 'gsap transition motion weoc-anim ring counter bar' },
         { key: 'js-api', label: 'JS API', file: 'js-api.html', kw: 'WUI api events theme declarative attributes overlay' },
-        { key: 'lists', label: 'EOC Lists', file: 'lists.html', kw: 'lists registry cascading tree flat select data' }
+        { key: 'lists', label: 'EOC Lists', file: 'lists.html', kw: 'lists registry cascading tree flat select data' },
+        { key: 'localization', label: 'Localization', file: 'localization.html', kw: 'localization i18n language locale rtl arabic translation direction lang toggle' }
       ]
     },
     {
@@ -182,8 +183,12 @@
   function loadTheme(id) {
     var link = getAgencyThemeLink();
     if (!link) return;
-    var href = link.getAttribute('href');
-    var base = href.replace(/agency-theme[^/]*\.css/, '');
+    // Use the RESOLVED absolute URL (link.href), not the relative attribute:
+    // the SPA router changes location via pushState, so a relative href would
+    // re-resolve against the current page's depth and break the swap after a
+    // cross-depth navigation (theme "dead until reload"). Absolute is depth-stable.
+    var href = link.href;
+    var base = href.replace(/agency-theme[^/]*\.css.*$/, '');
     link.href = base + agencyThemeFile(id);
     localStorage.setItem('wui-docs-theme', id);
     document.querySelectorAll('[data-theme-pick]').forEach(function (btn) {
@@ -255,7 +260,7 @@
           '<div class="wui-hdr-right">' +
             '<div class="docs-search">' +
               '<span class="material-symbols-outlined docs-search-icon">search</span>' +
-              '<input id="docs-search" type="text" class="docs-search-input" placeholder="Search components…" autocomplete="off" spellcheck="false">' +
+              '<input id="docs-search" type="text" class="docs-search-input" placeholder="Search components…" data-wui-i18n-attr="placeholder:docs_search_ph" autocomplete="off" spellcheck="false">' +
               '<span class="docs-search-kbd">Ctrl K</span>' +
               '<div id="docs-search-results" class="docs-search-results"></div>' +
             '</div>' +
@@ -264,23 +269,28 @@
             '<button class="wui-btn ghost secondary wui-btn-sm" data-wui-theme-toggle title="Toggle theme">' +
               '<span class="material-symbols-outlined">dark_mode</span>' +
             '</button>' +
+            '<button class="wui-btn ghost secondary wui-btn-sm" data-wui-lang-toggle title="Toggle language">' +
+              '<span class="material-symbols-outlined">translate</span>' +
+            '</button>' +
           '</div>' +
         '</div>' +
       '</div>' +
     '</div>';
   }
 
+  function groupKey(g) { return 'docs_group_' + g.toLowerCase().replace(/[^a-z0-9]+/g, '_'); }
+
   function renderSidebar(activeKey, root) {
     var html = '<nav class="docs-nav">';
     for (var i = 0; i < NAV.length; i++) {
       var group = NAV[i];
       html += '<div class="docs-nav-group">';
-      html += '<div class="docs-nav-group-label">' + group.group + '</div>';
+      html += '<div class="docs-nav-group-label" data-wui-i18n="' + groupKey(group.group) + '">' + group.group + '</div>';
       for (var j = 0; j < group.items.length; j++) {
         var item = group.items[j];
         var isActive = item.key === activeKey;
         var href = getHref(item, root);
-        html += '<a href="' + href + '" class="docs-nav-item' + (isActive ? ' is-active' : '') + '">' + item.label + '</a>';
+        html += '<a href="' + href + '" class="docs-nav-item' + (isActive ? ' is-active' : '') + '" data-wui-i18n="docs_nav_' + item.key + '">' + item.label + '</a>';
       }
       html += '</div>';
     }
@@ -302,6 +312,10 @@
     if (window.Alpine && window._docsStoreReady) {
       window.Alpine.store('docs').activePage = ns;
     }
+    // Localize freshly-rendered chrome + swapped page content (runs on first
+    // load AND after every SPA navigation, so a new page shows in the active
+    // language without needing a toggle).
+    if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
   }
 
   /* ── On-demand global assets ──────────────────────────────────────────────
@@ -313,6 +327,26 @@
       var s = document.createElement('script');
       s.src = src; s.onload = resolve; s.onerror = resolve;
       document.head.appendChild(s);
+    });
+  }
+
+  /* Load the EN/AR translation store once (site-wide), then re-localize.
+     docs-i18n.js calls WUI.i18n.register([...]) at parse. Loaded via `root`
+     so it resolves at any page depth. */
+  var i18nStoreLoaded = false;
+  // Per-page translation files (chrome + several pages live in docs-i18n.js;
+  // the rest are one file each under i18n/ to keep them maintainable).
+  var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
+    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home'];
+  function ensureI18nStore(root) {
+    if (i18nStoreLoaded) return Promise.resolve();
+    i18nStoreLoaded = true;
+    var chain = loadScript(root + 'docs-i18n.js');
+    I18N_PAGES.forEach(function (p) {
+      chain = chain.then(function () { return loadScript(root + 'i18n/' + p + '.js'); });
+    });
+    return chain.then(function () {
+      if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
     });
   }
 
@@ -407,6 +441,34 @@
     home: function () {
       var el = document.getElementById('theme-display');
       if (el && window.WUI) el.textContent = window.WUI.getTheme();
+    },
+    localization: function () {
+      var W = window.WUI;
+      if (!W || !W.i18n) return;
+      W.i18n.register([
+        { lang: 'en', id: 'Demo_Save', value: 'Save' }, { lang: 'ar', id: 'Demo_Save', value: 'حفظ' },
+        { lang: 'en', id: 'Demo_Cancel', value: 'Cancel' }, { lang: 'ar', id: 'Demo_Cancel', value: 'إلغاء' },
+        { lang: 'en', id: 'Demo_Delete', value: 'Delete' }, { lang: 'ar', id: 'Demo_Delete', value: 'حذف' },
+        { lang: 'en', id: 'Demo_Tier1', value: 'Tier 1' }, { lang: 'ar', id: 'Demo_Tier1', value: 'المستوى 1' },
+        { lang: 'en', id: 'Demo_Row', value: 'Generated row' }, { lang: 'ar', id: 'Demo_Row', value: 'صف مُولَّد' }
+      ]);
+      var list = document.getElementById('demo-js-list');
+      if (list) {
+        list.innerHTML = '';
+        for (var i = 1; i <= 3; i++) {
+          var li = document.createElement('li');
+          W.i18n.mark(li, 'Demo_Row');
+          list.appendChild(li);
+        }
+      }
+      var tpl = document.getElementById('demo-tpl');
+      var host = document.getElementById('demo-tpl-host');
+      if (tpl && host && tpl.content) {
+        host.innerHTML = '';
+        host.appendChild(tpl.content.cloneNode(true));
+        W.i18n.apply(host);
+      }
+      W.i18n.apply(document);
     },
     // forms.html is CSS-only (weoc-forms.css) — no PAGE_INIT needed.
     // TomSelect moved to PAGE_INIT.combobox, Flatpickr to PAGE_INIT.dates.
@@ -1406,12 +1468,20 @@
       // never a <link> element). This explicit link cascades after that @import,
       // so its :root block wins — and we can swap its href for theme switching.
       ensureCSS(shared + 'CSS/weoc-ui/agency-theme.css');
+      // Freeze the link to an ABSOLUTE href immediately. The SPA router changes
+      // location via pushState; the browser RE-RESOLVES a link's relative href
+      // against the new URL, so a cross-depth navigation would repoint this
+      // stylesheet to a 404 and break theming until a full reload. Locking the
+      // resolved absolute URL into the attribute makes it depth-immune.
+      var _agencyLink = getAgencyThemeLink();
+      if (_agencyLink) _agencyLink.setAttribute('href', _agencyLink.href);
       applyStoredTheme();
       renderChrome(ns, root);
       hookThemeReadout();
       hookThemeSwatches();
       bindRouter();
       bindSearch();
+      ensureI18nStore(root);
 
       ensureGlobalAssets(root).then(function () {
         entranceAnimate();

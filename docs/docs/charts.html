@@ -67,31 +67,30 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Reference</div>
-          <div class="docs-hero-title">Charts</div>
-          <div class="docs-hero-sub">Token-driven time-series charts for wall displays and EOC dashboards. Adapter layer over <code>uPlot</code> — board code only ever sees <code>WUI.chart()</code>.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_charts_1">Reference</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_charts_2">Charts</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_charts_3">Token-driven time-series charts for wall displays and EOC dashboards. Adapter layer over <code>uPlot</code> — board code only ever sees <code>WUI.chart()</code>.</div>
         </div>
 
         <div class="wui-callout primary">
           <span class="material-symbols-outlined">swap_horiz</span>
           <div class="wui-callout-body">
-            <div class="wui-callout-title">Engine-agnostic by design</div>
-            Board code never imports or references uPlot. <code>WUI.chart()</code> is the only surface.
-            Swapping the rendering engine in the future = change <code>wui-charts.js</code> only. Zero board changes.
+            <div class="wui-callout-title" data-wui-i18n="docs_charts_4">Engine-agnostic by design</div>
+            <span data-wui-i18n-html="docs_charts_5">Board code never imports or references uPlot. <code>WUI.chart()</code> is the only surface. Swapping the rendering engine in the future = change <code>wui-charts.js</code> only. Zero board changes.</span>
           </div>
         </div>
 
         <!-- ── Overview ───────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">info</span>Overview</div>
-          <p class="docs-desc"><code>wui-charts.js</code> is an adapter layer. It wraps <strong>uPlot</strong> (a canvas-based, ~50 kb time-series library) behind the <code>WUI.chart()</code> API. Your boards never touch uPlot directly; they call <code>WUI.chart()</code> and get back a simple <code>{ update, resize, destroy }</code> handle.</p>
-          <p class="docs-desc">All colors, fonts, and grid lines are read from CSS custom properties at creation time and on every theme change. A <code>wui:themechange</code> event (fired by <code>weoc-ui.js</code>) causes every registered chart to re-read tokens and recreate itself within one <code>requestAnimationFrame</code> — boards do not need any theme-aware code.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_6"><span class="material-symbols-outlined">info</span>Overview</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_7"><code>wui-charts.js</code> is an adapter layer. It wraps <strong>uPlot</strong> (a canvas-based, ~50 kb time-series library) behind the <code>WUI.chart()</code> API. Your boards never touch uPlot directly; they call <code>WUI.chart()</code> and get back a simple <code>{ update, resize, destroy }</code> handle.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_8">All colors, fonts, and grid lines are read from CSS custom properties at creation time and on every theme change. A <code>wui:themechange</code> event (fired by <code>weoc-ui.js</code>) causes every registered chart to re-read tokens and recreate itself within one <code>requestAnimationFrame</code> — boards do not need any theme-aware code.</p>
         </div>
 
         <!-- ── Setup ──────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">code</span>Setup</div>
-          <p class="docs-desc">Load uPlot (engine + CSS), then <code>wui-charts.js</code>. Order matters: the adapter expects <code>window.uPlot</code> to exist when it runs.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_9"><span class="material-symbols-outlined">code</span>Setup</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_10">Load uPlot (engine + CSS), then <code>wui-charts.js</code>. Order matters: the adapter expects <code>window.uPlot</code> to exist when it runs.</p>
           <pre class="docs-code">&lt;!-- 1. uPlot engine — must load before wui-charts.js --&gt;
 &lt;script src="https://cdn.jsdelivr.net/npm/uplot@1.6.31/dist/uPlot.iife.min.js"&gt;&lt;/script&gt;
 &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.31/dist/uPlot.min.css"&gt;
@@ -104,18 +103,18 @@
           <div class="wui-callout warning" style="margin-top: var(--space-4)">
             <span class="material-symbols-outlined">warning</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title">uPlot must load first</div>
-              If <code>window.uPlot</code> is undefined when <code>WUI.chart()</code> is called, it logs a warning and returns <code>null</code>. No crash, but no chart.
+              <div class="wui-callout-title" data-wui-i18n="docs_charts_11">uPlot must load first</div>
+              <span data-wui-i18n-html="docs_charts_12">If <code>window.uPlot</code> is undefined when <code>WUI.chart()</code> is called, it logs a warning and returns <code>null</code>. No crash, but no chart.</span>
             </div>
           </div>
         </div>
 
         <!-- ── WUI.chart() API ────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">data_exploration</span>WUI.chart(el, opts)</div>
-          <p class="docs-desc">Create a chart inside a container element. Returns an instance handle, or <code>null</code> if uPlot is unavailable or the element cannot be resolved.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_13"><span class="material-symbols-outlined">data_exploration</span>WUI.chart(el, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_14">Create a chart inside a container element. Returns an instance handle, or <code>null</code> if uPlot is unavailable or the element cannot be resolved.</p>
 
-          <p class="docs-desc" style="margin-top:1.25rem"><strong>Parameters</strong></p>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_15"><strong>Parameters</strong></p>
           <table class="docs-api-table">
             <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
@@ -170,7 +169,7 @@
             </tbody>
           </table>
 
-          <p class="docs-desc" style="margin-top:1.25rem"><strong>Return value — instance handle</strong></p>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_16"><strong>Return value — instance handle</strong></p>
           <table class="docs-api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
             <tbody>
@@ -189,8 +188,8 @@
             </tbody>
           </table>
 
-          <p class="docs-desc" style="margin-top:1.25rem"><strong>WUI.chart.readTokens()</strong></p>
-          <p class="docs-desc">Returns the resolved CSS token map for the current theme. Useful for debugging or for applying chart colors to a custom HTML legend. Does not create a chart.</p>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_17"><strong>WUI.chart.readTokens()</strong></p>
+          <p class="docs-desc" data-wui-i18n="docs_charts_18">Returns the resolved CSS token map for the current theme. Useful for debugging or for applying chart colors to a custom HTML legend. Does not create a chart.</p>
           <pre class="docs-code">var tokens = WUI.chart.readTokens();
 console.log(tokens.primary);   // e.g. '#185fa5' in light mode, '#3a80e0' in dark
 console.log(tokens.border);    // e.g. '#ebebeb'</pre>
@@ -198,8 +197,8 @@ console.log(tokens.border);    // e.g. '#ebebeb'</pre>
 
         <!-- ── Live example: line chart ───────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">show_chart</span>Example — Line Chart</div>
-          <p class="docs-desc">Two series tracking resource availability and deployment over a 24-hour incident window. Click "Update data" to simulate a live feed pushing new values.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_19"><span class="material-symbols-outlined">show_chart</span>Example — Line Chart</div>
+          <p class="docs-desc" data-wui-i18n="docs_charts_20">Two series tracking resource availability and deployment over a 24-hour incident window. Click "Update data" to simulate a live feed pushing new values.</p>
 
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -247,8 +246,8 @@ document.getElementById('demo-line-update').addEventListener('click', function (
 
         <!-- ── Live example: area chart ───────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">area_chart</span>Example — Area Chart</div>
-          <p class="docs-desc">Same data contract as line; set <code>type: 'area'</code>. The fill is a semi-transparent version of each series stroke color, derived automatically.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_21"><span class="material-symbols-outlined">area_chart</span>Example — Area Chart</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_22">Same data contract as line; set <code>type: 'area'</code>. The fill is a semi-transparent version of each series stroke color, derived automatically.</p>
 
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -275,8 +274,8 @@ WUI.chart('#demo-area-chart', {
 
         <!-- ── Live example: bar chart ───────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">bar_chart</span>Example — Bar Chart</div>
-          <p class="docs-desc">Set <code>type: 'bar'</code>. Uses <code>uPlot.paths.bars()</code>, which ships in the uPlot IIFE bundle — no extra file needed. Multi-series bars share the same x-slot and render semi-transparent so both are visible.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_23"><span class="material-symbols-outlined">bar_chart</span>Example — Bar Chart</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_24">Set <code>type: 'bar'</code>. Uses <code>uPlot.paths.bars()</code>, which ships in the uPlot IIFE bundle — no extra file needed. Multi-series bars share the same x-slot and render semi-transparent so both are visible.</p>
 
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -303,16 +302,16 @@ WUI.chart('#demo-bar-chart', {
           <div class="wui-callout secondary" style="margin-top: var(--space-4)">
             <span class="material-symbols-outlined">info</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title">Multi-series overlap</div>
-              All series render at the same x-position (60% slot width, centered). The adapter applies semi-transparency when more than one series is present so relative magnitudes read clearly. For true side-by-side grouped bars, set different <code>align</code> and <code>size</code> values per series via a custom <code>paths</code> entry directly on the uPlot config — that is beyond the adapter's scope.
+              <div class="wui-callout-title" data-wui-i18n="docs_charts_25">Multi-series overlap</div>
+              <span data-wui-i18n-html="docs_charts_26">All series render at the same x-position (60% slot width, centered). The adapter applies semi-transparency when more than one series is present so relative magnitudes read clearly. For true side-by-side grouped bars, set different <code>align</code> and <code>size</code> values per series via a custom <code>paths</code> entry directly on the uPlot config — that is beyond the adapter's scope.</span>
             </div>
           </div>
         </div>
 
         <!-- ── Live example: stepped chart ───────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">stacked_line_chart</span>Example — Stepped Chart</div>
-          <p class="docs-desc">Set <code>type: 'stepped'</code>. The current value holds as a flat horizontal segment until the next data point — ideal for discrete state changes: activation tiers, resource status, alert levels. Uses <code>uPlot.paths.stepped({ align: 1 })</code>.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_27"><span class="material-symbols-outlined">stacked_line_chart</span>Example — Stepped Chart</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_28">Set <code>type: 'stepped'</code>. The current value holds as a flat horizontal segment until the next data point — ideal for discrete state changes: activation tiers, resource status, alert levels. Uses <code>uPlot.paths.stepped({ align: 1 })</code>.</p>
 
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -335,22 +334,22 @@ WUI.chart('#demo-stepped-chart', {
             </template>
           </div>
 
-          <p class="docs-desc" style="margin-top: var(--space-4)">The <code>align: 1</code> stepping means the value at timestamp <em>T</em> applies from <em>T</em> rightward until the next data point — matching how activation levels work in practice (the tier holds until officially changed).</p>
+          <p class="docs-desc" style="margin-top: var(--space-4)" data-wui-i18n-html="docs_charts_29">The <code>align: 1</code> stepping means the value at timestamp <em>T</em> applies from <em>T</em> rightward until the next data point — matching how activation levels work in practice (the tier holds until officially changed).</p>
         </div>
 
         <!-- ── WUI.pie / WUI.donut API ────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">data_exploration</span>WUI.pie(el, opts) &amp; WUI.donut(el, opts)</div>
-          <p class="docs-desc">Raw-canvas pie and donut charts. <strong>No uPlot dependency</strong> — uses the browser's Canvas 2D API directly. Token-driven and theme-aware like <code>WUI.chart()</code>: both re-draw automatically on <code>wui:themechange</code> without destroying the canvas element.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_30"><span class="material-symbols-outlined">data_exploration</span>WUI.pie(el, opts) &amp; WUI.donut(el, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_31">Raw-canvas pie and donut charts. <strong>No uPlot dependency</strong> — uses the browser's Canvas 2D API directly. Token-driven and theme-aware like <code>WUI.chart()</code>: both re-draw automatically on <code>wui:themechange</code> without destroying the canvas element.</p>
 
-          <p class="docs-desc" style="margin-top:1.25rem"><strong>Data contract</strong> — an array of slice objects (not columnar):</p>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_32"><strong>Data contract</strong> — an array of slice objects (not columnar):</p>
           <pre class="docs-code">var data = [
   { label: 'Active',    value: 42, color: 'danger' },
   { label: 'Standby',   value: 28, color: 'warning' },
   { label: 'Released',  value: 30, color: 'success' }
 ];</pre>
 
-          <p class="docs-desc" style="margin-top:1.25rem"><strong>Parameters</strong></p>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_33"><strong>Parameters</strong></p>
           <table class="docs-api-table">
             <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
             <tbody>
@@ -393,7 +392,7 @@ WUI.chart('#demo-stepped-chart', {
             </tbody>
           </table>
 
-          <p class="docs-desc" style="margin-top:1.25rem"><strong>Return value</strong></p>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_34"><strong>Return value</strong></p>
           <table class="docs-api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
             <tbody>
@@ -411,8 +410,8 @@ WUI.chart('#demo-stepped-chart', {
 
         <!-- ── Live example: pie chart ────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">pie_chart</span>Example — Pie Chart</div>
-          <p class="docs-desc">Resource distribution snapshot — static categories, not time-series. The legend is rendered as HTML below the canvas and re-generates on theme switch.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_35"><span class="material-symbols-outlined">pie_chart</span>Example — Pie Chart</div>
+          <p class="docs-desc" data-wui-i18n="docs_charts_36">Resource distribution snapshot — static categories, not time-series. The legend is rendered as HTML below the canvas and re-generates on theme switch.</p>
 
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -436,8 +435,8 @@ WUI.pie('#demo-pie-chart', {
 
         <!-- ── Live example: donut chart ──────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">donut_large</span>Example — Donut Chart</div>
-          <p class="docs-desc">Same data contract as pie. Set <code>opts.center</code> to overlay a summary value in the hole — useful for total resource counts or overall completion percentage on a dashboard widget.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_37"><span class="material-symbols-outlined">donut_large</span>Example — Donut Chart</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_38">Same data contract as pie. Set <code>opts.center</code> to overlay a summary value in the hole — useful for total resource counts or overall completion percentage on a dashboard widget.</p>
 
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -462,16 +461,16 @@ WUI.donut('#demo-donut-chart', {
           <div class="wui-callout primary" style="margin-top: var(--space-4)">
             <span class="material-symbols-outlined">info</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title">No uPlot required</div>
-              <code>WUI.pie()</code> and <code>WUI.donut()</code> create a <code>&lt;canvas&gt;</code> element and draw directly using the Canvas 2D API. They share the same theme registry as <code>WUI.chart()</code>, so a single <code>wui:themechange</code> event re-renders all chart types simultaneously.
+              <div class="wui-callout-title" data-wui-i18n="docs_charts_39">No uPlot required</div>
+              <span data-wui-i18n-html="docs_charts_40"><code>WUI.pie()</code> and <code>WUI.donut()</code> create a <code>&lt;canvas&gt;</code> element and draw directly using the Canvas 2D API. They share the same theme registry as <code>WUI.chart()</code>, so a single <code>wui:themechange</code> event re-renders all chart types simultaneously.</span>
             </div>
           </div>
         </div>
 
         <!-- ── Live example: observeSection integration ───────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">sync</span>Example — With observeSection</div>
-          <p class="docs-desc">In a WebEOC board, a chart inside a section that auto-refreshes should update its data each time the section DOM is replaced. Wire <code>WUI.observeSection</code> against the <code>updatesection</code> wrapper; inside the callback, read your <code>&lt;value-of&gt;</code> outputs from the new DOM and call <code>handle.update()</code>.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_41"><span class="material-symbols-outlined">sync</span>Example — With observeSection</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_42">In a WebEOC board, a chart inside a section that auto-refreshes should update its data each time the section DOM is replaced. Wire <code>WUI.observeSection</code> against the <code>updatesection</code> wrapper; inside the callback, read your <code>&lt;value-of&gt;</code> outputs from the new DOM and call <code>handle.update()</code>.</p>
 
           <pre class="docs-code">// Create the chart once on page load
 var resourceChart = WUI.chart('#resource-chart', {
@@ -491,20 +490,20 @@ WUI.observeSection('#data-section', function () {
   resourceChart.update(buildChartData());
 });</pre>
 
-          <p class="docs-desc">The callback is idempotent by design: calling <code>handle.update()</code> with the same data has no visible effect, so double-fires from the MutationObserver are harmless.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_43">The callback is idempotent by design: calling <code>handle.update()</code> with the same data has no visible effect, so double-fires from the MutationObserver are harmless.</p>
         </div>
 
         <!-- ── Theme switching ────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">dark_mode</span>Theme Switching</div>
-          <p class="docs-desc">No board code is needed for theme support. Charts re-theme automatically.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_44"><span class="material-symbols-outlined">dark_mode</span>Theme Switching</div>
+          <p class="docs-desc" data-wui-i18n="docs_charts_45">No board code is needed for theme support. Charts re-theme automatically.</p>
 
-          <p class="docs-desc">What happens internally when <code>WUI.toggleTheme()</code> is called:</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_46">What happens internally when <code>WUI.toggleTheme()</code> is called:</p>
           <ol class="docs-desc" style="padding-left: 1.5rem; line-height: 2;">
-            <li><code>weoc-ui.js</code> updates <code>data-theme</code> on <code>&lt;html&gt;</code> and fires <code>wui:themechange</code> on <code>document.documentElement</code>.</li>
-            <li><code>wui-charts.js</code> receives the event (subscribed once at module load) and schedules a <code>requestAnimationFrame</code>.</li>
-            <li>Inside the rAF callback, all registered chart instances are destroyed and recreated with re-read CSS tokens and their most-recent data.</li>
-            <li>One repaint. No flash. Board code does nothing.</li>
+            <li data-wui-i18n-html="docs_charts_47"><code>weoc-ui.js</code> updates <code>data-theme</code> on <code>&lt;html&gt;</code> and fires <code>wui:themechange</code> on <code>document.documentElement</code>.</li>
+            <li data-wui-i18n-html="docs_charts_48"><code>wui-charts.js</code> receives the event (subscribed once at module load) and schedules a <code>requestAnimationFrame</code>.</li>
+            <li data-wui-i18n-html="docs_charts_49">Inside the rAF callback, all registered chart instances are destroyed and recreated with re-read CSS tokens and their most-recent data.</li>
+            <li data-wui-i18n="docs_charts_50">One repaint. No flash. Board code does nothing.</li>
           </ol>
 
           <pre class="docs-code">// Board code does NOT need this — it is handled by wui-charts.js automatically.
@@ -517,16 +516,16 @@ document.documentElement.addEventListener('wui:themechange', function (e) {
           <div class="wui-callout primary" style="margin-top: var(--space-4)">
             <span class="material-symbols-outlined">info</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title">Why destroy and recreate?</div>
-              uPlot does not support live configuration changes (stroke colors, grid colors, fonts) after construction. The adapter destroys each instance and creates a new one with updated tokens and the same data. This is transparent to board code — the handle's <code>update()</code> and <code>resize()</code> methods continue to work on the new instance.
+              <div class="wui-callout-title" data-wui-i18n="docs_charts_51">Why destroy and recreate?</div>
+              <span data-wui-i18n-html="docs_charts_52">uPlot does not support live configuration changes (stroke colors, grid colors, fonts) after construction. The adapter destroys each instance and creates a new one with updated tokens and the same data. This is transparent to board code — the handle's <code>update()</code> and <code>resize()</code> methods continue to work on the new instance.</span>
             </div>
           </div>
         </div>
 
         <!-- ── Data contract ──────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">table_chart</span>Data Contract</div>
-          <p class="docs-desc"><code>WUI.chart()</code> uses uPlot's native columnar format: a single array whose first element is the timestamps array, followed by one value array per series. All arrays must be the same length.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_53"><span class="material-symbols-outlined">table_chart</span>Data Contract</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_54"><code>WUI.chart()</code> uses uPlot's native columnar format: a single array whose first element is the timestamps array, followed by one value array per series. All arrays must be the same length.</p>
 
           <pre class="docs-code">// WUI data format — columnar array
 //   data[0]  = timestamps (Unix seconds, ascending, integers)
@@ -542,8 +541,8 @@ var data = [
 
 WUI.chart('#my-chart', { series: [...], data: data });</pre>
 
-          <p class="docs-desc" style="margin-top:1.25rem"><strong>WebEOC DOM adapter pattern</strong></p>
-          <p class="docs-desc">WebEOC boards surface data through <code>&lt;value-of&gt;</code> outputs or repeat regions. A typical adapter reads DOM nodes and builds the columnar array:</p>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_55"><strong>WebEOC DOM adapter pattern</strong></p>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_56">WebEOC boards surface data through <code>&lt;value-of&gt;</code> outputs or repeat regions. A typical adapter reads DOM nodes and builds the columnar array:</p>
 
           <pre class="docs-code">// Board-specific adapter — reads data stamped onto DOM nodes by XSL
 // Each row rendered by WebEOC: &lt;span data-ts="1700000000" data-value="85"&gt;&lt;/span&gt;
@@ -579,8 +578,8 @@ function buildMultiSeriesData() {
 
         <!-- ── Series colors ──────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">palette</span>Series Colors</div>
-          <p class="docs-desc">Set <code>series[n].color</code> to a semantic name or a literal CSS color string.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_57"><span class="material-symbols-outlined">palette</span>Series Colors</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_58">Set <code>series[n].color</code> to a semantic name or a literal CSS color string.</p>
 
           <table class="docs-api-table">
             <thead><tr><th>Semantic name</th><th>CSS token</th><th>Light value</th><th>Dark value</th></tr></thead>
@@ -618,7 +617,7 @@ function buildMultiSeriesData() {
             </tbody>
           </table>
 
-          <p class="docs-desc" style="margin-top:1.25rem"><strong>Tier colors</strong> — for additional series beyond the 5-name palette, the default cycle continues through the tier scale:</p>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_59"><strong>Tier colors</strong> — for additional series beyond the 5-name palette, the default cycle continues through the tier scale:</p>
 
           <table class="docs-api-table">
             <thead><tr><th>CSS token</th><th>Light value</th><th>Use case</th></tr></thead>
@@ -646,7 +645,7 @@ function buildMultiSeriesData() {
             </tbody>
           </table>
 
-          <p class="docs-desc" style="margin-top:1.25rem"><strong>Literal color override</strong> — pass any CSS color string when the semantic palette does not fit:</p>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_60"><strong>Literal color override</strong> — pass any CSS color string when the semantic palette does not fit:</p>
           <pre class="docs-code">WUI.chart('#signal-chart', {
   series: [
     { label: 'Channel A', color: '#8b5cf6' },        // literal hex
@@ -658,10 +657,10 @@ function buildMultiSeriesData() {
 
         <!-- ── Resize ──────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">open_in_full</span>Resize</div>
-          <p class="docs-desc"><code>handle.resize(w, h)</code> calls uPlot's <code>setSize()</code>. Use it after any layout change that alters the container's dimensions.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_61"><span class="material-symbols-outlined">open_in_full</span>Resize</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_62"><code>handle.resize(w, h)</code> calls uPlot's <code>setSize()</code>. Use it after any layout change that alters the container's dimensions.</p>
 
-          <p class="docs-desc">Common trigger: a split-panel opening or closing. Wire <code>wui:panelopen</code> / <code>wui:panelclose</code> on the split element:</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_63">Common trigger: a split-panel opening or closing. Wire <code>wui:panelopen</code> / <code>wui:panelclose</code> on the split element:</p>
           <pre class="docs-code">var split = document.getElementById('main-split');
 var chart = WUI.chart('#my-chart', { ... });
 
@@ -685,10 +684,10 @@ window.addEventListener('resize', WUI.debounce(function () {
 
         <!-- ── destroy() ──────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">delete</span>destroy()</div>
-          <p class="docs-desc">Call <code>handle.destroy()</code> when the chart's container is removed from the DOM. This prevents the module-level theme listener from iterating over stale instances.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_64"><span class="material-symbols-outlined">delete</span>destroy()</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_65">Call <code>handle.destroy()</code> when the chart's container is removed from the DOM. This prevents the module-level theme listener from iterating over stale instances.</p>
 
-          <p class="docs-desc">On WebEOC boards the most common teardown moment is when a view panel is hidden or a split panel closes and the chart container is replaced by an <code>updatesection</code> refresh. Destroy before the refresh, recreate in the observer callback:</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_66">On WebEOC boards the most common teardown moment is when a view panel is hidden or a split panel closes and the chart container is replaced by an <code>updatesection</code> refresh. Destroy before the refresh, recreate in the observer callback:</p>
           <pre class="docs-code">var statusChart = null;
 
 function initChart() {
@@ -715,8 +714,8 @@ WUI.ready(initChart);</pre>
           <div class="wui-callout primary" style="margin-top: var(--space-4)">
             <span class="material-symbols-outlined">info</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title">Theme listener stays alive after destroy</div>
-              <code>handle.destroy()</code> removes the chart from the registry and tears down its uPlot instance, but the module-level <code>wui:themechange</code> listener on <code>document.documentElement</code> is never removed (other charts may still be registered). This is intentional — the listener is lightweight and no-ops when the registry is empty.
+              <div class="wui-callout-title" data-wui-i18n="docs_charts_67">Theme listener stays alive after destroy</div>
+              <span data-wui-i18n-html="docs_charts_68"><code>handle.destroy()</code> removes the chart from the registry and tears down its uPlot instance, but the module-level <code>wui:themechange</code> listener on <code>document.documentElement</code> is never removed (other charts may still be registered). This is intentional — the listener is lightweight and no-ops when the registry is empty.</span>
             </div>
           </div>
         </div>
