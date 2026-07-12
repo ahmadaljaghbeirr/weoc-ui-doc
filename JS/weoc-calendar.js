@@ -143,6 +143,12 @@
 
   function icon(name) { return '<span class="material-symbols-outlined">' + esc(name) + '</span>'; }
 
+  // Directional glyph (chevrons / carets that point left|right). Opts into the
+  // weoc-i18n.css `[dir="rtl"] .wui-dir-icon { transform: scaleX(-1) }` flip so
+  // prev/next and disclosure chevrons mirror under RTL. Non-directional icons
+  // must keep using icon() so they are NOT flipped.
+  function dirIcon(name) { return '<span class="material-symbols-outlined wui-dir-icon">' + esc(name) + '</span>'; }
+
   function initials(name) {
     var parts = String(name || '').trim().split(/\s+/);
     if (!parts[0]) return '?';
@@ -590,7 +596,8 @@
   };
 
   function navBtn(ic, action, label) {
-    var b = el('button', 'wui-cal-nav-btn', icon(ic));
+    // prev/next chevrons are directional → dirIcon so they flip under RTL.
+    var b = el('button', 'wui-cal-nav-btn', dirIcon(ic));
     b.type = 'button';
     b.setAttribute('data-cal-nav', action);
     b.setAttribute('aria-label', label);
@@ -809,7 +816,9 @@
         var card = this._timedCard(e2, height);
         card.style.top = top + 'px';
         card.style.height = height + 'px';
-        card.style.left = 'calc(' + (e2._col * widthPct) + '% + 2px)';
+        // Logical inline-start so overlap lanes fill from the reading edge:
+        // LTR → from the left, RTL → from the right. (Was physical `left`.)
+        card.style.setProperty('inset-inline-start', 'calc(' + (e2._col * widthPct) + '% + 2px)');
         card.style.width = 'calc(' + widthPct + '% - 4px)';
         col.appendChild(card);
       }
@@ -937,7 +946,7 @@
         '<span class="wui-cal-agenda-title">' + esc(ev.title) + '</span>' +
         (meta ? '<span class="wui-cal-agenda-meta">' + meta + '</span>' : '') +
       '</span>' +
-      icon('chevron_right');
+      dirIcon('chevron_right');   // disclosure chevron → mirrors under RTL
     return b;
   };
 

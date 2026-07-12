@@ -1174,7 +1174,7 @@
 
 .wui-fab-fixed-br {
   position: fixed;
-  right: var(--space-5);
+  inset-inline-end: var(--space-5);
   bottom: var(--space-5);
   z-index: 1040;
 }
@@ -1437,23 +1437,23 @@
 .wui-switch-thumb {
   position: absolute;
   top: 50%;
-  left: calc((var(--_track-h) - var(--_thumb)) / 2);
+  inset-inline-start: calc((var(--_track-h) - var(--_thumb)) / 2);
   width: var(--_thumb);
   height: var(--_thumb);
   border-radius: 50%;
   background: var(--color-switch-thumb);
   box-shadow: var(--shadow-sm);
   transform: translateY(-50%);
-  transition: left 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: inset-inline-start 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* checked: fill track with accent, slide thumb to right */
+/* checked: fill track with accent, slide thumb to the inline-end edge */
 .wui-switch>input:checked+.wui-switch-track {
   background: var(--_accent);
 }
 
 .wui-switch>input:checked+.wui-switch-track .wui-switch-thumb {
-  left: calc(var(--_track-w) - var(--_thumb) - (var(--_track-h) - var(--_thumb)) / 2);
+  inset-inline-start: calc(var(--_track-w) - var(--_thumb) - (var(--_track-h) - var(--_thumb)) / 2);
 }
 
 /* hover */
@@ -1582,7 +1582,7 @@
   font-weight: var(--font-bold);
   color: var(--color-text-primary);
   min-width: 2.5ch;
-  text-align: right;
+  text-align: end;
 }
 
 /* the range input itself */
@@ -1600,6 +1600,15 @@
   /* vertical breathing room so the thumb doesn't clip the row above/below */
   margin: calc((var(--_thumb-sz) - var(--_track-h)) / 2 + 2px) 0;
   transition: background 0.05s;
+}
+
+/* RTL: the fill (--_fill %) originates from the inline-start edge, which is the
+   right side under dir=rtl — mirror the WebKit gradient hack (Firefox
+   ::-moz-range-progress flips natively). */
+[dir="rtl"] .wui-slider-input {
+  background: linear-gradient(to left,
+      var(--_accent) var(--_fill, 50%),
+      var(--color-border) var(--_fill, 50%));
 }
 
 /* WebKit thumb */

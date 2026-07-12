@@ -590,8 +590,20 @@
        if (top + fh > vh - margin) top = t.top - fh - gap; // flip up if no room
        if (top < margin) top = margin;
      }
+
+     /* Resolve logical align (start/end) to a physical edge honoring direction:
+        under RTL 'start' is the RIGHT edge and 'end' is the LEFT edge, so a
+        bottom-end popover anchors to the trigger's LEFT in Arabic. */
+     var rtl;
+     try {
+       rtl = window.getComputedStyle(floating).direction === 'rtl';
+     } catch (e) {
+       rtl = document.documentElement.getAttribute('dir') === 'rtl';
+     }
+     var startEdge = rtl ? t.right - fw : t.left; // logical-start aligned
+     var endEdge = rtl ? t.left : t.right - fw; // logical-end aligned
      var align = opts.align || 'end';
-     var left = align === 'start' ? t.left : align === 'center' ? t.left + (t.width - fw) / 2 : t.right - fw;
+     var left = align === 'start' ? startEdge : align === 'center' ? t.left + (t.width - fw) / 2 : endEdge;
      left = Math.max(margin, Math.min(left, vw - fw - margin)); // clamp on-screen
 
      floating.style.position = 'fixed';
@@ -615,6 +627,23 @@
    function isOpen(panel) {
      return panel.classList.contains(openClassOf(panel));
    }
+
+   /* (Re)position an anchored panel next to its trigger. WUI.anchor resolves the
+      start/end align to a physical edge for the CURRENT direction, so calling this
+      again after an EN<->AR flip re-mirrors an already-open dropdown. */
+   function anchorPanel(panel, trigger) {
+     if (!trigger || !panel.hasAttribute('data-wui-anchor')) return;
+     var anchorSpec = (panel.getAttribute('data-wui-anchor') || 'bottom-start').split('-');
+     var anchorOpts = {
+       side: anchorSpec[0] || 'bottom',
+       align: anchorSpec[1] || 'start'
+     };
+     var anchorGap = panel.getAttribute('data-wui-anchor-gap');
+     var anchorMargin = panel.getAttribute('data-wui-anchor-margin');
+     if (anchorGap != null) anchorOpts.gap = parseInt(anchorGap, 10);
+     if (anchorMargin != null) anchorOpts.margin = parseInt(anchorMargin, 10);
+     WUI.anchor(panel, trigger, anchorOpts);
+   }
    WUI.open = function (panel, trigger) {
      if (!panel || isOpen(panel)) return;
      panel.classList.add(openClassOf(panel));
@@ -634,18 +663,7 @@
        if (first && first.focus) first.focus();else if (panel.focus) panel.focus();
      }
      if (trigger) trigger.setAttribute('aria-expanded', 'true');
-     if (trigger && panel.hasAttribute('data-wui-anchor')) {
-       var anchorSpec = (panel.getAttribute('data-wui-anchor') || 'bottom-start').split('-');
-       var anchorOpts = {
-         side: anchorSpec[0] || 'bottom',
-         align: anchorSpec[1] || 'start'
-       };
-       var anchorGap = panel.getAttribute('data-wui-anchor-gap');
-       var anchorMargin = panel.getAttribute('data-wui-anchor-margin');
-       if (anchorGap != null) anchorOpts.gap = parseInt(anchorGap, 10);
-       if (anchorMargin != null) anchorOpts.margin = parseInt(anchorMargin, 10);
-       WUI.anchor(panel, trigger, anchorOpts);
-     }
+     if (trigger) anchorPanel(panel, trigger);
      panel.dispatchEvent(new CustomEvent('wui:open', {
        bubbles: true
      }));
@@ -766,6 +784,17 @@
      input.dispatchEvent(new Event('change', {
        bubbles: true
      }));
+   });
+
+   /* Re-mirror any OPEN anchored panel when the language/direction flips live.
+      WUI.anchor pins a fixed panel by physical left at open time; without this a
+      dropdown opened as bottom-end keeps its stale LTR edge after AR turns the
+      document RTL. i18n.js dispatches wui:langchange on documentElement (bubbles),
+      so we catch it on document and re-anchor every panel still on the stack. */
+   document.addEventListener('wui:langchange', function () {
+     for (var i = 0; i < stack.length; i++) {
+       anchorPanel(stack[i].panel, stack[i].trigger);
+     }
    });
 
    /* ═══════════════════════════════════════════════════════════════════════

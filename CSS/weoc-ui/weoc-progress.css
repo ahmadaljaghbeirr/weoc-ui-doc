@@ -242,11 +242,17 @@
 }
 
 .wui-progress-bar-track.multi .wui-progress-bar-fill:first-child {
-    border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+    border-start-start-radius: var(--radius-pill);
+    border-end-start-radius: var(--radius-pill);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
 }
 
 .wui-progress-bar-track.multi .wui-progress-bar-fill:last-child {
-    border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+    border-start-end-radius: var(--radius-pill);
+    border-end-end-radius: var(--radius-pill);
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
 }
 
 /* Per-fill color classes (specificity 0,3,0 beats the parent-scoped defaults at 0,2,0) */
@@ -296,5 +302,5 @@
     font-size: var(--text-xs);
     font-weight: var(--font-semibold);
     color: var(--color-text-primary);
-    margin-left: 0.125rem;
+    margin-inline-start: 0.125rem;
 }

@@ -251,7 +251,7 @@
 
 .field-label .required {
   color: var(--color-danger);
-  margin-left: var(--space-xs);
+  margin-inline-start: var(--space-xs);
 }
 
 .form-control {
@@ -345,7 +345,7 @@ textarea.form-control {
   appearance: textfield;
   width: 100%;
   box-sizing: border-box;
-  padding-right: 1.9rem !important;      /* room for the stepper column */
+  padding-inline-end: 1.9rem !important;      /* room for the stepper column */
 }
 
 .wui-number input[type="number"]::-webkit-outer-spin-button,
@@ -358,13 +358,16 @@ textarea.form-control {
 .wui-number-btns {
   position: absolute;
   top: 1px;
-  right: 1px;
+  inset-inline-end: 1px;
   bottom: 1px;
   width: 1.5rem;
   display: flex;
   flex-direction: column;
-  border-left: 1px solid var(--color-border);
-  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  border-inline-start: 1px solid var(--color-border);
+  border-start-start-radius: 0;
+  border-start-end-radius: var(--border-radius);
+  border-end-end-radius: var(--border-radius);
+  border-end-start-radius: 0;
   overflow: hidden;
 }
 
@@ -408,7 +411,7 @@ textarea.form-control {
 
 .wui-number input[type="number"]:disabled,
 .wui-number input[type="number"][readonly] {
-  padding-right: var(--space-3) !important;
+  padding-inline-end: var(--space-3) !important;
 }
 
 .field-hint {

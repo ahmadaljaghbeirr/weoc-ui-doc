@@ -49,10 +49,18 @@ import { WUI } from './wui.js';
       if (top < margin) top = margin;
     }
 
+    /* Resolve logical align (start/end) to a physical edge honoring direction:
+       under RTL 'start' is the RIGHT edge and 'end' is the LEFT edge, so a
+       bottom-end popover anchors to the trigger's LEFT in Arabic. */
+    var rtl;
+    try { rtl = window.getComputedStyle(floating).direction === 'rtl'; }
+    catch (e) { rtl = document.documentElement.getAttribute('dir') === 'rtl'; }
+    var startEdge = rtl ? (t.right - fw) : t.left;   // logical-start aligned
+    var endEdge   = rtl ? t.left : (t.right - fw);   // logical-end aligned
     var align = opts.align || 'end';
-    var left = align === 'start'  ? t.left
+    var left = align === 'start'  ? startEdge
              : align === 'center' ? t.left + (t.width - fw) / 2
-             :                      t.right - fw;
+             :                      endEdge;
     left = Math.max(margin, Math.min(left, vw - fw - margin)); // clamp on-screen
 
     floating.style.position = 'fixed';

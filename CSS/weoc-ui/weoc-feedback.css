@@ -350,7 +350,7 @@
 .wui-callout-body ul,
 .wui-callout-body ol {
   margin: var(--space-1) 0 0;
-  padding-left: var(--space-5);
+  padding-inline-start: var(--space-5);
 }
 
 .wui-callout-body li {
@@ -378,12 +378,16 @@
 }
 .wui-toast-region > * { pointer-events: auto; }
 
-.wui-toast-region.top-right    { top: var(--space-4); right: var(--space-4); align-items: flex-end; }
-.wui-toast-region.top-left     { top: var(--space-4); left: var(--space-4);  align-items: flex-start; }
+/* Corner classes are named/end-relative: the horizontal inset is logical so a
+   "-right" region sits at the inline-end (physical left in RTL) and never
+   collides with mirrored content. align-items already tracks direction.
+   The -center transform is pure centering — direction-agnostic, left as-is. */
+.wui-toast-region.top-right    { top: var(--space-4); inset-inline-end: var(--space-4);   align-items: flex-end; }
+.wui-toast-region.top-left     { top: var(--space-4); inset-inline-start: var(--space-4); align-items: flex-start; }
 .wui-toast-region.top-center   { top: var(--space-4); left: 50%; transform: translateX(-50%); align-items: center; }
 /* bottom regions grow upward: newest sits nearest the edge */
-.wui-toast-region.bottom-right  { bottom: var(--space-4); right: var(--space-4); align-items: flex-end;   flex-direction: column-reverse; }
-.wui-toast-region.bottom-left   { bottom: var(--space-4); left: var(--space-4);  align-items: flex-start; flex-direction: column-reverse; }
+.wui-toast-region.bottom-right  { bottom: var(--space-4); inset-inline-end: var(--space-4);   align-items: flex-end;   flex-direction: column-reverse; }
+.wui-toast-region.bottom-left   { bottom: var(--space-4); inset-inline-start: var(--space-4); align-items: flex-start; flex-direction: column-reverse; }
 .wui-toast-region.bottom-center { bottom: var(--space-4); left: 50%; transform: translateX(-50%); align-items: center; flex-direction: column-reverse; }
 
 /* ─── Toast card ─── */
@@ -395,7 +399,7 @@
   padding: var(--space-3) var(--space-4);
   background: var(--color-30);
   border: 1px solid var(--color-border);
-  border-left: var(--border-sm) solid var(--_accent, var(--color-text-ui));
+  border-inline-start: var(--border-sm) solid var(--_accent, var(--color-text-ui));
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-lg);
   /* enter/exit — direction-agnostic fade + scale */
@@ -470,7 +474,8 @@
   flex-shrink: 0;
   width: var(--icon-lg);
   height: var(--icon-lg);
-  margin: -2px calc(-1 * var(--space-1)) 0 0;
+  margin-block: -2px 0;
+  margin-inline: 0 calc(-1 * var(--space-1));
   padding: 0;
   background: none;
   border: none;
@@ -486,8 +491,8 @@
 .wui-snackbar {
   align-items: center;
   gap: var(--space-4);
-  border-left-width: 1px;                 /* no accent rail — neutral */
-  border-left-color: var(--color-border);
+  border-inline-start-width: 1px;                 /* no accent rail — neutral */
+  border-inline-start-color: var(--color-border);
   background: var(--color-text-primary);  /* inverted surface, Material-style */
   color: var(--color-30);
 }

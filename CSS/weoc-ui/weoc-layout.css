@@ -298,7 +298,7 @@
 .wui-panel-close-btn {
   position: absolute;
   top: var(--space-1);
-  left: var(--space-1);
+  inset-inline-start: var(--space-1);
   z-index: 2;
 }
 
@@ -381,8 +381,8 @@
   overflow: hidden;
   /* clip content while the column slides open/shut */
   transition: opacity 260ms ease;
-  /* Colored divider on the edge facing the main pane (left when panel is right) */
-  border-left: 1px solid var(--color-border);
+  /* Colored divider on the edge facing the main pane (inline-start when panel is at inline-end) */
+  border-inline-start: 1px solid var(--color-border);
 }
 
 /* Specific for display views */
@@ -431,8 +431,8 @@
 }
 
 .wui-split.panel-start>.wui-split-panel {
-  border-left: 0;
-  border-right: 1px solid var(--color-border);
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--color-border);
 }
 
 /* Collapsed — panel slides shut: its column animates to 0fr, main fills.
@@ -661,7 +661,7 @@
 
 .wui-required {
   color: var(--color-danger);
-  margin-left: var(--space-xs);
+  margin-inline-start: var(--space-xs);
 }
 
 /* ─── Dashboard Grid ─────────────────────────────────────────── */
