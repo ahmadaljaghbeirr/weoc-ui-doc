@@ -43,10 +43,23 @@
   // Capture synchronously — document.currentScript is only valid during IIFE evaluation.
   // We use it to derive the sibling path to gsap.min.js so the board only needs one
   // <script> tag (this file). gsap.min.js must live in the same directory as weoc-anim.js.
-  var _selfSrc = document.currentScript && document.currentScript.src;
-  var GSAP_URL = _selfSrc
-    ? _selfSrc.replace(/\/[^/?#]+$/, '/gsap.min.js')
-    : 'gsap.min.js';
+  var _selfSrc = (document.currentScript && document.currentScript.src) || (function () {
+    // Fallback for when weoc-anim.js is injected dynamically (e.g. by
+    // weoc-loader.js): currentScript can be null, so locate our own <script> by
+    // src among the page scripts to keep the sibling gsap/MorphSVG path correct.
+    var ss = document.getElementsByTagName('script');
+    for (var i = ss.length - 1; i >= 0; i--) {
+      if (ss[i].src && /weoc-anim\.js(\?|#|$)/.test(ss[i].src)) return ss[i].src;
+    }
+    return '';
+  })();
+  function _sibling(name) {
+    return _selfSrc ? _selfSrc.replace(/\/[^/?#]+$/, '/' + name) : name;
+  }
+  var GSAP_URL  = _sibling('gsap.min.js');
+  var MORPH_URL = _sibling('MorphSVGPlugin.min.js');   // loaded lazily by morphLoop()
+  var _readyQueue = [];   // WUIAnim.ready() callbacks queued before GSAP is ready
+  var _ready = false;
 
   // ── Stubs ─────────────────────────────────────────────────────────────────
   // Set synchronously so any board code that calls WUIAnim before GSAP is ready
@@ -59,27 +72,41 @@
       completion: function () {},
       counter: function () {},
       bar: function () {},
+      morphLoop: function () { return null; },
+      ready: function (fn) { _readyQueue.push(fn); },
       RING_CIRC: 326.73,
       reducedMotion: function () { return true; },
     };
   }
 
+  // ── Script loader (AMD-safe) ────────────────────────────────────────────
+  // Inject a <script>, hiding define.amd across the load so UMD libs (GSAP,
+  // MorphSVGPlugin) export to window globals instead of registering with a page
+  // AMD loader. The ArcGIS Dojo loader otherwise throws "multipleDefine" and
+  // corrupts esri module resolution (breaks WeocMap: "Map is not a constructor").
+  function injectScript(url, onload, onerror) {
+    var s = document.createElement('script');
+    s.src = url;
+    var amd = (typeof window.define === 'function') ? window.define.amd : null;
+    if (amd) { try { window.define.amd = undefined; } catch (e) {} }
+    function restore() { if (amd) { try { window.define.amd = amd; } catch (e) {} } }
+    s.onload  = function () { restore(); if (onload) onload(); };
+    s.onerror = function () { restore(); if (onerror) onerror(); };
+    document.head.appendChild(s);
+  }
+
   // ── GSAP loader ───────────────────────────────────────────────────────────
   // If GSAP is already on the page skip the fetch. Otherwise inject a sibling
-  // <script> tag pointing at gsap.min.js in the same directory as this file.
+  // gsap.min.js from the same directory as this file (AMD-guarded).
   function loadGSAP(onReady) {
     if (typeof gsap !== 'undefined') {
       onReady();
       return;
     }
-    var s = document.createElement('script');
-    s.src = GSAP_URL;
-    s.onload  = onReady;
-    s.onerror = function () {
+    injectScript(GSAP_URL, onReady, function () {
       console.warn('[weoc-anim] Failed to load gsap.min.js from: ' + GSAP_URL +
         '\nEnsure gsap.min.js is in the same directory as weoc-anim.js on the server.');
-    };
-    document.head.appendChild(s);
+    });
   }
 
   // ── Init (runs once GSAP is confirmed present) ────────────────────────────
@@ -446,6 +473,61 @@
       });
     };
 
+    // ── Morph (lazy MorphSVGPlugin) ────────────────────────────────────────
+    // MorphSVGPlugin is a paid GSAP Club plugin and only some views need it, so
+    // it is loaded lazily the first time morphLoop() runs — ring/counter/bar
+    // views never pay for it.
+    var _morphReady = false, _morphPending = false, _morphCbs = [];
+    function _flushMorph(ok) { var q = _morphCbs; _morphCbs = []; for (var i = 0; i < q.length; i++) { try { q[i](ok); } catch (e) {} } }
+    function ensureMorph(cb) {
+      if (_morphReady) { cb(true); return; }
+      _morphCbs.push(cb);
+      if (_morphPending) return;
+      if (typeof MorphSVGPlugin !== 'undefined') {
+        try { gsap.registerPlugin(MorphSVGPlugin); _morphReady = true; } catch (e) {}
+        _flushMorph(_morphReady); return;
+      }
+      _morphPending = true;
+      injectScript(MORPH_URL, function () {
+        try { if (typeof MorphSVGPlugin !== 'undefined') { gsap.registerPlugin(MorphSVGPlugin); _morphReady = true; } } catch (e) {}
+        _morphPending = false; _flushMorph(_morphReady);
+      }, function () {
+        _morphPending = false;
+        console.warn('[weoc-anim] Failed to load MorphSVGPlugin.min.js — morph animations stay static.');
+        _flushMorph(false);
+      });
+    }
+
+    // ── morphLoop(pairs, opts) ─────────────────────────────────────────────
+    // pairs: [{ from: Element, to: Element }] — morphs each `from` shape into its
+    // `to`. Builds a repeating yoyo timeline. MorphSVG loads lazily, so the
+    // timeline is created asynchronously and delivered via opts.onCreate(tl)
+    // (use it to keep a handle for tl.kill()). Returns null synchronously.
+    // No-op under reduced-motion or if MorphSVG is unavailable (caller keeps the
+    // static artwork).
+    //   opts: duration(0.9) ease('power1.inOut') repeatDelay(0.5) hold(0) onCreate(fn)
+    WUIAnim.morphLoop = function (pairs, opts) {
+      opts = opts || {};
+      if (reducedMotion() || !pairs || !pairs.length) return null;
+      ensureMorph(function (ok) {
+        if (!ok) return;
+        var tl = gsap.timeline({
+          repeat: -1, yoyo: true,
+          repeatDelay: opts.repeatDelay != null ? opts.repeatDelay : 0.5,
+          defaults: { duration: opts.duration != null ? opts.duration : 0.9, ease: opts.ease || 'power1.inOut' }
+        });
+        for (var i = 0; i < pairs.length; i++) {
+          if (pairs[i].from && pairs[i].to) tl.to(pairs[i].from, { morphSVG: pairs[i].to }, 0);
+        }
+        if (opts.hold) tl.to({}, { duration: opts.hold });
+        if (typeof opts.onCreate === 'function') opts.onCreate(tl);
+      });
+      return null;
+    };
+
+    // Fired once GSAP is confirmed present (companions like weoc-loader.js wait on it).
+    WUIAnim.ready = function (fn) { if (_ready) fn(WUIAnim); else _readyQueue.push(fn); };
+
     // ── Expose ────────────────────────────────────────────────────────────
     WUIAnim.RING_CIRC     = RING_CIRC;
     WUIAnim.DUR           = DUR;
@@ -455,6 +537,11 @@
 
     // Replace the stubs installed synchronously on page load
     global.WUIAnim = WUIAnim;
+
+    // Flush any ready() callbacks queued against the stub before GSAP loaded.
+    _ready = true;
+    var _rq = _readyQueue; _readyQueue = [];
+    for (var _ri = 0; _ri < _rq.length; _ri++) { try { _rq[_ri](WUIAnim); } catch (e) {} }
 
   } // end init()
 

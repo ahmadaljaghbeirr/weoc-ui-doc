@@ -54,12 +54,19 @@ import { WUI } from '../core/wui.js';
     }
     if (!views || !views.length) return;
     Array.prototype.forEach.call(views, function (v) {
+      // One-time snapshot: a view "participates" in updatesection iff it AUTHORED
+      // the attribute. Remember it in a stable flag so later removals don't erase
+      // the participant status.
+      if (!v.hasAttribute('data-wui-us-init')) {
+        if (v.hasAttribute('updatesection')) v.setAttribute('data-wui-updatesection', '');
+        v.setAttribute('data-wui-us-init', '');
+      }
       var on = v.getAttribute('data-wui-view') === name;
-      v.style.display = on ? '' : 'none';              // inline display beats stylesheet, so this
-                                                       // hides flex/grid views too (the [hidden]
-                                                       // attr would be overridden by author display)
-      if (on) v.setAttribute('updatesection', 'true'); // WebEOC reads the LIVE attribute, so
-      else v.removeAttribute('updatesection');         // moving it client-side is all it takes
+      v.style.display = on ? '' : 'none';              // inline display beats stylesheet
+      if (v.hasAttribute('data-wui-updatesection')) {  // only participants get the move
+        if (on) v.setAttribute('updatesection', 'true');
+        else v.removeAttribute('updatesection');
+      }
     });
     (host || document).dispatchEvent(new CustomEvent('wui:viewchange', { bubbles: true, detail: { value: name } }));
   };

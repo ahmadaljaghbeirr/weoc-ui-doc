@@ -1,58 +1,224 @@
+/* =============================================
+   weoc-loader.css
+   Busy / loading overlay component for weoc-ui.
+
+   Drop-in surface for WUI.busy() (weoc-ui.js) and the branded MorphSVG loader
+   (weoc-loader.js companion). Two placements off one base:
+     .wui-busy-overlay.wui-busy-fullpage  → fixed, covers the viewport.
+     .wui-busy-overlay.wui-busy-scoped    → absolute, covers a positioned host.
+
+   The overlay always renders SOMETHING: a pure-CSS fallback spinner
+   (.wui-busy-spinner) until the companion injects the branded SVG, at which
+   point .wui-busy-has-svg hides the spinner and shows .wui-busy-svg.
+
+   Theme-aware (light/dark via prefers-color-scheme + [data-theme]) and RTL-safe
+   (logical centering, no physical offsets). Gradient vars are consumed by the
+   injected SVG glyph fills. Self-contained: no @import, no external assets.
+   ============================================= */
+
+:root {
+  --wui-loader-peach: #f8dbb9;
+  --wui-loader-orange: #fb8305;
+
+  /* Backdrop + text tokens with safe fallbacks so the overlay works even on a
+     page that has not loaded agency-theme.css. Where the theme IS present its
+     tokens win. */
+  --wui-busy-backdrop: rgba(255, 255, 255, 0.72);
+  --wui-busy-text: #4a4a4a;
+  --wui-busy-track: rgba(0, 0, 0, 0.12);
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+.wui-busy-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--color-overlay, var(--wui-busy-backdrop));
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  color: var(--color-text-primary, var(--wui-busy-text));
+  font-family: inherit;
+  text-align: center;
+  /* fade-in without blocking teardown */
+  animation: wui-busy-in 0.18s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wui-busy-overlay { animation: none; }
+}
+
+/* ── Full-page placement ──────────────────────────────────────────────── */
+.wui-busy-overlay.wui-busy-fullpage {
+  position: fixed;
+  inset: 0;
+  /* above modals (weoc-overlays.css tops out at 9000) */
+  z-index: 10000;
+}
+
+/* ── Element-scoped placement ─────────────────────────────────────────── */
+.wui-busy-overlay.wui-busy-scoped {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  border-radius: inherit;
+  gap: 10px;
+}
+
+/* ── Figure: holds the branded SVG or the fallback spinner ────────────── */
+.wui-busy-figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 280px;
+  max-width: 60vw;
+}
+
+.wui-busy-overlay.wui-busy-scoped .wui-busy-figure {
+  width: 150px;
+  max-width: 55%;
+}
+
+.wui-busy-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Fallback spinner — visible until the companion sets .wui-busy-has-svg. */
+.wui-busy-spinner {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 5px solid var(--color-border, var(--wui-busy-track));
+  border-top-color: var(--wui-loader-orange);
+  animation: wui-busy-spin 0.9s linear infinite;
+}
+
+.wui-busy-overlay.wui-busy-scoped .wui-busy-spinner {
+  width: 36px;
+  height: 36px;
+  border-width: 4px;
+}
+
+/* When the branded SVG is in, drop the fallback spinner. */
+.wui-busy-has-svg .wui-busy-spinner { display: none; }
+
+/* ── Label ────────────────────────────────────────────────────────────── */
+.wui-busy-text,
+#loader-text {
+  color: var(--color-text-secondary, var(--wui-busy-text));
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.wui-busy-overlay.wui-busy-scoped .wui-busy-text {
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+/* Animated trailing dots (…): overlay uses .wui-busy-dots, the standalone
+   agency-loader asset uses #loader-text .dots. Both share the keyframes. */
+.wui-busy-dots::after,
+#loader-text .dots::after {
+  content: "";
+  animation: wui-busy-dots 1.4s steps(4, end) infinite;
+}
+
+/* ── RTL ──────────────────────────────────────────────────────────────── */
+/* Centering is direction-agnostic; only nudge letter-spacing off Arabic text,
+   where inter-letter spacing breaks glyph joining. */
+[dir="rtl"] .wui-busy-text,
+[dir="rtl"] #loader-text {
+  letter-spacing: normal;
+}
+
+/* ── Reduced motion: keep feedback, cut spin/pulse ────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .wui-busy-spinner { animation-duration: 2.2s; }
+  .wui-busy-dots::after,
+  #loader-text .dots::after { animation: none; content: "…"; }
+}
+
+/* ── Theme awareness ──────────────────────────────────────────────────── */
+/* Default (no theme CSS present): darken the backdrop for dark UA preference. */
+@media (prefers-color-scheme: dark) {
   :root {
-      --wui-loader-peach: #f8dbb9;
-      --wui-loader-orange: #fb8305;
+    --wui-busy-backdrop: rgba(18, 18, 20, 0.72);
+    --wui-busy-text: #d7d7da;
+    --wui-busy-track: rgba(255, 255, 255, 0.16);
   }
+}
 
-  body {
-      width: 100%;
-      height: 100vh;
-      margin: 0;
-      padding: 0;
-      background: transparent;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      font-family: Arial, Helvetica, sans-serif;
-  }
+/* Explicit theme attribute wins over the UA preference in both directions. */
+:root[data-theme="dark"] {
+  --wui-busy-backdrop: rgba(18, 18, 20, 0.72);
+  --wui-busy-text: #d7d7da;
+  --wui-busy-track: rgba(255, 255, 255, 0.16);
+}
+:root[data-theme="light"] {
+  --wui-busy-backdrop: rgba(255, 255, 255, 0.72);
+  --wui-busy-text: #4a4a4a;
+  --wui-busy-track: rgba(0, 0, 0, 0.12);
+}
 
-  svg {
-      max-width: 1200px;
-      width: 280px;
-  }
+/* ── Button-scoped busy state (WUI.buttonBusy / .is-busy) ──────────────── */
+/* Inline spinner + dim the label; keep the button width stable. */
+.wui-busy.is-busy,
+button.is-busy,
+[data-wui-loading].is-busy {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+  cursor: progress;
+}
 
-  #loader-text {
-      color: #4a4a4a;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-  }
+.wui-busy.is-busy > *,
+button.is-busy > *,
+[data-wui-loading].is-busy > * {
+  visibility: hidden;
+}
 
-  #loader-text .dots::after {
-      content: "";
-      animation: dots 1.4s steps(4, end) infinite;
-  }
+.wui-busy.is-busy::after,
+button.is-busy::after,
+[data-wui-loading].is-busy::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1em;
+  height: 1em;
+  margin: -0.5em 0 0 -0.5em;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: var(--wui-loader-orange);
+  opacity: 0.9;
+  animation: wui-busy-spin 0.7s linear infinite;
+}
 
-  @keyframes dots {
-      0% {
-          content: "";
-      }
+@media (prefers-reduced-motion: reduce) {
+  .wui-busy.is-busy::after,
+  button.is-busy::after,
+  [data-wui-loading].is-busy::after { animation-duration: 1.8s; }
+}
 
-      25% {
-          content: ".";
-      }
+/* ── Keyframes ────────────────────────────────────────────────────────── */
+@keyframes wui-busy-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-      50% {
-          content: "..";
-      }
+@keyframes wui-busy-spin {
+  to { transform: rotate(360deg); }
+}
 
-      75% {
-          content: "...";
-      }
-
-      100% {
-          content: "";
-      }
-  }
+@keyframes wui-busy-dots {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75% { content: "..."; }
+  100% { content: ""; }
+}

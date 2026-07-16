@@ -37,6 +37,15 @@ import './interaction/overlays.js';
 import './interaction/activate.js';
 import './interaction/disclosure.js';
 import './interaction/segment-view.js';
+import './interaction/tab-scroll.js';
+import './interaction/view-mode.js';
+import './interaction/timer.js';
+import './interaction/confirm.js';
+import './interaction/dirty-tracker.js';
+import './interaction/dropzone.js';
+import './interaction/loader.js';
+import './interaction/number.js';
+import './interaction/timeline.js';
 
 /* integration/ + tables/ + feedback/ */
 import './integration/sections.js';

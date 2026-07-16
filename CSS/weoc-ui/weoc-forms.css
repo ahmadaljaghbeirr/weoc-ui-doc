@@ -345,6 +345,9 @@ textarea.form-control {
   appearance: textfield;
   width: 100%;
   box-sizing: border-box;
+  /* block (not the default inline-block) removes the baseline descender gap that
+     makes the wrapper taller than the input and drops the stepper below its box. */
+  display: block;
   padding-inline-end: 1.9rem !important;      /* room for the stepper column */
 }
 
@@ -399,8 +402,11 @@ textarea.form-control {
 }
 
 .wui-number-step .material-symbols-outlined {
-  font-size: var(--icon-sm);
-  line-height: 1;
+  /* --text-sm (1rem) so the glyph fits a half-height stepper cell; the btns
+     column is clipped with overflow:hidden and --icon-sm (1.375rem) overflowed,
+     cropping the bottom chevron. */
+  font-size: var(--text-sm);
+  line-height: var(--leading-none);
 }
 
 /* Disabled / readonly: drop the stepper and reclaim the padding */
@@ -412,6 +418,121 @@ textarea.form-control {
 .wui-number input[type="number"]:disabled,
 .wui-number input[type="number"][readonly] {
   padding-inline-end: var(--space-3) !important;
+}
+
+/* ------------------------------------------------------------
+   Component: .wui-dropzone — drag & drop file field. Mirrors the legacy
+   DragAndDrop look: a dashed drop card with a cloud icon + title + description
+   and a "Select files" button, then a list of file rows. JS builds the inner
+   UI (interaction/dropzone.js) + feeds a hidden native <input type=file>.
+   ------------------------------------------------------------ */
+.wui-dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--border-radius);
+  background: var(--color-60);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.wui-dropzone:hover,
+.wui-dropzone.is-dragover {
+  border-color: var(--color-10);
+  background: var(--color-10-light);
+}
+
+/* native file input driven programmatically (zone click / drop / Select button) */
+.wui-dropzone input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wui-dz-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  pointer-events: none;            /* clicks fall through to the zone */
+}
+
+.wui-dz-icon {
+  font-size: var(--icon-xl);
+  line-height: var(--leading-none);
+  color: var(--color-text-secondary);
+}
+
+.wui-dz-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.wui-dz-desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.wui-dz-browse {
+  margin-top: var(--space-2);
+}
+
+/* selected files — full-width rows, not inline pills */
+.wui-dz-list {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  width: 100%;
+  align-self: stretch;
+  text-align: start;
+}
+
+.wui-dz-list:empty {
+  display: none;
+}
+
+.wui-dz-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.wui-dz-chip:last-child {
+  border-bottom: none;
+}
+
+.wui-dz-chip-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-xs);
+  color: var(--color-text-primary);
+}
+
+/* compact inline validation error (override the big centred empty-state block) */
+.wui-dz-feedback.wui-empty-state {
+  flex-direction: row;
+  justify-content: center;
+  min-height: 0;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--border-radius);
+  font-size: var(--text-xs);
+  color: var(--color-danger-text);
+  background: var(--color-danger-light);
 }
 
 .field-hint {

@@ -990,12 +990,19 @@
      }
      if (!views || !views.length) return;
      Array.prototype.forEach.call(views, function (v) {
+       // One-time snapshot: a view "participates" in updatesection iff it AUTHORED
+       // the attribute. Remember it in a stable flag so later removals don't erase
+       // the participant status.
+       if (!v.hasAttribute('data-wui-us-init')) {
+         if (v.hasAttribute('updatesection')) v.setAttribute('data-wui-updatesection', '');
+         v.setAttribute('data-wui-us-init', '');
+       }
        var on = v.getAttribute('data-wui-view') === name;
-       v.style.display = on ? '' : 'none'; // inline display beats stylesheet, so this
-       // hides flex/grid views too (the [hidden]
-       // attr would be overridden by author display)
-       if (on) v.setAttribute('updatesection', 'true'); // WebEOC reads the LIVE attribute, so
-       else v.removeAttribute('updatesection'); // moving it client-side is all it takes
+       v.style.display = on ? '' : 'none'; // inline display beats stylesheet
+       if (v.hasAttribute('data-wui-updatesection')) {
+         // only participants get the move
+         if (on) v.setAttribute('updatesection', 'true');else v.removeAttribute('updatesection');
+       }
      });
      (host || document).dispatchEvent(new CustomEvent('wui:viewchange', {
        bubbles: true,
@@ -1020,6 +1027,1576 @@
        }
      }));
    });
+
+   /* ═══════════════════════════════════════════════════════════════════════
+      9) TAB SCROLL  (scrollable header tab strip)
+      [data-wui-tab-scroll] on a .wui-hdr-tabs strip. Auto-wraps it in
+      .wui-hdr-tabs-wrap (if not already) and injects two .wui-fab arrow buttons.
+      Toggles .has-left/.has-right on the wrap by scroll position — those classes
+      already drive the edge-fade shadows AND the arrow visibility in
+      weoc-navigation.css. Arrow click scrolls; wheel scrolls horizontally.
+      RTL-safe (abs scrollLeft). Arrow aria-labels via WUI.i18n. Delegated init
+      on load + WUI.initTabScroll(el) for JS-built strips. Idempotent per strip.
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   WUI.initTabScroll = function (strip) {
+     if (!strip || strip.__wuiTabScroll) return;
+     strip.__wuiTabScroll = true;
+     var wrap = strip.closest('.wui-hdr-tabs-wrap');
+     if (!wrap) {
+       wrap = document.createElement('div');
+       wrap.className = 'wui-hdr-tabs-wrap';
+       strip.parentNode.insertBefore(wrap, strip);
+       wrap.appendChild(strip);
+     }
+     function ensureBtn(cls, key, icon) {
+       var b = wrap.querySelector('.wui-fab.' + cls);
+       if (!b) {
+         b = document.createElement('button');
+         b.type = 'button';
+         b.className = 'wui-fab secondary neon-outline ' + cls;
+         b.setAttribute('data-wui-i18n-attr', 'aria-label:' + key);
+         var s = document.createElement('span');
+         s.className = 'material-symbols-outlined';
+         s.textContent = icon;
+         b.appendChild(s);
+         wrap.appendChild(b);
+       }
+       return b;
+     }
+     var left = ensureBtn('tabs-scroll-left', 'ScrollTabsLeft', 'chevron_left');
+     var right = ensureBtn('tabs-scroll-right', 'ScrollTabsRight', 'chevron_right');
+     if (WUI.i18n && WUI.i18n.apply) WUI.i18n.apply(wrap);
+     function update() {
+       var max = strip.scrollWidth - strip.clientWidth;
+       if (max <= 1) {
+         wrap.classList.remove('has-left', 'has-right');
+         return;
+       }
+       // Map to PHYSICAL left/right overflow so each arrow + edge-shadow sits on the
+       // correct side in BOTH LTR and RTL. Modern engines (Chromium/Firefox) use the
+       // negative-scrollLeft RTL convention: scrollLeft is 0 at the start (right) edge
+       // and decreases toward the left. leftHidden / rightHidden = px scrolled off
+       // each physical edge; the left arrow reveals left-hidden content, the right
+       // arrow reveals right-hidden content — direction-agnostic.
+       var sl = strip.scrollLeft;
+       var rtl = window.getComputedStyle(strip).direction === 'rtl' || document.documentElement.dir === 'rtl';
+       var leftHidden = rtl ? max + sl : sl; // in RTL sl <= 0
+       var rightHidden = rtl ? -sl : max - sl;
+       wrap.classList.toggle('has-left', leftHidden > 1);
+       wrap.classList.toggle('has-right', rightHidden > 1);
+     }
+     var STEP = 160;
+     left.addEventListener('click', function () {
+       strip.scrollBy({
+         left: -STEP,
+         behavior: 'smooth'
+       });
+     });
+     right.addEventListener('click', function () {
+       strip.scrollBy({
+         left: STEP,
+         behavior: 'smooth'
+       });
+     });
+     strip.addEventListener('scroll', update);
+     strip.addEventListener('wheel', function (e) {
+       if (e.deltaY !== 0) {
+         e.preventDefault();
+         strip.scrollLeft += e.deltaY;
+       }
+     });
+     if (window.ResizeObserver) {
+       new window.ResizeObserver(update).observe(strip);
+     } else {
+       window.addEventListener('resize', WUI.throttle(update, 60));
+     }
+     document.documentElement.addEventListener('wui:langchange', function () {
+       if (WUI.i18n && WUI.i18n.apply) WUI.i18n.apply(wrap);
+       setTimeout(update, 0);
+     });
+     update();
+   };
+   function wuiBootTabScroll() {
+     var strips = document.querySelectorAll('[data-wui-tab-scroll]');
+     for (var i = 0; i < strips.length; i++) WUI.initTabScroll(strips[i]);
+   }
+   // Run immediately for the (typical) case where this script executes after
+   // the strips already exist in the DOM, and also via WUI.ready as a fallback
+   // for head-placed/deferred script tags. initTabScroll() is idempotent per
+   // strip, so the redundant second pass is a safe no-op.
+   wuiBootTabScroll();
+   WUI.ready(wuiBootTabScroll);
+
+   /* ═══════════════════════════════════════════════════════════════════════
+      10) VIEW MODE  (tabs <-> stacked/list toggle)
+      [data-wui-view-mode="<group>"] on a toggle BUTTON. Switches a segment group
+      between tabbed (engine-driven) and stacked "list" mode. In list mode: adds
+      .is-list-mode to the container (shared CSS stacks all .wui-tab-panel), hides
+      the segment strip + its auto-injected .wui-hdr-tabs-wrap (arrows go too),
+      and swaps the button icon (view_agenda<->tab) + label to the TARGET mode's
+      i18n key (List<stem>/Tab<stem>). Persists to data-wui-vm-persist. On return
+      to tabs, re-asserts the active panel via WUI.showView. Delegated init on load
+      + WUI.initViewMode(btn). Idempotent per button. Localization-native, RTL-safe.
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   WUI.initViewMode = function (btn) {
+     if (!btn || btn.__wuiViewMode) return;
+     btn.__wuiViewMode = true;
+     var group = btn.getAttribute('data-wui-view-mode');
+     if (!group) return;
+     var persistKey = btn.getAttribute('data-wui-vm-persist') || '';
+     var stem = btn.getAttribute('data-wui-vm-label') || 'View';
+     var containerSel = btn.getAttribute('data-wui-vm-container') || '.wui-det-body';
+     var container = btn.closest(containerSel) || document.querySelector(containerSel);
+     if (!container) return;
+     var strip = document.querySelector('[data-wui-segment][data-wui-views="' + group + '"]');
+     var wrap = strip ? strip.closest('.wui-hdr-tabs-wrap') || strip : null;
+     var iconEl = btn.querySelector('[data-wui-vm-icon]');
+     var textEl = btn.querySelector('[data-wui-vm-text]');
+     function apply(list) {
+       container.classList.toggle('is-list-mode', list);
+       if (wrap) wrap.style.display = list ? 'none' : '';
+       if (iconEl) iconEl.textContent = list ? 'tab' : 'view_agenda';
+       if (textEl && WUI.i18n && WUI.i18n.mark) WUI.i18n.mark(textEl, (list ? 'Tab' : 'List') + stem);
+       if (!list && strip) {
+         var active = strip.querySelector('[data-wui-value].active') || strip.querySelector('[data-wui-value]');
+         if (active) WUI.showView(group, active.getAttribute('data-wui-value'));
+       }
+     }
+     btn.addEventListener('click', function () {
+       var list = !container.classList.contains('is-list-mode');
+       apply(list);
+       if (persistKey) {
+         try {
+           localStorage.setItem(persistKey, list ? 'list' : 'tabs');
+         } catch (e) {}
+       }
+     });
+     var saved = '';
+     if (persistKey) {
+       try {
+         saved = localStorage.getItem(persistKey) || '';
+       } catch (e) {}
+     }
+     apply(saved === 'list');
+   };
+   function wuiBootViewMode() {
+     var btns = document.querySelectorAll('[data-wui-view-mode]');
+     for (var i = 0; i < btns.length; i++) WUI.initViewMode(btns[i]);
+   }
+   // Run immediately for the (typical) case where this script executes after
+   // the buttons already exist in the DOM, and also via WUI.ready as a fallback
+   // for head-placed/deferred script tags. initViewMode() is idempotent per
+   // button, so the redundant second pass is a safe no-op.
+   wuiBootViewMode();
+   WUI.ready(wuiBootViewMode);
+
+   /* ═══════════════════════════════════════════════════════════════════════
+      TIMER  (live elapsed-time ticker)
+      [data-wui-elapsed="<iso-8601-or-epoch-ms>"] on a SPAN. Renders elapsed time
+      since the given start timestamp and re-renders every 1000ms, in the style
+      "1d 02h 03m 04s" (days omitted when zero; hours/mins/secs zero-padded to 2).
+      Replaces hand-rolled startTimer()/#det-timer countup code (e.g. ER Details).
+         <span data-wui-elapsed="2026-07-13T10:00:00Z"></span>
+        WUI.timer(el)                 // reads the start ts off the attribute
+        WUI.timer(el, '2026-07-13T10:00:00Z')
+        WUI.timer(el, 1752400800000)  // epoch ms also accepted
+       WUI.timer(el, startTs) starts (or re-starts) the ticker on `el`. Idempotent
+      per element: a prior interval (if any) is always cleared first, so repeat
+      calls never leak timers — safe to call again with a new/older `el.__wuiTimer`
+      already attached. The ticker self-stops once `el` is no longer attached to
+      the document (checked every tick), so removed cards don't keep ticking in
+      the background.
+       Unit letters (d/h/m/s) are localized via WUI.i18n (TimerDay/TimerHour/
+      TimerMin/TimerSec, default en values registered below) so `ar` resources
+      can override them. Digits are always plain ASCII — RTL layout is handled
+      by CSS/dir on the surrounding markup, not by this module.
+       Delegated init on load + WUI.ready fallback, matching every other
+      interaction module (view-mode.js, tab-scroll.js, …).
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   WUI.i18n.register([{
+     lang: 'en',
+     id: 'TimerDay',
+     value: 'd'
+   }, {
+     lang: 'en',
+     id: 'TimerHour',
+     value: 'h'
+   }, {
+     lang: 'en',
+     id: 'TimerMin',
+     value: 'm'
+   }, {
+     lang: 'en',
+     id: 'TimerSec',
+     value: 's'
+   }]);
+   function wuiPad2(n) {
+     n = Math.floor(n);
+     return (n < 10 ? '0' : '') + n;
+   }
+
+   /* Accepts an ISO-8601 string, an epoch-ms number, or a numeric string
+      (epoch ms as text, e.g. read straight off an attribute). Returns epoch ms
+      or null if it can't be parsed. */
+   function wuiParseStart(startTs) {
+     if (startTs == null || startTs === '') return null;
+     if (typeof startTs === 'number') return isNaN(startTs) ? null : startTs;
+     var s = String(startTs);
+     if (/^-?\d+$/.test(s)) return parseInt(s, 10);
+     var t = new Date(s).getTime();
+     return isNaN(t) ? null : t;
+   }
+   function wuiFormatElapsed(ms) {
+     if (!(ms > 0)) ms = 0;
+     var totalSec = Math.floor(ms / 1000);
+     var days = Math.floor(totalSec / 86400);
+     var hours = Math.floor(totalSec % 86400 / 3600);
+     var mins = Math.floor(totalSec % 3600 / 60);
+     var secs = totalSec % 60;
+     var out = '';
+     if (days > 0) out += days + WUI.i18n.t('TimerDay', 'd') + ' ';
+     out += wuiPad2(hours) + WUI.i18n.t('TimerHour', 'h') + ' ';
+     out += wuiPad2(mins) + WUI.i18n.t('TimerMin', 'm') + ' ';
+     out += wuiPad2(secs) + WUI.i18n.t('TimerSec', 's');
+     return out;
+   }
+   WUI.timer = function (el, startTs) {
+     if (!el) return;
+     // always clear any prior interval first — repeat calls never leak timers
+     if (el.__wuiTimer && el.__wuiTimer.interval) clearInterval(el.__wuiTimer.interval);
+     var raw = startTs == null ? el.getAttribute('data-wui-elapsed') : startTs;
+     var start = wuiParseStart(raw);
+     if (start == null) {
+       el.__wuiTimer = null;
+       return;
+     }
+     var state = {
+       start: start,
+       interval: null
+     };
+     el.__wuiTimer = state;
+     function tick() {
+       if (!document.contains(el)) {
+         clearInterval(state.interval);
+         return;
+       }
+       el.textContent = wuiFormatElapsed(Date.now() - state.start);
+     }
+     tick(); // render immediately, don't wait a full second for the first frame
+     state.interval = setInterval(tick, 1000);
+     return el;
+   };
+   WUI.initTimer = function (el) {
+     if (!el) return;
+     WUI.timer(el);
+   };
+   function wuiBootTimer() {
+     var els = document.querySelectorAll('[data-wui-elapsed]');
+     for (var i = 0; i < els.length; i++) WUI.initTimer(els[i]);
+   }
+   // Run immediately for the (typical) case where this script executes after
+   // the elements already exist in the DOM, and also via WUI.ready as a
+   // fallback for head-placed/deferred script tags. WUI.timer() always clears
+   // its own prior interval before starting a new one, so the redundant second
+   // pass is a safe no-op (same start ts in, same rendered value out).
+   wuiBootTimer();
+   WUI.ready(wuiBootTimer);
+
+   /* ═══════════════════════════════════════════════════════════════════════
+      12) CONFIRM DIALOG  (promise-based confirmation on the wui-modal engine)
+      WUI.confirm(opts) -> Promise<boolean> (true = confirmed, false = cancelled/
+      dismissed). Builds a singleton `wui-modal` reused across calls and wires it
+      through the overlays engine (WUI.open/WUI.close) — backdrop, focus-trap,
+      scroll-lock, Esc, and focus-restore all come free from overlays.js; this
+      module only owns text/tone population and promise resolution.
+       opts: { messageKey, titleKey, confirmKey, cancelKey, tone, message, title }
+        *Key are WUI.i18n lookup keys (never literal text); message/title are
+        optional literal fallbacks when no key applies. tone (e.g. 'danger')
+        becomes a class on the confirm button.
+       Declarative: a trigger carrying [data-wui-confirm="<message-key>"] auto-
+      wires. Its default action (submit / navigation / click) is intercepted;
+      the dialog opens; the original action is re-dispatched ONLY on confirm.
+      Replaces legacy destructive confirm() calls (remove-file, delete-record).
+       Optional trigger attributes:
+        data-wui-confirm-title    i18n key for the dialog title
+        data-wui-confirm-ok       i18n key for the confirm button label
+        data-wui-confirm-cancel   i18n key for the cancel button label
+        data-wui-confirm-tone     class added to the confirm button (e.g. danger)
+        data-wui-confirm-submit   force form submission even if type != submit
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   if (WUI.i18n && WUI.i18n.register) {
+     WUI.i18n.register([{
+       lang: 'en',
+       id: 'ConfirmTitle',
+       value: 'Please confirm'
+     }, {
+       lang: 'en',
+       id: 'ConfirmOk',
+       value: 'Confirm'
+     }, {
+       lang: 'en',
+       id: 'ConfirmCancel',
+       value: 'Cancel'
+     }]);
+   }
+   var confirmModal = null;
+   var confirmPending = null; // { resolve } while a confirm() promise is outstanding
+
+   /* Always-keyed fields (title/ok/cancel): key wins, else literal, else the
+      given fallback i18n key so the dialog is never blank/unlocalized. */
+   function confirmSetKeyed(el, key, literal, fallbackKey) {
+     if (key) {
+       WUI.i18n.mark(el, key);
+       return;
+     }
+     el.removeAttribute('data-wui-i18n');
+     if (literal != null) {
+       el.textContent = literal;
+       return;
+     }
+     WUI.i18n.mark(el, fallbackKey);
+   }
+   function confirmSettle(result) {
+     if (!confirmPending) return;
+     var resolve = confirmPending.resolve;
+     confirmPending = null;
+     WUI.close(confirmModal);
+     resolve(result);
+   }
+   function buildConfirmModal() {
+     if (confirmModal) return confirmModal;
+     confirmModal = document.createElement('div');
+     confirmModal.id = 'wui-confirm-modal';
+     confirmModal.className = 'wui-modal sm';
+     confirmModal.setAttribute('data-wui-backdrop', 'true');
+     confirmModal.innerHTML = '<div class="wui-modal-dialog">' + '<div class="wui-modal-header">' + '<span class="wui-modal-title" data-wui-confirm-title-el></span>' + '<button type="button" class="wui-modal-close" data-wui-confirm-x-el aria-label="Close">' + '<span class="material-symbols-outlined">close</span>' + '</button>' + '</div>' + '<div class="wui-modal-body"><p data-wui-confirm-msg-el></p></div>' + '<div class="wui-modal-footer">' + '<button type="button" class="wui-btn ghost secondary" data-wui-confirm-cancel-el></button>' + '<button type="button" class="wui-btn primary" data-wui-confirm-ok-el></button>' + '</div>' + '</div>';
+     document.body.appendChild(confirmModal);
+     confirmModal.querySelector('[data-wui-confirm-ok-el]').addEventListener('click', function () {
+       confirmSettle(true);
+     });
+     confirmModal.querySelector('[data-wui-confirm-cancel-el]').addEventListener('click', function () {
+       confirmSettle(false);
+     });
+     confirmModal.querySelector('[data-wui-confirm-x-el]').addEventListener('click', function () {
+       confirmSettle(false);
+     });
+
+     /* Esc / backdrop click close via the overlays engine directly (not through
+        an OK/Cancel handler above) — settle as cancelled. A no-op if an OK/Cancel
+        click already settled and closed the modal in the same tick. */
+     confirmModal.addEventListener('wui:close', function () {
+       confirmSettle(false);
+     });
+     return confirmModal;
+   }
+   WUI.confirm = function (opts) {
+     opts = opts || {};
+     buildConfirmModal();
+     if (confirmPending) confirmSettle(false); // a prior confirm() is still open — cancel it
+
+     var titleEl = confirmModal.querySelector('[data-wui-confirm-title-el]');
+     var msgEl = confirmModal.querySelector('[data-wui-confirm-msg-el]');
+     var okEl = confirmModal.querySelector('[data-wui-confirm-ok-el]');
+     var cancelEl = confirmModal.querySelector('[data-wui-confirm-cancel-el]');
+     confirmSetKeyed(titleEl, opts.titleKey, opts.title, 'ConfirmTitle');
+     confirmSetKeyed(okEl, opts.confirmKey, null, 'ConfirmOk');
+     confirmSetKeyed(cancelEl, opts.cancelKey, null, 'ConfirmCancel');
+     if (opts.messageKey) {
+       WUI.i18n.mark(msgEl, opts.messageKey);
+     } else {
+       msgEl.removeAttribute('data-wui-i18n');
+       msgEl.textContent = opts.message != null ? opts.message : '';
+     }
+     okEl.className = 'wui-btn ' + (opts.tone || 'primary');
+     return new Promise(function (resolve) {
+       confirmPending = {
+         resolve: resolve
+       };
+       WUI.open(confirmModal);
+     });
+   };
+
+   /* declarative wiring: [data-wui-confirm="<message-key>"] ------------------ */
+
+   function confirmProceed(trigger) {
+     trigger.__wuiConfirmBypass = true; // let the re-dispatched click/submit through untouched
+     var form = trigger.form || trigger.closest('form');
+     var wantsSubmit = form && (trigger.hasAttribute('data-wui-confirm-submit') || trigger.type === 'submit');
+     if (wantsSubmit) {
+       if (form.requestSubmit) form.requestSubmit(trigger);else form.submit();
+     } else if (trigger.tagName === 'A' && trigger.getAttribute('href')) {
+       window.location.href = trigger.getAttribute('href');
+     } else {
+       trigger.click();
+     }
+   }
+   function wuiBootConfirm() {
+     if (WUI.__confirmWired) return; // idempotent: bind the delegated listener once
+     WUI.__confirmWired = true;
+     document.addEventListener('click', function (e) {
+       var trigger = e.target.closest('[data-wui-confirm]');
+       if (!trigger) return;
+       if (trigger.__wuiConfirmBypass) {
+         trigger.__wuiConfirmBypass = false;
+         return;
+       } // our own re-dispatch
+       e.preventDefault();
+       e.stopImmediatePropagation();
+       WUI.confirm({
+         messageKey: trigger.getAttribute('data-wui-confirm'),
+         titleKey: trigger.getAttribute('data-wui-confirm-title') || undefined,
+         confirmKey: trigger.getAttribute('data-wui-confirm-ok') || undefined,
+         cancelKey: trigger.getAttribute('data-wui-confirm-cancel') || undefined,
+         tone: trigger.getAttribute('data-wui-confirm-tone') || undefined
+       }).then(function (ok) {
+         if (ok) confirmProceed(trigger);
+       });
+     }, true); // capture: intercept before the trigger's own default action / handlers fire
+   }
+   // Run immediately for the (typical) case where this script executes after
+   // triggers already exist in the DOM, and also via WUI.ready as a fallback for
+   // head-placed/deferred script tags. wuiBootConfirm is guarded above, so the
+   // redundant second pass (and any accidental double-load) is a safe no-op.
+   wuiBootConfirm();
+   WUI.ready(wuiBootConfirm);
+
+   /* ═══════════════════════════════════════════════════════════════════════
+      11) DIRTY TRACKER  (unsaved-changes guard)
+      [data-wui-dirty] on a FORM (or any container). Snapshots the initial
+      value of every input/select/textarea inside it, then listens for
+      input/change to detect drift from that snapshot. Toggles .is-dirty on
+      the form and reveals/hides an associated "save bar" element
+      (data-wui-dirty-bar="<selector>", toggles .wui-visible + the `hidden`
+      attribute), optionally warns on tab/window close via beforeunload
+      (data-wui-dirty-warn — native prompt text is browser-controlled and not
+      localizable). If the bar contains a [data-wui-dirty-text] element, its
+      label is tagged once via WUI.i18n.mark (key: UnsavedChanges) — the ONLY
+      text this module owns; the rest of the bar's contents are the caller's.
+      Exposes formEl.__wuiDirty = { isDirty(), reset() } so a save handler can
+      re-snapshot after a successful save. Idempotent per form. Delegated init
+      on load + WUI.ready.
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   var DIRTY_FIELD_SEL = 'input, select, textarea';
+   var DIRTY_SKIP_TYPES = {
+     hidden: 1,
+     submit: 1,
+     button: 1,
+     reset: 1
+   };
+   function wuiDirtyFields(form) {
+     var all = form.querySelectorAll(DIRTY_FIELD_SEL),
+       out = [],
+       i,
+       el;
+     for (i = 0; i < all.length; i++) {
+       el = all[i];
+       if (!el.name) continue;
+       if (DIRTY_SKIP_TYPES[el.type]) continue;
+       out.push(el);
+     }
+     return out;
+   }
+   function wuiDirtyValue(el) {
+     return el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value;
+   }
+   function wuiDirtySnapshot(form) {
+     var fields = wuiDirtyFields(form),
+       snap = [],
+       i;
+     for (i = 0; i < fields.length; i++) snap.push(wuiDirtyValue(fields[i]));
+     return snap;
+   }
+   function wuiDirtyDiff(form, snap) {
+     var fields = wuiDirtyFields(form),
+       i;
+     for (i = 0; i < fields.length; i++) {
+       if (wuiDirtyValue(fields[i]) !== snap[i]) return true;
+     }
+     return false;
+   }
+   WUI.dirtyTracker = function (form, opts) {
+     if (!form) return null;
+     if (form.__wuiDirty) return form.__wuiDirty;
+     opts = opts || {};
+     var barSelector = opts.barSelector || form.getAttribute('data-wui-dirty-bar') || '';
+     var warnOnLeave = opts.warnOnLeave != null ? !!opts.warnOnLeave : form.hasAttribute('data-wui-dirty-warn');
+     var onDirtyChange = opts.onDirtyChange || null;
+     var bar = barSelector ? document.querySelector(barSelector) : null;
+     var textEl = bar ? bar.querySelector('[data-wui-dirty-text]') : null;
+     if (textEl && WUI.i18n && WUI.i18n.mark) WUI.i18n.mark(textEl, 'UnsavedChanges');
+     var snap = wuiDirtySnapshot(form);
+     var dirty = false;
+     function beforeUnload(e) {
+       e.preventDefault();
+       e.returnValue = '';
+       return '';
+     }
+     function render() {
+       form.classList.toggle('is-dirty', dirty);
+       if (bar) {
+         bar.classList.toggle('wui-visible', dirty);
+         if (dirty) bar.removeAttribute('hidden');else bar.setAttribute('hidden', '');
+       }
+     }
+     function setDirty(next) {
+       if (next === dirty) return;
+       dirty = next;
+       render();
+       if (warnOnLeave) {
+         if (dirty) window.addEventListener('beforeunload', beforeUnload);else window.removeEventListener('beforeunload', beforeUnload);
+       }
+       if (onDirtyChange) onDirtyChange(dirty);
+     }
+     function check() {
+       setDirty(wuiDirtyDiff(form, snap));
+     }
+     form.addEventListener('input', check);
+     form.addEventListener('change', check);
+     render(); // establish clean initial state (form.is-dirty off, bar hidden)
+
+     var api = {
+       isDirty: function isDirty() {
+         return dirty;
+       },
+       reset: function reset() {
+         snap = wuiDirtySnapshot(form);
+         setDirty(false);
+       }
+     };
+     form.__wuiDirty = api;
+     return api;
+   };
+   function wuiBootDirty() {
+     var forms = document.querySelectorAll('[data-wui-dirty]');
+     for (var i = 0; i < forms.length; i++) WUI.dirtyTracker(forms[i]);
+   }
+   // Run immediately for the (typical) case where this script executes after
+   // the form already exists in the DOM, and also via WUI.ready as a fallback
+   // for head-placed/deferred script tags. dirtyTracker() is idempotent per
+   // form, so the redundant second pass is a safe no-op.
+   wuiBootDirty();
+   WUI.ready(wuiBootDirty);
+
+   /* ═══════════════════════════════════════════════════════════════════════
+      11) DROPZONE  (data-wui-dropzone — file attach behavior + dz-engine)
+      A delegated, localization-native replacement for the standalone jQuery
+      uploader (JS/DragAndDropFiles.js). It does NOT replace the WebEOC upload
+      path: when webeoc:true it feeds the exact same BoardScript.AddRecord +
+      REST POST flow DragAndDropFiles.js used, generalized to per-instance
+      config instead of hardcoded module vars. Non-WebEOC callers get the same
+      zone UI/validation with a plain onUpload(file) callback instead.
+       Declarative markup (auto-boots, zero JS):
+        <div data-wui-dropzone
+             data-wui-dz-max-mb="30"
+             data-wui-dz-max-files="5"
+             data-wui-dz-types="pdf,doc,docx,json"
+             data-wui-dz-input="#dropFile"
+             data-wui-dz-webeoc="true"
+             data-wui-dz-file-view="BoardScript - File Upload"
+             data-wui-dz-table="Attachments"
+             data-wui-dz-attachment-field="file_attachment"
+             data-wui-dz-id-field="attachmentsIDs"></div>
+       Explicit factory (same shape as WeocMap.create) — use when config is
+      dynamic or you need the returned instance's methods. Mark the zone
+      data-wui-dz-manual="true" so auto-boot skips it (same convention as
+      data-map-manual on WeocMap) — otherwise auto-boot races ahead on script
+      load and locks in default (non-webeoc) options before your own init code
+      runs, and create() then just hands back that wrong-config instance:
+        <div data-wui-dropzone data-wui-dz-manual="true"></div>
+        const dz = WUI.dropzone.create('#zone', {
+          webeoc: true,
+          fileView: 'BoardScript - File Upload',
+          table: 'Attachments',
+          attachmentField: 'file_attachment',
+          idField: 'attachmentsIDs',
+          maxMb: 30, maxFiles: 5, types: ['pdf','doc','docx','json'],
+          input: '#dropFile'
+        });
+        dz.getFiles() / dz.addFiles(fileList) / dz.removeAt(i) / dz.clear()
+        await dz.createFileRecord();  // webeoc: AddRecord+REST per file, writes idField
+                                       // generic (webeoc:false): runs options.onUpload(file) per file
+       - data-wui-dz-input / options.input points at the native file input to
+        feed. Default: a hidden multiple <input type="file"> the component
+        injects inside the zone.
+      - Owns ONE DataTransfer per zone. drag-over / drop / click-to-browse.
+      - Each dropped/browsed file is validated: size <= max-mb, count <= max-files,
+        extension in types. Rejected -> inline wui- feedback (wui-empty-state, NOT
+        a raw Bootstrap .text-danger). Accepted -> a wui-chip list; each chip's
+        remove button drops the file from the DataTransfer and re-syncs the input.
+      - Sync: input.files = dataTransfer.files, so WebEOC submit picks them up.
+      - Graceful: if DataTransfer is unsupported, leave the native input's own
+        file selection intact (no managed list); createFileRecord() falls back
+        to reading input.files directly.
+      - All user-facing text localized via WUI.i18n. RTL-safe.
+       API: WUI.dropzone.create(elOrSelector, options) — explicit, returns an
+      instance. WUI.initDropzone(el) — declarative back-compat, reads
+      data-wui-dz-* attrs into an options object and delegates to create().
+      Both idempotent per zone (el.__wuiDropzone holds the instance once built).
+      Delegated boot: scan [data-wui-dropzone]; immediate + WUI.ready.
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   // en defaults — boards may override via WUI.i18n.register([...]) with ar too.
+   // {name} {max} {types} placeholders are filled at render time.
+   if (WUI.i18n && WUI.i18n.register) {
+     WUI.i18n.register([{
+       lang: 'en',
+       id: 'DropzonePrompt',
+       value: 'Drag & drop files here, or click to browse'
+     }, {
+       lang: 'en',
+       id: 'DropzoneTitle',
+       value: 'Upload Files'
+     }, {
+       lang: 'en',
+       id: 'DropzoneDesc',
+       value: 'Drag & drop {types}files here. Max size {max} MB.'
+     }, {
+       lang: 'en',
+       id: 'DropzoneBrowse',
+       value: 'Select files'
+     }, {
+       lang: 'en',
+       id: 'DropzoneErrTooBig',
+       value: '"{name}" exceeds the {max} MB limit.'
+     }, {
+       lang: 'en',
+       id: 'DropzoneErrTooMany',
+       value: 'You can upload up to {max} files.'
+     }, {
+       lang: 'en',
+       id: 'DropzoneErrType',
+       value: '"{name}" is not an allowed type ({types}).'
+     }, {
+       lang: 'en',
+       id: 'DropzoneRemove',
+       value: 'Remove file'
+     }]);
+   }
+   function wuiDzT(id, fallback) {
+     return WUI.i18n && WUI.i18n.t ? WUI.i18n.t(id, fallback) : fallback;
+   }
+
+   // fill {key} placeholders in an i18n template string
+   function wuiDzFmt(str, map) {
+     if (str == null) return '';
+     return String(str).replace(/\{(\w+)\}/g, function (m, k) {
+       return map && map[k] != null ? map[k] : m;
+     });
+   }
+   function wuiDzBytes(bytes) {
+     var sizes = ['Bytes', 'KB', 'MB', 'GB'];
+     if (!bytes) return '0 Bytes';
+     var i = Math.floor(Math.log(bytes) / Math.log(1024));
+     if (i < 0) i = 0;
+     if (i >= sizes.length) i = sizes.length - 1;
+     return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+   }
+   function wuiDzExt(name) {
+     var parts = String(name || '').split('.');
+     return parts.length > 1 ? parts.pop().toLowerCase() : '';
+   }
+   function wuiDzSupportsDT() {
+     try {
+       return !!new DataTransfer();
+     } catch (e) {
+       return false;
+     }
+   }
+
+   // --- WebEOC save-path helpers (absorbed from JS/DragAndDropFiles.js) -----
+   // Board/view/table context lives in the view's leading HTML comment
+   // (WebEOC's own convention). Cached once per page load.
+   var wuiDzDetailsCache = null;
+   function wuiDzCurrentDetails() {
+     if (wuiDzDetailsCache) return wuiDzDetailsCache;
+     var commentText = document.documentElement.firstChild && document.documentElement.firstChild.textContent || '';
+     var lines = commentText.trim().split('\n');
+     var board = (lines[0] || '').trim().split(': ').slice(1).join('') || '';
+     var view = (lines[1] || '').trim().split(': ').slice(1).join('') || '';
+     var table = (lines[2] || '').trim().split(': ').slice(1).join('') || '';
+     wuiDzDetailsCache = {
+       board: board,
+       view: view,
+       table: table
+     };
+     return wuiDzDetailsCache;
+   }
+   var wuiDzRestEndpoint = '../api/rest.svc';
+   function wuiDzAddRecord(fileView, record) {
+     return new Promise(function (resolve) {
+       BoardScript.AddRecord('', fileView, record, function (dataid) {
+         resolve(dataid);
+       });
+     });
+   }
+   function wuiDzUploadFile(board, fileView, attachmentField, attachmentId, file) {
+     var formData = new FormData();
+     formData.append('attachmentFileData', file, file.name);
+     return fetch(wuiDzRestEndpoint + '/board/' + board + '/input/' + fileView + '/' + attachmentId + '/attachments/' + attachmentField, {
+       method: 'POST',
+       body: formData
+     });
+   }
+
+   // --- build one zone instance ---------------------------------------------
+   function wuiDzBuild(el, opts) {
+     el.classList.add('wui-dropzone'); // component hook for weoc-forms.css styling
+
+     var maxMb = parseFloat(opts.maxMb);
+     if (isNaN(maxMb) || maxMb <= 0) maxMb = 30;
+     var maxBytes = maxMb * 1024 * 1024;
+     var maxFiles = parseInt(opts.maxFiles, 10);
+     if (isNaN(maxFiles) || maxFiles < 0) maxFiles = 0; // 0 = unlimited
+
+     var typesRaw = opts.types;
+     if (typeof typesRaw === 'string') typesRaw = typesRaw.split(',');
+     if (!Array.isArray(typesRaw)) typesRaw = [];
+     var types = [],
+       k;
+     for (k = 0; k < typesRaw.length; k++) {
+       var t = String(typesRaw[k]).replace(/^\s+|\s+$/g, '').toLowerCase();
+       if (t) types.push(t);
+     }
+     var allowAll = types.length === 0;
+
+     // --- resolve / create the native input we feed --------------------------
+     var inputSel = opts.input;
+     var input = inputSel ? document.querySelector(inputSel) : el.querySelector('input[type="file"]');
+     if (!input) {
+       input = document.createElement('input');
+       input.type = 'file';
+       input.multiple = true;
+       // visually hidden but focusable/clickable; component drives it
+       input.className = 'wui-dz-input';
+       input.setAttribute('data-wui-dz-native', '');
+       input.style.position = 'absolute';
+       input.style.width = '1px';
+       input.style.height = '1px';
+       input.style.opacity = '0';
+       input.style.pointerEvents = 'none';
+       el.appendChild(input);
+     }
+     var supported = wuiDzSupportsDT();
+     var dt = supported ? new DataTransfer() : null;
+
+     // --- build the internal UI (idempotent) --------------------------------
+     var prompt = el.querySelector('.wui-dz-prompt');
+     if (!prompt) {
+       // icon + title + description, mirroring the legacy DragAndDrop uploader.
+       prompt = document.createElement('div');
+       prompt.className = 'wui-dz-prompt';
+       var dzIcon = document.createElement('span');
+       dzIcon.className = 'material-symbols-outlined wui-dz-icon';
+       dzIcon.setAttribute('aria-hidden', 'true');
+       dzIcon.textContent = 'cloud_upload';
+       prompt.appendChild(dzIcon);
+       var dzTitle = document.createElement('div');
+       dzTitle.className = 'wui-dz-title';
+       dzTitle.setAttribute('data-wui-i18n', 'DropzoneTitle');
+       dzTitle.textContent = wuiDzT('DropzoneTitle', 'Upload Files');
+       prompt.appendChild(dzTitle);
+       var dzDesc = document.createElement('div');
+       dzDesc.className = 'wui-dz-desc';
+       var typesTxt = allowAll ? '' : types.join(', ').toUpperCase() + ' ';
+       dzDesc.textContent = wuiDzFmt(wuiDzT('DropzoneDesc', 'Drag & drop {types}files here. Max size {max} MB.'), {
+         types: typesTxt,
+         max: maxMb
+       });
+       prompt.appendChild(dzDesc);
+       el.appendChild(prompt);
+
+       // "Select files" button (also opens the native picker). stopPropagation so
+       // it doesn't double-fire with the whole-zone click-to-browse handler.
+       var dzBrowse = document.createElement('button');
+       dzBrowse.type = 'button';
+       dzBrowse.className = 'wui-btn primary wui-dz-browse';
+       dzBrowse.setAttribute('data-wui-i18n', 'DropzoneBrowse');
+       dzBrowse.textContent = wuiDzT('DropzoneBrowse', 'Select files');
+       dzBrowse.addEventListener('click', function (e) {
+         e.stopPropagation();
+         input.click();
+       });
+       el.appendChild(dzBrowse);
+     }
+     var list = el.querySelector('.wui-dz-list');
+     if (!list) {
+       list = document.createElement('ul');
+       list.className = 'wui-dz-list';
+       el.appendChild(list);
+     }
+     var feedback = el.querySelector('.wui-dz-feedback');
+     if (!feedback) {
+       feedback = document.createElement('div');
+       // wui- styled feedback (empty-state family), NOT Bootstrap .text-danger
+       feedback.className = 'wui-dz-feedback wui-empty-state is-error';
+       feedback.setAttribute('role', 'alert');
+       feedback.setAttribute('aria-live', 'polite');
+       feedback.style.display = 'none';
+       el.appendChild(feedback);
+     }
+     var feedbackTimer = null;
+     function showFeedback(msg) {
+       feedback.textContent = msg;
+       feedback.style.display = '';
+       if (feedbackTimer) {
+         clearTimeout(feedbackTimer);
+       }
+       feedbackTimer = setTimeout(function () {
+         feedback.style.display = 'none';
+       }, 5000);
+     }
+
+     // --- sync accepted files into the native input -------------------------
+     function syncInput() {
+       if (!supported) return;
+       try {
+         input.files = dt.files;
+       } catch (e) {
+         // Some engines expose input.files read-only; define an own property so
+         // WebEOC (and tests) still observe the managed FileList.
+         try {
+           Object.defineProperty(input, 'files', {
+             value: dt.files,
+             configurable: true,
+             writable: true
+           });
+         } catch (e2) {}
+       }
+     }
+
+     // --- render the chip list from the DataTransfer ------------------------
+     function renderChips() {
+       if (!supported) return;
+       while (list.firstChild) list.removeChild(list.firstChild);
+       var files = dt.files,
+         i;
+       for (i = 0; i < files.length; i++) {
+         var file = files[i];
+         var li = document.createElement('li');
+         li.className = 'wui-dz-chip';
+         li.setAttribute('data-wui-dz-index', String(i));
+         var label = document.createElement('span');
+         label.className = 'wui-dz-chip-name';
+         label.textContent = file.name + ' (' + wuiDzBytes(file.size) + ')';
+         li.appendChild(label);
+         var rm = document.createElement('button');
+         rm.type = 'button';
+         rm.className = 'wui-btn icon-only ghost danger wui-dz-chip-remove';
+         rm.setAttribute('data-wui-dz-remove', String(i));
+         // localized aria-label, kept live across langchange via i18n.apply
+         rm.setAttribute('data-wui-i18n-attr', 'aria-label:DropzoneRemove');
+         rm.setAttribute('aria-label', wuiDzT('DropzoneRemove', 'Remove file'));
+         rm.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">close</span>';
+         li.appendChild(rm);
+         list.appendChild(li);
+       }
+     }
+     function _removeAt(idx) {
+       if (!supported) return;
+       var next = new DataTransfer();
+       var files = dt.files,
+         i;
+       for (i = 0; i < files.length; i++) {
+         if (i !== idx) next.items.add(files[i]);
+       }
+       dt = next;
+       syncInput();
+       renderChips();
+     }
+
+     // --- validate + add a set of files -------------------------------------
+     function _addFiles(fileList) {
+       if (!supported || !fileList) return;
+       var i;
+       for (i = 0; i < fileList.length; i++) {
+         var file = fileList[i];
+         if (maxFiles > 0 && dt.files.length >= maxFiles) {
+           showFeedback(wuiDzFmt(wuiDzT('DropzoneErrTooMany', 'You can upload up to {max} files.'), {
+             max: maxFiles
+           }));
+           break;
+         }
+         if (!allowAll && types.indexOf(wuiDzExt(file.name)) === -1) {
+           showFeedback(wuiDzFmt(wuiDzT('DropzoneErrType', '"{name}" is not an allowed type ({types}).'), {
+             name: file.name,
+             types: types.join(', ')
+           }));
+           continue;
+         }
+         if (file.size > maxBytes) {
+           showFeedback(wuiDzFmt(wuiDzT('DropzoneErrTooBig', '"{name}" exceeds the {max} MB limit.'), {
+             name: file.name,
+             max: maxMb
+           }));
+           continue;
+         }
+         dt.items.add(file);
+       }
+       syncInput();
+       renderChips();
+     }
+
+     // --- wiring ------------------------------------------------------------
+     el.addEventListener('dragover', function (e) {
+       e.preventDefault();
+       el.classList.add('is-dragover');
+     });
+     el.addEventListener('dragleave', function (e) {
+       e.preventDefault();
+       el.classList.remove('is-dragover');
+     });
+     el.addEventListener('drop', function (e) {
+       e.preventDefault();
+       el.classList.remove('is-dragover');
+       if (supported && e.dataTransfer) _addFiles(e.dataTransfer.files);
+     });
+
+     // click-to-browse: anywhere in the zone that is not a chip / remove button
+     el.addEventListener('click', function (e) {
+       var t = e.target;
+       if (t.closest && (t.closest('[data-wui-dz-remove]') || t.closest('.wui-dz-list'))) return;
+       if (t === input) return;
+       input.click();
+     });
+
+     // chip removal (delegated so re-rendered chips keep working)
+     list.addEventListener('click', function (e) {
+       var btn = e.target.closest ? e.target.closest('[data-wui-dz-remove]') : null;
+       if (!btn) return;
+       e.preventDefault();
+       e.stopPropagation();
+       _removeAt(parseInt(btn.getAttribute('data-wui-dz-remove'), 10));
+     });
+
+     // browse / native change -> managed list (when supported)
+     input.addEventListener('change', function () {
+       if (supported) _addFiles(input.files);
+       // when unsupported we intentionally leave the native selection intact
+     });
+
+     // keep localized text fresh on language switch
+     document.documentElement.addEventListener('wui:langchange', function () {
+       prompt.textContent = wuiDzT('DropzonePrompt', prompt.textContent);
+     });
+
+     // --- dz-engine: instance API --------------------------------------------
+     var instance = {
+       el: el,
+       getFiles: function getFiles() {
+         return supported ? dt.files : input.files || [];
+       },
+       addFiles: function addFiles(fileList) {
+         _addFiles(fileList);
+       },
+       removeAt: function removeAt(idx) {
+         _removeAt(idx);
+       },
+       clear: function clear() {
+         if (supported) dt = new DataTransfer();
+         syncInput();
+         renderChips();
+       },
+       createFileRecord: function createFileRecord() {
+         var files = supported ? dt.files : input.files || [];
+         if (opts.webeoc) {
+           if (!opts.fileView) {
+             return Promise.reject(new Error('WUI.dropzone: options.fileView is required when webeoc:true'));
+           }
+           var board = opts.board || wuiDzCurrentDetails().board;
+           var attachmentField = opts.attachmentField || 'file_attachment';
+           var idField = opts.idField || 'attachmentsIDs';
+           var fileView = opts.fileView;
+           var attachmentsIDs = [];
+           var chain = Promise.resolve();
+           Array.prototype.forEach.call(files, function (file) {
+             chain = chain.then(function () {
+               var fileNameSplit = file.name.split('.');
+               var fileType = fileNameSplit[fileNameSplit.length - 1];
+               var record = {
+                 file_name: file.name,
+                 file_type: fileType.toLowerCase(),
+                 file_size: wuiDzBytes(file.size)
+               };
+               return wuiDzAddRecord(fileView, record).then(function (attachmentId) {
+                 return wuiDzUploadFile(board, fileView, attachmentField, attachmentId, file).then(function () {
+                   attachmentsIDs.push(attachmentId);
+                 });
+               });
+             });
+           });
+           return chain.then(function () {
+             $('[name=' + idField + ']').val(JSON.stringify(attachmentsIDs));
+             return attachmentsIDs;
+           });
+         }
+         if (typeof opts.onUpload !== 'function') {
+           return Promise.reject(new Error('WUI.dropzone: options.onUpload is required when webeoc is not true'));
+         }
+         var uploads = [];
+         Array.prototype.forEach.call(files, function (file) {
+           uploads.push(opts.onUpload(file));
+         });
+         return Promise.all(uploads);
+       }
+     };
+     el.__wuiDropzone = instance;
+     return instance;
+   }
+
+   // --- public API ------------------------------------------------------------
+   WUI.dropzone = {
+     create: function create(elOrSelector, options) {
+       var el = typeof elOrSelector === 'string' ? document.querySelector(elOrSelector) : elOrSelector;
+       if (!el) return null;
+       if (el.__wuiDropzone) return el.__wuiDropzone;
+       return wuiDzBuild(el, options || {});
+     }
+   };
+
+   // Declarative back-compat: data-wui-dz-* attrs -> options -> create().
+   WUI.initDropzone = function (el) {
+     if (!el) return null;
+     if (el.__wuiDropzone) return el.__wuiDropzone;
+     var opts = {
+       maxMb: parseFloat(el.getAttribute('data-wui-dz-max-mb')),
+       maxFiles: parseInt(el.getAttribute('data-wui-dz-max-files'), 10),
+       types: el.getAttribute('data-wui-dz-types') || '',
+       input: el.getAttribute('data-wui-dz-input'),
+       webeoc: el.getAttribute('data-wui-dz-webeoc') === 'true',
+       fileView: el.getAttribute('data-wui-dz-file-view') || undefined,
+       table: el.getAttribute('data-wui-dz-table') || undefined,
+       attachmentField: el.getAttribute('data-wui-dz-attachment-field') || undefined,
+       idField: el.getAttribute('data-wui-dz-id-field') || undefined
+     };
+     return WUI.dropzone.create(el, opts);
+   };
+   function wuiBootDropzone() {
+     var zones = document.querySelectorAll('[data-wui-dropzone]');
+     for (var i = 0; i < zones.length; i++) {
+       // data-wui-dz-manual="true" opts a zone OUT of auto-boot (same convention
+       // as data-map-manual on WeocMap) — boards that call WUI.dropzone.create()
+       // explicitly with webeoc/fileView/etc config own their own init timing,
+       // so auto-boot must not race ahead and lock in default (non-webeoc) opts.
+       if (zones[i].getAttribute('data-wui-dz-manual') === 'true') continue;
+       WUI.initDropzone(zones[i]);
+     }
+   }
+   // Immediate for scripts that run after the markup exists, plus WUI.ready as a
+   // fallback for head-placed/deferred tags. initDropzone() is idempotent.
+   wuiBootDropzone();
+   WUI.ready(wuiBootDropzone);
+
+   /* ═══════════════════════════════════════════════════════════════════════
+      11) BUSY / LOADING OVERLAY  (WUI.busy / WUI.buttonBusy / data-wui-loading)
+       A reusable animated-overlay loader. Two surfaces:
+        • WUI.busy(on [, targetEl])  — full-page (no target) or element-scoped
+                                       (absolute over targetEl) busy overlay.
+        • WUI.buttonBusy(btn, on)    — inline busy state on a single button.
+       The overlay markup + the localizable "Please wait" label live HERE (in the
+      bundle). The animated energy→TAQA MorphSVG timeline lives in the companion
+      script JS/weoc-loader.js (window.WUILoader) which is NOT bundled and loads
+      GSAP itself. This module has NO hard dependency on GSAP or on the companion:
+      if window.WUILoader is present it is asked to mount() the branded SVG into
+      the overlay; if absent, a pure-CSS fallback spinner (.wui-busy-spinner)
+      shows instead. Everything degrades to a static, working overlay.
+       Declarative: [data-wui-loading] on a <form> shows a busy overlay on submit
+      (attribute value optionally a CSS selector to scope the overlay, or "self"
+      to scope it over the form); on a <button> it sets that button busy on click.
+       i18n keys: LoaderPleaseWait.  Delegated on document + idempotent per target.
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   var OVERLAY_CLASS = 'wui-busy-overlay';
+   function i18nT(id, fallback) {
+     return WUI.i18n && WUI.i18n.t ? WUI.i18n.t(id, fallback) : fallback;
+   }
+
+   /* Build a fresh overlay: a figure (holds the branded SVG once the companion
+      mounts, or the CSS fallback spinner in the meantime) + a localizable label
+      with animated dots. The label text lives in a child <span> so WUI.i18n.apply
+      (which sets textContent) can re-localize it without clobbering the dots. */
+   function buildOverlay() {
+     var ov = document.createElement('div');
+     ov.className = OVERLAY_CLASS;
+     ov.setAttribute('role', 'status');
+     ov.setAttribute('aria-live', 'polite');
+     ov.setAttribute('aria-busy', 'true');
+     var fig = document.createElement('div');
+     fig.className = 'wui-busy-figure';
+     var spinner = document.createElement('div');
+     spinner.className = 'wui-busy-spinner';
+     spinner.setAttribute('aria-hidden', 'true');
+     fig.appendChild(spinner);
+     ov.appendChild(fig);
+     var text = document.createElement('div');
+     text.className = 'wui-busy-text';
+     var lbl = document.createElement('span');
+     lbl.setAttribute('data-wui-i18n', 'LoaderPleaseWait');
+     lbl.textContent = i18nT('LoaderPleaseWait', 'Please wait');
+     var dots = document.createElement('span');
+     dots.className = 'wui-busy-dots';
+     dots.setAttribute('aria-hidden', 'true');
+     text.appendChild(lbl);
+     text.appendChild(dots);
+     ov.appendChild(text);
+     return ov;
+   }
+
+   /* Hand the overlay to the companion animation driver if it is on the page.
+      Guarded so a broken/absent companion never breaks the busy state. */
+   function mountLoader(ov) {
+     var L = window.WUILoader;
+     if (L && typeof L.mount === 'function') {
+       try {
+         L.mount(ov);
+       } catch (e) {}
+     }
+   }
+   function unmountLoader(ov) {
+     var L = window.WUILoader;
+     if (L && typeof L.unmount === 'function') {
+       try {
+         L.unmount(ov);
+       } catch (e) {}
+     }
+   }
+   var fullOverlay = null; // the single full-page overlay, if any
+
+   function showBusy(target) {
+     var ov;
+     if (target) {
+       if (target.__wuiBusyOverlay) return target.__wuiBusyOverlay; // idempotent
+       ov = buildOverlay();
+       ov.classList.add('wui-busy-scoped');
+       // Give the target a positioning context so absolute inset:0 covers it.
+       var cs = window.getComputedStyle ? window.getComputedStyle(target) : null;
+       var pos = cs ? cs.position : target.style && target.style.position;
+       if (!pos || pos === 'static') {
+         target.style.position = 'relative';
+         target.__wuiBusyPosSet = true;
+       }
+       target.appendChild(ov);
+       target.__wuiBusyOverlay = ov;
+       target.setAttribute('aria-busy', 'true');
+     } else {
+       if (fullOverlay) return fullOverlay; // idempotent
+       ov = buildOverlay();
+       ov.classList.add('wui-busy-fullpage');
+       document.body.appendChild(ov);
+       fullOverlay = ov;
+       if (WUI.lockScroll) WUI.lockScroll();
+     }
+     if (WUI.i18n && WUI.i18n.apply) WUI.i18n.apply(ov);
+     mountLoader(ov);
+     return ov;
+   }
+   function hideBusy(target) {
+     var ov = target ? target.__wuiBusyOverlay : fullOverlay;
+     if (!ov) return;
+     unmountLoader(ov);
+     if (ov.parentNode) ov.parentNode.removeChild(ov);
+     if (target) {
+       target.__wuiBusyOverlay = null;
+       target.removeAttribute('aria-busy');
+       if (target.__wuiBusyPosSet) {
+         target.style.position = '';
+         target.__wuiBusyPosSet = false;
+       }
+     } else {
+       fullOverlay = null;
+       if (WUI.unlockScroll) WUI.unlockScroll();
+     }
+   }
+
+   /* WUI.busy(on [, targetEl]) — show/hide a busy overlay. No targetEl = full
+      page; with targetEl = overlay positioned over that element. Returns the
+      overlay element on show. */
+   WUI.busy = function (on, targetEl) {
+     if (on) return showBusy(targetEl || null);
+     hideBusy(targetEl || null);
+   };
+
+   /* WUI.buttonBusy(btn, on) — disable the button + flag it busy (CSS renders an
+      inline spinner off .is-busy). Restores the button's prior disabled state. */
+   WUI.buttonBusy = function (btn, on) {
+     if (!btn) return;
+     if (on) {
+       if (btn.__wuiBtnBusy) return; // idempotent
+       btn.__wuiBtnBusy = true;
+       btn.__wuiBtnPrevDisabled = !!btn.disabled;
+       btn.disabled = true;
+       btn.classList.add('is-busy');
+       btn.setAttribute('aria-busy', 'true');
+     } else {
+       if (!btn.__wuiBtnBusy) return;
+       btn.__wuiBtnBusy = false;
+       btn.disabled = !!btn.__wuiBtnPrevDisabled;
+       btn.classList.remove('is-busy');
+       btn.removeAttribute('aria-busy');
+     }
+   };
+
+   /* Resolve the scope target for a declarative [data-wui-loading] value:
+        ""      → full page (null target)
+        "self"  → the host element itself
+        "<sel>" → the first element matching the CSS selector, else full page   */
+   function resolveScope(host, val) {
+     if (!val) return null;
+     if (val === 'self') return host;
+     var el = null;
+     try {
+       el = document.querySelector(val);
+     } catch (e) {}
+     return el || null;
+   }
+
+   /* declarative: form[data-wui-loading] submit → busy overlay. Capture phase so
+      the overlay is up before any other submit handler runs. */
+   document.addEventListener('submit', function (e) {
+     var form = e.target;
+     if (!form || form.nodeType !== 1 || !form.matches || !form.matches('form[data-wui-loading]')) return;
+     WUI.busy(true, resolveScope(form, form.getAttribute('data-wui-loading')));
+   }, true);
+
+   /* declarative: button[data-wui-loading] click → button busy. Submit buttons
+      inside a data-wui-loading form are covered by the submit handler above, so
+      only handle standalone (non-submit) buttons here to avoid double handling. */
+   document.addEventListener('click', function (e) {
+     var btn = e.target.closest ? e.target.closest('button[data-wui-loading],[role="button"][data-wui-loading]') : null;
+     if (!btn) return;
+     if (btn.type === 'submit' && btn.form) return;
+     WUI.buttonBusy(btn, true);
+   });
+
+   /* ═══════════════════════════════════════════════════════════════════════
+      12) NUMBER  (auto-enhance native number inputs into the themed stepper)
+      Every <input type="number"> that is not already wrapped and not opted out
+      is upgraded IN PLACE into the .wui-number component: a presentational
+      wrapper is inserted before the input, the SAME input node is moved into it
+      (name/id/value/attributes/listeners all survive — nothing is cloned), and
+      the two [data-wui-step] buttons are appended. The stepping itself lives in
+      overlays.js (delegated [data-wui-step] → input.stepUp()/stepDown()); this
+      module ONLY injects the markup so that handler has buttons to drive.
+       Opt out with data-wui-no-step / data-wui-no-number on the input or any
+      ancestor. Idempotent (input.__wuiNumber guard + "already child of
+      .wui-number" check) so a second pass, WUI.ready, and the MutationObserver
+      never double-wrap. Stepper aria-labels are localized via WUI.i18n
+      (NumberStepUp / NumberStepDown) with data-wui-i18n-attr markers so they
+      re-localize live on language switch. The buttons are aria-hidden mouse aids
+      (tabindex=-1); the input stays keyboard-steppable and submits normally.
+       API: WUI.enhanceNumbers(root) — boards call it after their own AJAX.
+      Boot: immediate + WUI.ready + debounced MutationObserver on document.body.
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   // en defaults — boards may override (and add ar) via WUI.i18n.register([...]).
+   if (WUI.i18n && WUI.i18n.register) {
+     WUI.i18n.register([{
+       lang: 'en',
+       id: 'NumberStepUp',
+       value: 'Increase'
+     }, {
+       lang: 'en',
+       id: 'NumberStepDown',
+       value: 'Decrease'
+     }]);
+   }
+   function wuiNumT(id, fallback) {
+     return WUI.i18n && WUI.i18n.t ? WUI.i18n.t(id, fallback) : fallback;
+   }
+   var WUI_NO_NUMBER_SEL = '[data-wui-no-step],[data-wui-no-number]';
+   function wuiNumberSkip(input) {
+     if (!input || input.__wuiNumber) return true;
+     // already the component's input (direct child of .wui-number)
+     var parent = input.parentNode;
+     if (parent && parent.nodeType === 1 && parent.classList && parent.classList.contains('wui-number')) return true;
+     // opted out on the input itself or any ancestor
+     if (input.closest && input.closest(WUI_NO_NUMBER_SEL)) return true;
+     return false;
+   }
+   function wuiNumberEnhanceOne(input) {
+     if (wuiNumberSkip(input)) return;
+     var parent = input.parentNode;
+     if (!parent) return; // detached node — nothing to wrap into
+
+     var wrap = document.createElement('div');
+     wrap.className = 'wui-number';
+
+     // Insert the wrapper where the input is, then MOVE the same input node into
+     // it (appendChild relocates, it does not clone) so every attribute, the
+     // current value, and all bound listeners are preserved.
+     parent.insertBefore(wrap, input);
+     wrap.appendChild(input);
+     var btns = document.createElement('div');
+     btns.className = 'wui-number-btns';
+     btns.setAttribute('aria-hidden', 'true');
+     btns.innerHTML = '<button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"' + ' aria-label="' + wuiNumT('NumberStepUp', 'Increase') + '"' + ' data-wui-i18n-attr="aria-label:NumberStepUp">' + '<span class="material-symbols-outlined">keyboard_arrow_up</span></button>' + '<button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"' + ' aria-label="' + wuiNumT('NumberStepDown', 'Decrease') + '"' + ' data-wui-i18n-attr="aria-label:NumberStepDown">' + '<span class="material-symbols-outlined">keyboard_arrow_down</span></button>';
+     wrap.appendChild(btns);
+     input.__wuiNumber = true;
+   }
+   WUI.enhanceNumbers = function (root) {
+     root = root || document;
+     var list = root.querySelectorAll ? root.querySelectorAll('input[type="number"]') : [];
+     for (var i = 0; i < list.length; i++) wuiNumberEnhanceOne(list[i]);
+     // root itself may be a bare number input handed in by a caller
+     if (root.nodeType === 1 && root.matches && root.matches('input[type="number"]')) {
+       wuiNumberEnhanceOne(root);
+     }
+   };
+   function wuiBootNumbers() {
+     WUI.enhanceNumbers(document);
+   }
+
+   // Run immediately (script typically executes after the inputs exist) and again
+   // via WUI.ready for head-placed/deferred tags. enhanceNumbers is idempotent so
+   // the redundant pass is a safe no-op.
+   wuiBootNumbers();
+   WUI.ready(wuiBootNumbers);
+
+   // Watch for AJAX/repeat regions (WebEOC) adding number inputs after boot.
+   // Conservative + cheap: bail unless an added element actually contains an
+   // unwrapped number input, then debounce a full idempotent re-enhance.
+   WUI.ready(function () {
+     if (typeof MutationObserver === 'undefined' || !document.body) return;
+     var rescan = WUI.debounce(function () {
+       WUI.enhanceNumbers(document);
+     }, 100);
+     function hasNewNumberInput(nodes) {
+       for (var i = 0; i < nodes.length; i++) {
+         var n = nodes[i];
+         if (!n || n.nodeType !== 1) continue;
+         if (n.matches && n.matches('input[type="number"]')) return true;
+         if (n.querySelector && n.querySelector('input[type="number"]')) return true;
+       }
+       return false;
+     }
+     var obs = new MutationObserver(function (records) {
+       for (var i = 0; i < records.length; i++) {
+         if (records[i].addedNodes && records[i].addedNodes.length && hasNewNumberInput(records[i].addedNodes)) {
+           rescan();
+           return;
+         }
+       }
+     });
+     obs.observe(document.body, {
+       childList: true,
+       subtree: true
+     });
+   });
+
+   function _typeof(o) {
+     "@babel/helpers - typeof";
+
+     return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+       return typeof o;
+     } : function (o) {
+       return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+     }, _typeof(o);
+   }
+
+   /* ═══════════════════════════════════════════════════════════════════════
+      12) TIMELINE ENGINE  (WUI.timeline.create — node + connector + content feed)
+      One abstract feed shape for every vertical "history"/"timeline"/"event log"
+      list in the system — history tabs, event-timeline tabs, response-config
+      preview cards, whatever comes next. No named variants (no "is-history" /
+      "is-cards" skins): the shape is always icon-bubble node + connector line +
+      a content column; each board's own header()/body()/footer() callbacks
+      decide what actually renders there, out of existing wui-components
+      (wui-badge, wui-plane, wui-flex utilities, form-control, ...) or raw
+      HTML/DOM the board owns.
+       Explicit factory (same shape as WeocMap.create / WUI.dropzone.create):
+        const feed = WUI.timeline.create('#history-list', {
+          node:   function (entry, i, all) { return { icon: 'edit_note', variant: i === 0 ? 'success' : 'secondary' }; },
+          header: function (entry, i, all) { return '&lt;span class="wui-badge primary"&gt;' + entry.Action + '&lt;/span&gt;'; },
+          body:   function (entry, i, all) { var el = document.createElement('div'); el.className = 'wui-plane color-60'; el.textContent = entry.Text; return el; },
+          footer: function (entry, i, all) { return entry.Detail || null; },   // falsy -> footer omitted for this item
+          isLast: function (entry, i, all) { return i === all.length - 1; },   // default shown
+          emptyTemplate: '#tpl-history-empty'                                  // <template> id, cloned when render([]) / render(null)
+        });
+        feed.render(entries);   // full (re)render from an array, in the order given
+        feed.renderEmpty();     // force the empty state
+        feed.prepend(entry);    // build+insert one item at the top (e.g. an inline "add new" row)
+        feed.append(entry);     // build+insert one item at the bottom
+        feed.clear();           // empty the container, no empty-state shown
+       node(entry, i, all) return value:
+        - {icon, variant}         -> standard `wui-icon-bubble solid {variant}` + material icon
+        - {icon, variant, solid:false} -> tinted bubble instead of solid (see weoc-indicators.css)
+        - a string                -> raw HTML, replaces the node's inner content wholesale
+                                      (e.g. a numbered circle instead of an icon — the
+                                      response-config preview shape needs this)
+        - a Node                  -> appended directly
+      header()/body()/footer() return value: string (innerHTML) | Node | Node[] | falsy
+        (falsy = that sub-section is omitted entirely for this item, no empty wrapper left behind).
+      connector(entry, i, all) (optional): return either
+        - a string                -> extra class(es) appended to .wui-timeline-connector
+        - {class, style}          -> same, plus inline CSS custom properties/props
+                                      (e.g. {class: 'tier-accent dotted', style: {'--tier-color': entry.color}}
+                                      for a runtime-colored dotted rail — see weoc-tier-colors.css
+                                      §9 / weoc-timeline.css .tier-accent/.dotted for what's defined).
+       RTL: identical DOM either direction — .wui-timeline-item is a plain flex row,
+      the browser mirrors node/content order under dir="rtl" with no overrides here.
+       Declarative note: unlike dropzone/map, there is no auto-boot from a
+      data-wui-* attribute — a timeline feed always needs at least header/body
+      callbacks supplied by the board, so it is create()-only.
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   function wuiTlAppend(target, value) {
+     if (value === null || value === undefined || value === false || value === '') return false;
+     if (typeof value === 'string') {
+       target.innerHTML = value;
+     } else if (Array.isArray(value)) {
+       value.forEach(function (v) {
+         if (v) target.appendChild(v);
+       });
+     } else if (value.nodeType) {
+       target.appendChild(value);
+     } else {
+       return false;
+     }
+     return true;
+   }
+   function wuiTlBuildNode(el, nodeResult) {
+     if (typeof nodeResult === 'string') {
+       el.innerHTML = nodeResult;
+       return;
+     }
+     if (nodeResult && nodeResult.nodeType) {
+       el.appendChild(nodeResult);
+       return;
+     }
+     var opts = nodeResult || {};
+     var bubble = document.createElement('div');
+     bubble.className = 'wui-icon-bubble' + (opts.solid === false ? '' : ' solid') + (opts.variant ? ' ' + opts.variant : '');
+     var icon = document.createElement('span');
+     icon.className = 'material-symbols-outlined';
+     icon.textContent = opts.icon || '';
+     bubble.appendChild(icon);
+     el.appendChild(bubble);
+   }
+   function wuiTlBuildItem(feedOpts, entry, index, all) {
+     var item = document.createElement('div');
+     item.className = 'wui-timeline-item';
+     var nodeWrap = document.createElement('div');
+     nodeWrap.className = 'wui-timeline-node-wrap';
+     if (typeof feedOpts.node === 'function') {
+       wuiTlBuildNode(nodeWrap, feedOpts.node(entry, index, all));
+     }
+     var connector = document.createElement('div');
+     connector.className = 'wui-timeline-connector';
+     if (typeof feedOpts.connector === 'function') {
+       var connResult = feedOpts.connector(entry, index, all);
+       if (typeof connResult === 'string') {
+         if (connResult) connector.className += ' ' + connResult;
+       } else if (connResult && _typeof(connResult) === 'object') {
+         if (connResult.class) connector.className += ' ' + connResult.class;
+         if (connResult.style) {
+           Object.keys(connResult.style).forEach(function (k) {
+             connector.style.setProperty(k, connResult.style[k]);
+           });
+         }
+       }
+     }
+     nodeWrap.appendChild(connector);
+     item.appendChild(nodeWrap);
+     var content = document.createElement('div');
+     content.className = 'wui-timeline-content';
+     var hdr = document.createElement('div');
+     hdr.className = 'wui-timeline-hdr';
+     if (typeof feedOpts.header === 'function' && wuiTlAppend(hdr, feedOpts.header(entry, index, all))) {
+       content.appendChild(hdr);
+     }
+     var body = document.createElement('div');
+     body.className = 'wui-timeline-body';
+     if (typeof feedOpts.body === 'function' && wuiTlAppend(body, feedOpts.body(entry, index, all))) {
+       content.appendChild(body);
+     }
+     var footer = document.createElement('div');
+     footer.className = 'wui-timeline-footer';
+     if (typeof feedOpts.footer === 'function' && wuiTlAppend(footer, feedOpts.footer(entry, index, all))) {
+       content.appendChild(footer);
+     }
+     item.appendChild(content);
+     var isLast = typeof feedOpts.isLast === 'function' ? feedOpts.isLast(entry, index, all) : index === all.length - 1;
+     if (isLast) item.classList.add('is-last');
+     return item;
+   }
+   function wuiTlBuild(el, opts) {
+     function renderEmpty() {
+       while (el.firstChild) el.removeChild(el.firstChild);
+       if (opts.emptyTemplate) {
+         var tpl = typeof opts.emptyTemplate === 'string' ? document.querySelector(opts.emptyTemplate) : opts.emptyTemplate;
+         if (tpl && tpl.content) {
+           el.appendChild(tpl.content.cloneNode(true));
+           if (window.WUI && WUI.i18n && WUI.i18n.apply) WUI.i18n.apply(el);
+           return;
+         }
+       }
+       if (opts.emptyHtml) el.innerHTML = opts.emptyHtml;
+     }
+     function render(entries) {
+       while (el.firstChild) el.removeChild(el.firstChild);
+       if (!Array.isArray(entries) || entries.length === 0) {
+         renderEmpty();
+         return;
+       }
+       entries.forEach(function (entry, index) {
+         var item = wuiTlBuildItem(opts, entry, index, entries);
+         item.__wuiTlEntry = entry;
+         el.appendChild(item);
+       });
+       if (window.WUI && WUI.i18n && WUI.i18n.apply) WUI.i18n.apply(el);
+     }
+     function insertOne(entry, atStart) {
+       var existing = el.querySelectorAll('.wui-timeline-item');
+       var all = [];
+       for (var i = 0; i < existing.length; i++) all.push(existing[i].__wuiTlEntry || {});
+       if (atStart) all.unshift(entry);else all.push(entry);
+       var item = wuiTlBuildItem(opts, entry, atStart ? 0 : all.length - 1, all);
+       item.__wuiTlEntry = entry;
+
+       // First real item after an empty-state render — clear it before inserting.
+       if (existing.length === 0) {
+         while (el.firstChild) el.removeChild(el.firstChild);
+       }
+       if (atStart) {
+         el.insertBefore(item, el.firstChild);
+         // re-evaluate is-last on what used to be the last item: unaffected by a
+         // prepend, only append() shifts who's last (kept simple: boards that
+         // care about a live is-last after prepend should re-render()).
+       } else {
+         el.appendChild(item);
+       }
+       if (window.WUI && WUI.i18n && WUI.i18n.apply) WUI.i18n.apply(item);
+       return item;
+     }
+     return {
+       el: el,
+       render: render,
+       renderEmpty: renderEmpty,
+       prepend: function prepend(entry) {
+         return insertOne(entry, true);
+       },
+       append: function append(entry) {
+         return insertOne(entry, false);
+       },
+       clear: function clear() {
+         while (el.firstChild) el.removeChild(el.firstChild);
+       }
+     };
+   }
+   WUI.timeline = {
+     create: function create(elOrSelector, options) {
+       var el = typeof elOrSelector === 'string' ? document.querySelector(elOrSelector) : elOrSelector;
+       if (!el) return null;
+       if (el.__wuiTimeline) return el.__wuiTimeline;
+       var instance = wuiTlBuild(el, options || {});
+       el.__wuiTimeline = instance;
+       return instance;
+     }
+   };
 
    /* ═══════════════════════════════════════════════════════════════════════
       9) SECTION OBSERVER & PROGRAMMATIC REFRESH
@@ -1210,16 +2787,6 @@
    document.addEventListener('wui:viewchange', function () {
      WUI.initStickyHeaders();
    });
-
-   function _typeof(o) {
-     "@babel/helpers - typeof";
-
-     return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
-       return typeof o;
-     } : function (o) {
-       return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
-     }, _typeof(o);
-   }
 
    /* ── §11. Toast / Snackbar ─────────────────────────────────────────────────
       Transient notifications. Imperative API; DOM is created on demand and torn

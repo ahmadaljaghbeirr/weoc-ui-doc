@@ -187,16 +187,17 @@
 
 /* ─── Tab / List toggle (is-list-mode) ──────────────────────── */
 /*
-  JS toggles .is-list-mode on .wui-det-body via toggleViewMode().
-  In list mode: header tabs hidden, all panels stack vertically and
-  the det-body itself becomes the scroll container (not each panel).
+  The data-wui-view-mode behavior (WUI.initViewMode) toggles .is-list-mode on
+  the container (default .wui-det-body). In list mode: header tab strip hidden,
+  all panels stack vertically (display:block !important beats the segment
+  engine's inline display), and the det-body becomes the scroll container.
 */
 .wui-det-body.is-list-mode {
   overflow-y: auto;
 }
 
 .wui-det-body.is-list-mode .wui-tab-panel {
-  display: block;
+  display: block !important;
   height: auto;
   overflow-y: visible;
 }

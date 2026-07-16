@@ -250,7 +250,7 @@
         '<div class="wui-hdr-top">' +
           '<div class="wui-hdr-left">' +
             '<a href="' + root + 'weoc-ui-docs.html" class="docs-brand-link">' +
-              '<div class="wui-hdr-icon"><span class="material-symbols-outlined">layers</span></div>' +
+              '<div class="wui-hdr-icon"><span class="material-symbols-outlined" aria-hidden="true">eoc</span></div>' +
               '<div>' +
                 '<div class="wui-hdr-title">weoc-ui</div>' +
                 '<div class="wui-hdr-subtitle">Component Library Reference</div>' +

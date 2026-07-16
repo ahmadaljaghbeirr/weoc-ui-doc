@@ -647,3 +647,8 @@
   .docs-search-input { width: 150px; }
   .docs-search-kbd { display: none; }
 }
+
+/* Header brand: bump the EOC mark a little larger inside its icon tile. */
+.docs-brand-link .wui-hdr-icon .material-symbols-outlined {
+  font-size: var(--text-xl);
+}

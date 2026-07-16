@@ -1,0 +1,353 @@
+/* =============================================
+   weoc-timeline.css
+   Vertical feed components for record history:
+   wui-timeline-list  — node + rail-connector feed
+                        (one entry per event/state change)
+   wui-history-list   — dot + text-bubble feed
+                        (one entry per free-text update)
+   Both reuse wui-icon-bubble (weoc-indicators.css) for
+   the node/dot — this module only supplies feed layout,
+   the connector rail/line, and text treatment.
+   Loaded via weoc-ui.css barrel (after weoc-empty-state).
+   Requires: agency-theme.css (tokens), weoc-indicators.css
+   (wui-icon-bubble), weoc-empty-state.css (wui-empty-state
+   look referenced by wui-timeline-empty/wui-history-empty).
+
+   Source note: reconstructed from (a) the :where()-scoped
+   fallback rules shipped per-board in SystemCheck/CSS/
+   display.css + details.css (concrete flex/gap/font values
+   for the .wui-timeline-* structural parts) and (b) the old
+   .history-* design in EventReporting/CSS/embed.css, renamed
+   to the wui- namespace. The deployed authoritative stylesheet
+   (…/EventReporting/CSS/details.css on the CDN) is not present
+   in the vault; see report for exact provenance per rule.
+   ============================================= */
+
+/* ============================================================
+   1) TIMELINE (wui-timeline-list)
+   Node-and-rail feed. Each item has an icon node (reuse
+   .wui-icon-bubble) stacked above a connecting rail, and a
+   content column with a badge/meta line and a date.
+
+   HTML:
+     <div class="wui-timeline-list">
+       <div class="wui-timeline-item">
+         <div class="wui-timeline-node-wrap">
+           <div class="wui-icon-bubble solid primary">
+             <span class="material-symbols-outlined">flag</span>
+           </div>
+           <div class="wui-timeline-connector"></div>
+         </div>
+         <div class="wui-timeline-content">
+           <span class="wui-badge primary">Created</span>
+           <div class="wui-timeline-meta">
+             <span class="wui-timeline-author">Jane Doe</span>
+             <span class="wui-timeline-role">Duty Officer</span>
+           </div>
+           <div class="wui-timeline-date">14/07/2026 09:12</div>
+         </div>
+       </div>
+       <!-- add class "is-last" on the final .wui-timeline-item to hide its rail -->
+     </div>
+
+   RTL: the item row is a plain flex row, so the browser mirrors
+   node/content order automatically under dir="rtl" — no
+   logical-property overrides are needed here.
+   ============================================================ */
+
+/* ─── List ─── */
+
+.wui-timeline-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Item ─── */
+
+.wui-timeline-item {
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* ─── Node column (icon + rail) ─── */
+
+.wui-timeline-node-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wui-timeline-connector {
+  flex: 1 1 auto;
+  width: 2px;
+  min-height: 14px;
+  margin-top: var(--space-1);
+  background: var(--color-border);
+}
+
+/* Optional modifiers — composable with any color the board sets via the
+   engine's connector() callback (e.g. a tier's --tier-color). */
+.wui-timeline-connector.tier-accent {
+  background: var(--tier-color, var(--color-border));
+}
+
+.wui-timeline-connector.dotted {
+  background-image: repeating-linear-gradient(to bottom, var(--tier-color, var(--color-border)) 0 4px, transparent 4px 8px);
+  background-color: transparent;
+}
+
+/* Last item in the feed has no next node to connect to. */
+.wui-timeline-item.is-last .wui-timeline-connector {
+  display: none;
+}
+
+/* ─── Content ─── */
+
+.wui-timeline-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-bottom: var(--space-4);
+  min-width: 0;
+}
+
+/* Layout-only sub-sections for the WUI.timeline.create() engine (see
+   interaction/timeline.js). Each is omitted from the DOM entirely when its
+   header()/body()/footer() callback returns nothing — no empty wrapper left
+   behind. What actually renders inside them is whatever the calling board
+   composed (wui-badge, wui-plane, wui-flex utilities, ...) — this module only
+   supplies the vertical stacking + gap between the three. */
+.wui-timeline-hdr,
+.wui-timeline-body,
+.wui-timeline-footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.wui-timeline-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.wui-timeline-author {
+  font-weight: var(--font-semibold);
+  font-size: 13px;
+}
+
+.wui-timeline-role {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.wui-timeline-detail {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.wui-timeline-date {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+/* ─── Empty state ───
+   Matches the padding/gap/icon treatment already shipped inline
+   in the ER details template's timeline-empty fragment. Prefer
+   .wui-empty-state directly for new work; this class exists so
+   boards using the literal "wui-timeline-empty" hook keep the
+   same look without depending on weoc-empty-state.css. */
+
+.wui-timeline-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 24px;
+  color: var(--color-text-secondary);
+}
+
+.wui-timeline-empty .material-symbols-outlined {
+  font-size: 40px;
+  color: var(--color-border);
+}
+
+.wui-timeline-empty span:last-child {
+  font-size: var(--text-sm);
+}
+
+/* ============================================================
+   2) HISTORY (wui-history-list)
+   Dot + text-bubble feed for free-text update history. Unlike
+   the timeline, there is no dedicated rail element in the DOM;
+   the connecting line is drawn with a pseudo-element on the
+   item itself, same as the legacy .history-* design this was
+   ported from.
+
+   HTML:
+     <div class="wui-history-list">
+       <div class="wui-history-item">
+         <div class="wui-history-node">
+           <div class="wui-icon-bubble solid secondary">
+             <span class="material-symbols-outlined">edit</span>
+           </div>
+         </div>
+         <div class="wui-history-content">
+           <div class="wui-history-header">
+             <span>
+               <span class="wui-history-author">Jane Doe</span>
+               <span class="wui-history-role">Duty Officer</span>
+             </span>
+             <span class="wui-history-date">14/07/2026 09:12</span>
+           </div>
+           <div class="wui-history-text">Updated description...</div>
+         </div>
+       </div>
+       <!-- omit ::before rail on the last item automatically (:not(:last-child)) -->
+     </div>
+
+   RTL: the connector uses an absolutely-positioned pseudo-element,
+   so it is written with the logical inset-inline-start property
+   (not left) — it tracks the node column on whichever side dir
+   places it, no [dir="rtl"] override block required.
+   ============================================================ */
+
+/* ─── List ─── */
+
+.wui-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--space-2);
+}
+
+/* ─── Item + rail ─── */
+
+.wui-history-item {
+  display: flex;
+  gap: 14px;
+  position: relative;
+}
+
+/* Rail: positioned to track the center of a default (36px)
+   wui-icon-bubble node — 36 / 2 = 18, minus half the 2px line
+   width = 17px. (The legacy .history-item::before used 15px,
+   sized for a bespoke 32px dot-wrap; this module's node defers
+   sizing to wui-icon-bubble's own 36px default, so the offset
+   is recalculated rather than copied verbatim.) top:40px clears
+   the node (4px node margin-top + 36px bubble height); bottom:-4px
+   bleeds the line into the next item so it reaches the next dot
+   even though .wui-history-list has gap:0. */
+.wui-history-item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 17px;
+  top: 40px;
+  bottom: -4px;
+  width: 2px;
+  background: var(--color-border);
+}
+
+/* Node wrapper — layout only; size/shape/color come from
+   .wui-icon-bubble applied on the child (board JS adds a
+   severity/variant class, e.g. "wui-icon-bubble solid secondary"). */
+.wui-history-node {
+  flex-shrink: 0;
+  margin-top: var(--space-1);
+  z-index: 1;
+}
+
+/* ─── Content ─── */
+
+.wui-history-content {
+  flex: 1;
+  padding-bottom: 20px;
+  min-width: 0;
+}
+
+.wui-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-1);
+}
+
+.wui-history-author {
+  font-size: 0.8rem;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.wui-history-role {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-inline-start: var(--space-1);
+}
+
+.wui-history-date {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.wui-history-text {
+  font-size: 0.8rem;
+  color: var(--color-text-primary);
+  line-height: 1.55;
+  background: var(--color-60);
+  padding: 10px 12px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-border);
+}
+
+/* Editable variant — used where the history entry is being
+   composed rather than displayed (e.g. an update comment box
+   styled to match the feed it will render into). */
+.wui-history-text-input {
+  width: 100%;
+  min-height: 72px;
+  resize: vertical;
+  font-size: 0.8rem;
+  color: var(--color-text-ui);
+  line-height: 1.55;
+  background: var(--color-60);
+  padding: 10px 12px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--color-10);
+  outline: none;
+  font-family: inherit;
+}
+
+.wui-history-text-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* ─── Empty state ───
+   Matches the legacy .history-empty-state treatment. Prefer
+   .wui-empty-state directly for new work; kept as its own class
+   because "wui-history-empty" is the literal hook already used
+   in the ER details template. */
+
+.wui-history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 24px;
+  color: var(--color-text-secondary);
+}
+
+.wui-history-empty .material-symbols-outlined {
+  font-size: 40px;
+  color: var(--color-border);
+}
+
+.wui-history-empty span:last-child {
+  font-size: var(--text-sm);
+}

@@ -58,6 +58,41 @@
   color: var(--tier-4-text);
 }
 
+/* Bordered tier badges — muted border instead of currentColor, matches the
+   tier-kpi/legend look these replace (light bg + soft border + text color) */
+
+.wui-badge.bordered.tier-1,
+.wui-badge-sm.bordered.tier-1,
+.wui-badge-md.bordered.tier-1,
+.wui-badge-lg.bordered.tier-1,
+.wui-badge-xl.bordered.tier-1 {
+  border-color: var(--tier-1-muted);
+}
+
+.wui-badge.bordered.tier-2,
+.wui-badge-sm.bordered.tier-2,
+.wui-badge-md.bordered.tier-2,
+.wui-badge-lg.bordered.tier-2,
+.wui-badge-xl.bordered.tier-2 {
+  border-color: var(--tier-2-muted);
+}
+
+.wui-badge.bordered.tier-3,
+.wui-badge-sm.bordered.tier-3,
+.wui-badge-md.bordered.tier-3,
+.wui-badge-lg.bordered.tier-3,
+.wui-badge-xl.bordered.tier-3 {
+  border-color: var(--tier-3-muted);
+}
+
+.wui-badge.bordered.tier-4,
+.wui-badge-sm.bordered.tier-4,
+.wui-badge-md.bordered.tier-4,
+.wui-badge-lg.bordered.tier-4,
+.wui-badge-xl.bordered.tier-4 {
+  border-color: var(--tier-4-muted);
+}
+
 /* Solid tier badges — high-visibility filled pills */
 
 .wui-badge.solid.tier-1,
@@ -389,4 +424,48 @@
 @keyframes wui-lvl-pulse-tier-4 {
   0%, 100% { opacity: 1;    box-shadow: 0 0 var(--space-xs) var(--tier-4-glow); }
   50%       { opacity: 0.55; box-shadow: 0 0 var(--space-3)  var(--tier-4-glow); }
+}
+
+/* ============================================================
+   9) DYNAMIC TIER ACCENT (--tier-color)
+   For tier lists that are runtime-configured (not the fixed agency
+   tier-1..4 set) — e.g. the Response Configuration per-tier panels,
+   where each tier's color comes from the Assessment Matrix config.
+   The consuming card sets --tier-color inline (e.g.
+   el.style.setProperty('--tier-color', tier.color)); everything under
+   it inherits that custom property, so a single .tier-accent modifier
+   works across wui-collapse-panel/wui-icon-bubble/wui-plane regardless
+   of how many distinct tiers a client has configured.
+   ============================================================ */
+
+.wui-collapse-panel.tier-accent {
+  border-top: 3px solid var(--tier-color, var(--color-border));
+}
+
+.wui-icon-bubble.tier-accent {
+  background: color-mix(in srgb, var(--tier-color, var(--color-text-secondary)) 18%, transparent);
+  color: var(--tier-color, var(--color-text-secondary));
+}
+
+/* Filled/solid version — e.g. numbered step nodes in a response-chain preview,
+   where the tier color needs to be the actual fill, not a soft tint. */
+.wui-icon-bubble.solid.tier-accent {
+  background: var(--tier-color, var(--color-text-secondary));
+  color: var(--color-on-accent);
+}
+
+.wui-badge.solid.tier-accent,
+.wui-badge-sm.solid.tier-accent,
+.wui-badge-md.solid.tier-accent,
+.wui-badge-lg.solid.tier-accent,
+.wui-badge-xl.solid.tier-accent {
+  background: var(--tier-color, var(--color-text-secondary));
+  color: var(--color-on-accent);
+}
+
+/* wui-plane with a tier-colored leading-edge accent bar — e.g. response-chain
+   preview step cards. Logical property (inline-start), so the colored bar
+   sits on the correct side in both LTR and RTL. */
+.wui-plane.tier-accent {
+  border-inline-start: 3px solid var(--tier-color, var(--color-border));
 }
