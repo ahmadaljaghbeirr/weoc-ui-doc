@@ -1,0 +1,15 @@
+.git
+.git/**
+.github
+.github/**
+
+build
+build/\*\*
+
+README.md
+.gitignore
+.assetsignore
+wrangler.jsonc
+worker.js
+
+\*.md
