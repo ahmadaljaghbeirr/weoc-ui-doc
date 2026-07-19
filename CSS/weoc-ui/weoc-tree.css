@@ -1,0 +1,71 @@
+/* =============================================
+   weoc-tree.css
+   wui-tree-view: structure-only hierarchy list.
+   Behavior in interaction/tree-view.js. Visuals
+   promoted from EventReporting's original
+   Configure Fields classification tree.
+   Loaded via weoc-ui-core.css barrel.
+   ============================================= */
+
+.wui-tree-node-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  user-select: none;
+  transition: background 0.1s, color 0.1s;
+}
+
+.wui-tree-node-row:hover {
+  background: var(--color-60);
+}
+
+.wui-tree-node[aria-selected="true"] > .wui-tree-node-row,
+.wui-tree-node.is-selected > .wui-tree-node-row {
+  background: var(--color-10-light);
+  color: var(--color-10);
+  font-weight: var(--font-semibold);
+}
+
+.wui-tree-node-toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.wui-tree-chevron {
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+  transition: transform 0.18s ease;
+}
+
+.wui-tree-node[aria-expanded="true"] > .wui-tree-node-row .wui-tree-chevron {
+  transform: rotate(90deg);
+}
+
+.wui-tree-node-content {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wui-tree-children {
+  display: none;
+  padding-inline-start: var(--space-4);
+}
+
+.wui-tree-node.is-open > .wui-tree-children,
+.wui-tree-node[aria-expanded="true"] > .wui-tree-children {
+  display: block;
+}
+
+.wui-tree-empty {
+  padding: var(--space-6) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}

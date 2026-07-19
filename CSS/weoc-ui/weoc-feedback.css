@@ -506,3 +506,87 @@
 }
 .wui-snackbar .wui-toast-close { color: inherit; }
 .wui-snackbar .wui-toast-close:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* ============================================================
+   6) SAVE BAR (wui-save-bar)
+   Persistent bottom bar for an "unsaved changes" state — distinct
+   from the transient toast/snackbar system above: stays until the
+   user Discards or Saves, does not auto-dismiss. Pairs with the
+   dirty-tracking convention from interaction/dirty-tracker.js
+   (WUI.dirtyTracker toggles .wui-visible + the `hidden` attribute
+   on the bar it's pointed at via data-wui-dirty-bar) — a board can
+   either drive dirty state through that native-field auto-diffing,
+   or toggle .wui-visible/[hidden] itself when the real "dirty"
+   source is app-level state dirtyTracker can't see (e.g. JS-managed
+   draft objects, add/remove rows) rather than raw form-field drift.
+
+   In-flow, not an overlay: place it as the LAST child of the page's
+   flex-column (after the tab-panels/grid), full width by default
+   (a block-level div). It reserves its own row and pushes nothing
+   underneath it out of view — do not add position:fixed here, that
+   floats it over the content above instead of sitting below it.
+
+   Markup:
+     <div class="wui-save-bar" id="save-bar" hidden="true">
+       <div class="wui-save-bar-msg">
+         <span class="material-symbols-outlined">edit_note</span>
+         <span data-wui-i18n="...">You have unsaved changes.</span>
+       </div>
+       <div class="wui-save-bar-actions">
+         <button class="wui-btn outline secondary">Discard</button>
+         <button class="wui-btn primary">Save</button>
+       </div>
+     </div>
+   ============================================================ */
+
+.wui-save-bar {
+  display: flex;
+  background: var(--color-30);
+  border-top: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  max-height: 0;
+  padding: 0 var(--space-5);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    max-height 0.3s ease,
+    padding 0.25s ease,
+    opacity 0.22s ease;
+}
+
+/* Our own display:flex above would otherwise out-cascade the UA [hidden]
+   rule (same specificity, later stylesheet) — restore it explicitly so the
+   native hidden attribute (as toggled by WUI.dirtyTracker) still works. */
+.wui-save-bar[hidden] {
+  display: none;
+}
+
+.wui-save-bar.wui-visible {
+  max-height: 56px;
+  padding: var(--space-3) var(--space-5);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.wui-save-bar-msg {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.wui-save-bar-msg .material-symbols-outlined {
+  font-size: var(--text-sm);
+  color: var(--color-warning);
+}
+
+.wui-save-bar-actions {
+  display: flex;
+  gap: var(--space-sm);
+}

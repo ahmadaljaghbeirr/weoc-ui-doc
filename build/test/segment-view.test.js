@@ -44,3 +44,22 @@ test('showView: participant views (authored updatesection) still shuffle it', ()
   assert.equal(cards.getAttribute('updatesection'), 'true');
   assert.equal(table.hasAttribute('updatesection'), false);
 });
+
+// .wui-tab-panel's own CSS defaults to display:none and only .active overrides
+// to display:block — showView must toggle that class too, or the shown panel
+// (inline style cleared to '') stays hidden under the real stylesheet cascade.
+test('showView: toggles .active alongside inline display (wui-tab-panel compat)', () => {
+  const dom = load(
+    '<div data-wui-view-group="t" data-wui-view="one" id="one" class="active"></div>' +
+    '<div data-wui-view-group="t" data-wui-view="two" id="two"></div>');
+  const { WUI, document } = dom.window;
+  const one = document.getElementById('one'), two = document.getElementById('two');
+
+  WUI.showView('t', 'two');
+  assert.equal(two.classList.contains('active'), true);
+  assert.equal(one.classList.contains('active'), false);
+
+  WUI.showView('t', 'one');
+  assert.equal(one.classList.contains('active'), true);
+  assert.equal(two.classList.contains('active'), false);
+});

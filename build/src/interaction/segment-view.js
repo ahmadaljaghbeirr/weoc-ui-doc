@@ -63,6 +63,11 @@ import { WUI } from '../core/wui.js';
       }
       var on = v.getAttribute('data-wui-view') === name;
       v.style.display = on ? '' : 'none';              // inline display beats stylesheet
+      v.classList.toggle('active', on);                // components whose CSS defaults to
+                                                        // display:none and keys visibility off
+                                                        // .active (e.g. .wui-tab-panel) need this;
+                                                        // it's a no-op for components (like
+                                                        // .wui-scroll-area) with no such rule.
       if (v.hasAttribute('data-wui-updatesection')) {  // only participants get the move
         if (on) v.setAttribute('updatesection', 'true');
         else v.removeAttribute('updatesection');
