@@ -214,15 +214,13 @@
 
   function getRoot() {
     var path = window.location.pathname.replace(/\\/g, '/');
-    // The index (weoc-ui-docs.html) is the only page at the docs root; every
-    // other page lives one level down in the page subfolder. Key off the index
-    // filename, NOT a '/docs/' path segment, so the deployed root folder can be
-    // named anything (e.g. Shared/docs) without colliding with the subfolder.
-    return /weoc-ui-docs\.html$/.test(path) ? './' : '../';
+    // The index is the only page at the docs root; every component page lives
+    // one level down. Cloudflare serves index.html at the trailing-slash URL.
+    return /(?:^|\/)index\.html$/.test(path) || /\/$/.test(path) ? './' : '../';
   }
 
   function getHref(item, root) {
-    if (item.file === null) return root + 'weoc-ui-docs.html';
+    if (item.file === null) return root;
     return root + 'docs/' + item.file;
   }
 
@@ -249,7 +247,7 @@
       '<div class="wui-hdr-inner">' +
         '<div class="wui-hdr-top">' +
           '<div class="wui-hdr-left">' +
-            '<a href="' + root + 'weoc-ui-docs.html" class="docs-brand-link">' +
+            '<a href="' + root + '" class="docs-brand-link">' +
               '<div class="wui-hdr-icon"><span class="material-symbols-outlined" aria-hidden="true">eoc</span></div>' +
               '<div>' +
                 '<div class="wui-hdr-title">weoc-ui</div>' +
