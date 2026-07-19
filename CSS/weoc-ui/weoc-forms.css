@@ -52,9 +52,10 @@
   gap: var(--space-4);
 }
 
-.wui-ftr-wrap.centered .wui-ftr-body {
-  padding-left: 0;
-  padding-right: 0;
+/* Actions-only: no meta/left zone — push the buttons to the trailing edge
+   (space-between would otherwise leave a lone action group hugging the start). */
+.wui-ftr-body.actions-only {
+  justify-content: flex-end;
 }
 
 /* ─── Left (meta / status) ─── */
@@ -250,7 +251,7 @@
 
 .field-label .required {
   color: var(--color-danger);
-  margin-left: var(--space-xs);
+  margin-inline-start: var(--space-xs);
 }
 
 .form-control {
@@ -314,6 +315,226 @@ textarea.form-control {
   min-height: 90px;
 }
 
+/* ------------------------------------------------------------
+   Component: .wui-number — number field with themed stepper.
+   Native number spinners can't be recoloured to match the theme
+   (WebKit exposes almost nothing; Firefox nothing), so we hide
+   them and render token-driven +/- buttons that follow light/dark.
+
+     <div class="wui-number">
+       <input type="number" class="form-control" min="0" step="1">
+       <div class="wui-number-btns" aria-hidden="true">
+         <button type="button" class="wui-number-step" data-wui-step="up"   tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+         <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+       </div>
+     </div>
+
+   weoc-ui.js binds [data-wui-step] (delegated) → input.stepUp()/stepDown()
+   honouring min/max/step, then fires input + change. The <input> stays
+   keyboard-steppable (arrow keys); the buttons are tabindex=-1 mouse aids.
+   ------------------------------------------------------------ */
+.wui-number {
+  position: relative;
+  display: block;
+}
+
+/* Hide native spinners (WebKit + Firefox). width:100% makes the input fill the
+   wrapper so the absolutely-positioned stepper anchors to the input's edge. */
+.wui-number input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  width: 100%;
+  box-sizing: border-box;
+  /* block (not the default inline-block) removes the baseline descender gap that
+     makes the wrapper taller than the input and drops the stepper below its box. */
+  display: block;
+  padding-inline-end: 1.9rem !important;      /* room for the stepper column */
+}
+
+.wui-number input[type="number"]::-webkit-outer-spin-button,
+.wui-number input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Stepper column, inset just inside the input's border */
+.wui-number-btns {
+  position: absolute;
+  top: 1px;
+  inset-inline-end: 1px;
+  bottom: 1px;
+  width: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  border-inline-start: 1px solid var(--color-border);
+  border-start-start-radius: 0;
+  border-start-end-radius: var(--border-radius);
+  border-end-end-radius: var(--border-radius);
+  border-end-start-radius: 0;
+  overflow: hidden;
+}
+
+.wui-number-step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.wui-number-step:hover {
+  background: var(--color-hover);
+  color: var(--color-10);
+}
+
+.wui-number-step:active {
+  background: var(--color-10-light);
+  color: var(--color-10);
+}
+
+.wui-number-step + .wui-number-step {
+  border-top: 1px solid var(--color-border);
+}
+
+.wui-number-step .material-symbols-outlined {
+  /* --text-sm (1rem) so the glyph fits a half-height stepper cell; the btns
+     column is clipped with overflow:hidden and --icon-sm (1.375rem) overflowed,
+     cropping the bottom chevron. */
+  font-size: var(--text-sm);
+  line-height: var(--leading-none);
+}
+
+/* Disabled / readonly: drop the stepper and reclaim the padding */
+.wui-number input[type="number"]:disabled ~ .wui-number-btns,
+.wui-number input[type="number"][readonly] ~ .wui-number-btns {
+  display: none;
+}
+
+.wui-number input[type="number"]:disabled,
+.wui-number input[type="number"][readonly] {
+  padding-inline-end: var(--space-3) !important;
+}
+
+/* ------------------------------------------------------------
+   Component: .wui-dropzone — drag & drop file field. Mirrors the legacy
+   DragAndDrop look: a dashed drop card with a cloud icon + title + description
+   and a "Select files" button, then a list of file rows. JS builds the inner
+   UI (interaction/dropzone.js) + feeds a hidden native <input type=file>.
+   ------------------------------------------------------------ */
+.wui-dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--border-radius);
+  background: var(--color-60);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.wui-dropzone:hover,
+.wui-dropzone.is-dragover {
+  border-color: var(--color-10);
+  background: var(--color-10-light);
+}
+
+/* native file input driven programmatically (zone click / drop / Select button) */
+.wui-dropzone input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wui-dz-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  pointer-events: none;            /* clicks fall through to the zone */
+}
+
+.wui-dz-icon {
+  font-size: var(--icon-xl);
+  line-height: var(--leading-none);
+  color: var(--color-text-secondary);
+}
+
+.wui-dz-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.wui-dz-desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.wui-dz-browse {
+  margin-top: var(--space-2);
+}
+
+/* selected files — full-width rows, not inline pills */
+.wui-dz-list {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  width: 100%;
+  align-self: stretch;
+  text-align: start;
+}
+
+.wui-dz-list:empty {
+  display: none;
+}
+
+.wui-dz-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.wui-dz-chip:last-child {
+  border-bottom: none;
+}
+
+.wui-dz-chip-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-xs);
+  color: var(--color-text-primary);
+}
+
+/* compact inline validation error (override the big centred empty-state block) */
+.wui-dz-feedback.wui-empty-state {
+  flex-direction: row;
+  justify-content: center;
+  min-height: 0;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--border-radius);
+  font-size: var(--text-xs);
+  color: var(--color-danger-text);
+  background: var(--color-danger-light);
+}
+
 .field-hint {
   font-size: var(--text-xs);
   color: var(--color-text-secondary);
@@ -331,23 +552,33 @@ textarea.form-control {
    (weoc-forms.css is imported on input views only). */
 
 
+/* ─── Form Shell ─── */
+/*
+  Explicit flex properties for form.input-form so it participates correctly in
+  the wui-page-shell flex column without needing style="all: inherit" on the
+  element. The form fills available height and passes its width through to
+  wui-det-inner, which handles the max-width centering.
+*/
+form.input-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Input views load weoc-forms.css; details views do not — so this override is
+   input-view-scoped. Flushes the footer inner to match body panel outer edges. */
+.wui-ftr-wrap.centered .wui-ftr-inner {
+  padding-inline: 0;
+}
+
 /* Start: Form Footer */
 .form-footer {
   flex-shrink: 0;
   display: flex;
   justify-content: center;
-}
-
-.form-footer .page-center {
-  background: var(--color-30);
-  border-radius: var(--border-radius);
-  box-shadow: var(--widget-shadow);
-  padding: var(--space-3) var(--space-5);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-sm);
-  width: 100%;
 }
 
 /* End: Form Footer */

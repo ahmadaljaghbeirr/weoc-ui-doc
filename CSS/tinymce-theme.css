@@ -1,0 +1,730 @@
+/* =========================================================
+   tinymce-theme.css
+   TinyMCE 7+ UI-chrome overrides (the .tox-* skin: toolbar,
+   menus, dialogs, statusbar, tooltips…). Load this on the HOST
+   page AFTER TinyMCE's own skin CSS. Every value maps straight
+   to an agency-theme.css token, so the chrome follows the page's
+   <html data-theme> (light default, [data-theme="dark"] override)
+   automatically — no per-editor theming code for the chrome.
+
+   The EDITOR CONTENT (the <iframe>) is a separate document and is
+   themed by tinymce-content-tokens.css (passed via `content_css`);
+   weoc-ui.js keeps that iframe's data-theme in sync with the page.
+
+   Convention (matches tom-select-agency.css / flatpickr-agency.css):
+   values map to the closest agency token; !important only where
+   TinyMCE's skin would otherwise win.
+   ========================================================= */
+
+/* ── Main container ─────────────────────────────────────── */
+.tox-tinymce {
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--border-radius) !important;
+  background-color: var(--color-30) !important;
+  font-family: var(--font-body) !important;
+}
+
+/* ── Editor header (menubar + toolbar band) ─────────────── */
+.tox:not(.tox-tinymce-inline) .tox-editor-header {
+  background-color: var(--color-60) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  box-shadow: none !important;
+}
+
+.tox .tox-toolbar,
+.tox .tox-toolbar__overflow,
+.tox .tox-toolbar__primary {
+  background-color: var(--color-60) !important;
+  background-image: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+/* Toolbar container — oxide paints it #fff, which bleeds through as white
+   strips behind the toolbar. Remove the fill entirely (the editor-header
+   behind it already carries the chrome colour). */
+.tox .tox-toolbar-overlord {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* ── Toolbar buttons ────────────────────────────────────── */
+.tox .tox-tbtn {
+  color: var(--color-text-ui) !important;
+  background-color: transparent !important;
+  border: 0 !important;
+}
+
+.tox .tox-tbtn:hover:not(:disabled) {
+  background-color: var(--color-10-light) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-tbtn--active,
+.tox .tox-tbtn--enabled {
+  background-color: var(--color-10) !important;
+  color: var(--color-on-accent) !important;
+}
+
+.tox .tox-tbtn:disabled {
+  color: var(--color-text-secondary) !important;
+  opacity: 0.6;
+}
+
+.tox .tox-tbtn svg {
+  fill: currentColor !important;
+}
+
+/* ── Menubar ────────────────────────────────────────────── */
+.tox .tox-menubar {
+  background-color: var(--color-60) !important;
+  background-image: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+.tox .tox-mbtn {
+  background-color: transparent !important;
+  color: var(--color-text-ui) !important;
+  border: 0 !important;
+}
+
+.tox .tox-mbtn:hover:not(:disabled) {
+  background-color: var(--color-10-light) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-mbtn--active {
+  background-color: var(--color-10) !important;
+  color: var(--color-on-accent) !important;
+}
+
+/* ── Menus & dropdown collections ───────────────────────── */
+.tox .tox-menu,
+.tox .tox-collection {
+  background-color: var(--color-30) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--border-radius) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.tox .tox-collection__item {
+  color: var(--color-text-primary) !important;
+  padding: var(--space-2) var(--space-3) !important;
+}
+
+.tox .tox-collection__item:hover,
+.tox .tox-collection__item--enabled:not(.tox-collection__item--state-disabled) {
+  background-color: var(--color-10-light) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
+  background-color: var(--color-10) !important;
+  color: var(--color-on-accent) !important;
+}
+
+.tox .tox-collection__item--state-disabled {
+  color: var(--color-text-secondary) !important;
+  opacity: 0.5;
+}
+
+/* ── Form controls (dialogs / inputs) ───────────────────── */
+.tox .tox-textfield,
+.tox .tox-textarea,
+.tox .tox-selectfield select,
+.tox input[type="text"],
+.tox input[type="password"],
+.tox input[type="email"],
+.tox input[type="number"],
+.tox input[type="search"],
+.tox textarea {
+  background-color: var(--color-30) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--color-text-primary) !important;
+  padding: var(--space-2) var(--space-3) !important;
+}
+
+.tox .tox-textfield:focus,
+.tox .tox-textarea:focus,
+.tox .tox-selectfield select:focus,
+.tox input[type="text"]:focus,
+.tox textarea:focus {
+  border-color: var(--color-10) !important;
+  box-shadow: 0 0 0 3px var(--color-10-muted) !important;
+}
+
+.tox .tox-textfield:disabled,
+.tox .tox-textarea:disabled,
+.tox input:disabled,
+.tox textarea:disabled,
+.tox select:disabled {
+  background-color: var(--color-60) !important;
+  color: var(--color-text-secondary) !important;
+  opacity: 0.6;
+}
+
+/* ── Buttons ────────────────────────────────────────────── */
+.tox .tox-button {
+  background-color: var(--color-10) !important;
+  border: 1px solid var(--color-10) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--color-on-accent) !important;
+  padding: var(--space-2) var(--space-3) !important;
+  font-size: var(--text-sm) !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tox .tox-button:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--color-10) 88%, #000) !important;
+  border-color: color-mix(in srgb, var(--color-10) 88%, #000) !important;
+}
+
+.tox .tox-button:disabled {
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+  color: var(--color-text-secondary) !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tox .tox-button--secondary {
+  background-color: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-button--secondary:hover:not(:disabled) {
+  background-color: var(--color-10-light) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* ── Dialogs ────────────────────────────────────────────── */
+.tox .tox-dialog {
+  background-color: var(--color-30) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--border-radius) !important;
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.tox .tox-dialog__header {
+  background-color: var(--color-60) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+  padding: var(--space-4) !important;
+}
+
+.tox .tox-dialog__title {
+  color: var(--color-text-primary) !important;
+  font-size: var(--text-md) !important;
+  font-weight: var(--font-semibold) !important;
+}
+
+.tox .tox-dialog__body {
+  background-color: var(--color-30) !important;
+  padding: var(--space-6) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-dialog__body-content {
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-dialog__body-content a {
+  color: var(--color-10) !important;
+}
+
+.tox .tox-dialog__footer {
+  background-color: var(--color-60) !important;
+  border-top: 1px solid var(--color-border) !important;
+  padding: var(--space-4) !important;
+}
+
+.tox .tox-dialog__close {
+  color: var(--color-text-ui) !important;
+}
+
+.tox .tox-dialog__close:hover {
+  color: var(--color-text-primary) !important;
+}
+
+/* ── Tabs ───────────────────────────────────────────────── */
+.tox .tox-tabs {
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+.tox .tox-tab {
+  color: var(--color-text-ui) !important;
+  border-bottom: 2px solid transparent !important;
+  padding: var(--space-4) var(--space-6) !important;
+}
+
+.tox .tox-tab:hover {
+  background-color: var(--color-10-light) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-tab--active {
+  color: var(--color-10) !important;
+  border-bottom-color: var(--color-10) !important;
+}
+
+/* ── Panels ─────────────────────────────────────────────── */
+.tox .tox-panel {
+  background-color: var(--color-60) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--border-radius) !important;
+}
+
+.tox .tox-panel__header {
+  background-color: var(--color-30) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+  font-weight: var(--font-semibold) !important;
+}
+
+/* ── Statusbar ──────────────────────────────────────────── */
+.tox .tox-statusbar {
+  background-color: var(--color-60) !important;
+  border-top: 1px solid var(--color-border) !important;
+  color: var(--color-text-secondary) !important;
+}
+
+.tox .tox-statusbar__path,
+.tox .tox-statusbar__wordcount {
+  color: var(--color-text-secondary) !important;
+}
+
+.tox .tox-statusbar a {
+  color: var(--color-text-ui) !important;
+}
+
+/* ── Edit area (the iframe wrapper on the host side) ────── */
+.tox .tox-edit-area {
+  background-color: var(--color-30) !important;
+}
+
+.tox .tox-edit-area__iframe {
+  background-color: var(--color-30) !important;
+}
+
+/* Edit-area focus ring — oxide draws it #006ce7 */
+.tox .tox-edit-area::before {
+  border-color: var(--color-10) !important;
+}
+
+/* ── Promotion ("Upgrade") slot ─────────────────────────────
+   oxide paints this #fff at the top-right of the menubar row. We
+   init with promotion:false, but the empty slot can still render
+   as a white strip — hide it. (If ever re-enabled, the fallback
+   rules keep it on-theme instead of white/blue.) */
+.tox .tox-promotion {
+  display: none !important;
+}
+
+.tox .tox-promotion {
+  background: var(--color-60) !important;
+  background-color: var(--color-60) !important;
+}
+
+.tox .tox-promotion-link {
+  background-color: var(--color-10-light) !important;
+  color: var(--color-10) !important;
+}
+
+.tox .tox-promotion-link:hover,
+.tox .tox-promotion-link:focus {
+  background-color: var(--color-10-muted) !important;
+}
+
+/* ── Labels ─────────────────────────────────────────────── */
+.tox .tox-label,
+.tox .tox-toolbar-label {
+  color: var(--color-text-ui) !important;
+  font-size: var(--text-sm) !important;
+}
+
+/* ── Notifications ──────────────────────────────────────── */
+.tox .tox-notification {
+  background-color: var(--color-60) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-notification--success {
+  border-color: var(--color-success) !important;
+  background-color: var(--color-success-light) !important;
+  color: var(--color-success-text) !important;
+}
+
+.tox .tox-notification--error {
+  border-color: var(--color-danger) !important;
+  background-color: var(--color-danger-light) !important;
+  color: var(--color-danger-text) !important;
+}
+
+.tox .tox-notification--warning {
+  border-color: var(--color-warning) !important;
+  background-color: var(--color-warning-light) !important;
+  color: var(--color-warning-text) !important;
+}
+
+.tox .tox-notification--info {
+  border-color: var(--color-info) !important;
+  background-color: var(--color-info-light) !important;
+  color: var(--color-info-text) !important;
+}
+
+/* ── Tooltips ───────────────────────────────────────────── */
+.tox .tox-tooltip {
+  background-color: var(--color-60) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--color-text-primary) !important;
+  padding: var(--space-2) var(--space-3) !important;
+  font-size: var(--text-xs) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.tox .tox-tooltip__body {
+  background-color: var(--color-60) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* ── Sidebar ────────────────────────────────────────────── */
+.tox .tox-sidebar {
+  background-color: var(--color-60) !important;
+  border-left: 1px solid var(--color-border) !important;
+}
+
+.tox .tox-sidebar-content {
+  background-color: var(--color-60) !important;
+}
+
+/* ── Checkbox ───────────────────────────────────────────── */
+/* Oxide draws the checkbox with SVG icons (the native input is hidden), and
+   the fills hardcode #006ce7 — retint the icons directly. */
+.tox .tox-checkbox__input {
+  accent-color: var(--color-10) !important;
+}
+
+.tox .tox-checkbox__icons .tox-checkbox-icon__unchecked svg {
+  fill: var(--color-text-ui) !important;
+}
+
+.tox .tox-checkbox__icons .tox-checkbox-icon__checked svg,
+.tox .tox-checkbox__icons .tox-checkbox-icon__indeterminate svg {
+  fill: var(--color-10) !important;
+}
+
+.tox .tox-checkbox--disabled .tox-checkbox__icons svg {
+  fill: var(--color-text-secondary) !important;
+}
+
+/* Scrollbars (menus, panels, the edit-area wrapper) are styled by the GLOBAL
+   rule in weoc-reset.css — the .tox chrome lives in the host document, so it is
+   covered automatically. The editor CONTENT iframe is themed separately by
+   tinymce-content-tokens.css. */
+
+/* ── Focus ring ─────────────────────────────────────────── */
+.tox *:focus-visible {
+  outline-color: var(--color-10) !important;
+  outline-width: 2px !important;
+  outline-offset: 2px !important;
+}
+
+/* =========================================================
+   EXTENDED SURFACES
+   Everything else oxide paints with its hardcoded palette
+   (#006ce7 accent, #222f3e navy text, #e3e3e3/#eeeeee borders,
+   #fff/#fcfcfc/#f2f2f2 fills). Retinted to agency tokens so no
+   default blue leaks through on any menu, dialog, or popup.
+   ========================================================= */
+
+/* ── Split / select toolbar buttons (e.g. the "Paragraph" format
+   picker, forecolor split button) ───────────────────────── */
+.tox .tox-tbtn__select-label {
+  color: var(--color-text-ui) !important;
+}
+
+.tox .tox-tbtn--active .tox-tbtn__select-label,
+.tox .tox-tbtn--enabled .tox-tbtn__select-label {
+  color: var(--color-on-accent) !important;
+}
+
+.tox .tox-tbtn__select-chevron svg,
+.tox .tox-tbtn__icon-wrap svg,
+.tox .tox-split-button__chevron svg {
+  fill: currentColor !important;
+}
+
+/* Toolbar search / inline text field */
+.tox .tox-toolbar-textfield {
+  background-color: var(--color-30) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* Naked buttons (dialog "browse", inline text buttons) */
+.tox .tox-naked-btn {
+  color: var(--color-10) !important;
+}
+
+.tox .tox-naked-btn svg {
+  fill: var(--color-text-ui) !important;
+}
+
+/* ── Menu / collection internals ────────────────────────── */
+.tox .tox-collection__group-heading {
+  background-color: var(--color-60) !important;
+  color: var(--color-text-ui) !important;
+}
+
+.tox .tox-collection__group {
+  border-color: var(--color-border) !important;
+}
+
+.tox .tox-collection__item-icon svg,
+.tox .tox-collection__item-checkmark svg,
+.tox .tox-collection__item-caret svg {
+  fill: currentColor !important;
+}
+
+.tox .tox-collection__item-accessory {
+  color: var(--color-text-ui) !important;
+}
+
+.tox .tox-collection--horizontal {
+  background-color: var(--color-30) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+/* Autocompleter (@-mentions / mergetag typeahead) reuses .tox-menu */
+.tox .tox-autocompleter .tox-autocompleter-highlight {
+  color: var(--color-10) !important;
+  font-weight: var(--font-semibold) !important;
+}
+
+/* ── Listbox field (dialog dropdowns) ───────────────────── */
+.tox .tox-listboxfield .tox-listbox--select {
+  background-color: var(--color-30) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-listboxfield .tox-listbox--select:focus {
+  border-color: var(--color-10) !important;
+  box-shadow: 0 0 0 1px var(--color-10) !important;
+}
+
+.tox .tox-listboxfield .tox-listbox--select[disabled] {
+  background-color: var(--color-60) !important;
+  color: var(--color-text-secondary) !important;
+}
+
+.tox .tox-listbox__select-chevron svg {
+  fill: var(--color-text-ui) !important;
+}
+
+/* ── Context toolbar + pop (link/table inline popups) ───── */
+.tox .tox-context-toolbar,
+.tox .tox-pop__dialog {
+  background-color: var(--color-30) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Pop arrow (the little triangle) — ::after = fill, ::before = border */
+.tox .tox-pop.tox-pop--bottom::after { border-top-color: var(--color-30) !important; }
+.tox .tox-pop.tox-pop--bottom::before { border-top-color: var(--color-border) !important; }
+.tox .tox-pop.tox-pop--top::after { border-bottom-color: var(--color-30) !important; }
+.tox .tox-pop.tox-pop--top::before { border-bottom-color: var(--color-border) !important; }
+.tox .tox-pop.tox-pop--left::after { border-right-color: var(--color-30) !important; }
+.tox .tox-pop.tox-pop--left::before { border-right-color: var(--color-border) !important; }
+.tox .tox-pop.tox-pop--right::after { border-left-color: var(--color-30) !important; }
+.tox .tox-pop.tox-pop--right::before { border-left-color: var(--color-border) !important; }
+
+/* ── Insert-table grid picker (Table ▸ Insert table) ────── */
+.tox .tox-insert-table-picker {
+  background-color: var(--color-30) !important;
+}
+
+.tox .tox-insert-table-picker > div {
+  border-color: var(--color-border) !important;
+}
+
+.tox .tox-insert-table-picker .tox-insert-table-picker__selected {
+  background-color: var(--color-10) !important;
+  border-color: var(--color-10) !important;
+}
+
+.tox .tox-insert-table-picker .tox-insert-table-picker__label {
+  color: var(--color-text-ui) !important;
+}
+
+/* ── Number input (table cell/row properties) ───────────── */
+.tox .tox-number-input,
+.tox .tox-number-input .tox-input-wrapper {
+  background: var(--color-30) !important;
+}
+
+/* Steppers: transparent buttons, arrows in the border colour (per request).
+   Hover/active add an accent tint + brighter arrow so they stay discoverable. */
+.tox .tox-number-input button {
+  background: transparent !important;
+  color: var(--color-border) !important;
+}
+
+.tox .tox-number-input button svg {
+  fill: var(--color-border) !important;
+}
+
+.tox .tox-number-input button:hover,
+.tox .tox-number-input button:focus {
+  background: var(--color-10-light) !important;
+}
+
+.tox .tox-number-input button:hover svg,
+.tox .tox-number-input button:focus svg {
+  fill: var(--color-text-primary) !important;
+}
+
+.tox .tox-number-input button:active {
+  background: var(--color-10-muted) !important;
+}
+
+.tox .tox-number-input button:active svg {
+  fill: var(--color-10) !important;
+}
+
+/* ── Dialog side-nav tabs (Help, Table properties, …) ───── */
+.tox .tox-dialog__body-nav-item {
+  color: var(--color-text-ui) !important;
+  border-bottom-color: transparent !important;
+}
+
+.tox .tox-dialog__body-nav-item:focus {
+  background-color: var(--color-10-light) !important;
+}
+
+.tox .tox-dialog__body-nav-item--active {
+  color: var(--color-10) !important;
+  border-bottom-color: var(--color-10) !important;
+}
+
+/* ── Color: swatches + color input + custom-color picker ── */
+.tox .tox-swatches__picker-btn {
+  background-color: transparent !important;
+}
+
+.tox .tox-swatches__picker-btn svg {
+  fill: var(--color-text-ui) !important;
+}
+
+.tox .tox-swatches__picker-btn:hover {
+  background: var(--color-10-light) !important;
+}
+
+.tox .tox-swatch:hover,
+.tox .tox-swatch:focus {
+  box-shadow: 0 0 0 1px var(--color-border) inset !important;
+}
+
+.tox .tox-color-input span:hover:not([aria-disabled=true]),
+.tox .tox-color-input span:focus:not([aria-disabled=true]) {
+  border-color: var(--color-10) !important;
+}
+
+.tox .tox-sv-palette,
+.tox .tox-hue-slider,
+.tox .tox-rgba-preview {
+  border: 1px solid var(--color-border) !important;
+}
+
+.tox .tox-hue-slider-thumb {
+  border-color: var(--color-text-primary) !important;
+}
+
+.tox .tox-rgb-form input {
+  background-color: var(--color-30) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+.tox .tox-rgb-warning-note {
+  background-color: var(--color-danger-light) !important;
+  border: 1px solid var(--color-danger) !important;
+  color: var(--color-danger-text) !important;
+}
+
+/* ── Well / custom-editor frame (codesample, help panels) ─ */
+.tox .tox-well,
+.tox .tox-custom-editor {
+  border: 1px solid var(--color-border) !important;
+}
+
+/* ── Statusbar resize handle + branding ─────────────────── */
+.tox .tox-statusbar__resize-handle svg {
+  fill: var(--color-text-secondary) !important;
+}
+
+.tox .tox-statusbar__resize-handle:hover svg,
+.tox .tox-statusbar__resize-handle:focus svg {
+  fill: var(--color-text-primary) !important;
+}
+
+.tox .tox-statusbar__branding svg {
+  fill: var(--color-text-secondary) !important;
+}
+
+/* ── Loading spinner / throbber → accent ────────────────── */
+.tox .tox-spinner > div {
+  background-color: var(--color-10) !important;
+}
+
+/* ── Form validation icon (invalid field) ───────────────── */
+.tox .tox-control-wrap__status-icon-invalid svg {
+  fill: var(--color-danger) !important;
+}
+
+.tox .tox-control-wrap__status-icon-valid svg {
+  fill: var(--color-success) !important;
+}
+
+/* ── Notification dismiss ───────────────────────────────── */
+.tox .tox-notification__dismiss svg,
+.tox .tox-notification__icon svg {
+  fill: currentColor !important;
+}
+
+/* ── High-contrast / reduced-motion ─────────────────────── */
+@media (prefers-contrast: more) {
+  .tox .tox-tbtn--active,
+  .tox .tox-button {
+    border-width: 2px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tox * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Dark-mode shadow softening (agency shadow tokens already
+   carry darker opacity in dark; these keep menu/dialog lift
+   readable against the darker chrome). ──────────────────── */
+[data-theme="dark"] .tox-tinymce {
+  border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] .tox .tox-menu,
+[data-theme="dark"] .tox .tox-collection,
+[data-theme="dark"] .tox-dialog,
+[data-theme="dark"] .tox .tox-tooltip {
+  box-shadow: var(--shadow-lg) !important;
+}

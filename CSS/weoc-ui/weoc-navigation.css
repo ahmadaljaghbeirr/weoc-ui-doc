@@ -257,14 +257,7 @@
 .tab-panel.active {
   display: block;
 }
-
-.tab-panel::-webkit-scrollbar {
-  width: 4px;
-}
-
-.tab-panel::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* Scrollbar styling is global — see weoc-reset.css (--scrollbar-* tokens). */
 
 /* ============================================================
    2) BAND (wui-band-wrap)
@@ -369,7 +362,7 @@
 .wui-band-wrap.stripe::after {
   content: "";
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: 0;
   bottom: 0;
   width: 4px;

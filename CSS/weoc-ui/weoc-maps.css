@@ -53,7 +53,7 @@
 
 .wui-map-controls-overlay {
     position: absolute;
-    left: 5px;
+    inset-inline-start: 5px;
     bottom: 0;
     z-index: 10;
     pointer-events: auto !important;
@@ -149,7 +149,7 @@
 }
 
 .map-wrapper.is-fs .map-controls-overlay {
-    left: 5px;
+    inset-inline-start: 5px;
     bottom: 0;
 }
 

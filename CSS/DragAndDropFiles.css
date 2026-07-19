@@ -1,0 +1,37 @@
+@import url("weoc-ui/agency-theme.css");
+
+/* Start: Attachemnts Style */
+.dropzone-wrapper {
+    background-color: var(--color-60);
+    border: 2px dashed var(--color-border);
+    border-radius: 8px;
+    padding: 2rem 2rem 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.dropzone-icon {
+    font-size: 4rem;
+    display: block;
+}
+
+.dropzone-text {
+    font-weight: var(--font-semibold);
+    font-size: var(--text-md);
+}
+
+.dropzone-desc {
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    margin-top: var(--space-2);
+}
+
+.dropzone-btn-overlap {
+    position: absolute;
+    bottom: -0.55rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+/* End: Attachemnts Style */

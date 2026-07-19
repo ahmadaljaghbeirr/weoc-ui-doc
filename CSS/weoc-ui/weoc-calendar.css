@@ -114,7 +114,7 @@
 .wui-cal-today-btn {
   height: 32px;
   padding: 0 var(--space-3);
-  margin-left: var(--space-1);
+  margin-inline-start: var(--space-1);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
   background: var(--color-30);
@@ -142,7 +142,7 @@
 .wui-cal-title .wui-cal-title-sub {
   color: var(--color-text-secondary);
   font-weight: var(--font-regular);
-  margin-left: var(--space-1);
+  margin-inline-start: var(--space-1);
 }
 
 /* push the view switcher to the right */
@@ -243,14 +243,14 @@
   min-height: var(--wui-cal-min-day-h);
   min-width: 0;
   padding: var(--space-1);
-  border-right: 1px solid var(--color-border);
+  border-inline-end: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   background: var(--color-30);
   cursor: pointer;
   transition: background 0.12s;
 }
 
-.wui-cal-day:nth-child(7n) { border-right: none; }
+.wui-cal-day:nth-child(7n) { border-inline-end: none; }
 .wui-cal-day:hover { background: var(--color-60); }
 
 .wui-cal-day.is-other-month { background: var(--color-60); }
@@ -301,7 +301,7 @@
   color: var(--color-text-secondary);
   background: none;
   border: none;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   border-radius: var(--radius-xs);
 }
@@ -322,16 +322,17 @@
   align-items: center;
   gap: var(--space-1);
   width: 100%;
-  padding: 2px var(--space-1) 2px 5px;
+  padding-block: 2px;
+  padding-inline: 5px var(--space-1);
   border: none;
-  border-left: 3px solid var(--_accent);
+  border-inline-start: 3px solid var(--_accent);
   border-radius: var(--radius-xs);
   background: var(--_tint);
   color: var(--color-text-primary);
   font-family: inherit;
   font-size: var(--text-2xs);
   line-height: var(--leading-tight);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   overflow: hidden;
   transition: filter 0.12s, box-shadow 0.12s, transform 0.06s;
@@ -379,7 +380,7 @@
 /* all-day / solid emphasis: fill with the accent instead of a tint */
 .wui-cal-event.is-solid {
   background: var(--_accent);
-  border-left-color: var(--_accent);
+  border-inline-start-color: var(--_accent);
   color: var(--color-on-accent);
 }
 .wui-cal-event.is-solid .wui-cal-event-time { color: var(--color-on-accent); opacity: 0.85; }
@@ -409,7 +410,7 @@
   flex-shrink: 0;
 }
 
-.wui-cal-time-corner { border-right: 1px solid var(--color-border); }
+.wui-cal-time-corner { border-inline-end: 1px solid var(--color-border); }
 
 .wui-cal-daycols-head {
   display: grid;
@@ -422,10 +423,10 @@
   align-items: center;
   gap: 1px;
   padding: var(--space-2) var(--space-1);
-  border-left: 1px solid var(--color-border);
+  border-inline-start: 1px solid var(--color-border);
   cursor: pointer;
 }
-.wui-cal-dayhead:first-child { border-left: none; }
+.wui-cal-dayhead:first-child { border-inline-start: none; }
 .wui-cal-dayhead:hover .wui-cal-dayhead-name { color: var(--color-text-primary); }
 
 .wui-cal-dayhead-name {
@@ -474,7 +475,7 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
   color: var(--color-text-secondary);
-  border-right: 1px solid var(--color-border);
+  border-inline-end: 1px solid var(--color-border);
 }
 
 .wui-cal-allday-cols {
@@ -487,10 +488,10 @@
   flex-direction: column;
   gap: 2px;
   padding: var(--space-1);
-  border-left: 1px solid var(--color-border);
+  border-inline-start: 1px solid var(--color-border);
   min-width: 0;
 }
-.wui-cal-allday-cell:first-child { border-left: none; }
+.wui-cal-allday-cell:first-child { border-inline-start: none; }
 
 /* scrollable timegrid */
 .wui-cal-timegrid {
@@ -502,20 +503,20 @@
 }
 
 .wui-cal-gutter {
-  border-right: 1px solid var(--color-border);
+  border-inline-end: 1px solid var(--color-border);
 }
 
 .wui-cal-gutter-hour {
   height: var(--wui-cal-slot-h);
   position: relative;
-  text-align: right;
-  padding-right: var(--space-2);
+  text-align: end;
+  padding-inline-end: var(--space-2);
 }
 
 .wui-cal-gutter-hour > span {
   position: absolute;
   top: -7px;
-  right: var(--space-2);
+  inset-inline-end: var(--space-2);
   font-size: var(--text-2xs);
   color: var(--color-text-secondary);
   font-variant-numeric: tabular-nums;
@@ -532,10 +533,10 @@
 
 .wui-cal-col {
   position: relative;
-  border-left: 1px solid var(--color-border);
+  border-inline-start: 1px solid var(--color-border);
   min-width: 0;
 }
-.wui-cal-col:first-child { border-left: none; }
+.wui-cal-col:first-child { border-inline-start: none; }
 .wui-cal-col.is-today { background: var(--color-10-light); }
 .wui-cal-col.is-weekend { background: color-mix(in srgb, var(--color-60) 45%, transparent); }
 
@@ -557,12 +558,12 @@
 /* absolutely-positioned timed event block (top/height set inline by JS) */
 .wui-cal-event.is-timed {
   position: absolute;
-  left: 2px;
-  right: 2px;
+  inset-inline: 2px;
   flex-direction: column;
   align-items: stretch;
   gap: 0;
-  padding: 3px var(--space-1) 3px 6px;
+  padding-block: 3px;
+  padding-inline: 6px var(--space-1);
   border-radius: var(--radius-sm);
   font-size: var(--text-2xs);
   z-index: 2;
@@ -603,8 +604,7 @@
 /* current-time indicator */
 .wui-cal-now {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline: 0;
   height: 0;
   border-top: 2px solid var(--color-danger);
   z-index: 3;
@@ -613,7 +613,7 @@
 .wui-cal-now::before {
   content: "";
   position: absolute;
-  left: -4px;
+  inset-inline-start: -4px;
   top: -4px;
   width: var(--space-2);
   height: var(--space-2);
@@ -684,12 +684,12 @@
   width: 100%;
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-border);
-  border-left: 3px solid var(--_accent);
+  border-inline-start: 3px solid var(--_accent);
   border-radius: var(--radius-sm);
   background: var(--color-30);
   color: var(--color-text-primary);
   font-family: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   transition: background 0.12s, box-shadow 0.12s;
 }
@@ -767,7 +767,7 @@
   gap: var(--space-3);
   padding: var(--space-4);
   background: var(--_tint);
-  border-left: 4px solid var(--_accent);
+  border-inline-start: 4px solid var(--_accent);
   border-radius: var(--radius-sm);
 }
 
@@ -848,7 +848,8 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  padding: 2px var(--space-2) 2px var(--space-1);
+  padding-block: 2px;
+  padding-inline: var(--space-1) var(--space-2);
   background: var(--color-60);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);

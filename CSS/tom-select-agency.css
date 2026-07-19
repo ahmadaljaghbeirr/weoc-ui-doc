@@ -352,16 +352,23 @@
   z-index: 1060;
 }
 
+/* Dropdown list scrollbar — inherits the library-wide scrollbar system
+   (--scrollbar-* tokens, see weoc-reset.css). Kept explicit because the
+   dropdown is teleported to <body> and this file may load without the
+   component being under a themed ancestor; values resolve identically. */
 .ts-dropdown-content {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
-.ts-dropdown-content::-webkit-scrollbar { width: var(--border-md); }
-.ts-dropdown-content::-webkit-scrollbar-track { background: transparent; }
+.ts-dropdown-content::-webkit-scrollbar { width: var(--scrollbar-size); }
+.ts-dropdown-content::-webkit-scrollbar-track { background: var(--scrollbar-track); }
 .ts-dropdown-content::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: calc(var(--border-radius) / 2);
+  background: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-radius);
+}
+.ts-dropdown-content::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
 
 .ts-dropdown .option,

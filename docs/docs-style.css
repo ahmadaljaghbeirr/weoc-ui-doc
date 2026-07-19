@@ -420,6 +420,223 @@
   color: var(--color-text-secondary);
 }
 
+/* ─── wui-demo — single-source live example + code ────────────────
+   Contract (authored in the page HTML):
+     <div class="wui-demo" data-wui-demo [data-wui-demo-run]>
+       <div class="wui-demo-preview"> ...LIVE markup (source of truth)... </div>
+       <template class="wui-demo-js"> ...optional JS snippet... </template>
+     </div>
+   docs-shell.js renderDemos() reads .wui-demo-preview innerHTML and injects the
+   Markup code box (so the code is EXACTLY what renders), plus a JavaScript box
+   from the <template>. data-wui-demo-run also EXECUTES that JS (single source). */
+.wui-demo {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin: var(--space-4) 0;
+  overflow: hidden;
+  background: var(--color-30);
+}
+
+.wui-demo-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--color-60);
+  padding: var(--space-5);
+}
+
+/* layout modifiers on the demo mirror .docs-example */
+.wui-demo.center   .wui-demo-preview { justify-content: center; }
+.wui-demo.stacked  .wui-demo-preview { flex-direction: column; align-items: stretch; }
+.wui-demo.block    .wui-demo-preview { display: block; }
+.wui-demo.dark-surface .wui-demo-preview { background: var(--color-bg); }
+
+/* code region */
+.wui-demo-code-group { border-top: 1px solid var(--color-border); }
+/* preview-less demo (code-only, e.g. views.html reference skeletons): the code
+   group is the first child, so drop its top border to avoid doubling the demo's
+   own border. */
+.wui-demo > .wui-demo-code-group:first-child { border-top: 0; }
+
+.wui-demo-codebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-30);
+  border-top: 1px solid var(--color-border);
+}
+.wui-demo-code-group > .wui-demo-codebar:first-child { border-top: 0; }
+
+.wui-demo-codelabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+.wui-demo-codelabel .material-symbols-outlined { font-size: var(--icon-sm); }
+
+.wui-demo-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-body);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-ui);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.wui-demo-copy:hover { background: var(--color-10-light); color: var(--color-10); border-color: var(--color-10-muted); }
+.wui-demo-copy.is-copied { color: var(--color-success-text); border-color: var(--color-success-muted); }
+.wui-demo-copy .material-symbols-outlined { font-size: var(--icon-xs); }
+
+.wui-demo .docs-code {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--color-60);
+}
+
+/* Tabbed code (Markup / JavaScript) */
+.wui-demo-tabbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  background: var(--color-30);
+  border-top: 1px solid var(--color-border);
+  padding-right: var(--space-3);
+}
+.wui-demo-tablist { display: flex; }
+.wui-demo-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease;
+}
+.wui-demo-tab .material-symbols-outlined { font-size: var(--icon-sm); }
+.wui-demo-tab:hover { color: var(--color-text-primary); }
+.wui-demo-tab.is-active { color: var(--color-10); border-bottom-color: var(--color-10); }
+
+.wui-demo-pane { display: none; }
+.wui-demo-pane.is-active { display: block; }
+
+/* ─── Header search ──────────────────────────────────────────────*/
+.docs-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.docs-search-icon {
+  position: absolute;
+  left: var(--space-2);
+  font-size: var(--icon-sm);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+}
+
+.docs-search-input {
+  width: 220px;
+  max-width: 40vw;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  background: var(--color-60);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-8) var(--space-2) var(--space-7);
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.docs-search-input:focus {
+  border-color: var(--color-10);
+  box-shadow: 0 0 0 3px var(--color-10-light);
+}
+.docs-search-input::placeholder { color: var(--color-text-secondary); }
+
+.docs-search-kbd {
+  position: absolute;
+  right: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--color-text-secondary);
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  padding: 0 var(--space-1);
+  pointer-events: none;
+}
+
+.docs-search-results {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  width: 320px;
+  max-width: 80vw;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-1);
+  z-index: 50;
+  display: none;
+}
+.docs-search-results.is-open { display: block; }
+
+.docs-search-hit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+}
+.docs-search-hit:hover { background: var(--color-10-light); }
+
+.docs-search-hit-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+}
+.docs-search-hit-group {
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+}
+.docs-search-empty {
+  padding: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
 /* ─── Responsive ─────────────────────────────────────────────────*/
 @media (max-width: 900px) {
   .docs-page {
@@ -427,4 +644,11 @@
   }
   .docs-hero-title { font-size: var(--text-4xl); }
   .docs-space-row { grid-template-columns: 96px 1fr 64px; gap: var(--space-2); }
+  .docs-search-input { width: 150px; }
+  .docs-search-kbd { display: none; }
+}
+
+/* Header brand: bump the EOC mark a little larger inside its icon tile. */
+.docs-brand-link .wui-hdr-icon .material-symbols-outlined {
+  font-size: var(--text-xl);
 }

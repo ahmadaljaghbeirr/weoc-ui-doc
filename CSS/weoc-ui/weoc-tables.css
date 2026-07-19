@@ -121,13 +121,13 @@
 }
 
 .wui-table-standard thead th:first-child {
-  border-left: 1px solid var(--color-border);
-  border-radius: var(--border-radius) 0 0 0;
+  border-inline-start: 1px solid var(--color-border);
+  border-start-start-radius: var(--border-radius);
 }
 
 .wui-table-standard thead th:last-child {
-  border-right: 1px solid var(--color-border);
-  border-radius: 0 var(--border-radius) 0 0;
+  border-inline-end: 1px solid var(--color-border);
+  border-start-end-radius: var(--border-radius);
 }
 
 .wui-table-standard tbody td {
@@ -136,8 +136,8 @@
   color: var(--color-text-primary);
   vertical-align: middle;
   border-bottom: 1px solid var(--color-border);
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
+  border-inline-start: 1px solid transparent;
+  border-inline-end: 1px solid transparent;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -145,11 +145,11 @@
 }
 
 .wui-table-standard tbody td:first-child {
-  border-left-color: var(--color-border);
+  border-inline-start-color: var(--color-border);
 }
 
 .wui-table-standard tbody td:last-child {
-  border-right-color: var(--color-border);
+  border-inline-end-color: var(--color-border);
 }
 
 .wui-table-standard tbody tr:last-child td {
@@ -157,11 +157,11 @@
 }
 
 .wui-table-standard tbody tr:last-child td:first-child {
-  border-radius: 0 0 0 var(--border-radius);
+  border-end-start-radius: var(--border-radius);
 }
 
 .wui-table-standard tbody tr:last-child td:last-child {
-  border-radius: 0 0 var(--border-radius) 0;
+  border-end-end-radius: var(--border-radius);
 }
 
 /* ============================================================
@@ -178,7 +178,14 @@
   --wui-cards-head-px: var(--space-4);
   --wui-cards-actions-col: var(--space-10);
   --wui-cards-centered-col: var(--space-11);
+
+  /* Row surface — color-30 by default; add .color-60 for the darker neutral. */
+  --wui-cards-row-bg: var(--color-30);
 }
+
+/* Row colour variant (mirrors .wui-plane's API): default color-30, opt color-60. */
+.wui-table-cards.color-30 { --wui-cards-row-bg: var(--color-30); }
+.wui-table-cards.color-60 { --wui-cards-row-bg: var(--color-60); }
 
 /* Cards float on the page/container backdrop (gaps between rows show it
    through), not on the card surface — so flatten the sticky header onto that
@@ -188,8 +195,8 @@
   --wui-th-surface: var(--wui-surface, var(--color-bg));
 }
 
-/* Default (no JS): opaque backdrop-coloured header. Matches the gap colour so
-   it reads as "transparent" at rest, yet always occludes scrolled rows. */
+/* Fallback (before/without JS): opaque backdrop-coloured header — never bleeds.
+   Visible only if weoc-ui.js doesn't run; otherwise the managed rules below win. */
 .wui-table-cards thead th {
   background: var(--wui-th-surface);
   color: var(--color-text-primary);
@@ -200,34 +207,36 @@
   padding: 0 var(--wui-cards-head-px);
 }
 
-/* Path B (opt-in): genuinely transparent at rest, opaque only when stuck.
-   Needs data-wui-sticky-head="true" + weoc-ui.js (toggles .is-stuck on the
-   <thead>). Use only when the backdrop behind the table isn't a flat colour;
-   without the attribute the header stays opaque above and never bleeds. */
-.wui-table-cards[data-wui-sticky-head="true"] thead th { background: transparent; }
-.wui-table-cards[data-wui-sticky-head="true"] thead.is-stuck th { background: var(--wui-th-surface); }
+/* Managed by weoc-ui.js §10: it auto-binds every cards table and adds
+   .wui-sticky-managed to the <thead> — so the header is genuinely transparent
+   at rest (shows whatever backdrop it sits on, container-agnostic) and swaps to
+   the opaque surface ONLY while stuck. No per-view attribute needed. */
+.wui-table-cards thead.wui-sticky-managed th { background: transparent; }
+.wui-table-cards thead.wui-sticky-managed.is-stuck th { background: var(--wui-th-surface); }
 
 .wui-table-cards tbody td {
   padding: var(--wui-cards-cell-py) var(--wui-cards-cell-px);
   vertical-align: middle;
   font-size: var(--text-sm);
   color: var(--color-text-primary);
-  background: var(--color-30);
+  background: var(--wui-cards-row-bg);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   transition: border-color 0.12s ease, background 0.12s ease;
 }
 
 .wui-table-cards tbody td:first-child {
-  border-left: 1px solid var(--color-border);
-  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  border-inline-start: 1px solid var(--color-border);
+  border-start-start-radius: var(--border-radius);
+  border-end-start-radius: var(--border-radius);
   overflow-wrap: break-word;
   word-break: break-word;
 }
 
 .wui-table-cards tbody td:last-child {
-  border-right: 1px solid var(--color-border);
-  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  border-inline-end: 1px solid var(--color-border);
+  border-start-end-radius: var(--border-radius);
+  border-end-end-radius: var(--border-radius);
 }
 
 /* Cards-only: empty last <th> treated as actions column */
@@ -255,11 +264,11 @@
 }
 
 .wui-table-cards tbody tr:not(.is-empty):not(.is-disabled):not(.is-loading):hover > td:first-child {
-  border-left-color: var(--_row-accent, var(--color-10));
+  border-inline-start-color: var(--_row-accent, var(--color-10));
 }
 
 .wui-table-cards tbody tr:not(.is-empty):not(.is-disabled):not(.is-loading):hover > td:last-child {
-  border-right-color: var(--_row-accent, var(--color-10));
+  border-inline-end-color: var(--_row-accent, var(--color-10));
 }
 
 .wui-table-standard tbody tr.is-selected td {
@@ -277,11 +286,11 @@
 }
 
 .wui-table-cards tbody tr.is-selected > td:first-child {
-  border-left-color: var(--color-10);
+  border-inline-start-color: var(--color-10);
 }
 
 .wui-table-cards tbody tr.is-selected > td:last-child {
-  border-right-color: var(--color-10-muted);
+  border-inline-end-color: var(--color-10-muted);
 }
 
 .wui-table-cards tbody tr.is-selected:hover > td {
@@ -299,11 +308,11 @@
 }
 
 .wui-table-cards tbody tr.is-highlighted > td:first-child {
-  border-left-color: var(--color-warning);
+  border-inline-start-color: var(--color-warning);
 }
 
 .wui-table-cards tbody tr.is-highlighted > td:last-child {
-  border-right-color: var(--color-warning-muted);
+  border-inline-end-color: var(--color-warning-muted);
 }
 
 .wui-table-standard tbody tr.is-error td {
@@ -317,23 +326,23 @@
 }
 
 .wui-table-cards tbody tr.is-error > td:first-child {
-  border-left-color: var(--color-danger);
+  border-inline-start-color: var(--color-danger);
 }
 
 .wui-table-cards tbody tr.is-error > td:last-child {
-  border-right-color: var(--color-danger-muted);
+  border-inline-end-color: var(--color-danger-muted);
 }
 
 /* ── Row color accents ──
    Standard: explicit color on td:first-child (hover is background-only, no conflict).
    Cards: set --_row-accent on the tr so hover borders inherit the same color. */
 
-.wui-table-standard tbody tr.is-primary   td:first-child { border-left: 3px solid var(--color-10); }
-.wui-table-standard tbody tr.is-success   td:first-child { border-left: 3px solid var(--color-success); }
-.wui-table-standard tbody tr.is-info      td:first-child { border-left: 3px solid var(--color-info); }
-.wui-table-standard tbody tr.is-warning   td:first-child { border-left: 3px solid var(--color-warning); }
-.wui-table-standard tbody tr.is-danger    td:first-child { border-left: 3px solid var(--color-danger); }
-.wui-table-standard tbody tr.is-secondary td:first-child { border-left: 3px solid var(--color-text-secondary); }
+.wui-table-standard tbody tr.is-primary   td:first-child { border-inline-start: 3px solid var(--color-10); }
+.wui-table-standard tbody tr.is-success   td:first-child { border-inline-start: 3px solid var(--color-success); }
+.wui-table-standard tbody tr.is-info      td:first-child { border-inline-start: 3px solid var(--color-info); }
+.wui-table-standard tbody tr.is-warning   td:first-child { border-inline-start: 3px solid var(--color-warning); }
+.wui-table-standard tbody tr.is-danger    td:first-child { border-inline-start: 3px solid var(--color-danger); }
+.wui-table-standard tbody tr.is-secondary td:first-child { border-inline-start: 3px solid var(--color-text-secondary); }
 
 .wui-table-cards tbody tr.is-primary   { --_row-accent: var(--color-10); }
 .wui-table-cards tbody tr.is-success   { --_row-accent: var(--color-success); }
@@ -347,7 +356,7 @@
 .wui-table-cards tbody tr.is-info      > td:first-child,
 .wui-table-cards tbody tr.is-warning   > td:first-child,
 .wui-table-cards tbody tr.is-danger    > td:first-child,
-.wui-table-cards tbody tr.is-secondary > td:first-child { border-left: 3px solid var(--_row-accent); }
+.wui-table-cards tbody tr.is-secondary > td:first-child { border-inline-start: 3px solid var(--_row-accent); }
 
 /* Log variant — sets --_tier so the 4px border + elapsed text color both pick it up */
 .wui-table-log .wui-log-row.is-primary,
@@ -452,7 +461,7 @@
 }
 
 .wui-cell-num {
-  text-align: right;
+  text-align: end;
   font-variant-numeric: tabular-nums;
   font-size: var(--text-xs);
   color: var(--color-text-secondary);
@@ -493,6 +502,28 @@
   width: 80px;
   min-width: 64px;
   text-align: center;
+}
+
+/* ── Fluid table (.is-fluid) ──
+   Fixed px columns (wui-col-md/index/secondary) can't shrink under
+   table-layout:fixed — if their widths sum past the container the table
+   overflows and clips the last column. Use .is-fluid on a table that lives in
+   a resizable/narrow shell (side panel, split-view dialog, details pane) to
+   turn the flexible DATA columns into `auto`: they split the space left after
+   the genuinely-fixed narrow columns (# / actions via wui-col-sm/actions), so
+   the table is always exactly the container width and cells wrap/ellipsize
+   instead of truncating. Narrow fixed columns are intentionally left fixed. */
+.wui-table-standard.is-fluid,
+.wui-table-cards.is-fluid { width: 100%; }
+
+.wui-table-standard.is-fluid .wui-col-md,
+.wui-table-cards.is-fluid .wui-col-md,
+.wui-table-standard.is-fluid .wui-col-index,
+.wui-table-cards.is-fluid .wui-col-index,
+.wui-table-standard.is-fluid .wui-col-secondary,
+.wui-table-cards.is-fluid .wui-col-secondary {
+  width: auto;
+  min-width: 0;
 }
 
 /* ============================================================
@@ -728,7 +759,7 @@
 }
 
 .wui-table-log thead th {
-  text-align: left;
+  text-align: start;
   padding: 7px 14px;
   border-bottom: 1px solid var(--_log-border);
   font-size: var(--text-2xs);
@@ -777,12 +808,12 @@
 }
 
 .wui-log-row > td:first-child {
-  padding-left: 14px;
-  padding-right: 0;
-  border-left: 4px solid var(--_tier, transparent);
+  padding-inline-start: 14px;
+  padding-inline-end: 0;
+  border-inline-start: 4px solid var(--_tier, transparent);
 }
 
-.wui-log-row > td:last-child { padding-right: var(--space-4); }
+.wui-log-row > td:last-child { padding-inline-end: var(--space-4); }
 
 .wui-log-row.is-open > td { border-bottom-color: transparent; }   /* merge with the detail below */
 
@@ -842,11 +873,12 @@
 .wui-log-detail-row > td {
   padding: 0;
   border-bottom: 1px solid var(--_log-border-row);
-  border-left: 4px solid var(--_tier, transparent);
+  border-inline-start: 4px solid var(--_tier, transparent);
 }
 
 .wui-log-detail {
-  padding: var(--space-3) var(--space-4) var(--space-4) 72px;
+  padding-block: var(--space-3) var(--space-4);
+  padding-inline: 72px var(--space-4);
 }
 
 .wui-log-desc {

@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
@@ -18,284 +18,1482 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="grid">
       <div class="docs-page">
-        <style>
-          .demo-col {
-            background: var(--color-10);
-            color: var(--color-on-accent);
-            border-radius: var(--radius-sm);
-            padding: var(--space-2) var(--space-3);
-            font-size: var(--text-xs);
-            font-weight: 700;
-            text-align: center;
-          }
-          .demo-col.alt   { background: var(--color-secondary); }
-          .demo-col.light { background: var(--color-info); }
-          .demo-grid-box {
-            background: var(--color-10);
-            opacity: 0.6;
-            border-radius: var(--radius-sm);
-            height: 48px;
-          }
-          .docs-divider-demo { max-width: 400px; width: 100%; }
-        </style>
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Foundations</div>
-          <div class="docs-hero-title">Grid &amp; Flex</div>
-          <div class="docs-hero-sub">12-column Bootstrap-compatible grid, CSS grid utilities, flex helpers, gap, and the divider component.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_grid_1">Layout</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_grid_2">Grid &amp; Flex</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_grid_3">The layout toolkit: the centered <code>wui-container</code>, a Bootstrap-compatible 12-column <code>wui-row</code>/<code>wui-col</code> system, the quick <code>wui-grid</code> CSS-grid helpers, Tailwind-style <code>wui-flex</code> utilities, <code>wui-gap-*</code> spacing, and the <code>wui-bento</code> dashboard grid. Every demo box is tinted so the layout is legible.</div>
         </div>
 
-        <!-- ── 12-column grid ──────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ Container ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">view_column</span>12-Column Grid (wui-row)</div>
-          <p class="docs-desc">Bootstrap-compatible row/column system. <code>wui-row</code> + <code>wui-col-{1–12}</code>. Responsive: <code>wui-col-sm-*</code>, <code>wui-col-md-*</code>, <code>wui-col-lg-*</code>, <code>wui-col-xl-*</code>.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_grid_4"><span class="material-symbols-outlined">width</span>wui-container</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_grid_5">Centered, responsive content column with side gutters (<code>padding-inline: var(--space-4)</code>). <code>wui-container</code> steps through Bootstrap max-widths (540 / 720 / 960 / 1140px); <code>wui-container-fluid</code> is always full width with the same gutters. The dashed frame below marks the container edges.</p>
 
-          <div class="docs-subsection-title">Even columns</div>
-          <div class="docs-example stacked" style="gap:var(--space-2)">
-            <div class="wui-row g-2">
-              <div class="wui-col-12"><div class="demo-col">col-12</div></div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_6">wui-container (stepped max-width)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Container -->
+              <div class="wui-container" style="border:1px dashed var(--color-10-muted);background:var(--color-10-light);border-radius:var(--radius-sm);padding-block:var(--space-3);text-align:center;color:var(--color-10)">wui-container (centered, max-width per breakpoint)</div>
             </div>
-            <div class="wui-row g-2">
-              <div class="wui-col-6"><div class="demo-col">col-6</div></div>
-              <div class="wui-col-6"><div class="demo-col alt">col-6</div></div>
-            </div>
-            <div class="wui-row g-2">
-              <div class="wui-col-4"><div class="demo-col">col-4</div></div>
-              <div class="wui-col-4"><div class="demo-col alt">col-4</div></div>
-              <div class="wui-col-4"><div class="demo-col light">col-4</div></div>
-            </div>
-            <div class="wui-row g-2">
-              <div class="wui-col-3"><div class="demo-col">3</div></div>
-              <div class="wui-col-3"><div class="demo-col alt">3</div></div>
-              <div class="wui-col-3"><div class="demo-col light">3</div></div>
-              <div class="wui-col-3"><div class="demo-col">3</div></div>
-            </div>
+            <template class="wui-demo-markup">
+              <div class="wui-container"><!-- centered content --></div>
+            </template>
           </div>
 
-          <div class="docs-subsection-title">Mixed widths</div>
-          <div class="docs-example stacked" style="gap:var(--space-2)">
-            <div class="wui-row g-2">
-              <div class="wui-col-8"><div class="demo-col">col-8</div></div>
-              <div class="wui-col-4"><div class="demo-col alt">col-4</div></div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_7">wui-container-fluid (full width)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Fluid container -->
+              <div class="wui-container-fluid" style="border:1px dashed var(--color-10-muted);background:var(--color-10-light);border-radius:var(--radius-sm);padding-block:var(--space-3);text-align:center;color:var(--color-10)">wui-container-fluid (100% width, same gutters)</div>
             </div>
-            <div class="wui-row g-2">
-              <div class="wui-col-3"><div class="demo-col">col-3</div></div>
-              <div class="wui-col-6"><div class="demo-col alt">col-6</div></div>
-              <div class="wui-col-3"><div class="demo-col light">col-3</div></div>
-            </div>
+            <template class="wui-demo-markup">
+              <div class="wui-container-fluid"><!-- full-width content --></div>
+            </template>
           </div>
-          <pre class="docs-code">&lt;div class="wui-row g-3"&gt;    &lt;!-- g-0..5 sets gap --&gt;
-  &lt;div class="wui-col-8"&gt;Main content&lt;/div&gt;
-  &lt;div class="wui-col-4"&gt;Sidebar&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Responsive --&gt;
-&lt;div class="wui-row g-3"&gt;
-  &lt;div class="wui-col-12 wui-col-md-6 wui-col-lg-4"&gt;…&lt;/div&gt;
-  &lt;div class="wui-col-12 wui-col-md-6 wui-col-lg-4"&gt;…&lt;/div&gt;
-  &lt;div class="wui-col-full"&gt;…full width…&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Offsets --&gt;
-&lt;div class="wui-row"&gt;
-  &lt;div class="wui-col-4 wui-offset-4"&gt;Centered 4-col&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Gap modifiers on row: g-{0-5} | gx-{0-5} (horizontal) | gy-{0-5} (vertical) --&gt;
-&lt;!-- Alignment on row: align-start | align-center | align-end | align-stretch --&gt;</pre>
         </div>
 
-        <!-- ── CSS Grid utilities ───────────────────────────────────────────── -->
+        <!-- ══════════════════════════ Row / Col ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">grid_4x4</span>CSS Grid Utilities</div>
-          <p class="docs-desc">Utility classes that apply <code>display:grid</code> with predefined column counts or auto-fill behavior.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_grid_8"><span class="material-symbols-outlined">table_rows</span>wui-row / wui-col</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_grid_9">A 12-column grid: <code>wui-row</code> is the track, <code>wui-col-1</code> … <code>wui-col-12</code> set the span. <code>wui-col-auto</code> shrinks to content, <code>wui-col-full</code> spans the whole row. Gap presets (<code>g-*</code> / <code>gx-*</code> / <code>gy-*</code>), vertical alignment (<code>align-*</code>), offsets (<code>wui-offset-*</code>), and a full set of responsive breakpoint variants (<code>-sm</code> / <code>-md</code> / <code>-lg</code> / <code>-xl</code>) are all supported.</p>
 
-          <div class="docs-subsection-title">wui-grid-{1–6} — fixed column count</div>
-          <div class="docs-example stacked" style="gap:var(--space-3)">
-            <div class="wui-grid wui-grid-3 wui-gap-3" style="width:100%">
-              <div class="demo-grid-box"></div>
-              <div class="demo-grid-box" style="opacity:0.4"></div>
-              <div class="demo-grid-box" style="opacity:0.7"></div>
-            </div>
-            <div class="wui-grid wui-grid-4 wui-gap-3" style="width:100%">
-              <div class="demo-grid-box"></div>
-              <div class="demo-grid-box" style="opacity:0.4"></div>
-              <div class="demo-grid-box" style="opacity:0.7"></div>
-              <div class="demo-grid-box" style="opacity:0.5"></div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;!-- Fixed column count: wui-grid-1 through wui-grid-6 --&gt;
-&lt;div class="wui-grid wui-grid-3 wui-gap-3"&gt;
-  &lt;div&gt;…&lt;/div&gt;
-  &lt;div&gt;…&lt;/div&gt;
-  &lt;div&gt;…&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Auto-fill responsive: wui-grid-auto --&gt;
-&lt;div class="wui-grid wui-grid-auto wui-gap-3"&gt;…&lt;/div&gt;
-
-&lt;!-- Fit to content: wui-grid-fit --&gt;
-&lt;div class="wui-grid wui-grid-fit wui-gap-3"&gt;…&lt;/div&gt;
-
-&lt;!-- Dense packing: add wui-grid-dense --&gt;
-&lt;!-- Fill height: add wui-grid-fill-h --&gt;</pre>
-
-          <div class="docs-subsection-title">Span helpers</div>
-          <pre class="docs-code">&lt;!-- Column span --&gt;
-&lt;div class="wui-grid wui-grid-4 wui-gap-2"&gt;
-  &lt;div class="wui-span-2"&gt;Spans 2 cols&lt;/div&gt;
-  &lt;div class="wui-span-3"&gt;Spans 3 cols&lt;/div&gt;
-  &lt;div class="wui-span-full"&gt;Spans all cols&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Row span --&gt;
-&lt;div class="wui-row-span-2"&gt;Spans 2 rows&lt;/div&gt;
-
-&lt;!-- Start position --&gt;
-&lt;div class="wui-col-start-3"&gt;Starts at col 3&lt;/div&gt;
-&lt;div class="wui-row-start-2"&gt;Starts at row 2&lt;/div&gt;</pre>
-        </div>
-
-        <!-- ── Flex utilities ──────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">swap_horiz</span>Flex Utilities</div>
-
-          <table class="docs-token-table">
-            <thead><tr><th>Class</th><th>CSS</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">wui-flex</span></td><td>display: flex</td></tr>
-              <tr><td><span class="docs-token-name">wui-inline-flex</span></td><td>display: inline-flex</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-row</span></td><td>flex-direction: row</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-col</span></td><td>flex-direction: column</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-wrap</span></td><td>flex-wrap: wrap</td></tr>
-              <tr><td><span class="docs-token-name">wui-justify-between</span></td><td>justify-content: space-between</td></tr>
-              <tr><td><span class="docs-token-name">wui-justify-center</span></td><td>justify-content: center</td></tr>
-              <tr><td><span class="docs-token-name">wui-justify-end</span></td><td>justify-content: flex-end</td></tr>
-              <tr><td><span class="docs-token-name">wui-items-center</span></td><td>align-items: center</td></tr>
-              <tr><td><span class="docs-token-name">wui-items-start</span></td><td>align-items: flex-start</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-1</span></td><td>flex: 1</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-none</span></td><td>flex: none</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-grow</span></td><td>flex-grow: 1</td></tr>
-              <tr><td><span class="docs-token-name">wui-flex-shrink-0</span></td><td>flex-shrink: 0</td></tr>
-              <tr><td><span class="docs-token-name">wui-min-w-0</span></td><td>min-width: 0 (prevents flex overflow)</td></tr>
-              <tr><td><span class="docs-token-name">wui-w-full</span></td><td>width: 100%</td></tr>
-              <tr><td><span class="docs-token-name">wui-h-full</span></td><td>height: 100%</td></tr>
-            </tbody>
-          </table>
-          <pre class="docs-code">&lt;div class="wui-flex wui-items-center wui-justify-between wui-gap-3"&gt;
-  &lt;div class="wui-flex-1 wui-min-w-0"&gt;Flexible content (won't overflow)&lt;/div&gt;
-  &lt;div class="wui-flex-shrink-0"&gt;Fixed end action&lt;/div&gt;
-&lt;/div&gt;</pre>
-        </div>
-
-        <!-- ── Gap utilities ───────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">space_bar</span>Gap Utilities</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Class</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">wui-gap-0</span></td><td>0</td></tr>
-              <tr><td><span class="docs-token-name">wui-gap-xs</span></td><td>var(--space-xs)</td></tr>
-              <tr><td><span class="docs-token-name">wui-gap-sm</span></td><td>var(--space-sm)</td></tr>
-              <tr><td><span class="docs-token-name">wui-gap-1 … wui-gap-6</span></td><td>var(--space-1) … var(--space-6)</td></tr>
-              <tr><td><span class="docs-token-name">wui-gap-8</span></td><td>var(--space-8)</td></tr>
-              <tr><td><span class="docs-token-name">wui-gap-x-{0-5}</span></td><td>column-gap only</td></tr>
-              <tr><td><span class="docs-token-name">wui-gap-y-{0-5}</span></td><td>row-gap only</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- ── Display utilities ───────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">visibility</span>Display Utilities</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Class</th><th>CSS</th></tr></thead>
-            <tbody>
-              <tr><td><span class="docs-token-name">wui-d-none</span></td><td>display: none</td></tr>
-              <tr><td><span class="docs-token-name">wui-d-block</span></td><td>display: block</td></tr>
-              <tr><td><span class="docs-token-name">wui-d-inline</span></td><td>display: inline</td></tr>
-              <tr><td><span class="docs-token-name">wui-d-inline-block</span></td><td>display: inline-block</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- ── wui-divider ─────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">horizontal_rule</span>wui-divider</div>
-          <p class="docs-desc">Horizontal rule component. Use as <code>&lt;hr&gt;</code> or <code>&lt;div&gt;</code>. Modifiers control spacing and thickness.</p>
-
-          <div class="docs-example stacked docs-divider-demo">
-            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Default</div>
-            <hr class="wui-divider">
-            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Small margin (--sm)</div>
-            <hr class="wui-divider wui-divider--sm">
-            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Large margin (--lg)</div>
-            <hr class="wui-divider wui-divider--lg">
-            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Thick (--thick)</div>
-            <hr class="wui-divider wui-divider--thick">
-            <div style="font-size:var(--text-xs);color:var(--color-secondary-text)">Labeled (--labeled)</div>
-            <div class="wui-divider wui-divider--labeled">Section Break</div>
-          </div>
-          <pre class="docs-code">&lt;hr class="wui-divider"&gt;
-&lt;hr class="wui-divider wui-divider--sm"&gt;   &lt;!-- less margin --&gt;
-&lt;hr class="wui-divider wui-divider--lg"&gt;   &lt;!-- more margin --&gt;
-&lt;hr class="wui-divider wui-divider--thick"&gt; &lt;!-- 2px --&gt;
-
-&lt;!-- Labeled: text centered between two lines --&gt;
-&lt;div class="wui-divider wui-divider--labeled"&gt;Section Break&lt;/div&gt;</pre>
-        </div>
-
-        <!-- ── Filter bar / View toggle ────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">filter_list</span>Filter Bar &amp; View Toggle</div>
-
-          <div class="docs-subsection-title">wui-filter-bar</div>
-          <div class="docs-example">
-            <div class="wui-filter-bar" style="width:100%">
-              <div class="wui-search-wrap">
-                <span class="wui-search-icon material-symbols-outlined">search</span>
-                <input type="text" placeholder="Search incidents…" style="width:100%;padding:var(--space-2) var(--space-3) var(--space-2) var(--space-8);border:1px solid rgba(0,0,0,0.15);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-30);color:inherit">
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_10">Even splits — 6+6, 4+4+4, 3×4</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- 6 + 6 -->
+              <div class="wui-row" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">col-6</div>
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">col-6</div>
               </div>
-              <button class="wui-btn outline secondary wui-btn-sm">
-                <span class="material-symbols-outlined">filter_list</span> Filter
-              </button>
+              <!-- 4 + 4 + 4 -->
+              <div class="wui-row" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">col-4</div>
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">col-4</div>
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">col-4</div>
+              </div>
+              <!-- 3 + 3 + 3 + 3 -->
+              <div class="wui-row">
+                <div class="wui-col-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">col-3</div>
+                <div class="wui-col-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">col-3</div>
+                <div class="wui-col-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">col-3</div>
+                <div class="wui-col-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">col-3</div>
+              </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- 6 + 6 -->
+              <div class="wui-row">
+                <div class="wui-col-6"><!-- col-6 --></div>
+                <div class="wui-col-6"><!-- col-6 --></div>
+              </div>
+              <!-- 4 + 4 + 4 -->
+              <div class="wui-row">
+                <div class="wui-col-4"><!-- col-4 --></div>
+                <div class="wui-col-4"><!-- col-4 --></div>
+                <div class="wui-col-4"><!-- col-4 --></div>
+              </div>
+              <!-- 3 + 3 + 3 + 3 -->
+              <div class="wui-row">
+                <div class="wui-col-3"><!-- col-3 --></div>
+                <div class="wui-col-3"><!-- col-3 --></div>
+                <div class="wui-col-3"><!-- col-3 --></div>
+                <div class="wui-col-3"><!-- col-3 --></div>
+              </div>
+            </template>
           </div>
-          <pre class="docs-code">&lt;div class="wui-filter-bar"&gt;
-  &lt;div class="wui-search-wrap"&gt;
-    &lt;span class="wui-search-icon material-symbols-outlined"&gt;search&lt;/span&gt;
-    &lt;input type="text" placeholder="Search…"&gt;
-  &lt;/div&gt;
-  &lt;button class="wui-btn outline secondary wui-btn-sm"&gt;Filter&lt;/button&gt;
-&lt;/div&gt;</pre>
 
-          <div class="docs-subsection-title">wui-view-toggle-group</div>
-          <div class="docs-example">
-            <div class="wui-view-toggle-group">
-              <button class="wui-view-toggle-btn active" title="List view">
-                <span class="material-symbols-outlined">list</span>
-              </button>
-              <button class="wui-view-toggle-btn" title="Grid view">
-                <span class="material-symbols-outlined">grid_view</span>
-              </button>
-              <button class="wui-view-toggle-btn" title="Map view">
-                <span class="material-symbols-outlined">map</span>
-              </button>
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_11">Every column width — wui-col-1 … wui-col-12</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- col-1 + col-11 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">1</div>
+                <div class="wui-col-11" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">11</div>
+              </div>
+              <!-- col-2 + col-10 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">2</div>
+                <div class="wui-col-10" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">10</div>
+              </div>
+              <!-- col-5 + col-7 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-5" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">5</div>
+                <div class="wui-col-7" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">7</div>
+              </div>
+              <!-- col-8 + col-4 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-8" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">8</div>
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">4</div>
+              </div>
+              <!-- col-9 + col-3 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-9" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">9</div>
+                <div class="wui-col-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">3</div>
+              </div>
+              <!-- col-12 (full) -->
+              <div class="wui-row">
+                <div class="wui-col-12" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">col-12</div>
+              </div>
             </div>
+            <template class="wui-demo-markup">
+              <!-- col-1 + col-11 -->
+              <div class="wui-row">
+                <div class="wui-col-1"><!-- 1 --></div>
+                <div class="wui-col-11"><!-- 11 --></div>
+              </div>
+              <!-- col-2 + col-10 -->
+              <div class="wui-row">
+                <div class="wui-col-2"><!-- 2 --></div>
+                <div class="wui-col-10"><!-- 10 --></div>
+              </div>
+              <!-- col-5 + col-7 -->
+              <div class="wui-row">
+                <div class="wui-col-5"><!-- 5 --></div>
+                <div class="wui-col-7"><!-- 7 --></div>
+              </div>
+              <!-- col-8 + col-4 -->
+              <div class="wui-row">
+                <div class="wui-col-8"><!-- 8 --></div>
+                <div class="wui-col-4"><!-- 4 --></div>
+              </div>
+              <!-- col-9 + col-3 -->
+              <div class="wui-row">
+                <div class="wui-col-9"><!-- 9 --></div>
+                <div class="wui-col-3"><!-- 3 --></div>
+              </div>
+              <!-- col-12 (full) -->
+              <div class="wui-row">
+                <div class="wui-col-12"><!-- col-12 --></div>
+              </div>
+            </template>
           </div>
-          <pre class="docs-code">&lt;div class="wui-view-toggle-group"&gt;
-  &lt;button class="wui-view-toggle-btn active"&gt;
-    &lt;span class="material-symbols-outlined"&gt;list&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;button class="wui-view-toggle-btn"&gt;
-    &lt;span class="material-symbols-outlined"&gt;grid_view&lt;/span&gt;
-  &lt;/button&gt;
-&lt;/div&gt;</pre>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_12">wui-col-auto &amp; wui-col-full</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- auto + auto (shrink to content) -->
+              <div class="wui-row" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-auto" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">auto (content width)</div>
+                <div class="wui-col-auto" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">auto</div>
+              </div>
+              <!-- full (1 / -1) -->
+              <div class="wui-row">
+                <div class="wui-col-full" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">wui-col-full (spans the whole row)</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- auto + auto (shrink to content) -->
+              <div class="wui-row">
+                <div class="wui-col-auto"><!-- auto (content width) --></div>
+                <div class="wui-col-auto"><!-- auto --></div>
+              </div>
+              <!-- full (1 / -1) -->
+              <div class="wui-row">
+                <div class="wui-col-full"><!-- spans the whole row --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_13">Offsets — wui-offset-1 … wui-offset-6</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- offset-1 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-4 wui-offset-1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">col-4 · offset-1</div>
+              </div>
+              <!-- offset-2 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-4 wui-offset-2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">col-4 · offset-2</div>
+              </div>
+              <!-- offset-3 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-4 wui-offset-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">col-4 · offset-3</div>
+              </div>
+              <!-- offset-4 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-4 wui-offset-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">col-4 · offset-4</div>
+              </div>
+              <!-- offset-5 -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-3 wui-offset-5" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">col-3 · offset-5</div>
+              </div>
+              <!-- offset-6 -->
+              <div class="wui-row">
+                <div class="wui-col-3 wui-offset-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">col-3 · offset-6</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- offset-1 -->
+              <div class="wui-row">
+                <div class="wui-col-4 wui-offset-1"><!-- col-4 · offset-1 --></div>
+              </div>
+              <!-- offset-2 -->
+              <div class="wui-row">
+                <div class="wui-col-4 wui-offset-2"><!-- col-4 · offset-2 --></div>
+              </div>
+              <!-- offset-3 -->
+              <div class="wui-row">
+                <div class="wui-col-4 wui-offset-3"><!-- col-4 · offset-3 --></div>
+              </div>
+              <!-- offset-4 -->
+              <div class="wui-row">
+                <div class="wui-col-4 wui-offset-4"><!-- col-4 · offset-4 --></div>
+              </div>
+              <!-- offset-5 -->
+              <div class="wui-row">
+                <div class="wui-col-3 wui-offset-5"><!-- col-3 · offset-5 --></div>
+              </div>
+              <!-- offset-6 -->
+              <div class="wui-row">
+                <div class="wui-col-3 wui-offset-6"><!-- col-3 · offset-6 --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_14">Gutter modifiers — g / gx / gy (0 … 5)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- g-0 (no gap) -->
+              <div class="wui-row g-0" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-0</div>
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-0</div>
+              </div>
+              <!-- g-1 -->
+              <div class="wui-row g-1" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-1</div>
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-1</div>
+              </div>
+              <!-- g-2 -->
+              <div class="wui-row g-2" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-2</div>
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-2</div>
+              </div>
+              <!-- g-3 (default) -->
+              <div class="wui-row g-3" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-3</div>
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-3</div>
+              </div>
+              <!-- g-4 -->
+              <div class="wui-row g-4" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-4</div>
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-4</div>
+              </div>
+              <!-- g-5 -->
+              <div class="wui-row g-5" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-5</div>
+                <div class="wui-col-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">g-5</div>
+              </div>
+              <!-- gx-5 (column-gap only) -->
+              <div class="wui-row gx-5" style="margin-bottom:var(--space-3)">
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gx-5</div>
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gx-5</div>
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gx-5</div>
+              </div>
+              <!-- gy-5 (row-gap only — visible when columns wrap to a second line) -->
+              <div class="wui-row gy-5 gx-0">
+                <div class="wui-col-12" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gy-5 · row A</div>
+                <div class="wui-col-12" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gy-5 · row B</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- g-0 (no gap) -->
+              <div class="wui-row g-0">
+                <div class="wui-col-6"><!-- g-0 --></div>
+                <div class="wui-col-6"><!-- g-0 --></div>
+              </div>
+              <!-- g-1 -->
+              <div class="wui-row g-1">
+                <div class="wui-col-6"><!-- g-1 --></div>
+                <div class="wui-col-6"><!-- g-1 --></div>
+              </div>
+              <!-- g-2 -->
+              <div class="wui-row g-2">
+                <div class="wui-col-6"><!-- g-2 --></div>
+                <div class="wui-col-6"><!-- g-2 --></div>
+              </div>
+              <!-- g-3 (default) -->
+              <div class="wui-row g-3">
+                <div class="wui-col-6"><!-- g-3 --></div>
+                <div class="wui-col-6"><!-- g-3 --></div>
+              </div>
+              <!-- g-4 -->
+              <div class="wui-row g-4">
+                <div class="wui-col-6"><!-- g-4 --></div>
+                <div class="wui-col-6"><!-- g-4 --></div>
+              </div>
+              <!-- g-5 -->
+              <div class="wui-row g-5">
+                <div class="wui-col-6"><!-- g-5 --></div>
+                <div class="wui-col-6"><!-- g-5 --></div>
+              </div>
+              <!-- gx-5 (column-gap only) -->
+              <div class="wui-row gx-5">
+                <div class="wui-col-4"><!-- gx-5 --></div>
+                <div class="wui-col-4"><!-- gx-5 --></div>
+                <div class="wui-col-4"><!-- gx-5 --></div>
+              </div>
+              <!-- gy-5 (row-gap only, visible when columns wrap to a second line) -->
+              <div class="wui-row gy-5 gx-0">
+                <div class="wui-col-12"><!-- gy-5 · row A --></div>
+                <div class="wui-col-12"><!-- gy-5 · row B --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_15">Vertical alignment — align-start / center / end / stretch</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- align-start -->
+              <div class="wui-row align-start" style="min-height:90px;margin-bottom:var(--space-3);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">start</div>
+                <div class="wui-col-8" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-5);text-align:center;color:var(--color-10)">tall</div>
+              </div>
+              <!-- align-center -->
+              <div class="wui-row align-center" style="min-height:90px;margin-bottom:var(--space-3);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">center</div>
+                <div class="wui-col-8" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-5);text-align:center;color:var(--color-10)">tall</div>
+              </div>
+              <!-- align-end -->
+              <div class="wui-row align-end" style="min-height:90px;margin-bottom:var(--space-3);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">end</div>
+                <div class="wui-col-8" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-5);text-align:center;color:var(--color-10)">tall</div>
+              </div>
+              <!-- align-stretch -->
+              <div class="wui-row align-stretch" style="min-height:90px;background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div class="wui-col-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">stretch</div>
+                <div class="wui-col-8" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-5);text-align:center;color:var(--color-10)">tall</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- align-start -->
+              <div class="wui-row align-start">
+                <div class="wui-col-4"><!-- start --></div>
+                <div class="wui-col-8"><!-- tall --></div>
+              </div>
+              <!-- align-center -->
+              <div class="wui-row align-center">
+                <div class="wui-col-4"><!-- center --></div>
+                <div class="wui-col-8"><!-- tall --></div>
+              </div>
+              <!-- align-end -->
+              <div class="wui-row align-end">
+                <div class="wui-col-4"><!-- end --></div>
+                <div class="wui-col-8"><!-- tall --></div>
+              </div>
+              <!-- align-stretch -->
+              <div class="wui-row align-stretch">
+                <div class="wui-col-4"><!-- stretch --></div>
+                <div class="wui-col-8"><!-- tall --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_16">Responsive — wui-col-12 wui-col-md-6 wui-col-lg-4</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Full on mobile → halves at md → thirds at lg. Resize the window to see it change. -->
+              <div class="wui-row">
+                <div class="wui-col-12 wui-col-md-6 wui-col-lg-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">12 · md-6 · lg-4</div>
+                <div class="wui-col-12 wui-col-md-6 wui-col-lg-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">12 · md-6 · lg-4</div>
+                <div class="wui-col-12 wui-col-md-12 wui-col-lg-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">12 · md-12 · lg-4</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- Full on mobile → halves at md → thirds at lg -->
+              <div class="wui-row">
+                <div class="wui-col-12 wui-col-md-6 wui-col-lg-4"><!-- 12 · md-6 · lg-4 --></div>
+                <div class="wui-col-12 wui-col-md-6 wui-col-lg-4"><!-- 12 · md-6 · lg-4 --></div>
+                <div class="wui-col-12 wui-col-md-12 wui-col-lg-4"><!-- 12 · md-12 · lg-4 --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_17">Responsive — the full sm / md / lg / xl scale</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm set: sm-6 halves at ≥576px -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-12 wui-col-sm-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">sm-6</div>
+                <div class="wui-col-12 wui-col-sm-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">sm-6</div>
+              </div>
+              <!-- md set: md-4 thirds at ≥768px -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-12 wui-col-md-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">md-4</div>
+                <div class="wui-col-12 wui-col-md-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">md-4</div>
+                <div class="wui-col-12 wui-col-md-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">md-4</div>
+              </div>
+              <!-- lg set: lg-3 quarters at ≥992px, plus lg-auto -->
+              <div class="wui-row" style="margin-bottom:var(--space-2)">
+                <div class="wui-col-6 wui-col-lg-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">lg-3</div>
+                <div class="wui-col-6 wui-col-lg-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">lg-3</div>
+                <div class="wui-col-12 wui-col-lg-auto" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">lg-auto</div>
+              </div>
+              <!-- xl set: xl-2 sixths at ≥1200px, xl-full spanner -->
+              <div class="wui-row">
+                <div class="wui-col-6 wui-col-xl-2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">xl-2</div>
+                <div class="wui-col-6 wui-col-xl-2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">xl-2</div>
+                <div class="wui-col-12 wui-col-xl-full" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">xl-full</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- sm set: sm-6 halves at ≥576px -->
+              <div class="wui-row">
+                <div class="wui-col-12 wui-col-sm-6"><!-- sm-6 --></div>
+                <div class="wui-col-12 wui-col-sm-6"><!-- sm-6 --></div>
+              </div>
+              <!-- md set: md-4 thirds at ≥768px -->
+              <div class="wui-row">
+                <div class="wui-col-12 wui-col-md-4"><!-- md-4 --></div>
+                <div class="wui-col-12 wui-col-md-4"><!-- md-4 --></div>
+                <div class="wui-col-12 wui-col-md-4"><!-- md-4 --></div>
+              </div>
+              <!-- lg set: lg-3 quarters at ≥992px, plus lg-auto -->
+              <div class="wui-row">
+                <div class="wui-col-6 wui-col-lg-3"><!-- lg-3 --></div>
+                <div class="wui-col-6 wui-col-lg-3"><!-- lg-3 --></div>
+                <div class="wui-col-12 wui-col-lg-auto"><!-- lg-auto --></div>
+              </div>
+              <!-- xl set: xl-2 sixths at ≥1200px, xl-full spanner -->
+              <div class="wui-row">
+                <div class="wui-col-6 wui-col-xl-2"><!-- xl-2 --></div>
+                <div class="wui-col-6 wui-col-xl-2"><!-- xl-2 --></div>
+                <div class="wui-col-12 wui-col-xl-full"><!-- xl-full --></div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ CSS Grid utilities ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_grid_18"><span class="material-symbols-outlined">grid_view</span>wui-grid</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_grid_19">Quick fixed-column CSS grids without span bookkeeping. <code>wui-grid</code> + <code>wui-grid-1</code> … <code>wui-grid-6</code> for a fixed count, or <code>wui-grid-auto</code> / <code>wui-grid-fit</code> for responsive wrapping driven by <code>--wui-col-min</code>. Children span with <code>wui-span-2</code> … <code>wui-span-6</code> / <code>wui-span-full</code> and <code>wui-row-span-2</code> … <code>wui-row-span-4</code>, align with <code>align-*</code>, and pack tight with <code>wui-grid-dense</code>. Explicit placement uses <code>wui-col-start-*</code> / <code>wui-row-start-*</code>; <code>wui-grid-rows-*</code> fixes the row count; <code>wui-grid-fill-h</code> and <code>wui-min-h-0</code> handle full-height layouts.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_20">Fixed columns — wui-grid-1 … wui-grid-6</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- grid-1 -->
+              <div class="wui-grid wui-grid-1" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">grid-1</div>
+              </div>
+              <!-- grid-2 -->
+              <div class="wui-grid wui-grid-2" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">2</div>
+              </div>
+              <!-- grid-3 -->
+              <div class="wui-grid wui-grid-3" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">3</div>
+              </div>
+              <!-- grid-4 -->
+              <div class="wui-grid wui-grid-4" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">3</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">4</div>
+              </div>
+              <!-- grid-5 -->
+              <div class="wui-grid wui-grid-5" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">3</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">4</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">5</div>
+              </div>
+              <!-- grid-6 -->
+              <div class="wui-grid wui-grid-6">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">3</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">4</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">5</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">6</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- grid-1 -->
+              <div class="wui-grid wui-grid-1">
+                <!-- 1 cell -->
+              </div>
+              <!-- grid-2 -->
+              <div class="wui-grid wui-grid-2">
+                <!-- 2 cells -->
+              </div>
+              <!-- grid-3 -->
+              <div class="wui-grid wui-grid-3">
+                <!-- 3 cells -->
+              </div>
+              <!-- grid-4 -->
+              <div class="wui-grid wui-grid-4">
+                <!-- 4 cells -->
+              </div>
+              <!-- grid-5 -->
+              <div class="wui-grid wui-grid-5">
+                <!-- 5 cells -->
+              </div>
+              <!-- grid-6 -->
+              <div class="wui-grid wui-grid-6">
+                <!-- 6 cells -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_21">Responsive — wui-grid-auto (auto-fill) &amp; wui-grid-fit (auto-fit)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- auto-fill: wraps when a column would be narrower than --wui-col-min (160px here) -->
+              <div class="wui-grid wui-grid-auto" style="--wui-col-min:160px;margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">auto-fill</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">auto-fill</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">auto-fill</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">auto-fill</div>
+              </div>
+              <!-- auto-fit: same wrapping, but the last row stretches to fill the track -->
+              <div class="wui-grid wui-grid-fit" style="--wui-col-min:160px">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">auto-fit</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">auto-fit</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">auto-fit</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- auto-fill: wraps when a column would be narrower than --wui-col-min (160px here) -->
+              <div class="wui-grid wui-grid-auto" style="--wui-col-min:160px">
+                <!-- 4 auto-fill cells -->
+              </div>
+              <!-- auto-fit: same wrapping, but the last row stretches to fill the track -->
+              <div class="wui-grid wui-grid-fit" style="--wui-col-min:160px">
+                <!-- 3 auto-fit cells -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_22">Column spans — wui-span-2 … wui-span-6, wui-span-full</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- 6-col grid holding a variety of spans -->
+              <div class="wui-grid wui-grid-6">
+                <!-- span-2 -->
+                <div class="wui-span-2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">span-2</div>
+                <!-- span-4 -->
+                <div class="wui-span-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">span-4</div>
+                <!-- span-3 -->
+                <div class="wui-span-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">span-3</div>
+                <!-- span-3 -->
+                <div class="wui-span-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">span-3</div>
+                <!-- span-5 -->
+                <div class="wui-span-5" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">span-5</div>
+                <!-- (single cell fills the remaining track) -->
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">1</div>
+                <!-- span-6 -->
+                <div class="wui-span-6" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">span-6</div>
+                <!-- span-full -->
+                <div class="wui-span-full" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-3);text-align:center;color:var(--color-10)">span-full</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- 6-col grid holding a variety of spans -->
+              <div class="wui-grid wui-grid-6">
+                <div class="wui-span-2"><!-- span-2 --></div>
+                <div class="wui-span-4"><!-- span-4 --></div>
+                <div class="wui-span-3"><!-- span-3 --></div>
+                <div class="wui-span-3"><!-- span-3 --></div>
+                <div class="wui-span-5"><!-- span-5 --></div>
+                <!-- single cell fills the remaining track -->
+                <div class="wui-span-6"><!-- span-6 --></div>
+                <div class="wui-span-full"><!-- span-full --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_23">Row spans — wui-row-span-2 … wui-row-span-4 (+ wui-grid-dense)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- dense packing backfills the holes left by the tall spanning items -->
+              <div class="wui-grid wui-grid-4 wui-grid-dense" style="grid-auto-rows:52px">
+                <!-- row-span-2 -->
+                <div class="wui-row-span-2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">row-span-2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">1</div>
+                <!-- row-span-3 -->
+                <div class="wui-row-span-3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">row-span-3</div>
+                <!-- row-span-4 -->
+                <div class="wui-row-span-4" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">row-span-4</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">3</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">4</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">5</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- dense packing backfills the holes left by the tall spanning items -->
+              <div class="wui-grid wui-grid-4 wui-grid-dense" style="grid-auto-rows:52px">
+                <div class="wui-row-span-2"><!-- row-span-2 --></div>
+                <!-- cell -->
+                <div class="wui-row-span-3"><!-- row-span-3 --></div>
+                <div class="wui-row-span-4"><!-- row-span-4 --></div>
+                <!-- cell -->
+                <!-- cell -->
+                <!-- cell -->
+                <!-- cell -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_24">Fixed row count — wui-grid-rows-1 … wui-grid-rows-6</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- 3 columns × explicit 2 rows; rows share the container height (minmax(0,1fr)) -->
+              <div class="wui-grid wui-grid-3 wui-grid-rows-2" style="height:180px">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">rows-2 · 1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">3</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">4</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">5</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">6</div>
+              </div>
+              <p class="docs-desc" style="margin-top:var(--space-2)" data-wui-i18n-html="docs_grid_25"><code>wui-grid-rows-1</code>, <code>-3</code>, <code>-4</code>, <code>-5</code>, <code>-6</code> follow the same pattern (1 through 6 equal-height rows).</p>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- 3 columns × explicit 2 rows; rows share the container height (minmax(0,1fr)) -->
+              <div class="wui-grid wui-grid-3 wui-grid-rows-2">
+                <!-- 6 cells (3 cols × 2 rows) -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_26">Grid alignment — align-start / center / end / stretch</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- align-start -->
+              <div class="wui-grid wui-grid-3 align-start" style="height:80px;margin-bottom:var(--space-3);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">start</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">start</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">start</div>
+              </div>
+              <!-- align-center -->
+              <div class="wui-grid wui-grid-3 align-center" style="height:80px;margin-bottom:var(--space-3);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">center</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">center</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">center</div>
+              </div>
+              <!-- align-end -->
+              <div class="wui-grid wui-grid-3 align-end" style="height:80px;margin-bottom:var(--space-3);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">end</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">end</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">end</div>
+              </div>
+              <!-- align-stretch (default) -->
+              <div class="wui-grid wui-grid-3 align-stretch" style="height:80px;background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">stretch</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">stretch</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">stretch</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- align-start -->
+              <div class="wui-grid wui-grid-3 align-start">
+                <!-- 3 cells -->
+              </div>
+              <!-- align-center -->
+              <div class="wui-grid wui-grid-3 align-center">
+                <!-- 3 cells -->
+              </div>
+              <!-- align-end -->
+              <div class="wui-grid wui-grid-3 align-end">
+                <!-- 3 cells -->
+              </div>
+              <!-- align-stretch (default) -->
+              <div class="wui-grid wui-grid-3 align-stretch">
+                <!-- 3 cells -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_27">Explicit placement — wui-col-start-* / wui-row-start-*</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Place items at named tracks instead of flowing them -->
+              <div class="wui-grid wui-grid-4 wui-grid-rows-2" style="height:150px">
+                <!-- col-start-2 · row-start-1 -->
+                <div class="wui-col-start-2 wui-row-start-1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">c2·r1</div>
+                <!-- col-start-4 · row-start-1 -->
+                <div class="wui-col-start-4 wui-row-start-1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">c4·r1</div>
+                <!-- col-start-1 · row-start-2 -->
+                <div class="wui-col-start-1 wui-row-start-2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">c1·r2</div>
+                <!-- col-start-3 · row-start-2 -->
+                <div class="wui-col-start-3 wui-row-start-2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">c3·r2</div>
+              </div>
+              <p class="docs-desc" style="margin-top:var(--space-2)" data-wui-i18n-html="docs_grid_28">Full sets: <code>wui-col-start-1 … 6</code> and <code>wui-row-start-1 … 4</code>.</p>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- Place items at named tracks instead of flowing them -->
+              <div class="wui-grid wui-grid-4 wui-grid-rows-2">
+                <div class="wui-col-start-2 wui-row-start-1"><!-- c2·r1 --></div>
+                <div class="wui-col-start-4 wui-row-start-1"><!-- c4·r1 --></div>
+                <div class="wui-col-start-1 wui-row-start-2"><!-- c1·r2 --></div>
+                <div class="wui-col-start-3 wui-row-start-2"><!-- c3·r2 --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_29">Full-height grids — wui-grid-fill-h &amp; wui-min-h-0</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- fill-h makes the grid take the parent's full height; min-h-0 lets a child shrink below its content instead of forcing scroll -->
+              <div style="height:150px;background:var(--surface-2);border-radius:var(--radius-sm);padding:var(--space-2)">
+                <div class="wui-grid wui-grid-2 wui-grid-fill-h">
+                  <div class="wui-min-h-0" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10);overflow:auto">wui-grid-fill-h + wui-min-h-0 (shrinks, scrolls locally)</div>
+                  <div class="wui-min-h-0" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">fills the parent's height</div>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- fill-h makes the grid take the parent's full height; min-h-0 lets a child shrink below its content instead of forcing scroll -->
+              <div>
+                <div class="wui-grid wui-grid-2 wui-grid-fill-h">
+                  <div class="wui-min-h-0"><!-- shrinks, scrolls locally --></div>
+                  <div class="wui-min-h-0"><!-- fills the parent's height --></div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Flex utilities ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_grid_30"><span class="material-symbols-outlined">view_column</span>wui-flex</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_grid_31">Tailwind-style flexbox utilities. Turn a container into a flex row with <code>wui-flex</code> (or inline with <code>wui-inline-flex</code>), set <code>wui-flex-row/col</code> (+ <code>-reverse</code>) and <code>wui-flex-wrap/nowrap</code>, distribute with <code>wui-justify-*</code>, cross-align with <code>wui-items-*</code>, override a single child with <code>wui-self-*</code>, and size children with <code>wui-flex-1/auto/none/grow/shrink-0</code> plus <code>wui-min-w-0</code> and the width/height shortcuts <code>wui-w-*</code> / <code>wui-h-*</code>. Display helpers <code>wui-d-none/block/inline/inline-block</code> round it out.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_32">Display — wui-d-none / block / inline / inline-block</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- d-block: fills its own line -->
+              <div class="wui-d-block" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10);margin-bottom:var(--space-2)">wui-d-block (full-line box)</div>
+              <!-- d-inline-block ×2 sit side by side -->
+              <div>
+                <span class="wui-d-inline-block" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">wui-d-inline-block</span>
+                <span class="wui-d-inline-block" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">wui-d-inline-block</span>
+              </div>
+              <!-- d-inline: flows within text -->
+              <div style="margin-top:var(--space-2);color:var(--color-10)">text <span class="wui-d-inline" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:0 var(--space-1)">wui-d-inline</span> flows inline</div>
+              <!-- d-none: present in markup, not rendered -->
+              <div class="wui-d-none">wui-d-none (hidden — not visible in the preview)</div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- d-block: fills its own line -->
+              <div class="wui-d-block"><!-- full-line box --></div>
+              <!-- d-inline-block ×2 sit side by side -->
+              <div>
+                <span class="wui-d-inline-block"><!-- inline-block --></span>
+                <span class="wui-d-inline-block"><!-- inline-block --></span>
+              </div>
+              <!-- d-inline: flows within text -->
+              <div>text <span class="wui-d-inline"><!-- inline --></span> flows inline</div>
+              <!-- d-none: present in markup, not rendered -->
+              <div class="wui-d-none">wui-d-none (hidden)</div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_33">Direction — row / row-reverse / col / col-reverse</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- flex-row -->
+              <div class="wui-flex wui-flex-row wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">row · 1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">3</div>
+              </div>
+              <!-- flex-row-reverse -->
+              <div class="wui-flex wui-flex-row-reverse wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">row-reverse · 1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">3</div>
+              </div>
+              <!-- flex-col -->
+              <div class="wui-flex wui-flex-col wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">col · 1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">2</div>
+              </div>
+              <!-- flex-col-reverse -->
+              <div class="wui-flex wui-flex-col-reverse wui-gap-2">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">col-reverse · 1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">2</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- flex-row -->
+              <div class="wui-flex wui-flex-row wui-gap-2">
+                <!-- 3 items -->
+              </div>
+              <!-- flex-row-reverse -->
+              <div class="wui-flex wui-flex-row-reverse wui-gap-2">
+                <!-- 3 items -->
+              </div>
+              <!-- flex-col -->
+              <div class="wui-flex wui-flex-col wui-gap-2">
+                <!-- 2 items -->
+              </div>
+              <!-- flex-col-reverse -->
+              <div class="wui-flex wui-flex-col-reverse wui-gap-2">
+                <!-- 2 items -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_34">Wrap — wui-flex-wrap / wui-flex-nowrap</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- flex-wrap: items wrap onto a new line -->
+              <div class="wui-flex wui-flex-wrap wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10);flex:0 0 30%">wrap · 1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10);flex:0 0 30%">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10);flex:0 0 30%">3</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10);flex:0 0 30%">4 (wrapped)</div>
+              </div>
+              <!-- flex-nowrap: items stay on one line and shrink -->
+              <div class="wui-flex wui-flex-nowrap wui-gap-2">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">nowrap · 1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">3</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">4</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- flex-wrap: items wrap onto a new line -->
+              <div class="wui-flex wui-flex-wrap wui-gap-2">
+                <!-- 4 items (each flex:0 0 30%) -->
+              </div>
+              <!-- flex-nowrap: items stay on one line and shrink -->
+              <div class="wui-flex wui-flex-nowrap wui-gap-2">
+                <!-- 4 items -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_35">Justify — start / end / center / between / around / evenly</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- justify-start -->
+              <div class="wui-flex wui-justify-start wui-gap-2" style="margin-bottom:var(--space-2);background:var(--surface-2);border-radius:var(--radius-sm);padding:var(--space-1)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">start</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">start</div>
+              </div>
+              <!-- justify-end -->
+              <div class="wui-flex wui-justify-end wui-gap-2" style="margin-bottom:var(--space-2);background:var(--surface-2);border-radius:var(--radius-sm);padding:var(--space-1)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">end</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">end</div>
+              </div>
+              <!-- justify-center -->
+              <div class="wui-flex wui-justify-center wui-gap-2" style="margin-bottom:var(--space-2);background:var(--surface-2);border-radius:var(--radius-sm);padding:var(--space-1)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">center</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">center</div>
+              </div>
+              <!-- justify-between -->
+              <div class="wui-flex wui-justify-between wui-gap-2" style="margin-bottom:var(--space-2);background:var(--surface-2);border-radius:var(--radius-sm);padding:var(--space-1)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">between</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">between</div>
+              </div>
+              <!-- justify-around -->
+              <div class="wui-flex wui-justify-around wui-gap-2" style="margin-bottom:var(--space-2);background:var(--surface-2);border-radius:var(--radius-sm);padding:var(--space-1)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">around</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">around</div>
+              </div>
+              <!-- justify-evenly -->
+              <div class="wui-flex wui-justify-evenly wui-gap-2" style="background:var(--surface-2);border-radius:var(--radius-sm);padding:var(--space-1)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">evenly</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">evenly</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- justify-start -->
+              <div class="wui-flex wui-justify-start wui-gap-2">
+                <!-- 2 items -->
+              </div>
+              <!-- justify-end -->
+              <div class="wui-flex wui-justify-end wui-gap-2">
+                <!-- 2 items -->
+              </div>
+              <!-- justify-center -->
+              <div class="wui-flex wui-justify-center wui-gap-2">
+                <!-- 2 items -->
+              </div>
+              <!-- justify-between -->
+              <div class="wui-flex wui-justify-between wui-gap-2">
+                <!-- 2 items -->
+              </div>
+              <!-- justify-around -->
+              <div class="wui-flex wui-justify-around wui-gap-2">
+                <!-- 2 items -->
+              </div>
+              <!-- justify-evenly -->
+              <div class="wui-flex wui-justify-evenly wui-gap-2">
+                <!-- 2 items -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_36">Align items — start / end / center / stretch / baseline</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- items-start -->
+              <div class="wui-flex wui-items-start wui-gap-2" style="min-height:70px;margin-bottom:var(--space-2);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">start</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-4);color:var(--color-10)">tall</div>
+              </div>
+              <!-- items-center -->
+              <div class="wui-flex wui-items-center wui-gap-2" style="min-height:70px;margin-bottom:var(--space-2);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">center</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-4);color:var(--color-10)">tall</div>
+              </div>
+              <!-- items-end -->
+              <div class="wui-flex wui-items-end wui-gap-2" style="min-height:70px;margin-bottom:var(--space-2);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">end</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-4);color:var(--color-10)">tall</div>
+              </div>
+              <!-- items-stretch -->
+              <div class="wui-flex wui-items-stretch wui-gap-2" style="min-height:70px;margin-bottom:var(--space-2);background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">stretch</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">stretch</div>
+              </div>
+              <!-- items-baseline -->
+              <div class="wui-flex wui-items-baseline wui-gap-2" style="min-height:70px;background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10);font-size:0.75rem">baseline sm</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10);font-size:1.5rem">baseline lg</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- items-start -->
+              <div class="wui-flex wui-items-start wui-gap-2">
+                <!-- 2 items (one taller) -->
+              </div>
+              <!-- items-center -->
+              <div class="wui-flex wui-items-center wui-gap-2">
+                <!-- 2 items (one taller) -->
+              </div>
+              <!-- items-end -->
+              <div class="wui-flex wui-items-end wui-gap-2">
+                <!-- 2 items (one taller) -->
+              </div>
+              <!-- items-stretch -->
+              <div class="wui-flex wui-items-stretch wui-gap-2">
+                <!-- 2 items -->
+              </div>
+              <!-- items-baseline -->
+              <div class="wui-flex wui-items-baseline wui-gap-2">
+                <!-- 2 items (different font sizes) -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_37">Align self — auto / start / end / center / stretch / baseline</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Container aligns items-center; each child overrides itself with wui-self-* -->
+              <div class="wui-flex wui-items-center wui-gap-2" style="min-height:90px;background:var(--surface-2);border-radius:var(--radius-sm)">
+                <!-- self-start -->
+                <div class="wui-self-start" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">self-start</div>
+                <!-- self-center -->
+                <div class="wui-self-center" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">self-center</div>
+                <!-- self-end -->
+                <div class="wui-self-end" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">self-end</div>
+                <!-- self-stretch -->
+                <div class="wui-self-stretch" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">self-stretch</div>
+                <!-- self-baseline -->
+                <div class="wui-self-baseline" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">self-baseline</div>
+                <!-- self-auto (inherits the container's align) -->
+                <div class="wui-self-auto" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">self-auto</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- Container aligns items-center; each child overrides itself with wui-self-* -->
+              <div class="wui-flex wui-items-center wui-gap-2">
+                <div class="wui-self-start"><!-- self-start --></div>
+                <div class="wui-self-center"><!-- self-center --></div>
+                <div class="wui-self-end"><!-- self-end --></div>
+                <div class="wui-self-stretch"><!-- self-stretch --></div>
+                <div class="wui-self-baseline"><!-- self-baseline --></div>
+                <div class="wui-self-auto"><!-- self-auto --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_38">Flex child sizing — flex-1 / auto / none / grow / shrink-0 / min-w-0</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- flex-1 shares the remaining space equally -->
+              <div class="wui-flex wui-gap-2" style="margin-bottom:var(--space-2)">
+                <div class="wui-flex-1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">flex-1</div>
+                <div class="wui-flex-1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">flex-1</div>
+              </div>
+              <!-- flex-auto (natural size) + flex-none (rigid) -->
+              <div class="wui-flex wui-gap-2" style="margin-bottom:var(--space-2)">
+                <div class="wui-flex-auto" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">flex-auto</div>
+                <div class="wui-flex-none" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">flex-none (rigid)</div>
+              </div>
+              <!-- flex-grow only -->
+              <div class="wui-flex wui-gap-2" style="margin-bottom:var(--space-2)">
+                <div class="wui-flex-grow" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">flex-grow</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">static</div>
+              </div>
+              <!-- flex-shrink-0 (rigid label) + min-w-0 (shrinkable text) -->
+              <div class="wui-flex wui-gap-2" style="max-width:280px">
+                <div class="wui-flex-shrink-0" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">shrink-0</div>
+                <div class="wui-min-w-0" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">wui-min-w-0 lets this long text shrink and ellipsis</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- flex-1 shares the remaining space equally -->
+              <div class="wui-flex wui-gap-2">
+                <div class="wui-flex-1"><!-- flex-1 --></div>
+                <div class="wui-flex-1"><!-- flex-1 --></div>
+              </div>
+              <!-- flex-auto (natural size) + flex-none (rigid) -->
+              <div class="wui-flex wui-gap-2">
+                <div class="wui-flex-auto"><!-- flex-auto --></div>
+                <div class="wui-flex-none"><!-- flex-none (rigid) --></div>
+              </div>
+              <!-- flex-grow only -->
+              <div class="wui-flex wui-gap-2">
+                <div class="wui-flex-grow"><!-- flex-grow --></div>
+                <!-- static -->
+              </div>
+              <!-- flex-shrink-0 (rigid label) + min-w-0 (shrinkable text) -->
+              <div class="wui-flex wui-gap-2" style="max-width:280px">
+                <div class="wui-flex-shrink-0"><!-- shrink-0 --></div>
+                <div class="wui-min-w-0"><!-- min-w-0 (text shrinks + ellipsis) --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_39">Width &amp; height shortcuts — wui-w-* / wui-h-*</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- w-full -->
+              <div class="wui-w-full" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10);margin-bottom:var(--space-2)">wui-w-full (100%)</div>
+              <!-- w-max -->
+              <div class="wui-w-max" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10);margin-bottom:var(--space-2)">wui-w-max (content width)</div>
+              <!-- w-auto -->
+              <div class="wui-w-auto" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10);margin-bottom:var(--space-3)">wui-w-auto</div>
+              <!-- h-full inside a fixed-height flex row; h-auto for contrast -->
+              <div class="wui-flex wui-gap-2" style="height:80px;background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div class="wui-h-full" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">wui-h-full</div>
+                <div class="wui-h-auto wui-self-center" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">wui-h-auto</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- w-full -->
+              <div class="wui-w-full"><!-- 100% width --></div>
+              <!-- w-max -->
+              <div class="wui-w-max"><!-- content width --></div>
+              <!-- w-auto -->
+              <div class="wui-w-auto"><!-- auto width --></div>
+              <!-- h-full inside a fixed-height flex row; h-auto for contrast -->
+              <div class="wui-flex wui-gap-2">
+                <div class="wui-h-full"><!-- h-full --></div>
+                <div class="wui-h-auto wui-self-center"><!-- h-auto --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_40">wui-inline-flex</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- inline-flex sits in the text line rather than filling it -->
+              <span style="color:var(--color-10)">inline:</span>
+              <span class="wui-inline-flex wui-items-center wui-gap-1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-1) var(--space-2);color:var(--color-10)"><span class="material-symbols-outlined">check</span>wui-inline-flex</span>
+            </div>
+            <template class="wui-demo-markup">
+              <span>inline:</span>
+              <span class="wui-inline-flex wui-items-center wui-gap-1"><!-- inline-flex chip (icon + label) --></span>
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Gap utilities ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_grid_41"><span class="material-symbols-outlined">space_bar</span>wui-gap</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_grid_42">Spacing utilities that work on any <code>wui-flex</code> or <code>wui-grid</code> container. <code>wui-gap-0/xs/sm/1…6/8</code> sets both axes; <code>wui-gap-x-*</code> sets column-gap only; <code>wui-gap-y-*</code> sets row-gap only. The scale maps to the <code>--space-*</code> tokens.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_43">Uniform gap — wui-gap-0 … wui-gap-8</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- gap-0 -->
+              <div class="wui-flex wui-gap-0" style="margin-bottom:var(--space-2)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-0</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-0</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-0</div>
+              </div>
+              <!-- gap-xs -->
+              <div class="wui-flex wui-gap-xs" style="margin-bottom:var(--space-2)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-xs</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-xs</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-xs</div>
+              </div>
+              <!-- gap-sm -->
+              <div class="wui-flex wui-gap-sm" style="margin-bottom:var(--space-2)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-sm</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-sm</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-sm</div>
+              </div>
+              <!-- gap-1 -->
+              <div class="wui-flex wui-gap-1" style="margin-bottom:var(--space-2)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-1</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-1</div>
+              </div>
+              <!-- gap-2 -->
+              <div class="wui-flex wui-gap-2" style="margin-bottom:var(--space-2)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-2</div>
+              </div>
+              <!-- gap-3 (default) -->
+              <div class="wui-flex wui-gap-3" style="margin-bottom:var(--space-2)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-3</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-3</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-3</div>
+              </div>
+              <!-- gap-4 -->
+              <div class="wui-flex wui-gap-4" style="margin-bottom:var(--space-2)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-4</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-4</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-4</div>
+              </div>
+              <!-- gap-5 -->
+              <div class="wui-flex wui-gap-5" style="margin-bottom:var(--space-2)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-5</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-5</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-5</div>
+              </div>
+              <!-- gap-6 -->
+              <div class="wui-flex wui-gap-6" style="margin-bottom:var(--space-2)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-6</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-6</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-6</div>
+              </div>
+              <!-- gap-8 -->
+              <div class="wui-flex wui-gap-8">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-8</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-8</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);color:var(--color-10)">gap-8</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- gap-0 -->
+              <div class="wui-flex wui-gap-0">
+                <!-- 3 items -->
+              </div>
+              <!-- gap-xs -->
+              <div class="wui-flex wui-gap-xs">
+                <!-- 3 items -->
+              </div>
+              <!-- gap-sm -->
+              <div class="wui-flex wui-gap-sm">
+                <!-- 3 items -->
+              </div>
+              <!-- gap-1 -->
+              <div class="wui-flex wui-gap-1">
+                <!-- 3 items -->
+              </div>
+              <!-- gap-2 -->
+              <div class="wui-flex wui-gap-2">
+                <!-- 3 items -->
+              </div>
+              <!-- gap-3 (default) -->
+              <div class="wui-flex wui-gap-3">
+                <!-- 3 items -->
+              </div>
+              <!-- gap-4 -->
+              <div class="wui-flex wui-gap-4">
+                <!-- 3 items -->
+              </div>
+              <!-- gap-5 -->
+              <div class="wui-flex wui-gap-5">
+                <!-- 3 items -->
+              </div>
+              <!-- gap-6 -->
+              <div class="wui-flex wui-gap-6">
+                <!-- 3 items -->
+              </div>
+              <!-- gap-8 -->
+              <div class="wui-flex wui-gap-8">
+                <!-- 3 items -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_44">Axis gaps — wui-gap-x-* (columns) &amp; wui-gap-y-* (rows)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- gap-x-5: horizontal spacing only -->
+              <div class="wui-grid wui-grid-3 wui-gap-x-5 wui-gap-y-0" style="margin-bottom:var(--space-3)">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gap-x-5</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gap-x-5</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gap-x-5</div>
+              </div>
+              <!-- gap-y-5: vertical spacing only (two rows in a 3-col grid) -->
+              <div class="wui-grid wui-grid-3 wui-gap-x-0 wui-gap-y-5">
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gap-y-5</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gap-y-5</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">gap-y-5</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">row 2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">row 2</div>
+                <div style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);padding:var(--space-2);text-align:center;color:var(--color-10)">row 2</div>
+              </div>
+              <p class="docs-desc" style="margin-top:var(--space-2)" data-wui-i18n-html="docs_grid_45">Full sets: <code>wui-gap-x-0 … 5</code> and <code>wui-gap-y-0 … 5</code>.</p>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- gap-x-5: horizontal spacing only -->
+              <div class="wui-grid wui-grid-3 wui-gap-x-5 wui-gap-y-0">
+                <!-- 3 cells -->
+              </div>
+              <!-- gap-y-5: vertical spacing only (two rows in a 3-col grid) -->
+              <div class="wui-grid wui-grid-3 wui-gap-x-0 wui-gap-y-5">
+                <!-- 6 cells (2 rows) -->
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Bento ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_grid_46"><span class="material-symbols-outlined">dashboard</span>wui-bento</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_grid_47">A configurable dashboard grid set entirely with classes. <code>wui-bento</code> + <code>cols-1 … cols-8</code> sets the column count; tiles are placed with <code>wui-w-{cols}x{rows}</code> (from <code>1x1</code> to <code>2x3</code>). Gap reuses <code>wui-gap-*</code>. A tile can be the component itself, or a transparent <code>wui-bento-tile</code> wrapper that stretches whatever it holds. <code>cell-sm/md/lg</code> tune the flow auto-row height; <code>is-page</code> + <code>rows-*</code> switch to a fixed, non-scrolling single-screen layout where rows share the height.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_48">Basic bento — cols-4 with mixed tile sizes</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- cols-4, gap-3, tiles sized with wui-w-{c}x{r} -->
+              <div class="wui-bento cols-4 wui-gap-3">
+                <!-- 2x2 hero via a wrapper tile -->
+                <div class="wui-bento-tile wui-w-2x2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">2x2 tile</div>
+                <!-- 2x1 -->
+                <div class="wui-bento-tile wui-w-2x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">2x1</div>
+                <!-- 1x1 -->
+                <div class="wui-bento-tile wui-w-1x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">1x1</div>
+                <!-- 1x1 -->
+                <div class="wui-bento-tile wui-w-1x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">1x1</div>
+                <!-- full-width via wui-span-full -->
+                <div class="wui-bento-tile wui-span-full" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center;padding:var(--space-2)">wui-span-full (full-width tile)</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <div class="wui-bento cols-4 wui-gap-3">
+                <div class="wui-bento-tile wui-w-2x2"><!-- 2x2 tile --></div>
+                <div class="wui-bento-tile wui-w-2x1"><!-- 2x1 tile --></div>
+                <div class="wui-bento-tile wui-w-1x1"><!-- 1x1 tile --></div>
+                <div class="wui-bento-tile wui-w-1x1"><!-- 1x1 tile --></div>
+                <div class="wui-bento-tile wui-span-full"><!-- full-width tile --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_49">Every tile size — wui-w-1x1 … wui-w-2x3</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- cols-4 grid holding one of each declared size -->
+              <div class="wui-bento cols-4 wui-gap-2">
+                <!-- 1x1 -->
+                <div class="wui-bento-tile wui-w-1x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">1x1</div>
+                <!-- 2x1 -->
+                <div class="wui-bento-tile wui-w-2x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">2x1</div>
+                <!-- 1x2 -->
+                <div class="wui-bento-tile wui-w-1x2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">1x2</div>
+                <!-- 2x2 -->
+                <div class="wui-bento-tile wui-w-2x2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">2x2</div>
+                <!-- 3x1 -->
+                <div class="wui-bento-tile wui-w-3x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">3x1</div>
+                <!-- 4x1 -->
+                <div class="wui-bento-tile wui-w-4x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">4x1</div>
+                <!-- 3x2 -->
+                <div class="wui-bento-tile wui-w-3x2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">3x2</div>
+                <!-- 1x3 -->
+                <div class="wui-bento-tile wui-w-1x3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">1x3</div>
+                <!-- 4x2 -->
+                <div class="wui-bento-tile wui-w-4x2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">4x2</div>
+                <!-- 2x3 -->
+                <div class="wui-bento-tile wui-w-2x3" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">2x3</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <div class="wui-bento cols-4 wui-gap-2">
+                <div class="wui-bento-tile wui-w-1x1"><!-- 1x1 --></div>
+                <div class="wui-bento-tile wui-w-2x1"><!-- 2x1 --></div>
+                <div class="wui-bento-tile wui-w-1x2"><!-- 1x2 --></div>
+                <div class="wui-bento-tile wui-w-2x2"><!-- 2x2 --></div>
+                <div class="wui-bento-tile wui-w-3x1"><!-- 3x1 --></div>
+                <div class="wui-bento-tile wui-w-4x1"><!-- 4x1 --></div>
+                <div class="wui-bento-tile wui-w-3x2"><!-- 3x2 --></div>
+                <div class="wui-bento-tile wui-w-1x3"><!-- 1x3 --></div>
+                <div class="wui-bento-tile wui-w-4x2"><!-- 4x2 --></div>
+                <div class="wui-bento-tile wui-w-2x3"><!-- 2x3 --></div>
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_50">Column counts — cols-1 / 2 / 3 / 4 / 5 / 6 / 8</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- cols-1 -->
+              <div class="wui-bento cols-1 cell-sm wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cols-1</div>
+              </div>
+              <!-- cols-2 -->
+              <div class="wui-bento cols-2 cell-sm wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cols-2</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+              </div>
+              <!-- cols-3 -->
+              <div class="wui-bento cols-3 cell-sm wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cols-3</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+              </div>
+              <!-- cols-4 -->
+              <div class="wui-bento cols-4 cell-sm wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cols-4</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+              </div>
+              <!-- cols-5 -->
+              <div class="wui-bento cols-5 cell-sm wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cols-5</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+              </div>
+              <!-- cols-6 -->
+              <div class="wui-bento cols-6 cell-sm wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cols-6</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+              </div>
+              <!-- cols-8 -->
+              <div class="wui-bento cols-8 cell-sm wui-gap-2">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cols-8</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- cols-1 -->
+              <div class="wui-bento cols-1 cell-sm wui-gap-2">
+                <div class="wui-bento-tile"><!-- tile --></div>
+              </div>
+              <!-- cols-2 -->
+              <div class="wui-bento cols-2 cell-sm wui-gap-2">
+                <!-- 2 tiles -->
+              </div>
+              <!-- cols-3 -->
+              <div class="wui-bento cols-3 cell-sm wui-gap-2">
+                <!-- 3 tiles -->
+              </div>
+              <!-- cols-4 -->
+              <div class="wui-bento cols-4 cell-sm wui-gap-2">
+                <!-- 4 tiles -->
+              </div>
+              <!-- cols-5 -->
+              <div class="wui-bento cols-5 cell-sm wui-gap-2">
+                <!-- 5 tiles -->
+              </div>
+              <!-- cols-6 -->
+              <div class="wui-bento cols-6 cell-sm wui-gap-2">
+                <!-- 6 tiles -->
+              </div>
+              <!-- cols-8 -->
+              <div class="wui-bento cols-8 cell-sm wui-gap-2">
+                <!-- 8 tiles -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_51">Flow auto-row height — cell-sm / cell-md / cell-lg</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- cell-sm: shorter rows (minmax(90px,auto)) -->
+              <div class="wui-bento cols-3 cell-sm wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cell-sm</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+              </div>
+              <!-- cell-md: default row height (minmax(140px,auto)) -->
+              <div class="wui-bento cols-3 cell-md wui-gap-2" style="margin-bottom:var(--space-3)">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cell-md</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+              </div>
+              <!-- cell-lg: taller rows (minmax(200px,auto)) -->
+              <div class="wui-bento cols-3 cell-lg wui-gap-2">
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">cell-lg</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+                <div class="wui-bento-tile" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">·</div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- cell-sm: shorter rows (minmax(90px,auto)) -->
+              <div class="wui-bento cols-3 cell-sm wui-gap-2">
+                <!-- 3 tiles -->
+              </div>
+              <!-- cell-md: default row height (minmax(140px,auto)) -->
+              <div class="wui-bento cols-3 cell-md wui-gap-2">
+                <!-- 3 tiles -->
+              </div>
+              <!-- cell-lg: taller rows (minmax(200px,auto)) -->
+              <div class="wui-bento cols-3 cell-lg wui-gap-2">
+                <!-- 3 tiles -->
+              </div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_52">Single-screen — is-page + rows-* (fixed, non-scrolling)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- is-page needs a fixed-height parent; rows-3 splits that height into 3 equal rows -->
+              <div style="height:280px">
+                <div class="wui-bento cols-4 rows-3 is-page wui-gap-2">
+                  <!-- 2x2 hero -->
+                  <div class="wui-bento-tile wui-w-2x2" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">2x2</div>
+                  <!-- 2x1 -->
+                  <div class="wui-bento-tile wui-w-2x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">2x1</div>
+                  <!-- 1x1 -->
+                  <div class="wui-bento-tile wui-w-1x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">1x1</div>
+                  <!-- 1x1 -->
+                  <div class="wui-bento-tile wui-w-1x1" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">1x1</div>
+                  <!-- full-width footer row -->
+                  <div class="wui-bento-tile wui-span-full" style="background:var(--color-10-light);border:1px solid var(--color-10-muted);border-radius:var(--radius-sm);color:var(--color-10);place-items:center">span-full row</div>
+                </div>
+              </div>
+              <p class="docs-desc" style="margin-top:var(--space-2)" data-wui-i18n-html="docs_grid_53"><code>is-page</code> fills its parent's height and never scrolls; <code>rows-1 … rows-6</code> choose how many equal-height rows share that space. Requires <code>min-height:0</code> up the ancestor chain.</p>
+            </div>
+            <template class="wui-demo-markup">
+              <!-- is-page needs a fixed-height parent; rows-3 splits that height into 3 equal rows -->
+              <div>
+                <div class="wui-bento cols-4 rows-3 is-page wui-gap-2">
+                  <div class="wui-bento-tile wui-w-2x2"><!-- 2x2 hero --></div>
+                  <div class="wui-bento-tile wui-w-2x1"><!-- 2x1 --></div>
+                  <div class="wui-bento-tile wui-w-1x1"><!-- 1x1 --></div>
+                  <div class="wui-bento-tile wui-w-1x1"><!-- 1x1 --></div>
+                  <div class="wui-bento-tile wui-span-full"><!-- full-width footer row --></div>
+                </div>
+              </div>
+            </template>
+          </div>
         </div>
 
       </div>
     </div>
   </div>
+
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('grid');</script>
 </body>

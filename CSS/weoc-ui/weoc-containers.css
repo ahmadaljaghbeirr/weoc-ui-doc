@@ -82,11 +82,13 @@
 .wui-card.has-accent::before {
   content: "";
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: 0;
   bottom: 0;
   width: 4px;
-  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  /* rounded on the inline-start corners so the bar follows text direction */
+  border-start-start-radius: var(--border-radius);
+  border-end-start-radius: var(--border-radius);
   pointer-events: none;
 }
 
@@ -125,9 +127,9 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: var(--space-sm);
-  border-top-left-radius: var(--border-radius);
-  border-bottom-left-radius: var(--border-radius);
+  padding-top: var(--space-5);
+  border-start-start-radius: var(--border-radius);
+  border-end-start-radius: var(--border-radius);
   overflow: hidden;
 }
 
@@ -153,47 +155,6 @@
 
 .wui-card-side.secondary {
   background: var(--color-secondary);
-}
-
-/* Severity icon — for use inside .wui-card-side */
-.wui-severity-icon {
-  background: color-mix(in srgb, var(--color-30) 25%, transparent);
-  padding: var(--space-5);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.wui-severity-icon-inner {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--color-30);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.45);
-}
-
-.wui-severity-icon-inner .material-symbols-outlined {
-  font-size: var(--text-base);
-}
-
-.wui-severity-icon-inner.danger {
-  color: var(--color-danger);
-}
-
-.wui-severity-icon-inner.warning {
-  color: var(--color-warning);
-}
-
-.wui-severity-icon-inner.success {
-  color: var(--color-success);
-}
-
-.wui-severity-icon-inner.primary {
-  color: var(--color-10);
 }
 
 /* ─── Layer 2: Templates ─── */
@@ -250,12 +211,22 @@
   gap: var(--space-1);
 }
 
+/* no-desc — record row with NO description/content column. wui-card-primary is
+   flex:1, so it normally shares the row with a description sibling. Drop that
+   column and the primary grows to fill the whole row (the name stretches across
+   the card). Base caps the name to a set width; how the freed space is spread is
+   chosen with a spread-* modifier (see the Cards & Containers docs). Tune the
+   name width per board via --wui-record-name-w. */
+.wui-card.is-record.no-desc .wui-card-primary {
+  flex: 0 1 var(--wui-record-name-w, 20rem);
+}
+
 /* has-lead-fill — full-height colored lead strip (opt-in modifier on is-record cards)
   overflow:hidden clips the lead background to the card's border-radius on the left corners.
   Standard color classes applied to wui-card-lead; tier-* handled in board CSS. */
 
 .wui-card.is-record.has-lead-fill {
-  padding-left: 0;
+  padding-inline-start: 0; /* logical: lead strip flush at the start edge (flips to the right in RTL) */
   overflow: hidden;
 }
 
@@ -346,7 +317,8 @@
 }
 
 .wui-card.has-side .wui-card-body {
-  padding: var(--_pad) var(--space-11) var(--_pad) var(--_pad);
+  padding-block: var(--_pad);
+  padding-inline: var(--_pad) var(--space-11);
 }
 
 .wui-card-footer {
@@ -557,8 +529,8 @@
 }
 
 .wui-card-stats.is-inline .wui-card-stat+.wui-card-stat {
-  padding-left: var(--space-3);
-  border-left: 1px solid var(--color-border);
+  padding-inline-start: var(--space-3);
+  border-inline-start: 1px solid var(--color-border);
 }
 
 .wui-card-stat {
@@ -760,7 +732,10 @@
   padding: 0;
 }
 
-.page-center .wui-panel-wrap {
+/* wui-det-inner context: restore inter-panel vertical spacing that
+   wui-page-shell .wui-panel-wrap zeroes out. Specificity [0,2,0]
+   matches the rule above — source order wins (this comes after). */
+.wui-det-inner .wui-panel-wrap {
   padding: var(--space-2) 0;
 }
 
@@ -783,6 +758,13 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+}
+
+/* Neutral tinted header — mirrors .wui-plane.color-60 / .wui-collapse-panel.toned.
+   For nested panels inside a grid/split layout (e.g. Impact Analysis columns)
+   where a flush/transparent header would blend into the parent panel. */
+.wui-panel-hdr.color-60 {
+  background: var(--color-60);
 }
 
 .wui-panel-title-wrap {
@@ -821,19 +803,7 @@
   height: auto;
   width: 100%;
 }
-
-.wui-panel-body::-webkit-scrollbar {
-  width: 4px;
-}
-
-.wui-panel-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.wui-panel-body::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: calc(var(--border-radius) / 2);
-}
+/* Scrollbar styling is global — see weoc-reset.css (--scrollbar-* tokens). */
 
 /* Fill parent height and scroll body contents */
 .wui-panel.is-scrollable {
@@ -999,7 +969,8 @@
   display: none;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  padding-block: var(--space-2);
+  padding-inline: var(--space-4) var(--space-2);
   background: var(--widget-header-bg);
   border-bottom: 1px solid var(--widget-border);
   user-select: none;
@@ -1088,7 +1059,7 @@
 
 .wui-person-card-meta>*+*::before {
   content: '•';
-  margin-right: var(--space-xs);
+  margin-inline-end: var(--space-xs);
   color: var(--color-text-secondary);
 }
 
@@ -1241,7 +1212,7 @@
   border: none;
   border-bottom: 1px solid transparent;
   font: inherit;
-  text-align: left;
+  text-align: start;
   color: var(--color-text-primary);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
@@ -1301,7 +1272,7 @@
   border: none;
   border-bottom: 1px solid var(--color-border);
   font: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
 }
@@ -1374,6 +1345,22 @@
 .wui-collapse-panel.danger    { border-top: 3px solid var(--color-danger); }
 .wui-collapse-panel.secondary { border-top: 3px solid var(--color-text-secondary); }
 
+/* Neutral tinted header — fills the header strip with var(--color-60) instead of
+   the default flush/transparent bar. For panels that group form fields (damage /
+   impact categories, etc.). Icon chip flips to the panel surface so it stays
+   readable on the tinted strip. Composable with the accent variants above. */
+.wui-collapse-panel.toned > .wui-collapse-panel-hdr,
+[data-wui-collapsible].toned > .wui-collapse-panel-hdr {
+  background: var(--color-60);
+}
+.wui-collapse-panel.toned > .wui-collapse-panel-hdr:hover,
+[data-wui-collapsible].toned > .wui-collapse-panel-hdr:hover {
+  background: var(--color-hover);
+}
+.wui-collapse-panel.toned .wui-collapse-panel-icon {
+  background: var(--color-30);
+}
+
 .wui-collapse-panel-hdr {
   display: flex;
   align-items: center;
@@ -1384,7 +1371,7 @@
   border: none;
   border-bottom: 1px solid transparent;
   font: inherit;
-  text-align: left;
+  text-align: start;
   color: var(--color-text-primary);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
@@ -1447,6 +1434,60 @@
   line-height: 1.3;
 }
 
+/* Header sections: a leading title group (icon + titles) and a trailing actions
+   group (count/badges + collapse chevron). The header is flex; -hdr-main grows,
+   -hdr-actions is pushed to the trailing edge. Optional — the flat icon/titles/
+   chevron layout still works without these wrappers. */
+.wui-collapse-panel-hdr-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  flex: 1;
+}
+
+.wui-collapse-panel-hdr-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  margin-inline-start: auto;
+}
+
+/* .wui-collapse-panel-body carries NO padding of its own — same pairing
+   convention as .wui-panel-body: pad the actual content with a nested
+   .wui-content-wrap instead. Kept off .wui-collapsible-content (the grid
+   item) since physical padding there would break the 0fr collapse. */
+
+/* ─── Size variant: .sm ───
+   Compact header + body for panels repeated several times in a row (e.g. the
+   4 damage-assessment category panels in Details/Input - Event Report) where
+   the default header size adds up to a lot of vertical space. Composable with
+   .toned/accent variants and data-wui-collapsible either way. */
+.wui-collapse-panel.sm > .wui-collapse-panel-hdr,
+[data-wui-collapsible].sm > .wui-collapse-panel-hdr {
+  padding: var(--space-2) var(--space-3);
+  gap: var(--space-2);
+}
+
+.wui-collapse-panel.sm .wui-collapse-panel-icon {
+  width: 24px;
+  height: 24px;
+  font-size: var(--text-sm);
+}
+
+.wui-collapse-panel.sm .wui-collapse-panel-title {
+  font-size: var(--text-xs);
+}
+
+.wui-collapse-panel.sm .wui-collapse-panel-sub {
+  font-size: var(--text-2xs);
+}
+
+.wui-collapse-panel.sm .wui-collapse-panel-body > .wui-content-wrap {
+  padding: var(--space-2) var(--space-3);
+}
+
 /* ─── Item ─── */
 
 .wui-info-item {
@@ -1485,7 +1526,7 @@
 /* ─── Value ─── */
 
 .wui-info-value {
-  font-size: var(--text-base);
+  font-size: var(--text-xs);
   color: var(--color-text-primary);
   font-weight: var(--font-medium);
   min-height: 22px;

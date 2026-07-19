@@ -252,6 +252,18 @@
   --color-hover:        rgba(109, 40, 217, 0.05);
   --color-overlay:      rgba(14, 8, 38, 0.55);
   --color-switch-thumb: var(--color-on-accent);
+
+  /* ============================================
+      Scrollbars — one source of truth for EVERY
+      overflow surface (see weoc-reset.css global
+      rule). Thumb/hover reference theme tokens, so
+      they follow light/dark automatically.
+      ============================================ */
+  --scrollbar-size:        var(--border-md);              /* 4px — library standard */
+  --scrollbar-track:       transparent;
+  --scrollbar-thumb:       var(--color-border);
+  --scrollbar-thumb-hover: var(--color-text-ui);
+  --scrollbar-radius:      calc(var(--border-radius) / 2);
 }
 
 [data-theme="dark"] {

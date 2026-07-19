@@ -1,0 +1,67 @@
+/* =============================================================================
+   prism-agency.css — token-driven Prism theme for the weoc-ui docs code boxes.
+
+   Every colour resolves from agency-theme.css semantic tokens, which already
+   carry light + [data-theme="dark"] values — so syntax highlighting follows the
+   site theme automatically with NO separate dark block and NO JS re-highlight
+   on toggle. Scoped to .docs-code so it never touches the TinyMCE editor or any
+   other code surface. Pair with docs/vendor/prism/prism.min.js (manual mode).
+   ============================================================================= */
+
+/* Base — inherit the code box's own font/background; only colour the text. */
+.docs-code code[class*="language-"],
+.docs-code[class*="language-"] {
+  color: var(--color-text-primary);
+  background: none;
+  text-shadow: none;
+  font-family: inherit;
+  font-size: inherit;
+  tab-size: 2;
+}
+
+.docs-code .token.comment,
+.docs-code .token.prolog,
+.docs-code .token.doctype,
+.docs-code .token.cdata { color: var(--color-text-ui); font-style: italic; }
+
+.docs-code .token.punctuation { color: var(--color-text-secondary); }
+
+.docs-code .token.namespace { opacity: 0.7; }
+
+/* structural / control — tags, keywords, at-rules, selectors */
+.docs-code .token.tag,
+.docs-code .token.keyword,
+.docs-code .token.atrule,
+.docs-code .token.selector,
+.docs-code .token.deleted { color: var(--color-danger-text); }
+
+/* names / numbers / literals — attr names, properties, numbers, booleans */
+.docs-code .token.property,
+.docs-code .token.attr-name,
+.docs-code .token.boolean,
+.docs-code .token.number,
+.docs-code .token.constant,
+.docs-code .token.symbol { color: var(--color-warning-text); }
+
+/* values — strings, attribute values, urls, regex */
+.docs-code .token.string,
+.docs-code .token.char,
+.docs-code .token.attr-value,
+.docs-code .token.inserted,
+.docs-code .token.url,
+.docs-code .token.regex { color: var(--color-success-text); }
+
+/* callables — functions, class names, builtins */
+.docs-code .token.function,
+.docs-code .token.class-name,
+.docs-code .token.builtin { color: var(--color-info-text); }
+
+/* operators / variables — the accent colour */
+.docs-code .token.operator,
+.docs-code .token.variable,
+.docs-code .token.entity { color: var(--color-10); }
+
+.docs-code .token.important,
+.docs-code .token.bold { font-weight: var(--font-bold); }
+.docs-code .token.italic { font-style: italic; }
+.docs-code .token.entity { cursor: help; }

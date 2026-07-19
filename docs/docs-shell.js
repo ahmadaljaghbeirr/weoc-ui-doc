@@ -1,52 +1,111 @@
 (function () {
   'use strict';
 
+  /* Mantine-aligned IA. `kw` = search keywords (component names / synonyms).
+     Content-level page rebuilds + new dedicated pages (combobox, dates, …) land
+     in phase 2c; for now existing pages are regrouped under the new categories. */
   var NAV = [
     {
-      group: 'Getting Started',
+      group: 'Get Started',
       items: [
-        { key: 'home', label: 'Introduction', file: null }
+        { key: 'home', label: 'Introduction', file: null, kw: 'intro overview install getting started load order' },
+        { key: 'motion', label: 'Animation', file: 'motion.html', kw: 'gsap transition motion weoc-anim ring counter bar' },
+        { key: 'js-api', label: 'JS API', file: 'js-api.html', kw: 'WUI api events theme declarative attributes overlay' },
+        { key: 'lists', label: 'EOC Lists', file: 'lists.html', kw: 'lists registry cascading tree flat select data' },
+        { key: 'localization', label: 'Localization', file: 'localization.html', kw: 'localization i18n language locale rtl arabic translation direction lang toggle' }
       ]
     },
     {
-      group: 'Foundations',
+      group: 'Theming',
       items: [
-        { key: 'tokens', label: 'Design Tokens', file: 'tokens.html' },
-        { key: 'typography', label: 'Typography', file: 'typography.html' },
-        { key: 'grid', label: 'Grid & Flex', file: 'grid.html' }
+        { key: 'tokens', label: 'Design Tokens', file: 'tokens.html', kw: 'tokens color spacing radius shadow theme palette dark light' },
+        { key: 'tier-colors', label: 'Tier Colors', file: 'tier-colors.html', kw: 'tier activation 1 2 3 4 emergency accent' }
       ]
     },
     {
-      group: 'Components',
+      group: 'Layout',
       items: [
-        { key: 'interactive', label: 'Interactive', file: 'interactive.html' },
-        { key: 'indicators', label: 'Indicators', file: 'indicators.html' },
-        { key: 'cards', label: 'Cards & Forms', file: 'cards.html' },
-        { key: 'forms', label: 'Forms', file: 'forms.html' },
-        { key: 'containers', label: 'Containers', file: 'containers.html' },
-        { key: 'layout', label: 'Layout', file: 'layout.html' },
-        { key: 'tables', label: 'Tables', file: 'tables.html' },
-        { key: 'navigation', label: 'Navigation', file: 'navigation.html' },
-        { key: 'overlays', label: 'Overlays', file: 'overlays.html' },
-        { key: 'calendar', label: 'Calendar', file: 'calendar.html' },
-        { key: 'feedback', label: 'Feedback', file: 'feedback.html' },
-        { key: 'progress', label: 'Progress', file: 'progress.html' },
-        { key: 'charts', label: 'Charts', file: 'charts.html' },
-        { key: 'maps', label: 'Maps', file: 'maps.html' },
-        { key: 'tier-colors', label: 'Tier Colors', file: 'tier-colors.html' }
+        { key: 'layout', label: 'Layout & Shell', file: 'layout.html', kw: 'appshell page-shell split splitter scroll-area toolbar tab widget dashboard fill-area body-shell' },
+        { key: 'grid', label: 'Grid & Flex', file: 'grid.html', kw: 'grid flex container row col group stack simplegrid gap space bento' }
       ]
     },
     {
-      group: 'Reference',
+      group: 'Inputs',
       items: [
-        { key: 'js-api', label: 'JS API', file: 'js-api.html' },
-        { key: 'lists', label: 'EOC Lists', file: 'lists.html' }
+        { key: 'forms', label: 'Text Inputs & Fields', file: 'forms.html', kw: 'textinput input textarea fieldset field-row form-control readonly label' },
+        { key: 'cards', label: 'Controls', file: 'cards.html', kw: 'checkbox radio switch slider segmented card-option card-group toggle' }
       ]
     },
     {
-      group: 'Recipes',
+      group: 'Combobox',
       items: [
-        { key: 'motion', label: 'Animation', file: 'motion.html' }
+        { key: 'combobox', label: 'Select (TomSelect)', file: 'combobox.html', kw: 'select combobox multiselect autocomplete tags tomselect dropdown pill' }
+      ]
+    },
+    {
+      group: 'Buttons',
+      items: [
+        { key: 'buttons', label: 'Buttons', file: 'buttons.html', kw: 'button btn fab floating action actionicon icon-only extended' }
+      ]
+    },
+    {
+      group: 'Navigation',
+      items: [
+        { key: 'navigation', label: 'Navigation', file: 'navigation.html', kw: 'tabs anchor link band header hdr banner breadcrumbs stepper' }
+      ]
+    },
+    {
+      group: 'Feedback',
+      items: [
+        { key: 'feedback', label: 'Feedback', file: 'feedback.html', kw: 'alert callout banner toast snackbar alarm skeleton empty-state loader spinner notification' },
+        { key: 'progress', label: 'Progress', file: 'progress.html', kw: 'progress bar ring semicircle segmented percentage' }
+      ]
+    },
+    {
+      group: 'Overlays',
+      items: [
+        { key: 'overlays', label: 'Overlays', file: 'overlays.html', kw: 'modal dialog drawer popover dropdown menu tooltip overlay' }
+      ]
+    },
+    {
+      group: 'Data Display',
+      items: [
+        { key: 'containers', label: 'Cards & Containers', file: 'containers.html', kw: 'card paper plane panel embed collapsible accordion person info-grid datalist' },
+        { key: 'interactive', label: 'Badges & Chips', file: 'interactive.html', kw: 'badge chip pill label tag' },
+        { key: 'indicators', label: 'Indicators', file: 'indicators.html', kw: 'avatar status-dot indicator icon-bubble themeicon level elapsed' },
+        { key: 'tables', label: 'Tables', file: 'tables.html', kw: 'table standard cards log row column sticky sortable' }
+      ]
+    },
+    {
+      group: 'Dates',
+      items: [
+        { key: 'dates', label: 'Date & Time (Flatpickr)', file: 'dates.html', kw: 'date datepicker datetime time range flatpickr calendar input' }
+      ]
+    },
+    {
+      group: 'Charts',
+      items: [
+        { key: 'charts', label: 'Charts', file: 'charts.html', kw: 'chart line area bar stepped pie donut uplot timeseries' }
+      ]
+    },
+    {
+      group: 'Schedule',
+      items: [
+        { key: 'calendar', label: 'Calendar', file: 'calendar.html', kw: 'calendar month week day agenda event schedule' }
+      ]
+    },
+    {
+      group: 'Typography',
+      items: [
+        { key: 'typography', label: 'Typography', file: 'typography.html', kw: 'text title heading truncate weight size color mono' },
+        { key: 'tinymce', label: 'Rich Text', file: 'tinymce.html', kw: 'tinymce editor rich text wysiwyg content' }
+      ]
+    },
+    {
+      group: 'Patterns',
+      items: [
+        { key: 'views', label: 'Board Views', file: 'views.html', kw: 'display input details remove board view scaffold zone' },
+        { key: 'maps', label: 'Maps', file: 'maps.html', kw: 'map esri basemap point popover controls location' }
       ]
     }
   ];
@@ -90,17 +149,52 @@
     document.head.appendChild(s);
   }
 
+  // Palette id → agency-theme file name (atlas = the base file).
+  function agencyThemeFile(id) {
+    return (!id || id === 'atlas') ? 'agency-theme.css' : 'agency-theme-' + id + '.css';
+  }
+
+  function activePalette() {
+    return localStorage.getItem('wui-docs-theme') || 'atlas';
+  }
+
+  /* The TinyMCE content iframe is a separate document with its OWN copy of the
+     agency theme (loaded via content_css). The host swatch swap doesn't touch it,
+     so swap the iframe's agency-theme <link> too — keeps the editor content on the
+     same palette as the page, live, without re-initialising the editor. */
+  function syncTinyMCEPalette() {
+    if (!window.tinymce || typeof window.tinymce.get !== 'function') return;
+    var file = agencyThemeFile(activePalette());
+    window.tinymce.get().forEach(function (ed) {
+      try {
+        var doc = ed.getDoc && ed.getDoc();
+        if (!doc) return;
+        var links = doc.querySelectorAll('link[rel="stylesheet"]');
+        for (var i = 0; i < links.length; i++) {
+          var href = links[i].getAttribute('href') || '';
+          if (/agency-theme[^/]*\.css/.test(href)) {
+            links[i].setAttribute('href', href.replace(/agency-theme[^/]*\.css/, file));
+          }
+        }
+      } catch (e) {}
+    });
+  }
+
   function loadTheme(id) {
     var link = getAgencyThemeLink();
     if (!link) return;
-    var href = link.getAttribute('href');
-    var base = href.replace(/agency-theme[^/]*\.css/, '');
-    var file = id === 'atlas' ? 'agency-theme.css' : 'agency-theme-' + id + '.css';
-    link.href = base + file;
+    // Use the RESOLVED absolute URL (link.href), not the relative attribute:
+    // the SPA router changes location via pushState, so a relative href would
+    // re-resolve against the current page's depth and break the swap after a
+    // cross-depth navigation (theme "dead until reload"). Absolute is depth-stable.
+    var href = link.href;
+    var base = href.replace(/agency-theme[^/]*\.css.*$/, '');
+    link.href = base + agencyThemeFile(id);
     localStorage.setItem('wui-docs-theme', id);
     document.querySelectorAll('[data-theme-pick]').forEach(function (btn) {
       btn.classList.toggle('is-active', btn.getAttribute('data-theme-pick') === id);
     });
+    syncTinyMCEPalette();   // keep any open editor's iframe on the same palette
   }
 
   function applyStoredTheme() {
@@ -156,7 +250,7 @@
         '<div class="wui-hdr-top">' +
           '<div class="wui-hdr-left">' +
             '<a href="' + root + 'weoc-ui-docs.html" class="docs-brand-link">' +
-              '<div class="wui-hdr-icon"><span class="material-symbols-outlined">layers</span></div>' +
+              '<div class="wui-hdr-icon"><span class="material-symbols-outlined" aria-hidden="true">eoc</span></div>' +
               '<div>' +
                 '<div class="wui-hdr-title">weoc-ui</div>' +
                 '<div class="wui-hdr-subtitle">Component Library Reference</div>' +
@@ -164,10 +258,19 @@
             '</a>' +
           '</div>' +
           '<div class="wui-hdr-right">' +
+            '<div class="docs-search">' +
+              '<span class="material-symbols-outlined docs-search-icon">search</span>' +
+              '<input id="docs-search" type="text" class="docs-search-input" placeholder="Search components…" data-wui-i18n-attr="placeholder:docs_search_ph" autocomplete="off" spellcheck="false">' +
+              '<span class="docs-search-kbd">Ctrl K</span>' +
+              '<div id="docs-search-results" class="docs-search-results"></div>' +
+            '</div>' +
             '<span class="docs-version wui-badge bordered secondary">v1.0</span>' +
             swatchHtml +
             '<button class="wui-btn ghost secondary wui-btn-sm" data-wui-theme-toggle title="Toggle theme">' +
               '<span class="material-symbols-outlined">dark_mode</span>' +
+            '</button>' +
+            '<button class="wui-btn ghost secondary wui-btn-sm" data-wui-lang-toggle title="Toggle language">' +
+              '<span class="material-symbols-outlined">translate</span>' +
             '</button>' +
           '</div>' +
         '</div>' +
@@ -175,17 +278,19 @@
     '</div>';
   }
 
+  function groupKey(g) { return 'docs_group_' + g.toLowerCase().replace(/[^a-z0-9]+/g, '_'); }
+
   function renderSidebar(activeKey, root) {
     var html = '<nav class="docs-nav">';
     for (var i = 0; i < NAV.length; i++) {
       var group = NAV[i];
       html += '<div class="docs-nav-group">';
-      html += '<div class="docs-nav-group-label">' + group.group + '</div>';
+      html += '<div class="docs-nav-group-label" data-wui-i18n="' + groupKey(group.group) + '">' + group.group + '</div>';
       for (var j = 0; j < group.items.length; j++) {
         var item = group.items[j];
         var isActive = item.key === activeKey;
         var href = getHref(item, root);
-        html += '<a href="' + href + '" class="docs-nav-item' + (isActive ? ' is-active' : '') + '">' + item.label + '</a>';
+        html += '<a href="' + href + '" class="docs-nav-item' + (isActive ? ' is-active' : '') + '" data-wui-i18n="docs_nav_' + item.key + '">' + item.label + '</a>';
       }
       html += '</div>';
     }
@@ -204,6 +309,13 @@
     if (sb) sb.innerHTML = renderSidebar(ns, root);
     var label = labelFor(ns);
     document.title = (label && ns !== 'home') ? 'weoc-ui — ' + label : 'weoc-ui — Component Library';
+    if (window.Alpine && window._docsStoreReady) {
+      window.Alpine.store('docs').activePage = ns;
+    }
+    // Localize freshly-rendered chrome + swapped page content (runs on first
+    // load AND after every SPA navigation, so a new page shows in the active
+    // language without needing a toggle).
+    if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
   }
 
   /* ── On-demand global assets ──────────────────────────────────────────────
@@ -215,6 +327,26 @@
       var s = document.createElement('script');
       s.src = src; s.onload = resolve; s.onerror = resolve;
       document.head.appendChild(s);
+    });
+  }
+
+  /* Load the EN/AR translation store once (site-wide), then re-localize.
+     docs-i18n.js calls WUI.i18n.register([...]) at parse. Loaded via `root`
+     so it resolves at any page depth. */
+  var i18nStoreLoaded = false;
+  // Per-page translation files (chrome + several pages live in docs-i18n.js;
+  // the rest are one file each under i18n/ to keep them maintainable).
+  var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
+    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home'];
+  function ensureI18nStore(root) {
+    if (i18nStoreLoaded) return Promise.resolve();
+    i18nStoreLoaded = true;
+    var chain = loadScript(root + 'docs-i18n.js');
+    I18N_PAGES.forEach(function (p) {
+      chain = chain.then(function () { return loadScript(root + 'i18n/' + p + '.js'); });
+    });
+    return chain.then(function () {
+      if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
     });
   }
 
@@ -237,20 +369,62 @@
     // TomSelect + Flatpickr styles — needed on the Forms page but loaded here
     // site-wide because Barba never re-processes incoming <head> link tags.
     ['tom-select.min.css', 'tom-select-agency.css',
-     'flatpickr.min.css', 'flatpickr-agency.css'].forEach(function (f) {
+     'flatpickr.min.css', 'flatpickr-agency.css',
+     'tinymce-theme.css'].forEach(function (f) {
       ensureCSS(shared + 'CSS/' + f);
     });
+    // Prism syntax-highlight theme (token-driven, follows light/dark). Docs-only.
+    ensureCSS(root + 'prism-agency.css');
     var jobs = [];
+    // Prism.js — self-hosted, MANUAL mode (we drive highlighting after each
+    // demo/page render, never on DOMContentLoaded). Set the flag BEFORE the
+    // script loads so Prism honours it. Default bundle = markup + css + js.
+    if (!window.Prism) {
+      window.Prism = { manual: true };
+      jobs.push(loadScript(root + 'vendor/prism/prism.min.js'));
+    }
+    // TinyMCE — fully self-hosted in vendor/tinymce-8.6.0/ (engine + skins/
+    // themes/models/icons/plugins all resolve from that folder at runtime).
+    // content_css / iframe theming is applied in PAGE_INIT.tinymce.
+    if (!window.tinymce)     jobs.push(loadScript(root + 'vendor/tinymce-8.6.0/tinymce.min.js'));
     if (!window.gsap)        jobs.push(loadScript(shared + 'JS/gsap.min.js'));
-    if (!window.barba)       jobs.push(loadScript(root + 'vendor/barba.min.js'));
+    /* Barba removed — navigation is now the Alpine-driven fetch/swap router below. */
     if (!window.WUICalendar) jobs.push(loadScript(shared + 'JS/weoc-calendar.js'));
     if (!window.TomSelect)   jobs.push(loadScript(shared + 'JS/tom-select.complete.min.js'));
     if (!window.flatpickr)   jobs.push(loadScript(shared + 'JS/flatpickr.min.js'));
     if (!window.uPlot)       jobs.push(loadScript(shared + 'JS/uPlot.iife.min.js'));
     if (!window.EOCLists)    jobs.push(loadScript(shared + 'JS/eoc-lists.js'));
+    if (!window.Alpine)      jobs.push(loadScript(root + 'vendor/alpine/cdn.min.js'));
     ensureCSS(shared + 'CSS/uPlot.min.css');
     // Factory wrappers + weoc-anim must load AFTER their respective libraries.
     return Promise.all(jobs).then(function () {
+      if (window.Alpine && !window._docsStoreReady) {
+        window._docsStoreReady = true;
+
+        window.Alpine.store('docs', {
+          // ── Theme ───────────────────────────────────────────────────
+          // Mirrors localStorage so x-data blocks can read/react to it.
+          // Always mutate via setTheme() — it syncs the <link> and swatches.
+          theme: localStorage.getItem('wui-docs-theme') || 'atlas',
+          setTheme: function (id) {
+            this.theme = id;
+            loadTheme(id);
+          },
+
+          // ── Active page ─────────────────────────────────────────────
+          // Set by renderChrome on every navigation. Use in x-data to
+          // conditionally show/hide chrome elements per page.
+          activePage: null,
+
+          // ── Page-scoped reactive state ──────────────────────────────
+          // PAGE_INIT functions write into page.* for x-data blocks on
+          // that page. Alpine destroys element-bound scopes automatically
+          // when Barba removes the old container — no manual cleanup needed.
+          page: {}
+        });
+
+        window.Alpine.start();
+      }
       var jobs2 = [];
       if (!window.TomSelectFactory) jobs2.push(loadScript(shared + 'JS/tom-select-factory.js'));
       if (!window.FlatpickrFactory)  jobs2.push(loadScript(shared + 'JS/flatpickr-factory.js'));
@@ -268,9 +442,39 @@
       var el = document.getElementById('theme-display');
       if (el && window.WUI) el.textContent = window.WUI.getTheme();
     },
-    forms: function () {
+    localization: function () {
+      var W = window.WUI;
+      if (!W || !W.i18n) return;
+      W.i18n.register([
+        { lang: 'en', id: 'Demo_Save', value: 'Save' }, { lang: 'ar', id: 'Demo_Save', value: 'حفظ' },
+        { lang: 'en', id: 'Demo_Cancel', value: 'Cancel' }, { lang: 'ar', id: 'Demo_Cancel', value: 'إلغاء' },
+        { lang: 'en', id: 'Demo_Delete', value: 'Delete' }, { lang: 'ar', id: 'Demo_Delete', value: 'حذف' },
+        { lang: 'en', id: 'Demo_Tier1', value: 'Tier 1' }, { lang: 'ar', id: 'Demo_Tier1', value: 'المستوى 1' },
+        { lang: 'en', id: 'Demo_Row', value: 'Generated row' }, { lang: 'ar', id: 'Demo_Row', value: 'صف مُولَّد' }
+      ]);
+      var list = document.getElementById('demo-js-list');
+      if (list) {
+        list.innerHTML = '';
+        for (var i = 1; i <= 3; i++) {
+          var li = document.createElement('li');
+          W.i18n.mark(li, 'Demo_Row');
+          list.appendChild(li);
+        }
+      }
+      var tpl = document.getElementById('demo-tpl');
+      var host = document.getElementById('demo-tpl-host');
+      if (tpl && host && tpl.content) {
+        host.innerHTML = '';
+        host.appendChild(tpl.content.cloneNode(true));
+        W.i18n.apply(host);
+      }
+      W.i18n.apply(document);
+    },
+    // forms.html is CSS-only (weoc-forms.css) — no PAGE_INIT needed.
+    // TomSelect moved to PAGE_INIT.combobox, Flatpickr to PAGE_INIT.dates.
+    combobox: function () {
       if (window.TomSelectFactory) {
-        // Register person renderer BEFORE init so data-render="DocsPersonTmpl" resolves
+        // Custom renderer — register BEFORE init so data-render="DocsPersonTmpl" resolves.
         TomSelectFactory.registerTemplate('DocsPersonTmpl', {
           option: function (data) {
             return '<div class="ts-person-option">' +
@@ -281,31 +485,93 @@
           },
           item: function (data) { return '<div>' + data.text + '</div>'; }
         });
-        TomSelectFactory.init();
-        var rdTs = TomSelectFactory.get('demo-ts-readonly');
-        if (rdTs) rdTs.wrapper.classList.add('is-readonly');
-      }
-      if (window.FlatpickrFactory) {
-        FlatpickrFactory.init();
-      }
-      // Dependent select demo: rebuild child options when parent changes
-      window.docsFilterChild = function (value) {
-        var child = document.getElementById('demo-ts-child');
-        if (!child) return;
-        var map = {
-          hazmat: [['chem-spill', 'Chemical Spill'], ['radiation', 'Radiation'], ['gas-leak', 'Gas Leak']],
-          fire:   [['structure', 'Structure Fire'], ['wildfire', 'Wildfire'], ['vehicle', 'Vehicle Fire']],
-          flood:  [['flash', 'Flash Flood'], ['river', 'River Flood'], ['storm', 'Storm Surge']]
+
+        // Dependent select: rebuild child options from the parent value, then resync.
+        window.docsFilterChild = function (value) {
+          var child = document.getElementById('cb-child');
+          if (!child) return;
+          var map = {
+            hazmat: [['chem-spill', 'Chemical Spill'], ['radiation', 'Radiation'], ['gas-leak', 'Gas Leak']],
+            fire:   [['structure', 'Structure Fire'], ['wildfire', 'Wildfire'], ['vehicle', 'Vehicle Fire']],
+            flood:  [['flash', 'Flash Flood'], ['river', 'River Flood'], ['storm', 'Storm Surge']]
+          };
+          var pairs = map[value] || [];
+          while (child.options.length > 1) child.remove(1);
+          pairs.forEach(function (p) {
+            var o = document.createElement('option');
+            o.value = p[0]; o.text = p[1]; child.appendChild(o);
+          });
+          var ts = TomSelectFactory.get('cb-child');
+          if (ts) { ts.clearOptions(); ts.sync(); ts.clear(true); }
         };
-        var pairs = map[value] || [];
-        while (child.options.length > 1) child.remove(1);
-        pairs.forEach(function (p) {
-          var o = document.createElement('option');
-          o.value = p[0]; o.text = p[1]; child.appendChild(o);
-        });
-        var ts = TomSelectFactory.get('demo-ts-child');
-        if (ts) { ts.clearOptions(); ts.sync(); ts.clear(true); }
-      };
+
+        // Change-callback readout.
+        window.docsLevelChange = function (value) {
+          var out = document.getElementById('cb-onchange-out');
+          if (out) out.textContent = value || 'none';
+        };
+
+        // Binds every select.tomselect on the page (single, multi, tags, remote,
+        // optgroups, person renderer, parent/child, slots, on-change, dropdown-parent,
+        // disabled, readonly). mountDropdownSlots + wireDependentSelect run inside init.
+        TomSelectFactory.init();
+
+        // Readonly is a post-init class on the wrapper.
+        var rd = TomSelectFactory.get('cb-readonly');
+        if (rd && rd.wrapper) rd.wrapper.classList.add('is-readonly');
+      }
+    },
+    dates: function () {
+      if (!window.FlatpickrFactory) return;
+      // Binds every [data-fp-preset] input in the page; skips already-inited ones.
+      // Re-runs after each SPA swap because runPageInit(ns) calls PAGE_INIT[ns].
+      FlatpickrFactory.init();
+      // Readonly display demo: lock it so it renders a value but never opens.
+      var ro = document.getElementById('fp-readonly');
+      if (ro && ro._flatpickr) {
+        ro.classList.add('is-readonly');
+        ro._flatpickr.set('clickOpens', false);
+      }
+    },
+    tinymce: function () {
+      if (!window.tinymce) return;
+      var sel = '#demo-tinymce';
+      if (!document.querySelector(sel)) return;
+      // Barba re-enter: tear down any prior editor bound to a now-detached node.
+      try { window.tinymce.remove(sel); } catch (e) {}
+      // The editor iframe is a separate document, so the agency theme must be
+      // loaded INTO it (tokens + Cairo + light/dark) BEFORE our content styling,
+      // which consumes those tokens. Load agency-theme.css, NOT weoc-ui-core.css
+      // (the core reset's body rules would break the editor content body).
+      // Use the ACTIVE palette file so Barba navigation into this page lands on
+      // the right palette (no refresh needed). Absolute URLs so they resolve
+      // correctly even after Barba navigation.
+      var contentCss = [
+        new URL('../../CSS/weoc-ui/' + agencyThemeFile(activePalette()), document.baseURI).href,
+        new URL('../../CSS/tinymce-content-tokens.css', document.baseURI).href
+      ];
+      var applyTheme = function (ed) { if (window.WUI) window.WUI.applyTinyMCETheme(ed); };
+      window.tinymce.init({
+        selector: sel,
+        height: 380,
+        license_key: 'gpl',       // self-hosted GPL build — suppresses the API-key notice
+        // Engine + skin/theme/model/icons/plugins all resolve from the vendored
+        // tinymce-8.6.0/ folder automatically (base_url derives from the script src).
+        menubar: 'edit view insert format table',
+        plugins: 'lists link table code help wordcount autolink',
+        toolbar: 'undo redo | blocks | bold italic underline | forecolor | ' +
+                 'bullist numlist | link table | blockquote | removeformat | code',
+        content_css: contentCss,   // agency stylesheet injected INTO the editor iframe
+        branding: false,
+        promotion: false,
+        // init_instance_callback is the reliable "fully ready" hook — the iframe
+        // document exists and content_css has been applied, so the theme sticks.
+        init_instance_callback: applyTheme,
+        setup: function (ed) {
+          // Re-assert on content reloads (setValue, undo to empty, etc.).
+          ed.on('SetContent', function () { applyTheme(ed); });
+        }
+      });
     },
     interactive: function () {
       document.querySelectorAll('.wui-slider-input').forEach(function (input) {
@@ -786,11 +1052,203 @@
       if (barReset && bar) {
         barReset.addEventListener('click', function () { A.bar(bar, 0, { duration: 0.4 }); });
       }
+    },
+    views: function () {
+      // interactive zone demos mount here via DocShell.mount()
     }
   };
 
+  /* ── wui-demo: single-source live example + code ──────────────────────────
+     The .wui-demo-preview holds the LIVE markup (the source of truth). We read
+     its innerHTML and render it as the Markup code box, so the code shown is
+     exactly what produced the preview — they cannot drift. LAYOUT demos may
+     instead supply <template class="wui-demo-markup"> to OVERRIDE that Markup box
+     with an authored version (real component + placeholder comments) when the
+     literal scaffolding is noise; the live preview still renders as-is. An optional
+     <template class="wui-demo-css"> becomes a CSS box (for override snippets) and
+     an optional <template class="wui-demo-js"> becomes a JavaScript box;
+     data-wui-demo-run also executes the JS, so JS demos are single-source too.
+     2+ boxes render as tabs (Markup / CSS / JavaScript). Idempotent. */
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+  }
+  function dedent(s) {
+    var lines = s.replace(/\t/g, '  ').replace(/^\n+/, '').replace(/\s+$/, '').split('\n');
+    var min = Infinity;
+    for (var i = 0; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      var lead = lines[i].match(/^ */)[0].length;
+      if (lead < min) min = lead;
+    }
+    if (!isFinite(min)) min = 0;
+    for (var j = 0; j < lines.length; j++) lines[j] = lines[j].slice(min);
+    return lines.join('\n');
+  }
+  /* Prism highlight, idempotent + safe if Prism isn't loaded. Operates on the
+     element in place (works on <code class="language-*"> or a bare tagged <pre>).
+     Copy still returns exact source — textContent is unchanged by tokenising. */
+  function highlightEl(el) {
+    if (!el || el.getAttribute('data-prism-done') === '1') return;
+    if (window.Prism && window.Prism.highlightElement) {
+      el.setAttribute('data-prism-done', '1');
+      try { window.Prism.highlightElement(el); } catch (e) {}
+    }
+  }
+  /* Build the <pre class="docs-code"><code class="language-*"> shell for a snippet. */
+  function codePre(codeText, lang, extraCls) {
+    var pre = document.createElement('pre');
+    pre.className = 'docs-code' + (extraCls ? ' ' + extraCls : '');
+    var code = document.createElement('code');
+    code.className = 'language-' + (lang || 'markup');
+    code.textContent = codeText;           // textContent = safe, exact
+    pre.appendChild(code);
+    highlightEl(code);
+    return pre;
+  }
+  function codeBox(label, icon, codeText, lang) {
+    var wrap = document.createElement('div');
+    var bar = document.createElement('div');
+    bar.className = 'wui-demo-codebar';
+    bar.innerHTML =
+      '<span class="wui-demo-codelabel"><span class="material-symbols-outlined">' +
+        icon + '</span>' + label + '</span>' +
+      '<button class="wui-demo-copy" type="button" data-demo-copy>' +
+        '<span class="material-symbols-outlined">content_copy</span>Copy</button>';
+    wrap.appendChild(bar);
+    wrap.appendChild(codePre(codeText, lang));
+    return wrap;
+  }
+  /* Two+ code boxes (Markup + JavaScript) rendered as tabs, so the demo doesn't
+     become a long scroll. One shared copy button copies the active pane. */
+  function tabbedCode(boxes) {
+    var wrap = document.createElement('div');
+    wrap.className = 'wui-demo-tabbed';
+    var tabs = '';
+    for (var i = 0; i < boxes.length; i++) {
+      tabs += '<button type="button" class="wui-demo-tab' + (i === 0 ? ' is-active' : '') +
+        '" data-demo-tab="' + i + '"><span class="material-symbols-outlined">' +
+        boxes[i].icon + '</span>' + boxes[i].label + '</button>';
+    }
+    var bar = document.createElement('div');
+    bar.className = 'wui-demo-tabbar';
+    bar.innerHTML = '<div class="wui-demo-tablist">' + tabs + '</div>' +
+      '<button class="wui-demo-copy" type="button" data-demo-copy>' +
+      '<span class="material-symbols-outlined">content_copy</span>Copy</button>';
+    wrap.appendChild(bar);
+    for (var j = 0; j < boxes.length; j++) {
+      var pre = codePre(boxes[j].code, boxes[j].lang, 'wui-demo-pane' + (j === 0 ? ' is-active' : ''));
+      pre.setAttribute('data-demo-pane', j);
+      wrap.appendChild(pre);
+    }
+    return wrap;
+  }
+
+  function renderDemos(root) {
+    var scope = root || document;
+    var demos = scope.querySelectorAll('[data-wui-demo]');
+    for (var i = 0; i < demos.length; i++) {
+      var demo = demos[i];
+      if (demo.getAttribute('data-demo-ready') === '1') continue;
+      demo.setAttribute('data-demo-ready', '1');
+
+      var preview = demo.querySelector('.wui-demo-preview');
+      var markupTpl = demo.querySelector('template.wui-demo-markup');
+      var cssTpl = demo.querySelector('template.wui-demo-css');
+      var jsTpl = demo.querySelector('template.wui-demo-js');
+      var boxes = [];
+      // Markup box source: an explicit <template class="wui-demo-markup"> OVERRIDES
+      // the live preview (used for LAYOUT demos where serialising the visible
+      // scaffolding — filler boxes etc. — is noise; the override shows the real
+      // component with authored placeholder comments). Everywhere else, code ==
+      // the exact live preview (single-source invariant preserved).
+      if (markupTpl) {
+        var mText = dedent(markupTpl.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
+        boxes.push({ label: 'Markup', icon: 'code', lang: 'markup', code: mText });
+      } else if (preview) {
+        boxes.push({ label: 'Markup', icon: 'code', lang: 'markup', code: dedent(preview.innerHTML) });
+      }
+      if (cssTpl) {
+        var cssText = dedent(cssTpl.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
+        boxes.push({ label: 'CSS', icon: 'css', lang: 'css', code: cssText });
+      }
+      if (jsTpl) {
+        var jsText = dedent(jsTpl.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
+        boxes.push({ label: 'JavaScript', icon: 'javascript', lang: 'javascript', code: jsText });
+      }
+      var group = document.createElement('div');
+      group.className = 'wui-demo-code-group';
+      // 1 box (markup-only) = plain labeled box; 2+ (markup + JS) = tabbed, to
+      // avoid a long stacked scroll (user request).
+      if (boxes.length === 1) group.appendChild(codeBox(boxes[0].label, boxes[0].icon, boxes[0].code, boxes[0].lang));
+      else if (boxes.length > 1) group.appendChild(tabbedCode(boxes));
+      demo.appendChild(group);
+
+      // Optionally EXECUTE the JS so the shown snippet is the running snippet.
+      if (jsTpl && demo.hasAttribute('data-wui-demo-run')) {
+        try { (new Function(jsTpl.content ? tplText(jsTpl) : jsTpl.textContent))(); }
+        catch (e) { /* demo JS error — leave preview as-is */ }
+      }
+    }
+  }
+  function tplText(tpl) {
+    // template content is inert; serialise it back to text for execution
+    var d = document.createElement('div');
+    d.appendChild(tpl.content.cloneNode(true));
+    return d.textContent;
+  }
+
+  /* Copy buttons for demo code boxes — delegated, bound once. */
+  var demoCopyBound = false;
+  function bindDemoCopy() {
+    if (demoCopyBound) return;
+    demoCopyBound = true;
+    document.addEventListener('click', function (e) {
+      // Tab switch (Markup / JavaScript)
+      var tab = e.target.closest('[data-demo-tab]');
+      if (tab) {
+        var wrap = tab.closest('.wui-demo-tabbed');
+        if (wrap) {
+          var idx = tab.getAttribute('data-demo-tab');
+          wrap.querySelectorAll('[data-demo-tab]').forEach(function (t) { t.classList.toggle('is-active', t === tab); });
+          wrap.querySelectorAll('[data-demo-pane]').forEach(function (p) { p.classList.toggle('is-active', p.getAttribute('data-demo-pane') === idx); });
+        }
+        return;
+      }
+      var btn = e.target.closest('[data-demo-copy]');
+      if (!btn) return;
+      var pre, tabbed = btn.closest('.wui-demo-tabbed');
+      if (tabbed) pre = tabbed.querySelector('.wui-demo-pane.is-active');
+      else { var bar = btn.closest('.wui-demo-codebar'); pre = bar && bar.nextElementSibling; }
+      if (!pre) return;
+      var done = function () {
+        btn.classList.add('is-copied');
+        btn.innerHTML = '<span class="material-symbols-outlined">check</span>Copied';
+        setTimeout(function () {
+          btn.classList.remove('is-copied');
+          btn.innerHTML = '<span class="material-symbols-outlined">content_copy</span>Copy';
+        }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(pre.textContent).then(done, function () {});
+      }
+    });
+  }
+
+  /* Highlight hand-authored code blocks (js-api / lists integration samples)
+     tagged <pre class="docs-code language-*">. Demo-generated boxes are already
+     highlighted as they're built (codePre); highlightEl's guard skips them. */
+  function highlightStatic(root) {
+    var scope = root || document;
+    var els = scope.querySelectorAll('pre.docs-code[class*="language-"], .docs-code code[class*="language-"]');
+    for (var i = 0; i < els.length; i++) highlightEl(els[i]);
+  }
+
   function runPageInit(ns) {
+    renderDemos(document);
+    bindDemoCopy();
     if (PAGE_INIT[ns]) { try { PAGE_INIT[ns](); } catch (e) {} }
+    highlightStatic(document);
   }
 
   /* Live-update the home theme readout on toggle — bound once globally. */
@@ -840,44 +1298,164 @@
     el.style.height = r.height + 'px';
   }
 
-  function startBarba(root) {
-    if (barbaStarted || !window.barba) return;
-    barbaStarted = true;
+  function coverIn(target) {
+    if (reduceMotion || !window.gsap) return Promise.resolve();
+    var el = wipeEl();
+    placeWipe(el, target);
+    window.gsap.set(el, { transformOrigin: 'left center', scaleX: 0 });
+    return window.gsap.to(el, { scaleX: 1, duration: 0.5, ease: 'power3.inOut' });
+  }
+  function revealOut(target) {
+    if (reduceMotion || !window.gsap) return Promise.resolve();
+    var el = wipeEl();
+    placeWipe(el, target);
+    window.gsap.set(el, { transformOrigin: 'right center', scaleX: 1 });
+    return window.gsap.to(el, { scaleX: 0, duration: 0.55, ease: 'power3.inOut', delay: 0.08 });
+  }
 
-    window.barba.init({
-      sync: false,   // current leaves fully BEFORE next enters — no two-page overlap
-      transitions: [{
-        name: 'cover-reveal',
-        // Curtain wipes IN left → right over the (sole) current pane.
-        leave: function (data) {
-          if (reduceMotion) return;
-          var el = wipeEl();
-          placeWipe(el, data.current.container);
-          window.gsap.set(el, { transformOrigin: 'left center', scaleX: 0 });
-          return window.gsap.to(el, { scaleX: 1, duration: 0.55, ease: 'power3.inOut' });
-        },
-        // Barba keeps the OLD container in the DOM (flex) until after enter, so
-        // both pages would stack as the curtain slides off. Hide the old one
-        // now (barba removes it shortly) so the reveal shows ONLY the new page.
-        // The panel HOLDS fully covered (delay) so the swap is painted unseen.
-        enter: function (data) {
-          var r = getRoot();
-          var ns = data.next.namespace;
-          if (data.current && data.current.container) data.current.container.style.display = 'none';
-          renderChrome(ns, r);
-          try { data.next.container.scrollTop = 0; } catch (e) {}
-          runPageInit(ns);
-          if (reduceMotion) return;
-          var el = wipeEl();
-          placeWipe(el, data.next.container);
-          window.gsap.set(el, { transformOrigin: 'right center', scaleX: 1 });
-          return window.gsap.to(el, { scaleX: 0, duration: 0.6, ease: 'power3.inOut', delay: 0.12 });
-        }
-      }]
+  /* ── Router (Barba-free) ──────────────────────────────────────────────────
+     Alpine owns page state; navigation is a minimal fetch+swap SPA that keeps
+     the GSAP curtain. Only #docs-main's inner swaps; chrome re-renders per nav.
+     DOC-SITE ONLY — not a WebEOC pattern. */
+  var routerBound = false;
+  var navigating = false;
+
+  function rootForPath(path) {
+    return /weoc-ui-docs\.html$/.test((path || '').replace(/\\/g, '/')) ? './' : '../';
+  }
+  function nsForUrl(url) {
+    var clean = (url || '').split('#')[0].split('?')[0];
+    var file = clean.split('/').pop();
+    if (/weoc-ui-docs\.html$/.test(clean) || file === '') return 'home';
+    for (var i = 0; i < NAV.length; i++)
+      for (var j = 0; j < NAV[i].items.length; j++)
+        if (NAV[i].items[j].file && NAV[i].items[j].file === file) return NAV[i].items[j].key;
+    return 'home';
+  }
+
+  function swapContent(html, ns, hash) {
+    var main = document.getElementById('docs-main');
+    if (!main) return;
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var incoming = doc.getElementById('docs-main');
+    main.innerHTML = incoming ? incoming.innerHTML : html;
+    renderChrome(ns, rootForPath(location.pathname));
+    runPageInit(ns);
+    if (hash) {
+      var t = main.querySelector(hash);
+      if (t) { t.scrollIntoView(); } else { main.scrollTop = 0; }
+    } else {
+      main.scrollTop = 0;
+    }
+  }
+
+  function navigate(url, opts) {
+    opts = opts || {};
+    var main = document.getElementById('docs-main');
+    if (!main || navigating) { if (!main) location.href = url; return; }
+    navigating = true;
+    var a = document.createElement('a'); a.href = url;
+    var abs = a.href, hash = a.hash || '';
+    var ns = nsForUrl(abs);
+    Promise.resolve(coverIn(main))
+      .then(function () { return fetch(abs, { credentials: 'same-origin' }); })
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        if (opts.push !== false) history.pushState({ url: abs }, '', abs);
+        swapContent(html, ns, hash);
+        return revealOut(document.getElementById('docs-main'));
+      })
+      .catch(function () { location.href = url; })
+      .then(function () { navigating = false; });
+  }
+
+  function isInternalDocLink(a) {
+    if (!a || a.target === '_blank' || a.hasAttribute('download')) return false;
+    var href = a.getAttribute('href') || '';
+    if (!href || href.charAt(0) === '#' || /^(https?:|mailto:|tel:)/i.test(href)) return false;
+    return /(weoc-ui-docs\.html)($|[?#])|\/docs\/[a-z0-9-]+\.html($|[?#])/i.test(a.href);
+  }
+
+  function bindRouter() {
+    if (routerBound) return;
+    routerBound = true;
+    history.replaceState({ url: location.href }, '', location.href);
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+      var a = e.target.closest('a');
+      if (!isInternalDocLink(a)) return;
+      e.preventDefault();
+      navigate(a.href);
+    });
+    window.addEventListener('popstate', function () {
+      navigate(location.href, { push: false });
     });
   }
 
+  /* ── Search (over NAV labels + keywords) ──────────────────────────────────*/
+  var searchBound = false;
+  function searchMatches(q) {
+    q = (q || '').trim().toLowerCase();
+    if (!q) return [];
+    var terms = q.split(/\s+/), out = [];
+    for (var i = 0; i < NAV.length; i++)
+      for (var j = 0; j < NAV[i].items.length; j++) {
+        var it = NAV[i].items[j];
+        var hay = (it.label + ' ' + NAV[i].group + ' ' + (it.kw || '')).toLowerCase();
+        var ok = true;
+        for (var t = 0; t < terms.length; t++) if (hay.indexOf(terms[t]) === -1) { ok = false; break; }
+        if (ok) out.push({ group: NAV[i].group, item: it });
+      }
+    return out.slice(0, 12);
+  }
+  function renderSearchResults(q) {
+    var panel = document.getElementById('docs-search-results');
+    if (!panel) return;
+    var res = searchMatches(q);
+    if (!res.length) { panel.innerHTML = q ? '<div class="docs-search-empty">No matches</div>' : ''; panel.classList.toggle('is-open', !!q); return; }
+    var root = getRoot(), html = '';
+    for (var i = 0; i < res.length; i++) {
+      var href = getHref(res[i].item, root);
+      html += '<a class="docs-search-hit" href="' + href + '" data-search-hit>' +
+        '<span class="docs-search-hit-label">' + res[i].item.label + '</span>' +
+        '<span class="docs-search-hit-group">' + res[i].group + '</span></a>';
+    }
+    panel.innerHTML = html;
+    panel.classList.add('is-open');
+  }
+  function bindSearch() {
+    if (searchBound) return;
+    searchBound = true;
+    document.addEventListener('input', function (e) {
+      if (e.target && e.target.id === 'docs-search') renderSearchResults(e.target.value);
+    });
+    document.addEventListener('keydown', function (e) {
+      var input = document.getElementById('docs-search');
+      if (!input) return;
+      if (e.key === 'Enter' && document.activeElement === input) {
+        var first = document.querySelector('#docs-search-results [data-search-hit]');
+        if (first) { e.preventDefault(); navigate(first.href); closeSearch(); }
+      } else if (e.key === 'Escape') { closeSearch(); input.blur(); }
+      else if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); input.focus(); }
+    });
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('[data-search-hit]')) { closeSearch(); }
+      else if (!e.target.closest('.docs-search')) { closeSearch(); }
+    });
+  }
+  function closeSearch() {
+    var panel = document.getElementById('docs-search-results');
+    var input = document.getElementById('docs-search');
+    if (panel) { panel.classList.remove('is-open'); panel.innerHTML = ''; }
+    if (input) input.value = '';
+  }
+
   window.DocShell = {
+    /* Access the global Alpine store. Returns the 'docs' store object,
+       or null if Alpine hasn't initialised yet. */
+    store: function () {
+      return window.Alpine ? window.Alpine.store('docs') : null;
+    },
     init: function (activeKey) {
       var root = getRoot();
       var shared = root + '../';
@@ -890,15 +1468,24 @@
       // never a <link> element). This explicit link cascades after that @import,
       // so its :root block wins — and we can swap its href for theme switching.
       ensureCSS(shared + 'CSS/weoc-ui/agency-theme.css');
+      // Freeze the link to an ABSOLUTE href immediately. The SPA router changes
+      // location via pushState; the browser RE-RESOLVES a link's relative href
+      // against the new URL, so a cross-depth navigation would repoint this
+      // stylesheet to a 404 and break theming until a full reload. Locking the
+      // resolved absolute URL into the attribute makes it depth-immune.
+      var _agencyLink = getAgencyThemeLink();
+      if (_agencyLink) _agencyLink.setAttribute('href', _agencyLink.href);
       applyStoredTheme();
       renderChrome(ns, root);
       hookThemeReadout();
       hookThemeSwatches();
+      bindRouter();
+      bindSearch();
+      ensureI18nStore(root);
 
       ensureGlobalAssets(root).then(function () {
         entranceAnimate();
         runPageInit(ns);
-        startBarba(root);
       });
     }
   };

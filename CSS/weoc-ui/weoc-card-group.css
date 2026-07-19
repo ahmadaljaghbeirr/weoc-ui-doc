@@ -108,7 +108,7 @@
 /* ── Layout modifiers ───────────────────────────────────────── */
 .wui-card-group.is-row .wui-card-option .wui-card-content {
   flex-direction: row;
-  text-align: left;
+  text-align: start;
   justify-content: flex-start;
 }
 

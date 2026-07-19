@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
@@ -20,263 +20,473 @@
       <div class="docs-page">
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Components</div>
-          <div class="docs-hero-title">Feedback</div>
-          <div class="docs-hero-sub">Banners, callouts, alarms, skeleton loaders, and empty state components.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_feedback_1">Feedback</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_feedback_2">Feedback</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_feedback_3">Components that tell the user what is happening: contextual notices <code>wui-callout</code>, page-level <code>wui-banner</code>, transient <code>wui-toast</code> and <code>wui-snackbar</code> (driven by <code>WUI.toast</code> / <code>WUI.snackbar</code>), the pulsing <code>wui-alarm</code>, shimmer placeholders <code>wui-skeleton</code>, empty placeholders <code>wui-empty-state</code>, and the <code>.spin</code> loader. Every variant, size, and state is shown below with its exact markup.</div>
         </div>
 
-        <!-- ── wui-banner ─────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-callout ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">notifications</span>wui-banner</div>
-          <p class="docs-desc">Page-level alert bar. Colored left border + bottom border. Use at the top of a board or panel to communicate a persistent state.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_4"><span class="material-symbols-outlined">campaign</span>wui-callout</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_feedback_5">Inline contextual notice for form panels and content regions (4-sided, unlike the page-level banner). Required structure: <code>.wui-callout</code> &gt; a direct-child <code>span.material-symbols-outlined</code> icon + <code>.wui-callout-body</code> containing an optional <code>.wui-callout-title</code> followed by body text (prose, lists, and links are all supported). Add one color class: <code>primary</code>, <code>secondary</code>, <code>success</code>, <code>warning</code>, <code>danger</code>, or <code>info</code>.</p>
 
-          <div class="docs-example stacked">
-            <div class="wui-banner danger">
-              <div class="wui-banner-body">
-                <span class="material-symbols-outlined">error</span>
-                <div>
-                  <div class="wui-banner-text">EOC Fully Activated — Level 4 Critical</div>
-                  <div class="wui-banner-sub">All available resources have been mobilized. Command staff report to EOC immediately.</div>
-                </div>
-              </div>
-            </div>
-            <div class="wui-banner warning">
-              <div class="wui-banner-body">
-                <span class="material-symbols-outlined">warning</span>
-                <div>
-                  <div class="wui-banner-text">Watch: Severe Weather Advisory</div>
-                  <div class="wui-banner-sub">National Weather Service has issued a severe thunderstorm warning for the region.</div>
-                </div>
-              </div>
-            </div>
-            <div class="wui-banner success">
-              <div class="wui-banner-body">
-                <span class="material-symbols-outlined">check_circle</span>
-                <div><div class="wui-banner-text">All Clear — EOC Deactivated</div></div>
-              </div>
-            </div>
-            <div class="wui-banner info">
-              <div class="wui-banner-body">
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_6">All 6 colors — required structure</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <div class="wui-callout primary">
                 <span class="material-symbols-outlined">info</span>
-                <div><div class="wui-banner-text">Scheduled Maintenance: Sunday 02:00–04:00</div></div>
-              </div>
-            </div>
-            <div class="wui-banner primary">
-              <div class="wui-banner-body">
-                <span class="material-symbols-outlined">campaign</span>
-                <div><div class="wui-banner-text">System-wide broadcast: Update your contact information by Friday.</div></div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-banner danger"&gt;
-  &lt;div class="wui-banner-body"&gt;
-    &lt;span class="material-symbols-outlined"&gt;error&lt;/span&gt;
-    &lt;div&gt;
-      &lt;div class="wui-banner-text"&gt;Critical Alert&lt;/div&gt;
-      &lt;div class="wui-banner-sub"&gt;Supplementary detail text.&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;!-- Colors: danger | warning | success | info | primary | secondary --&gt;</pre>
-        </div>
-
-        <!-- ── wui-callout ─────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">chat_bubble</span>wui-callout</div>
-          <p class="docs-desc">4-sided inline contextual notices. Lighter than a banner — use inside panel bodies, form flows, or documentation. 6 variants.</p>
-
-          <div class="docs-example stacked">
-            <div class="wui-callout primary">
-              <span class="material-symbols-outlined">info</span>
-              <div class="wui-callout-body">
-                <div class="wui-callout-title">Primary callout</div>
-                General informational notice with a title and body text.
-              </div>
-            </div>
-            <div class="wui-callout info">
-              <span class="material-symbols-outlined">info</span>
-              <div class="wui-callout-body">
-                <div class="wui-callout-title">Info callout</div>
-                Contextual information the user should be aware of.
-              </div>
-            </div>
-            <div class="wui-callout success">
-              <span class="material-symbols-outlined">check_circle</span>
-              <div class="wui-callout-body">
-                <div class="wui-callout-title">Success callout</div>
-                Operation completed. Record has been saved successfully.
-              </div>
-            </div>
-            <div class="wui-callout warning">
-              <span class="material-symbols-outlined">warning</span>
-              <div class="wui-callout-body">
-                <div class="wui-callout-title">Warning callout</div>
-                This action cannot be undone. Proceed with caution.
-              </div>
-            </div>
-            <div class="wui-callout danger">
-              <span class="material-symbols-outlined">error</span>
-              <div class="wui-callout-body">
-                <div class="wui-callout-title">Danger callout</div>
-                Critical constraint violated. Data could not be submitted.
-              </div>
-            </div>
-            <div class="wui-callout secondary">
-              <span class="material-symbols-outlined">help</span>
-              <div class="wui-callout-body">
-                <div class="wui-callout-title">Secondary callout</div>
-                Low-priority note or tip for the user.
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-callout warning"&gt;
-  &lt;span class="material-symbols-outlined"&gt;warning&lt;/span&gt;
-  &lt;div class="wui-callout-body"&gt;
-    &lt;div class="wui-callout-title"&gt;Warning title&lt;/div&gt;
-    Body text of the callout.
-  &lt;/div&gt;
-&lt;/div&gt;
-&lt;!-- Variants: primary | info | success | warning | danger | secondary --&gt;</pre>
-        </div>
-
-        <!-- ── wui-alarm ───────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">alarm</span>wui-alarm</div>
-          <p class="docs-desc">Active alert circle. Add <code>.active</code> to trigger a sonar radial pulse animation. Use for live emergency indicators.</p>
-
-          <div class="docs-example row" style="align-items:center;gap:var(--space-8)">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
-              <div class="wui-alarm sm active"></div>
-              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">SM · active</span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
-              <div class="wui-alarm active"></div>
-              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">Base · active</span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
-              <div class="wui-alarm lg active"></div>
-              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">LG · active</span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
-              <div class="wui-alarm xl active"></div>
-              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">XL · active</span>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2)">
-              <div class="wui-alarm"></div>
-              <span style="font-size:var(--text-2xs);color:var(--color-secondary-text)">Inactive</span>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-alarm active"&gt;&lt;/div&gt;     &lt;!-- pulsing --&gt;
-&lt;div class="wui-alarm"&gt;&lt;/div&gt;            &lt;!-- static --&gt;
-
-&lt;!-- Sizes: .sm | default | .lg | .xl --&gt;</pre>
-        </div>
-
-        <!-- ── wui-skeleton ────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">hourglass_empty</span>wui-skeleton</div>
-          <p class="docs-desc">Shimmer loading placeholder. Compose with shape + height + width utilities.</p>
-
-          <div class="docs-subsection-title">Shapes</div>
-          <div class="docs-example stacked">
-            <div class="wui-skeleton h-lg"></div>
-            <div class="wui-skeleton h-base w-2-3"></div>
-            <div class="wui-skeleton h-sm w-1-2"></div>
-            <div class="wui-skeleton pill h-btn w-1-3"></div>
-            <div style="display:flex;gap:var(--space-3);align-items:center">
-              <div class="wui-skeleton circle h-avatar"></div>
-              <div style="flex:1;display:flex;flex-direction:column;gap:var(--space-2)">
-                <div class="wui-skeleton h-base w-3-4"></div>
-                <div class="wui-skeleton h-sm w-1-2"></div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;!-- Rectangle (default) --&gt;
-&lt;div class="wui-skeleton h-lg"&gt;&lt;/div&gt;
-&lt;div class="wui-skeleton h-base w-2-3"&gt;&lt;/div&gt;
-
-&lt;!-- Pill shape --&gt;
-&lt;div class="wui-skeleton pill h-btn"&gt;&lt;/div&gt;
-
-&lt;!-- Circle (avatar) --&gt;
-&lt;div class="wui-skeleton circle h-avatar"&gt;&lt;/div&gt;
-&lt;div class="wui-skeleton circle h-avatar-lg"&gt;&lt;/div&gt;
-
-&lt;!-- Inline --&gt;
-&lt;div class="wui-skeleton inline h-xs"&gt;&lt;/div&gt;
-
-&lt;!-- Height tokens: h-2xs | h-xs | h-sm | h-base | h-lg | h-xl | h-2xl
-                    h-btn | h-input | h-icon | h-fab | h-tab | h-avatar | h-avatar-lg --&gt;
-&lt;!-- Width tokens:  w-full | w-3-4 | w-2-3 | w-1-2 | w-1-3 | w-1-4 --&gt;</pre>
-
-          <div class="docs-subsection-title">Skeleton card pattern</div>
-          <div class="docs-example">
-            <div class="wui-card" style="width:280px">
-              <div class="wui-card-hdr">
-                <div class="wui-card-hdr-left" style="display:flex;align-items:center;gap:var(--space-3)">
-                  <div class="wui-skeleton circle h-avatar"></div>
-                  <div style="display:flex;flex-direction:column;gap:var(--space-2);flex:1">
-                    <div class="wui-skeleton h-sm w-3-4"></div>
-                    <div class="wui-skeleton h-xs w-1-2"></div>
-                  </div>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Primary</div>
+                  General contextual information tied to the current panel.
                 </div>
               </div>
-              <div class="wui-card-body" style="display:flex;flex-direction:column;gap:var(--space-2)">
-                <div class="wui-skeleton h-sm w-full"></div>
-                <div class="wui-skeleton h-sm w-3-4"></div>
-                <div class="wui-skeleton h-sm w-1-2"></div>
+              <!-- Secondary -->
+              <div class="wui-callout secondary">
+                <span class="material-symbols-outlined">notes</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Secondary</div>
+                  A low-emphasis note that supports the surrounding content.
+                </div>
+              </div>
+              <!-- Success -->
+              <div class="wui-callout success">
+                <span class="material-symbols-outlined">check_circle</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Success</div>
+                  The record was saved and the workflow can continue.
+                </div>
+              </div>
+              <!-- Warning -->
+              <div class="wui-callout warning">
+                <span class="material-symbols-outlined">warning</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Warning</div>
+                  Review the highlighted fields before submitting.
+                </div>
+              </div>
+              <!-- Danger -->
+              <div class="wui-callout danger">
+                <span class="material-symbols-outlined">error</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Danger</div>
+                  This action cannot be undone once confirmed.
+                </div>
+              </div>
+              <!-- Info -->
+              <div class="wui-callout info">
+                <span class="material-symbols-outlined">lightbulb</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Info</div>
+                  Tip: you can attach files after the report is created.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_7">With a list in the body</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Callout containing a list -->
+              <div class="wui-callout warning">
+                <span class="material-symbols-outlined">rule</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Before you submit</div>
+                  <ul>
+                    <li>Confirm the incident location.</li>
+                    <li>Assign a responsible officer.</li>
+                    <li>Attach the initial situation report.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_8">Title omitted (body only)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- No .wui-callout-title -->
+              <div class="wui-callout info">
+                <span class="material-symbols-outlined">info</span>
+                <div class="wui-callout-body">
+                  Draft auto-saves every 30 seconds while you edit.
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ── wui-empty-state ─────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-banner ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">inbox</span>wui-empty-state</div>
-          <p class="docs-desc">Full-area empty state with icon + label + sub + optional action. Use <code>.compact</code> for inline contexts; <code>.dashed</code> adds a border.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_9"><span class="material-symbols-outlined">campaign</span>wui-banner</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_feedback_10">Page-level inline alert, sibling to <code>wui-callout</code>. Structure: <code>wui-banner</code> → leading <code>material-symbols-outlined</code> icon + <code>wui-banner-body</code> (<code>wui-banner-text</code> headline, optional <code>wui-banner-sub</code> secondary line). One of six colour variants; icon + text inherit the accent.</p>
 
-          <div class="docs-example stacked">
-            <div class="wui-empty-state">
-              <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--color-secondary-text)">inbox</span>
-              <div class="wui-empty-label">No Incidents Found</div>
-              <div class="wui-empty-sub">No incidents match your current filters. Adjust the filter criteria or create a new incident.</div>
-              <button class="wui-btn outline primary wui-btn-sm"><span class="material-symbols-outlined">add</span> New Incident</button>
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_11">All 6 color variants (text + sub structure)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <div class="wui-banner primary" style="width:100%">
+                <span class="material-symbols-outlined">info</span>
+                <div class="wui-banner-body">
+                  <div class="wui-banner-text">System update scheduled</div>
+                  <div class="wui-banner-sub">Maintenance window begins at 02:00 UTC.</div>
+                </div>
+              </div>
+              <!-- Secondary -->
+              <div class="wui-banner secondary" style="width:100%">
+                <span class="material-symbols-outlined">bookmark</span>
+                <div class="wui-banner-body">
+                  <div class="wui-banner-text">Draft saved</div>
+                  <div class="wui-banner-sub">Your report is stored locally and not yet submitted.</div>
+                </div>
+              </div>
+              <!-- Success -->
+              <div class="wui-banner success" style="width:100%">
+                <span class="material-symbols-outlined">check_circle</span>
+                <div class="wui-banner-body">
+                  <div class="wui-banner-text">Report submitted</div>
+                  <div class="wui-banner-sub">Incident #4471 was logged successfully.</div>
+                </div>
+              </div>
+              <!-- Warning -->
+              <div class="wui-banner warning" style="width:100%">
+                <span class="material-symbols-outlined">warning</span>
+                <div class="wui-banner-body">
+                  <div class="wui-banner-text">Resource capacity low</div>
+                  <div class="wui-banner-sub">Shelter occupancy is at 92% of rated capacity.</div>
+                </div>
+              </div>
+              <!-- Danger -->
+              <div class="wui-banner danger" style="width:100%">
+                <span class="material-symbols-outlined">error</span>
+                <div class="wui-banner-body">
+                  <div class="wui-banner-text">EOC activated — Level 4 Critical</div>
+                  <div class="wui-banner-sub">All response teams report to their assigned sectors.</div>
+                </div>
+              </div>
+              <!-- Info -->
+              <div class="wui-banner info" style="width:100%">
+                <span class="material-symbols-outlined">lightbulb</span>
+                <div class="wui-banner-body">
+                  <div class="wui-banner-text">New situation report available</div>
+                  <div class="wui-banner-sub">SITREP 14:00 has been published by the planning section.</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="docs-example">
-            <div class="wui-empty-state compact">
-              <span class="material-symbols-outlined">search_off</span>
-              <div class="wui-empty-label">No results</div>
-            </div>
-            <div class="wui-empty-state compact dashed" style="flex:1">
-              <span class="material-symbols-outlined">cloud_upload</span>
-              <div class="wui-empty-label">Drop files here</div>
-              <div class="wui-empty-sub">or click to browse</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_12">Headline only (no wui-banner-sub)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Single-line banner: omit wui-banner-sub -->
+              <div class="wui-banner info" style="width:100%">
+                <span class="material-symbols-outlined">info</span>
+                <div class="wui-banner-body">
+                  <div class="wui-banner-text">This board is read-only for your role.</div>
+                </div>
+              </div>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-empty-state"&gt;
-  &lt;span class="material-symbols-outlined"&gt;inbox&lt;/span&gt;
-  &lt;div class="wui-empty-label"&gt;No Results&lt;/div&gt;
-  &lt;div class="wui-empty-sub"&gt;No items match your filters.&lt;/div&gt;
-  &lt;button class="wui-btn outline primary wui-btn-sm"&gt;Create New&lt;/button&gt;
-&lt;/div&gt;
+        </div>
 
-&lt;!-- Compact / with dashed border --&gt;
-&lt;div class="wui-empty-state compact dashed"&gt;…&lt;/div&gt;
+        <!-- ══════════════════════════ wui-toast ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_13"><span class="material-symbols-outlined">notifications</span>wui-toast</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_feedback_14">Transient corner notification, created imperatively from JavaScript — there is no static markup to author. Call <code>WUI.toast(message, opts)</code>; the library builds the DOM, animates it in, auto-dismisses after <code>opts.duration</code> ms (default 4000; <code>0</code> = sticky), and tears it down after the exit transition. Returns a handle <code>{ el, dismiss }</code>. Auto-dismiss pauses while the pointer is over the toast. Each demo button below runs the exact call shown in its Markup box.</p>
 
-&lt;!-- Inline text-only --&gt;
-&lt;div class="wui-empty-section"&gt;No notes attached to this record.&lt;/div&gt;</pre>
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_15">Severity variants</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Neutral (no variant) -->
+              <button class="wui-btn outline secondary" onclick="WUI.toast('Draft auto-saved')">Neutral</button>
+              <!-- Primary -->
+              <button class="wui-btn primary" onclick="WUI.toast('Report queued for review', { variant: 'primary' })">Primary</button>
+              <!-- Info -->
+              <button class="wui-btn info" onclick="WUI.toast('New SITREP available', { variant: 'info' })">Info</button>
+              <!-- Success -->
+              <button class="wui-btn success" onclick="WUI.toast('Incident #4471 submitted', { variant: 'success' })">Success</button>
+              <!-- Warning -->
+              <button class="wui-btn warning" onclick="WUI.toast('Shelter at 92% capacity', { variant: 'warning' })">Warning</button>
+              <!-- Danger -->
+              <button class="wui-btn danger" onclick="WUI.toast('Failed to save record', { variant: 'danger' })">Danger</button>
+            </div>
+          </div>
 
-          <div class="docs-subsection-title">wui-empty-section (inline)</div>
-          <div class="docs-example">
-            <div class="wui-empty-section">No attachments on this record.</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_16">With a title</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- opts.title renders a bold heading above the message -->
+              <button class="wui-btn primary" onclick="WUI.toast('All response teams report to their sectors.', { variant: 'danger', title: 'EOC activated — Level 4' })">Titled toast</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_17">Positions</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default is top-right; six positions are supported -->
+              <button class="wui-btn outline primary" onclick="WUI.toast('top-right (default)')">top-right</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('top-left', { position: 'top-left' })">top-left</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('top-center', { position: 'top-center' })">top-center</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('bottom-right', { position: 'bottom-right' })">bottom-right</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('bottom-left', { position: 'bottom-left' })">bottom-left</button>
+              <button class="wui-btn outline primary" onclick="WUI.toast('bottom-center', { position: 'bottom-center' })">bottom-center</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_18">Sticky + action button</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_feedback_19"><code>duration: 0</code> keeps the toast until dismissed. <code>action</code> takes a string label, or <code>{ label, onClick(handle) }</code> — the callback fires <code>wui:toast:action</code> and then dismisses the toast.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Sticky toast with an Undo action -->
+              <button class="wui-btn warning" onclick="WUI.toast('Record moved to archive', { variant: 'warning', duration: 0, action: { label: 'Undo', onClick: function () { WUI.toast('Restore complete', { variant: 'success' }); } } })">Sticky + action</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_20">Dismiss all</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Stack a few, then clear them all -->
+              <button class="wui-btn outline info" onclick="WUI.toast('One'); WUI.toast('Two', { variant: 'info' }); WUI.toast('Three', { variant: 'success' })">Stack three</button>
+              <button class="wui-btn outline danger" onclick="WUI.dismissToasts()">Dismiss all</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-snackbar ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_21"><span class="material-symbols-outlined">bottom_navigation</span>wui-snackbar</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_feedback_22">A bottom-center, single-at-a-time notification with an optional inline action — the Material-style sibling of the toast. <code>WUI.snackbar(message, opts)</code> is a preset over the same engine: position is always bottom-center, a new snackbar replaces the open one, the surface is the inverted neutral skin, and the default duration is 6000 ms. Same <code>opts</code> as toast (<code>variant</code>, <code>title</code>, <code>duration</code>, <code>dismissible</code>, <code>action</code>).</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_23">Default</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Plain confirmation -->
+              <button class="wui-btn primary" onclick="WUI.snackbar('Changes saved')">Show snackbar</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_24">With an action</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Undo pattern -->
+              <button class="wui-btn primary" onclick="WUI.snackbar('Item deleted', { action: { label: 'Undo', onClick: function () { WUI.snackbar('Item restored'); } } })">Delete with Undo</button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_25">Single-at-a-time</div>
+          <p class="docs-desc" data-wui-i18n="docs_feedback_26">Triggering a snackbar while one is open replaces it — only one shows at a time. Click twice in quick succession to see the swap.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Second call replaces the first -->
+              <button class="wui-btn info" onclick="WUI.snackbar('Uploading… ' + new Date().toLocaleTimeString(), { variant: 'info' })">Fire snackbar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-alarm ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_27"><span class="material-symbols-outlined">notifications_active</span>wui-alarm</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_feedback_28">A danger-colored icon button for active system alerts. It sits dimmed (<code>opacity: 0.48</code>) until you add <code>active</code>, which brightens it, adds a glow ring, pulses the icon core, and emits an animated sonar ripple. Size modifiers: <code>sm</code>, base (md), <code>lg</code>, <code>xl</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_29">Base (idle) vs. active</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Base (idle, dimmed) -->
+              <button class="wui-alarm"><span class="material-symbols-outlined">notifications</span></button>
+              <!-- Active (glow + core pulse + sonar) -->
+              <button class="wui-alarm active"><span class="material-symbols-outlined">notifications</span></button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_30">Sizes — sm → xl (base = md)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <button class="wui-alarm sm"><span class="material-symbols-outlined">notifications</span></button>
+              <!-- md (base, no size class) -->
+              <button class="wui-alarm"><span class="material-symbols-outlined">notifications</span></button>
+              <!-- lg -->
+              <button class="wui-alarm lg"><span class="material-symbols-outlined">notifications</span></button>
+              <!-- xl -->
+              <button class="wui-alarm xl"><span class="material-symbols-outlined">notifications</span></button>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_31">Sizes — active (sonar at each size)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm active -->
+              <button class="wui-alarm sm active"><span class="material-symbols-outlined">notifications</span></button>
+              <!-- md active -->
+              <button class="wui-alarm active"><span class="material-symbols-outlined">notifications</span></button>
+              <!-- lg active -->
+              <button class="wui-alarm lg active"><span class="material-symbols-outlined">notifications</span></button>
+              <!-- xl active -->
+              <button class="wui-alarm xl active"><span class="material-symbols-outlined">notifications</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-skeleton ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_32"><span class="material-symbols-outlined">view_agenda</span>wui-skeleton</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_feedback_33">Shimmer placeholder for loading states. Swap any content element 1-for-1 (same wrapper, same size, text removed). Compose one <em>shape</em> (default block, or <code>pill</code>/<code>circle</code>/<code>inline</code>), one <em>height</em> (<code>h-2xs</code>…<code>h-2xl</code> mirroring the text scale, or the UI presets <code>h-btn</code>/<code>h-input</code>/<code>h-icon</code>/<code>h-fab</code>/<code>h-tab</code>/<code>h-avatar</code>/<code>h-avatar-lg</code>), and a <em>width</em> (<code>w-full</code>/<code>w-3-4</code>/<code>w-2-3</code>/<code>w-1-2</code>/<code>w-1-3</code>/<code>w-1-4</code>, or an inline width).</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_34">Shapes — block / pill / circle / inline</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Block (default) -->
+              <span class="wui-skeleton h-base w-1-2"></span>
+              <!-- Pill -->
+              <span class="wui-skeleton pill h-base w-1-2"></span>
+              <!-- Circle -->
+              <span class="wui-skeleton circle h-avatar"></span>
+              <!-- Inline (flows with text) -->
+              <div>Loading <span class="wui-skeleton inline h-sm" style="width:80px"></span> inline.</div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_35">Heights — text scale (h-2xs → h-2xl)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- h-2xs -->
+              <span class="wui-skeleton h-2xs w-1-2"></span>
+              <!-- h-xs -->
+              <span class="wui-skeleton h-xs w-1-2"></span>
+              <!-- h-sm -->
+              <span class="wui-skeleton h-sm w-1-2"></span>
+              <!-- h-base -->
+              <span class="wui-skeleton h-base w-1-2"></span>
+              <!-- h-lg -->
+              <span class="wui-skeleton h-lg w-1-2"></span>
+              <!-- h-xl -->
+              <span class="wui-skeleton h-xl w-1-2"></span>
+              <!-- h-2xl -->
+              <span class="wui-skeleton h-2xl w-1-2"></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_36">Heights — UI element presets</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- h-btn (fixed 32px height) -->
+              <span class="wui-skeleton h-btn" style="width:96px"></span>
+              <!-- h-input (fixed 36px height) -->
+              <span class="wui-skeleton h-input" style="width:180px"></span>
+              <!-- h-icon (20x20) -->
+              <span class="wui-skeleton h-icon"></span>
+              <!-- h-fab (32x32) -->
+              <span class="wui-skeleton circle h-fab"></span>
+              <!-- h-tab (20px) -->
+              <span class="wui-skeleton h-tab" style="width:64px"></span>
+              <!-- h-avatar (32x32 round) -->
+              <span class="wui-skeleton h-avatar"></span>
+              <!-- h-avatar-lg (52x52 round) -->
+              <span class="wui-skeleton h-avatar-lg"></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_37">Widths — w-full → w-1-4</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- w-full -->
+              <span class="wui-skeleton h-base w-full"></span>
+              <!-- w-3-4 -->
+              <span class="wui-skeleton h-base w-3-4"></span>
+              <!-- w-2-3 -->
+              <span class="wui-skeleton h-base w-2-3"></span>
+              <!-- w-1-2 -->
+              <span class="wui-skeleton h-base w-1-2"></span>
+              <!-- w-1-3 -->
+              <span class="wui-skeleton h-base w-1-3"></span>
+              <!-- w-1-4 -->
+              <span class="wui-skeleton h-base w-1-4"></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_38">Composed — a loading list row</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Avatar + two text lines -->
+              <div style="display:flex;align-items:center;gap:var(--space-3);width:100%">
+                <span class="wui-skeleton h-avatar"></span>
+                <div style="flex:1;display:flex;flex-direction:column;gap:var(--space-2)">
+                  <span class="wui-skeleton h-sm w-1-2"></span>
+                  <span class="wui-skeleton h-xs w-3-4"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-empty-state ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_39"><span class="material-symbols-outlined">inbox</span>wui-empty-state</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_feedback_40">Centered column placeholder for a list, panel, or section with no items: an icon plus a <code>.wui-empty-label</code>. Modifiers: <code>compact</code> (tighter, for small widget bodies) and <code>dashed</code> (bordered, holds layout space in structured columns). Add a <code>.wui-empty-sub</code> for a secondary hint line. For an inline text-only row, use <code>.wui-empty-section</code> (no icon).</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_41">Base</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Base empty state -->
+              <div class="wui-empty-state">
+                <span class="material-symbols-outlined">inbox</span>
+                <span class="wui-empty-label">No items found</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_42">Compact</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Compact -->
+              <div class="wui-empty-state compact">
+                <span class="material-symbols-outlined">folder_off</span>
+                <span class="wui-empty-label">Nothing here yet</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_43">Dashed — with .wui-empty-sub</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Dashed + .wui-empty-sub -->
+              <div class="wui-empty-state dashed">
+                <span class="material-symbols-outlined">lan</span>
+                <span class="wui-empty-label">No chain defined</span>
+                <span class="wui-empty-sub">Add rules above to see a preview</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_44">wui-empty-section — inline text-only</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- .wui-empty-section (no icon) -->
+              <div class="wui-empty-section">No classifications defined yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Loader (.spin) ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_45"><span class="material-symbols-outlined">progress_activity</span>Loader</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_feedback_46">For a live spinner, add the utility class <code>.spin</code> (from weoc-utilities.css, loaded via the core barrel) to any icon. It applies a continuous 1s linear rotation. Pair it with a Material Symbol such as <code>progress_activity</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_47">Spinner</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Standalone spinning icon -->
+              <span class="material-symbols-outlined spin">progress_activity</span>
+              <!-- Inside a loading button -->
+              <button class="wui-btn primary" disabled><span class="material-symbols-outlined spin">progress_activity</span>Loading…</button>
+            </div>
           </div>
         </div>
 
       </div>
     </div>
   </div>
+
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('feedback');</script>
 </body>

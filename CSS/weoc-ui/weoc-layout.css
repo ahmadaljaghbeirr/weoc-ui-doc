@@ -46,19 +46,7 @@
 
 /* ─── Content Wrappers ───────────────────────────────────────── */
 
-/*
-  .page-center — max-width content column, centered.
-  NOTE: Several board CSS files define this locally. Those local copies are
-  redundant once the board imports weoc-ui-core and can be deleted on migration.
-  Boards with local copies: EventReporting/details, Checklists/details,
-  FacilitiesManagement/details, SystemCheck/details, AAR/details.
-*/
-.page-center {
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: var(--space-4) 0 0 0;
-}
+/* .page-center removed — superseded by .wui-det-inner (centering once per view). */
 
 /* ─── Toolbar ────────────────────────────────────────────────── */
 /*
@@ -113,10 +101,9 @@
 }
 
 /*
-  Scrollable main content zone for display views.
-  Wraps .page-center inside a .wui-main-div to make the card/grid area scroll
-  independently while header + filter bar stay fixed.
-  No padding — padding comes from .page-center or inner layout.
+  Scrollable main content zone for display views. Makes the card/grid area scroll
+  independently while header + filter bar stay fixed. No padding — padding comes
+  from the inner layout.
 */
 .wui-view-body {
   flex: 1;
@@ -124,37 +111,13 @@
   overflow-y: auto;
 }
 
-.wui-view-body::-webkit-scrollbar {
-  width: var(--border-md);
-}
-
-.wui-view-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.wui-view-body::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: calc(var(--border-radius) / 2);
-}
-
 /* ─── Scrollbar Utility ──────────────────────────────────────── */
 /*
-  Thin 4px scrollbar applied consistently everywhere.
-  Add .wui-scrollbar to any overflow container instead of copy-pasting rules.
-  Already inlined into .wui-list and .wui-tab-panel below — add to new containers.
+  Scrollbars are now styled GLOBALLY for every overflow surface — see the
+  --scrollbar-* tokens + the *::-webkit-scrollbar rule in weoc-reset.css.
+  .wui-scrollbar is kept only as a harmless no-op alias for existing markup;
+  new containers need no class and no copy-pasted rules.
 */
-.wui-scrollbar::-webkit-scrollbar {
-  width: var(--border-md);
-}
-
-.wui-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.wui-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: calc(var(--border-radius) / 2);
-}
 
 /* ─── Tab Panel Shell ────────────────────────────────────────── */
 /*
@@ -177,6 +140,38 @@
   overflow: hidden;
 }
 
+/* ─── Detail Inner Frame (wui-det-inner) ─────────────────────── */
+/*
+  Single max-width centering column for input-view body sections.
+  Mirrors the wui-hdr-wrap.centered / wui-hdr-inner and
+  wui-ftr-wrap.centered / wui-ftr-inner pattern — centering applied
+  once, between header and footer, instead of repeating page-center
+  on every tab panel.
+
+  Place directly inside form.input-form, wrapping wui-det-body:
+
+    form.input-form  (flex:1 shell child — styles in weoc-forms.css)
+      └── .wui-det-inner   ← this element
+            └── .wui-det-body
+                  └── .wui-tab-panel
+                        └── .wui-panel-wrap > .wui-panel  (no page-center needed)
+*/
+.wui-det-inner {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Vertical breathing room inside the scroll area — replaces the
+   padding previously provided by .wui-tab-panel .page-center */
+.wui-det-inner .wui-tab-panel {
+  padding: var(--space-2) 0;
+}
+
 .wui-tab-panel {
   display: none;
   height: 100%;
@@ -185,33 +180,26 @@
   box-sizing: border-box;
 }
 
-/* Details views use 20px padding on .page-center inside the panel */
-.wui-tab-panel .page-center {
-  padding: var(--space-2) 0;
-  box-sizing: border-box;
-}
-
-/* Input views want padding: 0 (form continues to edge) — override with .is-form */
-.wui-tab-panel.is-form .page-center {
-  padding: 0;
-  box-sizing: border-box;
-}
 
 .wui-tab-panel.active {
   display: block;
 }
 
-.wui-tab-panel::-webkit-scrollbar {
-  width: var(--border-md);
+/* ─── Tab / List toggle (is-list-mode) ──────────────────────── */
+/*
+  The data-wui-view-mode behavior (WUI.initViewMode) toggles .is-list-mode on
+  the container (default .wui-det-body). In list mode: header tab strip hidden,
+  all panels stack vertically (display:block !important beats the segment
+  engine's inline display), and the det-body becomes the scroll container.
+*/
+.wui-det-body.is-list-mode {
+  overflow-y: auto;
 }
 
-.wui-tab-panel::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.wui-tab-panel::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: calc(var(--border-radius) / 2);
+.wui-det-body.is-list-mode .wui-tab-panel {
+  display: block !important;
+  height: auto;
+  overflow-y: visible;
 }
 
 /* ─── List Layout ────────────────────────────────────────────── */
@@ -229,19 +217,6 @@
   flex-direction: column;
   gap: var(--space-3);
   min-height: 0;
-}
-
-.wui-list::-webkit-scrollbar {
-  width: var(--border-md);
-}
-
-.wui-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.wui-list::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: calc(var(--border-radius) / 2);
 }
 
 /* ─── Card Stack ─────────────────────────────────────────────── */
@@ -324,7 +299,7 @@
 .wui-panel-close-btn {
   position: absolute;
   top: var(--space-1);
-  left: var(--space-1);
+  inset-inline-start: var(--space-1);
   z-index: 2;
 }
 
@@ -407,8 +382,8 @@
   overflow: hidden;
   /* clip content while the column slides open/shut */
   transition: opacity 260ms ease;
-  /* Colored divider on the edge facing the main pane (left when panel is right) */
-  border-left: 1px solid var(--color-border);
+  /* Colored divider on the edge facing the main pane (inline-start when panel is at inline-end) */
+  border-inline-start: 1px solid var(--color-border);
 }
 
 /* Specific for display views */
@@ -457,8 +432,8 @@
 }
 
 .wui-split.panel-start>.wui-split-panel {
-  border-left: 0;
-  border-right: 1px solid var(--color-border);
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--color-border);
 }
 
 /* Collapsed — panel slides shut: its column animates to 0fr, main fills.
@@ -527,24 +502,12 @@
   gap: var(--space-3);
   overflow-y: auto;
   scrollbar-gutter: stable;
-  /* scrollbar-gutter reserves ~4px on the inline-end, which would inset the
-     content from non-scrolling siblings above. Bleed that gutter back out (into
-     the parent's gap / page padding) so the content lines up with the sections
-     above. Equals the scrollbar width; scroll + no-shift preserved. */
-  margin-inline-end: calc(-1 * var(--border-md));
-}
-
-.wui-scroll-area::-webkit-scrollbar {
-  width: var(--border-md);
-}
-
-.wui-scroll-area::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.wui-scroll-area::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: calc(var(--border-radius) / 2);
+  /* scrollbar-gutter reserves the scrollbar width on the inline-end, which would
+     inset the content from non-scrolling siblings above. Bleed that gutter back
+     out (into the parent's gap / page padding) so the content lines up with the
+     sections above. Equals --scrollbar-size; scroll + no-shift preserved.
+     (Scrollbar itself is styled globally — see weoc-reset.css.) */
+  margin-inline-end: calc(-1 * var(--scrollbar-size));
 }
 
 /* Density variants */
@@ -699,7 +662,7 @@
 
 .wui-required {
   color: var(--color-danger);
-  margin-left: var(--space-xs);
+  margin-inline-start: var(--space-xs);
 }
 
 /* ─── Dashboard Grid ─────────────────────────────────────────── */

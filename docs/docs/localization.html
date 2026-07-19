@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Localization</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="localization">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_localization_1">Get Started</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_localization_2">Localization</div>
+          <div class="docs-hero-sub" data-wui-i18n="docs_localization_3">Live EN/AR switching with no page refresh. Static labels, JS-generated content, and cloned templates all re-localize from a single toggle, and the page direction flips to RTL.</div>
+        </div>
+
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_localization_4"><span class="material-symbols-outlined">translate</span>Live language toggle</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_localization_5">Use the translate button in the header, or the button below. Nothing reloads. The idempotent <code>WUI.i18n.apply()</code> pass re-resolves every marked node from its stable key.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <button class="wui-btn primary" data-wui-lang-toggle data-wui-i18n="docs_localization_6">Toggle EN / AR</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_localization_7"><span class="material-symbols-outlined">label</span>Static markers</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_localization_8"><code>data-wui-i18n="Key"</code> labels resolve on load and re-resolve on every toggle.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <span class="wui-badge" data-wui-i18n="Demo_Save">Save</span>
+              <span class="wui-badge" data-wui-i18n="Demo_Cancel">Cancel</span>
+              <span class="wui-badge" data-wui-i18n="Demo_Delete">Delete</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_localization_9"><span class="material-symbols-outlined">code</span>JS-generated content</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_localization_10">These list items are built in JavaScript with <code>WUI.i18n.mark(el, id)</code>. Because each node carries its key, they flip on toggle just like static markup, fixing the "frozen until refresh" bug.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview"><ul id="demo-js-list"></ul></div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_localization_11"><span class="material-symbols-outlined">content_copy</span>Cloned template</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_localization_12">This card is cloned from a <code>&lt;template&gt;</code> after load, then localized with <code>WUI.i18n.apply(node)</code>. It re-localizes on toggle, fixing the "template resources never resolve" bug.</p>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <template id="demo-tpl">
+                <div class="wui-card"><div class="wui-card-body"><span class="wui-badge" data-wui-i18n="Demo_Tier1">Tier 1</span></div></div>
+              </template>
+              <div id="demo-tpl-host"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_localization_13"><span class="material-symbols-outlined">api</span>API</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_localization_14">All methods hang off the global <code>WUI.i18n</code>.</p>
+          <table class="wui-table">
+            <thead><tr><th>Member</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>register(rows)</code></td><td>Merge a flat <code>[{lang,id,value}]</code> array into the registry (en/ar).</td></tr>
+              <tr><td><code>t(id, fallback)</code></td><td>Look up a string in the current language. Falls back to <code>fallback</code>, then <code>id</code>.</td></tr>
+              <tr><td><code>tFor(lang, id, fallback)</code></td><td>Explicit-language lookup.</td></tr>
+              <tr><td><code>getLang()</code> / <code>setLang(lang)</code> / <code>toggleLang()</code></td><td>Read / set / flip the active language. <code>setLang</code> updates <code>&lt;html dir lang&gt;</code>, persists, re-applies, and fires <code>wui:langchange</code>.</td></tr>
+              <tr><td><code>apply(root)</code></td><td>Idempotent, re-runnable localization pass over a subtree. Call after injecting markup.</td></tr>
+              <tr><td><code>mark(el, id)</code></td><td>Set <code>data-wui-i18n</code> on a node and localize it in one call.</td></tr>
+            </tbody>
+          </table>
+          <p class="docs-desc" data-wui-i18n-html="docs_localization_15">Declarative: <code>[data-wui-i18n="Key"]</code> (text), <code>[data-wui-i18n-attr="placeholder:Key"]</code> (attributes), <code>[data-wui-lang-toggle]</code> and <code>[data-wui-lang="ar"]</code> (controls). Legacy <code>&lt;resource id&gt;</code> / <code>[l-key]</code> and the <code>window.getResource</code> / <code>changeLang</code> globals keep working.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('localization');</script>
+</body>
+</html>

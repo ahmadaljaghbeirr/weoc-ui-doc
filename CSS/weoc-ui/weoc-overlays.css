@@ -34,7 +34,7 @@
 .wui-pop-btn {
   width: 100%;
   padding: var(--space-2) var(--space-3);
-  text-align: left;
+  text-align: start;
   background: none;
   border: none;
   font-size: var(--text-sm);
@@ -122,7 +122,7 @@
   display: none;
   position: absolute;
   top: calc(100% + var(--space-2));
-  right: 0;
+  inset-inline-end: 0;
   z-index: 1060;
   background: var(--color-30);
   border: 1px solid var(--color-border);
@@ -139,10 +139,13 @@
 .wui-dropdown-arrow {
   position: absolute;
   top: -6px;
-  right: 10px;
+  inset-inline-end: 10px;
   width: 10px;
   height: 10px;
   background: var(--color-surface);
+  /* border-top + border-left form a symmetric upward caret after rotate(45deg);
+     they stay physical on purpose — flipping to inline-* would rotate the beak
+     sideways under RTL. Only the horizontal anchor (inset-inline-end) mirrors. */
   border-top: 1px solid var(--color-border);
   border-left: 1px solid var(--color-border);
   transform: rotate(45deg);
@@ -158,7 +161,7 @@
   background: transparent;
   font-size: var(--text-sm);
   color: var(--color-text-primary);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   transition: background 0.12s;
 }
@@ -487,6 +490,24 @@
 }
 
 .wui-drawer.is-open .wui-drawer-panel {
+  transform: translateX(0);
+}
+
+/* RTL: the wrapper's flex justification already flips the docking edge
+   (flex-end = left in RTL). Mirror the slide transform + rounded inner edge so
+   the panel hides/opens toward the correct edge and the advanced-filter drawer
+   opens from the opposite side automatically — no per-view config. */
+[dir="rtl"] .wui-drawer-panel {
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  transform: translateX(-100%);
+}
+
+[dir="rtl"] .wui-drawer.start .wui-drawer-panel {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  transform: translateX(100%);
+}
+
+[dir="rtl"] .wui-drawer.is-open .wui-drawer-panel {
   transform: translateX(0);
 }
 

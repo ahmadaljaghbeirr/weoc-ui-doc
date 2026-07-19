@@ -1,8 +1,9 @@
 /* =============================================
    weoc-feedback.css
    User-facing state communication components:
-   banner (inline alerts) and alarm (active
-   system alerts).
+   banner (inline alerts), alarm (active system
+   alerts), skeleton, callout, and the transient
+   toast / snackbar system (driven by weoc-ui.js).
    Loaded via weoc-ui.css barrel.
    Requires: agency-theme.css (loaded by barrel).
    ============================================= */
@@ -349,9 +350,243 @@
 .wui-callout-body ul,
 .wui-callout-body ol {
   margin: var(--space-1) 0 0;
-  padding-left: var(--space-5);
+  padding-inline-start: var(--space-5);
 }
 
 .wui-callout-body li {
   margin-bottom: 2px;
+}
+
+/* ============================================================
+   5) TOAST / SNACKBAR (wui-toast / wui-snackbar)
+   Transient, JS-created notifications. The DOM is built and
+   torn down by weoc-ui.js (WUI.toast / WUI.snackbar); this file
+   only skins it. Region = fixed positioned stack; each toast
+   animates in/out via class toggles (.is-visible / .is-leaving).
+   Token-pure — dark mode automatic. No GSAP dependency.
+   ============================================================ */
+
+/* ─── Region: fixed stack, one per active corner ─── */
+.wui-toast-region {
+  position: fixed;
+  z-index: 10000;                 /* above overlays/modals (max 9999) */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: min(92vw, 24rem);
+  pointer-events: none;           /* let clicks through the gaps */
+}
+.wui-toast-region > * { pointer-events: auto; }
+
+/* Corner classes are named/end-relative: the horizontal inset is logical so a
+   "-right" region sits at the inline-end (physical left in RTL) and never
+   collides with mirrored content. align-items already tracks direction.
+   The -center transform is pure centering — direction-agnostic, left as-is. */
+.wui-toast-region.top-right    { top: var(--space-4); inset-inline-end: var(--space-4);   align-items: flex-end; }
+.wui-toast-region.top-left     { top: var(--space-4); inset-inline-start: var(--space-4); align-items: flex-start; }
+.wui-toast-region.top-center   { top: var(--space-4); left: 50%; transform: translateX(-50%); align-items: center; }
+/* bottom regions grow upward: newest sits nearest the edge */
+.wui-toast-region.bottom-right  { bottom: var(--space-4); inset-inline-end: var(--space-4);   align-items: flex-end;   flex-direction: column-reverse; }
+.wui-toast-region.bottom-left   { bottom: var(--space-4); inset-inline-start: var(--space-4); align-items: flex-start; flex-direction: column-reverse; }
+.wui-toast-region.bottom-center { bottom: var(--space-4); left: 50%; transform: translateX(-50%); align-items: center; flex-direction: column-reverse; }
+
+/* ─── Toast card ─── */
+.wui-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-inline-start: var(--border-sm) solid var(--_accent, var(--color-text-ui));
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  /* enter/exit — direction-agnostic fade + scale */
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.wui-toast.is-visible { opacity: 1; transform: translateY(0) scale(1); }
+.wui-toast.is-leaving { opacity: 0; transform: scale(0.98); }
+
+/* ─── Severity variants (neutral default; --_accent drives rail + icon) ─── */
+.wui-toast.primary { --_accent: var(--color-10); }
+.wui-toast.info    { --_accent: var(--color-info-text); }
+.wui-toast.success { --_accent: var(--color-success-text); }
+.wui-toast.warning { --_accent: var(--color-warning-text); }
+.wui-toast.danger  { --_accent: var(--color-danger-text); }
+
+/* ─── Atoms ─── */
+.wui-toast-icon {
+  font-size: var(--text-lg);
+  line-height: 1;
+  color: var(--_accent, var(--color-text-ui));
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.wui-toast-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wui-toast-title {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  line-height: 1.35;
+}
+
+.wui-toast-msg {
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* action button — text button in the accent colour */
+.wui-toast-action {
+  align-self: flex-start;
+  margin-top: var(--space-1);
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--_accent, var(--color-10));
+  cursor: pointer;
+}
+.wui-toast-action:hover { text-decoration: underline; }
+
+/* close button */
+.wui-toast-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  margin-block: -2px 0;
+  margin-inline: 0 calc(-1 * var(--space-1));
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.wui-toast-close:hover { background: var(--color-hover); color: var(--color-text-primary); }
+.wui-toast-close .material-symbols-outlined { font-size: var(--icon-sm); }
+
+/* ─── Snackbar preset (bottom, neutral, inline action) ─── */
+.wui-snackbar {
+  align-items: center;
+  gap: var(--space-4);
+  border-inline-start-width: 1px;                 /* no accent rail — neutral */
+  border-inline-start-color: var(--color-border);
+  background: var(--color-text-primary);  /* inverted surface, Material-style */
+  color: var(--color-30);
+}
+.wui-snackbar .wui-toast-title,
+.wui-snackbar .wui-toast-msg { color: inherit; }
+.wui-snackbar .wui-toast-msg { opacity: 0.85; }
+.wui-snackbar .wui-toast-action {
+  align-self: center;
+  margin-top: 0;
+  color: var(--color-info);
+}
+.wui-snackbar .wui-toast-close { color: inherit; }
+.wui-snackbar .wui-toast-close:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* ============================================================
+   6) SAVE BAR (wui-save-bar)
+   Persistent bottom bar for an "unsaved changes" state — distinct
+   from the transient toast/snackbar system above: stays until the
+   user Discards or Saves, does not auto-dismiss. Pairs with the
+   dirty-tracking convention from interaction/dirty-tracker.js
+   (WUI.dirtyTracker toggles .wui-visible + the `hidden` attribute
+   on the bar it's pointed at via data-wui-dirty-bar) — a board can
+   either drive dirty state through that native-field auto-diffing,
+   or toggle .wui-visible/[hidden] itself when the real "dirty"
+   source is app-level state dirtyTracker can't see (e.g. JS-managed
+   draft objects, add/remove rows) rather than raw form-field drift.
+
+   In-flow, not an overlay: place it as the LAST child of the page's
+   flex-column (after the tab-panels/grid), full width by default
+   (a block-level div). It reserves its own row and pushes nothing
+   underneath it out of view — do not add position:fixed here, that
+   floats it over the content above instead of sitting below it.
+
+   Markup:
+     <div class="wui-save-bar" id="save-bar" hidden="true">
+       <div class="wui-save-bar-msg">
+         <span class="material-symbols-outlined">edit_note</span>
+         <span data-wui-i18n="...">You have unsaved changes.</span>
+       </div>
+       <div class="wui-save-bar-actions">
+         <button class="wui-btn outline secondary">Discard</button>
+         <button class="wui-btn primary">Save</button>
+       </div>
+     </div>
+   ============================================================ */
+
+.wui-save-bar {
+  display: flex;
+  background: var(--color-30);
+  border-top: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  max-height: 0;
+  padding: 0 var(--space-5);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    max-height 0.3s ease,
+    padding 0.25s ease,
+    opacity 0.22s ease;
+}
+
+/* Our own display:flex above would otherwise out-cascade the UA [hidden]
+   rule (same specificity, later stylesheet) — restore it explicitly so the
+   native hidden attribute (as toggled by WUI.dirtyTracker) still works. */
+.wui-save-bar[hidden] {
+  display: none;
+}
+
+.wui-save-bar.wui-visible {
+  max-height: 56px;
+  padding: var(--space-3) var(--space-5);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.wui-save-bar-msg {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.wui-save-bar-msg .material-symbols-outlined {
+  font-size: var(--text-sm);
+  color: var(--color-warning);
+}
+
+.wui-save-bar-actions {
+  display: flex;
+  gap: var(--space-sm);
 }

@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>weoc-ui — Cards &amp; Forms</title>
+  <title>weoc-ui — Controls</title>
   <script src="../../JS/weoc-ui.js"></script>
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
   <link rel="stylesheet" href="../docs-style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
@@ -18,600 +18,912 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="cards">
       <div class="docs-page">
-        <style>
-          /* Anatomy diagram — doc-only helpers (not part of the library) */
-          .anat { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; background: var(--color-30); }
-          .anat-band { background: var(--color-10-muted); border-bottom: 1px dashed var(--color-10); padding: 6px 10px; font-family: var(--font-mono); font-size: var(--text-2xs); font-weight: 700; color: var(--color-10); }
-          .anat-row { display: flex; gap: 6px; padding: 10px; flex-wrap: wrap; }
-          .anat-col { display: flex; flex-direction: column; gap: 6px; padding: 10px; }
-          .anat-box { border: 1px dashed var(--color-10); border-radius: var(--radius-sm); padding: 8px 10px; background: var(--color-10-light); flex: 1 1 130px; min-width: 130px; }
-          .anat-col .anat-box { flex: none; }
-          .anat-box .nm { display: block; font-family: var(--font-mono); font-size: var(--text-2xs); font-weight: 700; color: var(--color-10); margin-bottom: 2px; }
-          .anat-box .ds { font-size: var(--text-2xs); color: var(--color-text-secondary); line-height: 1.4; }
-          .anat-grow { flex: 1.5 1 160px; }
-        </style>
 
         <div class="docs-hero">
-          <div class="docs-hero-eyebrow">Components</div>
-          <div class="docs-hero-title">Cards &amp; Forms</div>
-          <div class="docs-hero-sub">wui-card has three composable layers: surface modifiers, layout templates, and atom elements. Card groups, checkboxes, and radios follow.</div>
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_cards_1">Inputs</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_cards_2">Controls</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_cards_3">Selection and value controls: the tick box <code>wui-checkbox</code>, the single-choice <code>wui-radio</code>, the tappable <code>wui-card-option</code> group, the toggle <code>wui-switch</code>, and the range <code>wui-slider</code>. Checkbox, radio, switch, and card-option are pure CSS (<code>:checked</code>); the slider fill is driven by a few lines of JS. Every variant, size, and state is shown below with its exact markup.</div>
         </div>
 
-        <!-- ── Anatomy ─────────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-checkbox ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">schema</span>Anatomy</div>
-          <p class="docs-desc">Every card is three strictly-separated layers: a <strong>surface</strong> (<code>wui-card</code> — chrome only), a <strong>template</strong> that arranges named regions (<code>is-metric</code> / <code>is-record</code> / <code>is-item</code>), and <strong>atoms</strong> (<code>wui-card-*</code>) that fill those regions. The maps below show which region is which.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_cards_4"><span class="material-symbols-outlined">check_box</span>wui-checkbox</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_cards_5">A <code>&lt;label class="wui-checkbox"&gt;</code> wrapping a real <code>&lt;input type="checkbox"&gt;</code> (visually hidden but kept focusable), a <code>wui-control-box</code> (the drawn tick box), and a <code>wui-control-label</code>. Compose a <em>size</em> (<code>sm</code> / base / <code>lg</code>) and a <em>color</em> accent (<code>primary</code> default, or <code>secondary</code> / <code>info</code> / <code>success</code> / <code>warning</code> / <code>danger</code>). Selection is pure CSS via <code>:checked</code> — no script needed.</p>
 
-          <div class="docs-subsection-title">is-record — horizontal region map</div>
-          <div class="docs-example stacked">
-            <div class="anat" style="width:100%;max-width:640px">
-              <div class="anat-band">.wui-card.is-record  &mdash;  surface + template (flex row)</div>
-              <div class="anat-row">
-                <div class="anat-box"><span class="nm">wui-card-lead</span><span class="ds">icon / avatar · flex-shrink:0</span></div>
-                <div class="anat-box anat-grow"><span class="nm">wui-card-primary</span><span class="ds">title + meta — required · flex:1</span></div>
-                <div class="anat-box"><span class="nm">wui-card-content</span><span class="ds">description · optional</span></div>
-                <div class="anat-box"><span class="nm">wui-card-meta</span><span class="ds">dates · optional</span></div>
-                <div class="anat-box"><span class="nm">wui-card-status</span><span class="ds">badge · optional</span></div>
-                <div class="anat-box"><span class="nm">wui-card-end</span><span class="ds">actions · optional</span></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title">is-metric — vertical region map</div>
-          <div class="docs-example stacked">
-            <div class="anat" style="width:100%;max-width:320px">
-              <div class="anat-band">.wui-card.is-metric  &mdash;  padded flex column</div>
-              <div class="anat-col">
-                <div class="anat-box"><span class="nm">wui-card-hdr</span><span class="ds">wui-card-hdr-left · wui-card-hdr-right</span></div>
-                <div class="anat-box"><span class="nm">wui-card-value</span><span class="ds">primary number · .sm / .xs</span></div>
-                <div class="anat-box"><span class="nm">wui-card-delta</span><span class="ds">trend .up / .down + wui-card-delta-lbl</span></div>
-                <div class="anat-box"><span class="nm">wui-card-sub</span><span class="ds">free slot · margin-top:auto</span></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title">The three layers</div>
-          <table class="docs-token-table">
-            <thead><tr><th>Layer</th><th>Role</th><th>Classes</th></tr></thead>
-            <tbody>
-              <tr><td>1 — Surface</td><td>Chrome only: bg, border, shadow, states, accent, side</td><td><span class="docs-token-name">wui-card</span> · is-interactive · is-selected · is-disabled · has-accent · has-side · is-compact / is-comfortable</td></tr>
-              <tr><td>2 — Template</td><td>Arranges regions for an information pattern</td><td><span class="docs-token-name">is-metric</span> · <span class="docs-token-name">is-record</span> · <span class="docs-token-name">is-item</span></td></tr>
-              <tr><td>3 — Atoms</td><td>Composable pieces, work in any template</td><td><span class="docs-token-name">wui-card-*</span> — hdr, body, footer, value, delta, fields, stats, lead, primary, content, meta, status, end, band</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- ── Layer 1: Surface ────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">view_agenda</span>wui-card — Surface</div>
-
-          <div class="docs-subsection-title">Basic card</div>
-          <div class="docs-example">
-            <div class="wui-card" style="width:260px">
-              <div class="wui-card-hdr">
-                <div class="wui-card-hdr-left"><div class="wui-card-label">Incident Report</div></div>
-                <div class="wui-card-hdr-right"><span class="wui-badge warning">Open</span></div>
-              </div>
-              <div class="wui-card-body">
-                <div class="wui-card-sub">A basic card with header atoms and body content.</div>
-              </div>
-              <div class="wui-card-footer">
-                <button class="wui-btn ghost secondary wui-btn-sm">View</button>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-card"&gt;
-  &lt;div class="wui-card-hdr"&gt;
-    &lt;div class="wui-card-hdr-left"&gt;&lt;div class="wui-card-label"&gt;Title&lt;/div&gt;&lt;/div&gt;
-    &lt;div class="wui-card-hdr-right"&gt;&lt;span class="wui-badge warning"&gt;Open&lt;/span&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-card-body"&gt;…&lt;/div&gt;
-  &lt;div class="wui-card-footer"&gt;…&lt;/div&gt;
-&lt;/div&gt;</pre>
-
-          <div class="docs-subsection-title">Interactive card (.is-interactive)</div>
-          <p class="docs-desc"><code>is-interactive</code> gives the hover gradient border; <code>is-selected</code> is the persistent active border; <code>is-disabled</code> dims and blocks pointer events. For real selection, drive it declaratively — no JS: <code>data-wui-activate="true"</code> + <code>data-wui-group="&lt;selector&gt;"</code> + <code>data-wui-active="is-selected"</code>. <strong>Click a card below</strong> — selection roves (only one stays selected).</p>
-          <div class="docs-example">
-            <div class="wui-card is-interactive sel-demo" data-wui-activate="true" data-wui-group=".sel-demo" data-wui-active="is-selected" style="width:200px">
-              <div class="wui-card-body">
-                <div class="wui-card-label">Option A</div>
-                <div class="wui-card-sub">Click to select</div>
-              </div>
-            </div>
-            <div class="wui-card is-interactive sel-demo is-selected" data-wui-activate="true" data-wui-group=".sel-demo" data-wui-active="is-selected" style="width:200px">
-              <div class="wui-card-body">
-                <div class="wui-card-label">Option B</div>
-                <div class="wui-card-sub">Selected by default</div>
-              </div>
-            </div>
-            <div class="wui-card is-interactive sel-demo" data-wui-activate="true" data-wui-group=".sel-demo" data-wui-active="is-selected" style="width:200px">
-              <div class="wui-card-body">
-                <div class="wui-card-label">Option C</div>
-                <div class="wui-card-sub">Click to select</div>
-              </div>
-            </div>
-            <div class="wui-card is-interactive is-disabled" style="width:200px">
-              <div class="wui-card-body">
-                <div class="wui-card-label">Disabled</div>
-                <div class="wui-card-sub">is-disabled — no pointer events</div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;!-- Declarative roving selection — no JS --&gt;
-&lt;div class="wui-card is-interactive my-group"
-     data-wui-activate="true"
-     data-wui-group=".my-group"
-     data-wui-active="is-selected"&gt;
-  &lt;div class="wui-card-body"&gt;…&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;!-- Static states: is-interactive (hover) · is-selected (active) · is-disabled --&gt;</pre>
-
-          <div class="docs-subsection-title">Accent bar (.has-accent)</div>
-          <div class="docs-example">
-            <div class="wui-card has-accent primary" style="width:180px"><div class="wui-card-body"><div class="wui-card-label">Primary</div></div></div>
-            <div class="wui-card has-accent success" style="width:180px"><div class="wui-card-body"><div class="wui-card-label">Success</div></div></div>
-            <div class="wui-card has-accent warning" style="width:180px"><div class="wui-card-body"><div class="wui-card-label">Warning</div></div></div>
-            <div class="wui-card has-accent danger" style="width:180px"><div class="wui-card-body"><div class="wui-card-label">Danger</div></div></div>
-            <div class="wui-card has-accent info" style="width:180px"><div class="wui-card-body"><div class="wui-card-label">Info</div></div></div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-card has-accent danger"&gt;
-  &lt;div class="wui-card-body"&gt;…&lt;/div&gt;
-&lt;/div&gt;
-&lt;!-- Variants: primary | success | warning | danger | info | secondary --&gt;</pre>
-
-          <div class="docs-subsection-title">Side column (.has-side)</div>
-          <div class="docs-example stacked">
-            <div class="wui-card has-side" style="max-width:400px">
-              <div class="wui-card-side danger"></div>
-              <div class="wui-card-body">
-                <div class="wui-card-label">Shelter Activation</div>
-                <div class="wui-card-sub">Full-height colored strip on the left side.</div>
-              </div>
-            </div>
-            <div class="wui-card has-side" style="max-width:400px">
-              <div class="wui-card-side success"></div>
-              <div class="wui-card-body">
-                <div class="wui-card-label">Resource Available</div>
-                <div class="wui-card-sub">Green side for positive status.</div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-card has-side"&gt;
-  &lt;div class="wui-card-side danger"&gt;&lt;/div&gt;
-  &lt;div class="wui-card-body"&gt;…&lt;/div&gt;
-&lt;/div&gt;
-&lt;!-- Side colors: danger | warning | success | primary | info | secondary --&gt;</pre>
-
-          <div class="docs-subsection-title">Density: .is-compact / .is-comfortable</div>
-          <div class="docs-example">
-            <div class="wui-card is-compact" style="width:200px"><div class="wui-card-body"><div class="wui-card-label">Compact</div><div class="wui-card-sub">Less padding</div></div></div>
-            <div class="wui-card" style="width:200px"><div class="wui-card-body"><div class="wui-card-label">Default</div><div class="wui-card-sub">Standard padding</div></div></div>
-            <div class="wui-card is-comfortable" style="width:200px"><div class="wui-card-body"><div class="wui-card-label">Comfortable</div><div class="wui-card-sub">More padding</div></div></div>
-          </div>
-        </div>
-
-        <!-- ── Layer 2: Templates ──────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">dashboard</span>wui-card — Templates</div>
-
-          <div class="docs-subsection-title">.is-metric — KPI card</div>
-          <div class="docs-example">
-            <div class="wui-card is-metric" style="width:180px">
-              <div class="wui-card-hdr">
-                <div class="wui-card-hdr-left"><div class="wui-card-label">Incidents Open</div></div>
-                <div class="wui-card-hdr-right"><div class="wui-icon-bubble danger sm"><span class="material-symbols-outlined">warning</span></div></div>
-              </div>
-              <span class="wui-card-value">47</span>
-              <span class="wui-card-delta up"><span class="material-symbols-outlined">arrow_upward</span> +3 <span class="wui-card-delta-lbl">today</span></span>
-            </div>
-            <div class="wui-card is-metric" style="width:180px">
-              <div class="wui-card-hdr">
-                <div class="wui-card-hdr-left"><div class="wui-card-label">Resources Deployed</div></div>
-              </div>
-              <span class="wui-card-value sm">1,234</span>
-              <span class="wui-card-delta down"><span class="material-symbols-outlined">arrow_downward</span> -12 <span class="wui-card-delta-lbl">from yesterday</span></span>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-card is-metric"&gt;     &lt;!-- the template IS the padded flex column --&gt;
-  &lt;div class="wui-card-hdr"&gt;
-    &lt;div class="wui-card-hdr-left"&gt;&lt;div class="wui-card-label"&gt;Incidents&lt;/div&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;!-- value / delta / sub are DIRECT children — no wui-card-body wrapper --&gt;
-  &lt;span class="wui-card-value"&gt;47&lt;/span&gt;
-  &lt;span class="wui-card-delta up"&gt;
-    &lt;span class="material-symbols-outlined"&gt;arrow_upward&lt;/span&gt;
-    +3 &lt;span class="wui-card-delta-lbl"&gt;today&lt;/span&gt;
-  &lt;/span&gt;
-&lt;/div&gt;
-&lt;!-- wui-card-value sizes: default | .sm | .xs --&gt;
-&lt;!-- wui-card-delta: .up (green) | .down (red) --&gt;</pre>
-
-          <div class="docs-subsection-title">.is-record — horizontal flex row</div>
-          <div class="docs-example stacked">
-            <div class="wui-card is-record" style="max-width:560px">
-              <div class="wui-card-lead">
-                <div class="wui-icon-bubble danger"><span class="material-symbols-outlined">local_fire_department</span></div>
-              </div>
-              <div class="wui-card-primary">
-                <div class="wui-card-label">Structure Fire — Warehouse District</div>
-                <div class="wui-card-sub">Reported by: Station 7 · 14:32</div>
-              </div>
-              <div class="wui-card-status">
-                <span class="wui-badge danger">Active</span>
-              </div>
-              <div class="wui-card-end">
-                <div class="wui-actions">
-                  <button class="wui-action-btn" title="View"><span class="material-symbols-outlined">open_in_new</span></button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-card is-record"&gt;
-  &lt;div class="wui-card-lead"&gt;…icon/avatar…&lt;/div&gt;
-  &lt;div class="wui-card-primary"&gt;
-    &lt;div class="wui-card-label"&gt;Record Title&lt;/div&gt;
-    &lt;div class="wui-card-sub"&gt;Metadata&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-card-status"&gt;…badge…&lt;/div&gt;
-  &lt;div class="wui-card-end"&gt;…actions…&lt;/div&gt;
-&lt;/div&gt;</pre>
-
-          <div class="docs-subsection-title">.is-record.has-lead-fill — colored lead strip</div>
-          <div class="docs-example stacked">
-            <div class="wui-card is-record has-lead-fill" style="max-width:560px">
-              <div class="wui-card-lead danger"></div>
-              <div class="wui-card-primary">
-                <div class="wui-card-label">Mass Casualty Event</div>
-                <div class="wui-card-sub">EOC Activation · Level 4</div>
-              </div>
-              <div class="wui-card-status"><span class="wui-badge danger animate">Critical</span></div>
-            </div>
-            <div class="wui-card is-record has-lead-fill" style="max-width:560px">
-              <div class="wui-card-lead success"></div>
-              <div class="wui-card-primary">
-                <div class="wui-card-label">Shelter Opening — Community Center</div>
-                <div class="wui-card-sub">Capacity: 250 · 09:15</div>
-              </div>
-              <div class="wui-card-status"><span class="wui-badge success">Open</span></div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-card is-record has-lead-fill"&gt;
-  &lt;div class="wui-card-lead danger"&gt;&lt;/div&gt;
-  &lt;div class="wui-card-primary"&gt;
-    &lt;div class="wui-card-label"&gt;Title&lt;/div&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
-
-          <div class="docs-subsection-title">.is-item — gallery card</div>
-          <p class="docs-desc">Tile for device grids, facility cards, resource galleries. A colored <code>wui-card-band</code> status strip tops a <code>wui-card-body</code>, with an optional <code>wui-card-footer</code>.</p>
-          <div class="docs-example">
-            <div class="wui-card is-item is-interactive" style="width:240px">
-              <div class="wui-card-band success">
-                <span>Active</span>
-                <span class="material-symbols-outlined">print</span>
-              </div>
-              <div class="wui-card-body">
-                <div class="wui-card-label">HP LaserJet Pro</div>
-                <div class="wui-card-fields cols-2">
-                  <div class="wui-card-field is-stacked">
-                    <span class="wui-card-field-label">Location</span>
-                    EOC Floor 2
-                  </div>
-                  <div class="wui-card-field is-stacked">
-                    <span class="wui-card-field-label">Last Ping</span>
-                    2 min ago
-                  </div>
-                </div>
-              </div>
-              <div class="wui-card-footer justify-end">
-                <button class="wui-btn outline wui-btn-sm">View</button>
-              </div>
-            </div>
-            <div class="wui-card is-item is-interactive" style="width:240px">
-              <div class="wui-card-band danger">
-                <span>Offline</span>
-                <span class="material-symbols-outlined">router</span>
-              </div>
-              <div class="wui-card-body">
-                <div class="wui-card-label">Mesh Node 12</div>
-                <div class="wui-card-fields cols-2">
-                  <div class="wui-card-field is-stacked">
-                    <span class="wui-card-field-label">Zone</span>
-                    Sector 7
-                  </div>
-                  <div class="wui-card-field is-stacked">
-                    <span class="wui-card-field-label">Last Ping</span>
-                    18 min ago
-                  </div>
-                </div>
-              </div>
-              <div class="wui-card-footer justify-end">
-                <button class="wui-btn outline wui-btn-sm">View</button>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-card is-item is-interactive"&gt;
-  &lt;div class="wui-card-band success"&gt;        &lt;!-- color: primary|info|success|warning|danger|secondary --&gt;
-    &lt;span&gt;Active&lt;/span&gt;
-    &lt;span class="material-symbols-outlined"&gt;print&lt;/span&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-card-body"&gt;
-    &lt;div class="wui-card-label"&gt;HP LaserJet Pro&lt;/div&gt;
-    &lt;div class="wui-card-fields cols-2"&gt;
-      &lt;div class="wui-card-field is-stacked"&gt;
-        &lt;span class="wui-card-field-label"&gt;Location&lt;/span&gt; EOC Floor 2
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-card-footer justify-end"&gt;
-    &lt;button class="wui-btn outline wui-btn-sm"&gt;View&lt;/button&gt;
-  &lt;/div&gt;
-&lt;/div&gt;</pre>
-        </div>
-
-        <!-- ── Card atoms ──────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">splitscreen</span>wui-card — Atoms</div>
-
-          <div class="docs-subsection-title">wui-card-fields — data grid</div>
-          <div class="docs-example">
-            <div class="wui-card" style="width:400px">
-              <div class="wui-card-hdr"><div class="wui-card-hdr-left"><div class="wui-card-label">Incident #2024-0471</div></div></div>
-              <div class="wui-card-body">
-                <div class="wui-card-fields cols-2">
-                  <div class="wui-card-field">
-                    <div class="wui-card-field-label">Type</div>
-                    <div>Structure Fire</div>
-                  </div>
-                  <div class="wui-card-field">
-                    <div class="wui-card-field-label">Priority</div>
-                    <div><span class="wui-badge danger">Critical</span></div>
-                  </div>
-                  <div class="wui-card-field">
-                    <div class="wui-card-field-label">Location</div>
-                    <div>Warehouse District</div>
-                  </div>
-                  <div class="wui-card-field">
-                    <div class="wui-card-field-label">Units</div>
-                    <div>3 Engine, 2 Ladder</div>
-                  </div>
-                  <div class="wui-card-field span-full">
-                    <div class="wui-card-field-label">Notes</div>
-                    <div>Command post established at north entrance.</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-card-fields cols-2"&gt;  &lt;!-- or cols-3, cols-4 --&gt;
-  &lt;div class="wui-card-field"&gt;
-    &lt;div class="wui-card-field-label"&gt;Type&lt;/div&gt;
-    &lt;div&gt;Structure Fire&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-card-field span-2"&gt;…&lt;/div&gt;  &lt;!-- span-2, span-full --&gt;
-  &lt;div class="wui-card-field is-stacked"&gt;…&lt;/div&gt;  &lt;!-- label above value --&gt;
-&lt;/div&gt;</pre>
-
-          <div class="docs-subsection-title">wui-card-stats — inline statistics</div>
-          <div class="docs-example">
-            <div class="wui-card" style="width:380px">
-              <div class="wui-card-hdr"><div class="wui-card-hdr-left"><div class="wui-card-label">EOC Resource Summary</div></div></div>
-              <div class="wui-card-body">
-                <div class="wui-card-stats">
-                  <div class="wui-card-stat danger">
-                    <div class="wui-card-stat-value">12</div>
-                    <div class="wui-card-stat-label">Critical</div>
-                  </div>
-                  <div class="wui-card-stat warning">
-                    <div class="wui-card-stat-value">34</div>
-                    <div class="wui-card-stat-label">Elevated</div>
-                  </div>
-                  <div class="wui-card-stat success">
-                    <div class="wui-card-stat-value">89</div>
-                    <div class="wui-card-stat-label">Normal</div>
-                  </div>
-                  <div class="wui-card-stat primary">
-                    <div class="wui-card-stat-value">135</div>
-                    <div class="wui-card-stat-label">Total</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <pre class="docs-code">&lt;div class="wui-card-stats"&gt;
-  &lt;div class="wui-card-stat danger"&gt;
-    &lt;div class="wui-card-stat-value"&gt;12&lt;/div&gt;
-    &lt;div class="wui-card-stat-label"&gt;Critical&lt;/div&gt;
-  &lt;/div&gt;
-  …
-&lt;/div&gt;
-&lt;!-- Inline layout: add .is-inline to wui-card-stats --&gt;</pre>
-        </div>
-
-        <!-- ── wui-card-group ──────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">grid_view</span>wui-card-group</div>
-          <p class="docs-desc">Grid of selectable card-option elements. Wraps hidden <code>&lt;input type="radio|checkbox"&gt;</code> for native form behavior. JS-free selection via CSS <code>:checked</code>.</p>
-
-          <div class="docs-subsection-title">Radio group</div>
-          <div class="docs-example">
-            <div class="wui-card-group">
-              <label class="wui-card-option primary">
-                <input type="radio" name="priority" value="low">
-                <div class="wui-card-content">
-                  <div class="wui-icon-bubble success sm"><span class="material-symbols-outlined">check_circle</span></div>
-                  <div>Low</div>
-                </div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_6">Anatomy — box + label</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Unchecked -->
+              <label class="wui-checkbox">
+                <input type="checkbox">
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Email alerts</span>
               </label>
-              <label class="wui-card-option warning">
-                <input type="radio" name="priority" value="med" checked>
-                <div class="wui-card-content">
-                  <div class="wui-icon-bubble warning sm"><span class="material-symbols-outlined">priority_high</span></div>
-                  <div>Medium</div>
-                </div>
-              </label>
-              <label class="wui-card-option danger">
-                <input type="radio" name="priority" value="high">
-                <div class="wui-card-content">
-                  <div class="wui-icon-bubble danger sm"><span class="material-symbols-outlined">warning</span></div>
-                  <div>High</div>
-                </div>
+              <!-- Checked (checked attribute on the input) -->
+              <label class="wui-checkbox">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">SMS alerts</span>
               </label>
             </div>
           </div>
-          <pre class="docs-code">&lt;div class="wui-card-group"&gt;
-  &lt;label class="wui-card-option primary"&gt;
-    &lt;input type="radio" name="priority" value="low"&gt;
-    &lt;div class="wui-card-content"&gt;
-      …icon…
-      &lt;div&gt;Low&lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/label&gt;
-&lt;/div&gt;
-&lt;!-- Sizes: wui-card-group-sm | wui-card-group-lg | wui-card-group-xl --&gt;
-&lt;!-- Layout: .is-row (horizontal) | .is-display (no hover, display only) --&gt;</pre>
 
-          <div class="docs-subsection-title">Checkbox group</div>
-          <div class="docs-example">
-            <div class="wui-card-group">
-              <label class="wui-card-option info">
-                <input type="checkbox" name="resources" value="fire" checked>
-                <div class="wui-card-content">
-                  <span class="material-symbols-outlined">local_fire_department</span>
-                  <div>Fire</div>
-                </div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_7">Sizes — sm / base / lg</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <label class="wui-checkbox sm">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Small</span>
               </label>
-              <label class="wui-card-option info">
-                <input type="checkbox" name="resources" value="police" checked>
-                <div class="wui-card-content">
-                  <span class="material-symbols-outlined">local_police</span>
-                  <div>Police</div>
-                </div>
+              <!-- base (no size class) -->
+              <label class="wui-checkbox">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Base</span>
               </label>
-              <label class="wui-card-option info">
-                <input type="checkbox" name="resources" value="ems">
-                <div class="wui-card-content">
-                  <span class="material-symbols-outlined">emergency</span>
-                  <div>EMS</div>
-                </div>
+              <!-- lg -->
+              <label class="wui-checkbox lg">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Large</span>
               </label>
             </div>
           </div>
-          <pre class="docs-code">&lt;label class="wui-card-option info"&gt;
-  &lt;input type="checkbox" name="resources" value="fire"&gt;
-  &lt;div class="wui-card-content"&gt;…&lt;/div&gt;
-&lt;/label&gt;</pre>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_8">Color accents — all (checked)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary (default) -->
+              <label class="wui-checkbox">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Primary</span>
+              </label>
+              <!-- Secondary -->
+              <label class="wui-checkbox secondary">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Secondary</span>
+              </label>
+              <!-- Info -->
+              <label class="wui-checkbox info">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Info</span>
+              </label>
+              <!-- Success -->
+              <label class="wui-checkbox success">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Success</span>
+              </label>
+              <!-- Warning -->
+              <label class="wui-checkbox warning">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Warning</span>
+              </label>
+              <!-- Danger -->
+              <label class="wui-checkbox danger">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Danger</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_9">States — unchecked, checked, disabled</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Unchecked (hover the box to preview the hover ring) -->
+              <label class="wui-checkbox">
+                <input type="checkbox">
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Unchecked (hover me)</span>
+              </label>
+              <!-- Checked -->
+              <label class="wui-checkbox">
+                <input type="checkbox" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Checked</span>
+              </label>
+              <!-- .is-disabled class on the label -->
+              <label class="wui-checkbox is-disabled">
+                <input type="checkbox">
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Disabled (class)</span>
+              </label>
+              <!-- native disabled attribute on the input -->
+              <label class="wui-checkbox">
+                <input type="checkbox" checked disabled>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Disabled (native, checked)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_10">Grouping — wui-check-group (stacked)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Stacked column -->
+              <div class="wui-check-group">
+                <label class="wui-checkbox">
+                  <input type="checkbox" checked>
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Notify by email</span>
+                </label>
+                <label class="wui-checkbox">
+                  <input type="checkbox">
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Notify by SMS</span>
+                </label>
+                <label class="wui-checkbox">
+                  <input type="checkbox">
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Notify by push</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_11">Grouping — wui-check-group is-row (inline)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Inline row -->
+              <div class="wui-check-group is-row">
+                <label class="wui-checkbox">
+                  <input type="checkbox" checked>
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Fire</span>
+                </label>
+                <label class="wui-checkbox">
+                  <input type="checkbox">
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Flood</span>
+                </label>
+                <label class="wui-checkbox">
+                  <input type="checkbox" checked>
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Storm</span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- ── wui-checkbox ────────────────────────────────────────────────── -->
+        <!-- ══════════════════════════ wui-radio ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">check_box</span>wui-checkbox</div>
-          <p class="docs-desc">CSS-drawn checkmark. Wraps <code>&lt;input type="checkbox"&gt;</code> for native behavior. Use <code>.is-disabled</code> or <code>&lt;input disabled&gt;</code> for disabled state.</p>
+          <div class="docs-section-title" data-wui-i18n-html="docs_cards_12"><span class="material-symbols-outlined">radio_button_checked</span>wui-radio</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_cards_13">Single-choice sibling of <code>wui-checkbox</code>. Same anatomy (<code>wui-control-box</code> renders a round dot instead of a tick) and the same axes: sizes <code>sm</code> / base / <code>lg</code>, the color accents, disabled states, and the <code>wui-check-group</code> wrapper. Give each <code>&lt;input type="radio"&gt;</code> in a set the same <code>name</code> so only one can be selected. Pure CSS — no script.</p>
 
-          <div class="docs-example stacked">
-            <label class="wui-checkbox">
-              <input type="checkbox" checked>
-              <span class="wui-control-box"></span>
-              <span class="wui-control-label">Default (primary)</span>
-            </label>
-            <label class="wui-checkbox success">
-              <input type="checkbox" checked>
-              <span class="wui-control-box"></span>
-              <span class="wui-control-label">Success</span>
-            </label>
-            <label class="wui-checkbox danger">
-              <input type="checkbox">
-              <span class="wui-control-box"></span>
-              <span class="wui-control-label">Danger</span>
-            </label>
-            <label class="wui-checkbox warning">
-              <input type="checkbox">
-              <span class="wui-control-box"></span>
-              <span class="wui-control-label">Warning</span>
-            </label>
-            <label class="wui-checkbox is-disabled">
-              <input type="checkbox" disabled>
-              <span class="wui-control-box"></span>
-              <span class="wui-control-label">Disabled</span>
-            </label>
-          </div>
-          <pre class="docs-code">&lt;label class="wui-checkbox"&gt;
-  &lt;input type="checkbox" checked&gt;
-  &lt;span class="wui-control-box"&gt;&lt;/span&gt;
-  &lt;span class="wui-control-label"&gt;Label text&lt;/span&gt;
-&lt;/label&gt;
-
-&lt;!-- Colors: success | danger | warning | info | secondary --&gt;
-&lt;!-- Sizes: .sm | .lg --&gt;
-&lt;!-- Disabled: add .is-disabled to label or disabled attr to input --&gt;</pre>
-
-          <div class="docs-subsection-title">Sizes</div>
-          <div class="docs-example row" style="align-items:center">
-            <label class="wui-checkbox sm">
-              <input type="checkbox" checked>
-              <span class="wui-control-box"></span>
-              <span class="wui-control-label">Small</span>
-            </label>
-            <label class="wui-checkbox">
-              <input type="checkbox" checked>
-              <span class="wui-control-box"></span>
-              <span class="wui-control-label">Default</span>
-            </label>
-            <label class="wui-checkbox lg">
-              <input type="checkbox" checked>
-              <span class="wui-control-box"></span>
-              <span class="wui-control-label">Large</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- ── wui-radio ───────────────────────────────────────────────────── -->
-        <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">radio_button_checked</span>wui-radio</div>
-          <p class="docs-desc">Same structure as wui-checkbox. Group horizontally with <code>wui-check-group.is-row</code>.</p>
-
-          <div class="docs-example stacked">
-            <div class="wui-check-group">
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_14">Anatomy — box + label</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Unselected -->
               <label class="wui-radio">
-                <input type="radio" name="tier" value="1" checked>
+                <input type="radio" name="anatomy" value="asc">
                 <span class="wui-control-box"></span>
-                <span class="wui-control-label">Tier 1 — Normal</span>
+                <span class="wui-control-label">Ascending</span>
               </label>
+              <!-- Selected (checked attribute) -->
+              <label class="wui-radio">
+                <input type="radio" name="anatomy" value="desc" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Descending</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_15">Sizes — sm / base / lg</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <label class="wui-radio sm">
+                <input type="radio" name="rsize" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Small</span>
+              </label>
+              <!-- base -->
+              <label class="wui-radio">
+                <input type="radio" name="rsize">
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Base</span>
+              </label>
+              <!-- lg -->
+              <label class="wui-radio lg">
+                <input type="radio" name="rsize">
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Large</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_16">Color accents — all (selected)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary (default) -->
+              <label class="wui-radio">
+                <input type="radio" name="rc-primary" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Primary</span>
+              </label>
+              <!-- Secondary -->
+              <label class="wui-radio secondary">
+                <input type="radio" name="rc-secondary" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Secondary</span>
+              </label>
+              <!-- Info -->
+              <label class="wui-radio info">
+                <input type="radio" name="rc-info" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Info</span>
+              </label>
+              <!-- Success -->
+              <label class="wui-radio success">
+                <input type="radio" name="rc-success" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Success</span>
+              </label>
+              <!-- Warning -->
               <label class="wui-radio warning">
-                <input type="radio" name="tier" value="2">
+                <input type="radio" name="rc-warning" checked>
                 <span class="wui-control-box"></span>
-                <span class="wui-control-label">Tier 2 — Elevated</span>
+                <span class="wui-control-label">Warning</span>
               </label>
+              <!-- Danger -->
               <label class="wui-radio danger">
-                <input type="radio" name="tier" value="4">
+                <input type="radio" name="rc-danger" checked>
                 <span class="wui-control-box"></span>
-                <span class="wui-control-label">Tier 4 — Critical</span>
+                <span class="wui-control-label">Danger</span>
               </label>
             </div>
           </div>
 
-          <div class="docs-subsection-title">Horizontal (is-row)</div>
-          <div class="docs-example">
-            <div class="wui-check-group is-row">
-              <label class="wui-radio"><input type="radio" name="view" value="a" checked><span class="wui-control-box"></span><span class="wui-control-label">All</span></label>
-              <label class="wui-radio"><input type="radio" name="view" value="b"><span class="wui-control-box"></span><span class="wui-control-label">Open</span></label>
-              <label class="wui-radio"><input type="radio" name="view" value="c"><span class="wui-control-box"></span><span class="wui-control-label">Closed</span></label>
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_17">States — unselected, selected, disabled</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Unselected (hover to preview the hover ring) -->
+              <label class="wui-radio">
+                <input type="radio" name="rstate" value="off">
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Unselected (hover me)</span>
+              </label>
+              <!-- Selected -->
+              <label class="wui-radio">
+                <input type="radio" name="rstate" value="on" checked>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Selected</span>
+              </label>
+              <!-- .is-disabled class on the label -->
+              <label class="wui-radio is-disabled">
+                <input type="radio" name="rstate2">
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Disabled (class)</span>
+              </label>
+              <!-- native disabled attribute on the input -->
+              <label class="wui-radio">
+                <input type="radio" name="rstate3" checked disabled>
+                <span class="wui-control-box"></span>
+                <span class="wui-control-label">Disabled (native, selected)</span>
+              </label>
             </div>
           </div>
-          <pre class="docs-code">&lt;label class="wui-radio"&gt;
-  &lt;input type="radio" name="group" value="a"&gt;
-  &lt;span class="wui-control-box"&gt;&lt;/span&gt;
-  &lt;span class="wui-control-label"&gt;Option A&lt;/span&gt;
-&lt;/label&gt;
 
-&lt;!-- Horizontal wrapper --&gt;
-&lt;div class="wui-check-group is-row"&gt;…&lt;/div&gt;</pre>
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_18">Grouping — wui-check-group (stacked)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Stacked single-choice set -->
+              <div class="wui-check-group">
+                <label class="wui-radio">
+                  <input type="radio" name="severity" value="low" checked>
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Low</span>
+                </label>
+                <label class="wui-radio">
+                  <input type="radio" name="severity" value="med">
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Medium</span>
+                </label>
+                <label class="wui-radio">
+                  <input type="radio" name="severity" value="high">
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">High</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_19">Grouping — wui-check-group is-row (inline)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Inline single-choice set -->
+              <div class="wui-check-group is-row">
+                <label class="wui-radio">
+                  <input type="radio" name="dir" value="asc" checked>
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Ascending</span>
+                </label>
+                <label class="wui-radio">
+                  <input type="radio" name="dir" value="desc">
+                  <span class="wui-control-box"></span>
+                  <span class="wui-control-label">Descending</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-card-group / wui-card-option ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_cards_20"><span class="material-symbols-outlined">grid_view</span>wui-card-group / wui-card-option</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_cards_21">A card-based option group. In the default <em>input mode</em>, each <code>&lt;label class="wui-card-option"&gt;</code> wraps a hidden <code>&lt;input type="radio"&gt;</code> (or <code>checkbox</code>) followed by a <code>wui-card-content</code> face holding an icon and a <code>wui-card-label</code>. Hover and <code>:checked</code> both light the card up in its accent color, so selection works with no JavaScript. Sizes on the group: <code>wui-card-group-sm</code> / base / <code>wui-card-group-lg</code> / <code>wui-card-group-xl</code>. Add <code>is-row</code> to lay each card out horizontally. In <em>display mode</em> (<code>is-display</code> on the group) there are no inputs and pointer events are suppressed; the chosen card carries <code>is-active</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_22">Input mode — radio (single choice, base size)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-card-group">
+                <!-- Primary (pre-selected via checked) -->
+                <label class="wui-card-option primary">
+                  <input type="radio" name="card-mode" value="map" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">map</span>
+                    <span class="wui-card-label">Map view</span>
+                  </span>
+                </label>
+                <!-- Primary -->
+                <label class="wui-card-option primary">
+                  <input type="radio" name="card-mode" value="list">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">list</span>
+                    <span class="wui-card-label">List view</span>
+                  </span>
+                </label>
+                <!-- Primary -->
+                <label class="wui-card-option primary">
+                  <input type="radio" name="card-mode" value="grid">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">grid_view</span>
+                    <span class="wui-card-label">Grid view</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_23">Input mode — checkbox (multi-select)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-card-group">
+                <!-- Success (checkbox, pre-checked) -->
+                <label class="wui-card-option success">
+                  <input type="checkbox" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">local_fire_department</span>
+                    <span class="wui-card-label">Fire</span>
+                  </span>
+                </label>
+                <!-- Success (checkbox) -->
+                <label class="wui-card-option success">
+                  <input type="checkbox">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">water_drop</span>
+                    <span class="wui-card-label">Flood</span>
+                  </span>
+                </label>
+                <!-- Success (checkbox, pre-checked) -->
+                <label class="wui-card-option success">
+                  <input type="checkbox" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">cyclone</span>
+                    <span class="wui-card-label">Storm</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_24">Color variants — all (each shown selected via checked)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-card-group">
+                <!-- Primary -->
+                <label class="wui-card-option primary">
+                  <input type="radio" name="cc-primary" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="wui-card-label">Primary</span>
+                  </span>
+                </label>
+                <!-- Secondary -->
+                <label class="wui-card-option secondary">
+                  <input type="radio" name="cc-secondary" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">bookmark</span>
+                    <span class="wui-card-label">Secondary</span>
+                  </span>
+                </label>
+                <!-- Info -->
+                <label class="wui-card-option info">
+                  <input type="radio" name="cc-info" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">info</span>
+                    <span class="wui-card-label">Info</span>
+                  </span>
+                </label>
+                <!-- Success -->
+                <label class="wui-card-option success">
+                  <input type="radio" name="cc-success" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">check_circle</span>
+                    <span class="wui-card-label">Success</span>
+                  </span>
+                </label>
+                <!-- Warning -->
+                <label class="wui-card-option warning">
+                  <input type="radio" name="cc-warning" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">warning</span>
+                    <span class="wui-card-label">Warning</span>
+                  </span>
+                </label>
+                <!-- Danger -->
+                <label class="wui-card-option danger">
+                  <input type="radio" name="cc-danger" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">dangerous</span>
+                    <span class="wui-card-label">Danger</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_25">Sizes — sm</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-card-group-sm -->
+              <div class="wui-card-group wui-card-group-sm">
+                <label class="wui-card-option primary">
+                  <input type="radio" name="cs-sm" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">bolt</span>
+                    <span class="wui-card-label">Small</span>
+                  </span>
+                </label>
+                <label class="wui-card-option primary">
+                  <input type="radio" name="cs-sm">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">bolt</span>
+                    <span class="wui-card-label">Small</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_26">Sizes — base</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- base (no size class) -->
+              <div class="wui-card-group">
+                <label class="wui-card-option primary">
+                  <input type="radio" name="cs-base" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">bolt</span>
+                    <span class="wui-card-label">Base</span>
+                  </span>
+                </label>
+                <label class="wui-card-option primary">
+                  <input type="radio" name="cs-base">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">bolt</span>
+                    <span class="wui-card-label">Base</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_27">Sizes — lg</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-card-group-lg -->
+              <div class="wui-card-group wui-card-group-lg">
+                <label class="wui-card-option primary">
+                  <input type="radio" name="cs-lg" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">bolt</span>
+                    <span class="wui-card-label">Large</span>
+                  </span>
+                </label>
+                <label class="wui-card-option primary">
+                  <input type="radio" name="cs-lg">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">bolt</span>
+                    <span class="wui-card-label">Large</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_28">Sizes — xl</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-card-group-xl -->
+              <div class="wui-card-group wui-card-group-xl">
+                <label class="wui-card-option primary">
+                  <input type="radio" name="cs-xl" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">bolt</span>
+                    <span class="wui-card-label">Extra large</span>
+                  </span>
+                </label>
+                <label class="wui-card-option primary">
+                  <input type="radio" name="cs-xl">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">bolt</span>
+                    <span class="wui-card-label">Extra large</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_29">Layout — is-row (horizontal cards)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- is-row on the group -->
+              <div class="wui-card-group is-row">
+                <label class="wui-card-option info">
+                  <input type="radio" name="crow" value="phone" checked>
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">call</span>
+                    <span class="wui-card-label">Phone</span>
+                  </span>
+                </label>
+                <label class="wui-card-option info">
+                  <input type="radio" name="crow" value="email">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">mail</span>
+                    <span class="wui-card-label">Email</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_30">Display mode — is-display + is-active (read-only, no inputs)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- is-display: no inputs, pointer events suppressed -->
+              <div class="wui-card-group is-display">
+                <!-- Chosen card carries is-active -->
+                <div class="wui-card-option success is-active">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">check_circle</span>
+                    <span class="wui-card-label">Confirmed</span>
+                  </span>
+                </div>
+                <!-- Inactive card -->
+                <div class="wui-card-option success">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">schedule</span>
+                    <span class="wui-card-label">Pending</span>
+                  </span>
+                </div>
+                <!-- Inactive card -->
+                <div class="wui-card-option success">
+                  <span class="wui-card-content">
+                    <span class="material-symbols-outlined">cancel</span>
+                    <span class="wui-card-label">Rejected</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-switch ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_cards_31"><span class="material-symbols-outlined">toggle_on</span>wui-switch</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_cards_32">An iOS-style toggle built on a hidden checkbox. A <code>&lt;label class="wui-switch"&gt;</code> wraps the <code>&lt;input type="checkbox"&gt;</code>, a <code>wui-switch-track</code> (the pill) containing a <code>wui-switch-thumb</code>, and an optional <code>wui-switch-label</code>. Checking the input slides the thumb right and fills the track with the accent color. Sizes: <code>sm</code> / base / <code>lg</code>. Colors: <code>primary</code> default, or <code>secondary</code> / <code>info</code> / <code>success</code> / <code>warning</code> / <code>danger</code>. Pure CSS via <code>:checked</code> — no script.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_33">Anatomy — off / on</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Off -->
+              <label class="wui-switch">
+                <input type="checkbox">
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Enable alerts</span>
+              </label>
+              <!-- On (checked attribute) -->
+              <label class="wui-switch">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Alerts on</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_34">Sizes — sm / base / lg</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <label class="wui-switch sm">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Small</span>
+              </label>
+              <!-- base (no size class) -->
+              <label class="wui-switch">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Base</span>
+              </label>
+              <!-- lg -->
+              <label class="wui-switch lg">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Large</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_35">Color accents — all (on)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary (default) -->
+              <label class="wui-switch">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Primary</span>
+              </label>
+              <!-- Secondary -->
+              <label class="wui-switch secondary">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Secondary</span>
+              </label>
+              <!-- Info -->
+              <label class="wui-switch info">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Info</span>
+              </label>
+              <!-- Success -->
+              <label class="wui-switch success">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Success</span>
+              </label>
+              <!-- Warning -->
+              <label class="wui-switch warning">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Warning</span>
+              </label>
+              <!-- Danger -->
+              <label class="wui-switch danger">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Danger</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_36">States — off, on, disabled</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Off (hover to preview) -->
+              <label class="wui-switch">
+                <input type="checkbox">
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Off</span>
+              </label>
+              <!-- On -->
+              <label class="wui-switch">
+                <input type="checkbox" checked>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">On</span>
+              </label>
+              <!-- .is-disabled class on the label -->
+              <label class="wui-switch is-disabled">
+                <input type="checkbox">
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Disabled (class)</span>
+              </label>
+              <!-- native disabled attribute on the input -->
+              <label class="wui-switch">
+                <input type="checkbox" checked disabled>
+                <span class="wui-switch-track"><span class="wui-switch-thumb"></span></span>
+                <span class="wui-switch-label">Disabled (native, on)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-slider ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_cards_37"><span class="material-symbols-outlined">tune</span>wui-slider</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_cards_38">A styled <code>&lt;input type="range"&gt;</code> inside a <code>wui-slider</code> wrapper, with an optional <code>wui-slider-info</code> row (<code>wui-slider-label</code> + <code>wui-slider-value</code>). The filled portion of the track is a gradient that reads a <code>--_fill</code> percentage custom property; JS sets it on <code>input</code> so the fill and the readout stay in sync. Firefox also fills natively via <code>::-moz-range-progress</code>. Sizes: <code>sm</code> / base / <code>lg</code>. Colors: <code>primary</code> default, or <code>secondary</code> / <code>info</code> / <code>success</code> / <code>warning</code> / <code>danger</code>. Add <code>stepped</code> plus a <code>wui-slider-ticks</code> row for discrete steps.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_39">Dynamic — base (live JS fill)</div>
+          <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <!-- Continuous slider; --_fill + value driven by JS -->
+              <div class="wui-slider primary">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Priority</span>
+                  <span class="wui-slider-value" id="sld-basic-val">50</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sld-basic" min="0" max="100" value="50" style="--_fill:50%">
+              </div>
+            </div>
+            <template class="wui-demo-js">
+var sld = document.getElementById('sld-basic');
+var out = document.getElementById('sld-basic-val');
+function paint() {
+  var pct = (sld.value - sld.min) / (sld.max - sld.min) * 100;
+  sld.style.setProperty('--_fill', pct + '%');
+  out.textContent = sld.value;
+}
+sld.addEventListener('input', paint);
+paint();
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_40">Sizes — sm / base / lg (live JS fill)</div>
+          <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <div class="wui-slider sm primary">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Small</span>
+                  <span class="wui-slider-value" id="sld-sm-val">25</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sld-sm" min="0" max="100" value="25" style="--_fill:25%">
+              </div>
+              <!-- base -->
+              <div class="wui-slider primary">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Base</span>
+                  <span class="wui-slider-value" id="sld-md-val">50</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sld-md" min="0" max="100" value="50" style="--_fill:50%">
+              </div>
+              <!-- lg -->
+              <div class="wui-slider lg primary">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Large</span>
+                  <span class="wui-slider-value" id="sld-lg-val">75</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sld-lg" min="0" max="100" value="75" style="--_fill:75%">
+              </div>
+            </div>
+            <template class="wui-demo-js">
+['sld-sm','sld-md','sld-lg'].forEach(function (id) {
+  var sld = document.getElementById(id);
+  var out = document.getElementById(id + '-val');
+  function paint() {
+    var pct = (sld.value - sld.min) / (sld.max - sld.min) * 100;
+    sld.style.setProperty('--_fill', pct + '%');
+    out.textContent = sld.value;
+  }
+  sld.addEventListener('input', paint);
+  paint();
+});
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_41">Color accents — all (live JS fill)</div>
+          <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <!-- Primary (default) -->
+              <div class="wui-slider primary">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Primary</span>
+                  <span class="wui-slider-value" id="sldc-primary-val">60</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sldc-primary" min="0" max="100" value="60" style="--_fill:60%">
+              </div>
+              <!-- Secondary -->
+              <div class="wui-slider secondary">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Secondary</span>
+                  <span class="wui-slider-value" id="sldc-secondary-val">60</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sldc-secondary" min="0" max="100" value="60" style="--_fill:60%">
+              </div>
+              <!-- Info -->
+              <div class="wui-slider info">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Info</span>
+                  <span class="wui-slider-value" id="sldc-info-val">60</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sldc-info" min="0" max="100" value="60" style="--_fill:60%">
+              </div>
+              <!-- Success -->
+              <div class="wui-slider success">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Success</span>
+                  <span class="wui-slider-value" id="sldc-success-val">60</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sldc-success" min="0" max="100" value="60" style="--_fill:60%">
+              </div>
+              <!-- Warning -->
+              <div class="wui-slider warning">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Warning</span>
+                  <span class="wui-slider-value" id="sldc-warning-val">60</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sldc-warning" min="0" max="100" value="60" style="--_fill:60%">
+              </div>
+              <!-- Danger -->
+              <div class="wui-slider danger">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Danger</span>
+                  <span class="wui-slider-value" id="sldc-danger-val">60</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sldc-danger" min="0" max="100" value="60" style="--_fill:60%">
+              </div>
+            </div>
+            <template class="wui-demo-js">
+['primary','secondary','info','success','warning','danger'].forEach(function (name) {
+  var sld = document.getElementById('sldc-' + name);
+  var out = document.getElementById('sldc-' + name + '-val');
+  function paint() {
+    var pct = (sld.value - sld.min) / (sld.max - sld.min) * 100;
+    sld.style.setProperty('--_fill', pct + '%');
+    out.textContent = sld.value;
+  }
+  sld.addEventListener('input', paint);
+  paint();
+});
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_cards_42">Stepped — .stepped + wui-slider-ticks (live JS fill)</div>
+          <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <!-- Stepped: step attribute + tick labels row -->
+              <div class="wui-slider stepped success">
+                <div class="wui-slider-info">
+                  <span class="wui-slider-label">Severity</span>
+                  <span class="wui-slider-value" id="sld-step-val">2</span>
+                </div>
+                <input type="range" class="wui-slider-input" id="sld-step" min="0" max="4" step="1" value="2" style="--_fill:50%">
+                <div class="wui-slider-ticks">
+                  <span>None</span>
+                  <span>Low</span>
+                  <span>Med</span>
+                  <span>High</span>
+                  <span>Critical</span>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+var sld = document.getElementById('sld-step');
+var out = document.getElementById('sld-step-val');
+function paint() {
+  var pct = (sld.value - sld.min) / (sld.max - sld.min) * 100;
+  sld.style.setProperty('--_fill', pct + '%');
+  out.textContent = sld.value;
+}
+sld.addEventListener('input', paint);
+paint();
+            </template>
+          </div>
         </div>
 
       </div>
     </div>
   </div>
+
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('cards');</script>
 </body>

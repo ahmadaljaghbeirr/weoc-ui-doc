@@ -199,6 +199,64 @@
   color: var(--color-info-text);
 }
 
+/* ─── Solid ─── */
+/* Filled pill — full color background instead of the tinted default.
+   Mirrors .wui-icon-bubble.solid.* (weoc-indicators.css). */
+
+.wui-badge.solid.danger,
+.wui-badge-sm.solid.danger,
+.wui-badge-md.solid.danger,
+.wui-badge-lg.solid.danger,
+.wui-badge-xl.solid.danger {
+  background: var(--color-danger);
+  color: var(--color-on-accent);
+}
+
+.wui-badge.solid.warning,
+.wui-badge-sm.solid.warning,
+.wui-badge-md.solid.warning,
+.wui-badge-lg.solid.warning,
+.wui-badge-xl.solid.warning {
+  background: var(--color-warning);
+  color: var(--color-on-accent);
+}
+
+.wui-badge.solid.success,
+.wui-badge-sm.solid.success,
+.wui-badge-md.solid.success,
+.wui-badge-lg.solid.success,
+.wui-badge-xl.solid.success {
+  background: var(--color-success);
+  color: var(--color-on-accent);
+}
+
+.wui-badge.solid.primary,
+.wui-badge-sm.solid.primary,
+.wui-badge-md.solid.primary,
+.wui-badge-lg.solid.primary,
+.wui-badge-xl.solid.primary {
+  background: var(--color-10);
+  color: var(--color-on-accent);
+}
+
+.wui-badge.solid.secondary,
+.wui-badge-sm.solid.secondary,
+.wui-badge-md.solid.secondary,
+.wui-badge-lg.solid.secondary,
+.wui-badge-xl.solid.secondary {
+  background: var(--color-secondary);
+  color: var(--color-30);
+}
+
+.wui-badge.solid.info,
+.wui-badge-sm.solid.info,
+.wui-badge-md.solid.info,
+.wui-badge-lg.solid.info,
+.wui-badge-xl.solid.info {
+  background: var(--color-info);
+  color: var(--color-on-accent);
+}
+
 /* ─── Interactive ─── */
 
 .wui-badge.is-interactive {
