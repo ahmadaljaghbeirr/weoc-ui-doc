@@ -1,0 +1,14 @@
+{
+  "name": "weoc-ui-css",
+  "version": "0.1.0",
+  "description": "Framework-agnostic CSS + design tokens for weoc-ui, portable to any markup (Angular, PrimeNG, plain HTML).",
+  "main": "index.css",
+  "style": "index.css",
+  "files": [
+    "index.css",
+    "tokens/",
+    "components/"
+  ],
+  "license": "UNLICENSED",
+  "private": true
+}
