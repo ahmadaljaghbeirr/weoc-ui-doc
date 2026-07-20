@@ -1,3 +1,5 @@
 # The build/ package folder is TRACKED (source of truth). Only its deps aren't.
 node_modules/
 *.log
+
+.worktrees/
