@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, ViewEncapsulation, input } from '@angular/core';
 
 export type WuiButtonVariant = 'solid' | 'outline' | 'ghost' | 'neon-outline';
 export type WuiButtonColor = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
@@ -11,9 +11,9 @@ export type WuiButtonSize = '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button
-      [type]="type"
+      [type]="type()"
       [class]="hostClasses"
-      [disabled]="disabled"
+      [disabled]="disabled()"
       (click)="onClick($event)"
     >
       <ng-content></ng-content>
@@ -21,95 +21,40 @@ export type WuiButtonSize = '2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   `,
 })
 export class WuiButtonComponent {
-  private _variant: WuiButtonVariant = 'solid';
-  private _color: WuiButtonColor = 'primary';
-  private _size: WuiButtonSize = 'md';
-  private _disabled = false;
-  private _dashed = false;
-  private _iconOnly = false;
-  private _type: 'button' | 'submit' | 'reset' = 'button';
-
-  @Input() set variant(value: WuiButtonVariant) {
-    this._variant = value;
-    this.cdr.markForCheck();
-  }
-  get variant(): WuiButtonVariant {
-    return this._variant;
-  }
-
-  @Input() set color(value: WuiButtonColor) {
-    this._color = value;
-    this.cdr.markForCheck();
-  }
-  get color(): WuiButtonColor {
-    return this._color;
-  }
-
-  @Input() set size(value: WuiButtonSize) {
-    this._size = value;
-    this.cdr.markForCheck();
-  }
-  get size(): WuiButtonSize {
-    return this._size;
-  }
-
-  @Input() set disabled(value: boolean) {
-    this._disabled = value;
-    this.cdr.markForCheck();
-  }
-  get disabled(): boolean {
-    return this._disabled;
-  }
-
-  @Input() set dashed(value: boolean) {
-    this._dashed = value;
-    this.cdr.markForCheck();
-  }
-  get dashed(): boolean {
-    return this._dashed;
-  }
-
-  @Input() set iconOnly(value: boolean) {
-    this._iconOnly = value;
-    this.cdr.markForCheck();
-  }
-  get iconOnly(): boolean {
-    return this._iconOnly;
-  }
-
-  @Input() set type(value: 'button' | 'submit' | 'reset') {
-    this._type = value;
-    this.cdr.markForCheck();
-  }
-  get type(): 'button' | 'submit' | 'reset' {
-    return this._type;
-  }
+  variant = input<WuiButtonVariant>('solid');
+  color = input<WuiButtonColor>('primary');
+  size = input<WuiButtonSize>('md');
+  disabled = input(false);
+  dashed = input(false);
+  iconOnly = input(false);
+  type = input<'button' | 'submit' | 'reset'>('button');
 
   @Output() clicked = new EventEmitter<MouseEvent>();
 
-  constructor(private cdr: ChangeDetectorRef) {}
-
   get hostClasses(): string {
     const classes = ['wui-btn'];
+    const size = this.size();
+    const variant = this.variant();
+    const color = this.color();
 
-    if (this.size !== 'md') {
-      classes.push(`wui-btn-${this.size}`);
+    if (size !== 'md') {
+      classes.push(`wui-btn-${size}`);
     }
 
-    if (this.variant === 'outline') {
-      classes.push('outline', this.color);
-    } else if (this.variant === 'ghost') {
-      classes.push('ghost', this.color);
-    } else if (this.variant === 'neon-outline') {
-      classes.push('neon-outline', this.color);
+    if (variant === 'outline') {
+      classes.push('outline', color);
+    } else if (variant === 'ghost') {
+      classes.push('ghost', color);
+    } else if (variant === 'neon-outline') {
+      classes.push('neon-outline', color);
     } else {
-      classes.push(this.color);
+      classes.push(color);
     }
 
-    if (this.dashed) {
+    if (this.dashed()) {
       classes.push('dashed');
     }
-    if (this.iconOnly) {
+    if (this.iconOnly()) {
       classes.push('icon-only');
     }
 
@@ -117,7 +62,7 @@ export class WuiButtonComponent {
   }
 
   onClick(event: MouseEvent): void {
-    if (this.disabled) {
+    if (this.disabled()) {
       return;
     }
     this.clicked.emit(event);

@@ -32,16 +32,16 @@ describe('WuiButtonComponent', () => {
     fixture.detectChanges();
     expect(buttonEl().className).not.toMatch(/wui-btn-md/);
 
-    component.size = 'lg';
+    fixture.componentRef.setInput('size', 'lg');
     fixture.detectChanges();
     expect(buttonEl().className.split(' ')).toContain('wui-btn-lg');
   });
 
   it('applies variant, color, dashed, and icon-only modifiers', () => {
-    component.variant = 'outline';
-    component.color = 'danger';
-    component.dashed = true;
-    component.iconOnly = true;
+    fixture.componentRef.setInput('variant', 'outline');
+    fixture.componentRef.setInput('color', 'danger');
+    fixture.componentRef.setInput('dashed', true);
+    fixture.componentRef.setInput('iconOnly', true);
     fixture.detectChanges();
 
     const classes = buttonEl().className.split(' ');
@@ -52,7 +52,7 @@ describe('WuiButtonComponent', () => {
   });
 
   it('reflects the disabled input onto the native button', () => {
-    component.disabled = true;
+    fixture.componentRef.setInput('disabled', true);
     fixture.detectChanges();
     expect(buttonEl().disabled).toBe(true);
   });
@@ -68,7 +68,7 @@ describe('WuiButtonComponent', () => {
   });
 
   it('does not emit clicked when disabled', () => {
-    component.disabled = true;
+    fixture.componentRef.setInput('disabled', true);
     fixture.detectChanges();
     let calls = 0;
     component.clicked.subscribe(() => calls++);
