@@ -10,11 +10,12 @@ import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer, Button, ConfirmDialog, Toast],
+  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer, Button, ConfirmDialog, Toast, Tabs, TabList, Tab, TabPanels, TabPanel],
   template: `
     <main style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
       <h1>weoc-ui-ng — Buttons</h1>
@@ -116,6 +117,22 @@ import { Toast } from 'primeng/toast';
             <button type="button" (click)="showToast('error')">Error</button>
           </div>
         </div>
+      </section>
+
+      <section>
+        <label>PrimeNG Tabs, restyled with weoc-ui-css tokens</label><br />
+        <p-tabs value="0">
+          <p-tablist>
+            <p-tab value="0">Overview</p-tab>
+            <p-tab value="1">Details</p-tab>
+            <p-tab value="2">Settings</p-tab>
+          </p-tablist>
+          <p-tabpanels>
+            <p-tabpanel value="0">Overview panel content.</p-tabpanel>
+            <p-tabpanel value="1">Details panel content.</p-tabpanel>
+            <p-tabpanel value="2">Settings panel content.</p-tabpanel>
+          </p-tabpanels>
+        </p-tabs>
       </section>
 
       <p>Last clicked: {{ lastClicked }}</p>

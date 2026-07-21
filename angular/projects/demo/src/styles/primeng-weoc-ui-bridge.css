@@ -715,3 +715,174 @@
 .p-toast-message-warn .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-warning-text); }
 .p-toast-message-info .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-info-text); }
 .p-toast-message-normal .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-10); }
+
+/* =============================================
+   Tabs (primeng/tabs) — the composable `Tabs` / `TabList` / `Tab` /
+   `TabPanels` / `TabPanel` API (exported from `primeng/tabs`, selectors
+   `p-tabs` / `p-tablist` / `p-tab` / `p-tabpanels` / `p-tabpanel` — confirmed
+   by reading node_modules/primeng/fesm2022/primeng-tabs.mjs). This is NOT
+   the older `TabView`/`primeng/tabview`. Real global tokens confirmed by
+   grepping every dt('tabs.*') call in
+   node_modules/@primeuix/styles/dist/tabs/index.mjs; the CSS-variable name
+   for each dotted/camelCase token path (e.g. `tabs.tablist.borderWidth`,
+   `tabs.activeBar.background`, `tabs.navButton.hoverColor`) is confirmed by
+   cross-referencing the flattened token list in
+   node_modules/@primeuix/themes/tokens/index.mjs against the naming pattern
+   already established by every `--p-*` variable used elsewhere in this file
+   (dashed component + dashed remaining path).
+
+   *** Simpler than Button/Toast — no per-severity multiplication ***
+   Tabs has exactly one visual identity, not Button's six severities x three
+   variants or Toast's five tinted-vs-neutral severities. Every token below
+   is set exactly once, and (unlike Toast) every one of them lands cleanly
+   on weoc-ui's own real tab-strip markup with no architecture mismatch —
+   see the two exceptions called out below, neither of which needed a
+   targeted CSS override.
+
+   Mapped against weoc-ui's real components, read directly: `.wui-hdr-tabs`
+   (the tablist) and `.wui-hdr-tab` (an individual tab), both in
+   CSS/weoc-ui/weoc-navigation.css (repo root); `.wui-tab-panel` (the panel
+   body), in CSS/weoc-ui/weoc-layout.css (repo root).
+
+   *** tabs.active.bar.* — a clean pure-token translation, NO override
+   needed (contrast with Toast, which genuinely needed one) ***
+   PrimeNG's active-tab indicator is a real, separate sliding DOM element
+   (`.p-tablist-active-bar`) — a structurally different mechanism from
+   weoc-ui's `.wui-hdr-tab.active`, which has no separate indicator at all:
+   it just flips its own `border-bottom-color` from transparent to
+   `var(--color-10)` on the tab element itself, no slide, no extra element.
+   Despite that structural difference, PrimeNG's own token model already has
+   a slot that expresses the exact visual result weoc-ui wants —
+   `tabs.active.bar.background` (color) and `tabs.active.bar.height`
+   (thickness) reproduce weoc-ui's colored underline with pure tokens alone.
+   This is the opposite situation from Toast's accent rail, where PrimeNG's
+   token surface had NO slot for the visual element at all and a targeted
+   CSS override into `.p-toast-message-content` was required — here the slot
+   already exists, so no override is written. `tabs.active.bar.bottom` has
+   no literal weoc-ui source (there is no separate indicator element to read
+   an offset from) and is set to `0` so the bar sits flush with the tab's own
+   bottom edge, matching where weoc-ui's `border-bottom` actually sits —
+   NOT Aura's own default `-1px` (confirmed in
+   node_modules/@primeuix/themes/dist/aura/tabs/index.mjs), which exists
+   only to hide the seam against Aura's own tablist-border overlap trick, a
+   trick weoc-ui's design does not use (its tab border and tablist border
+   are visually independent, per `.wui-hdr-tabs`/`.wui-hdr-tab` above).
+
+   *** tabs.nav.button.* — no weoc-ui equivalent, left unset ***
+   These style the prev/next scroll-arrow buttons PrimeNG shows when a
+   tablist's content overflows (`.p-tablist-nav-button`). weoc-ui's own
+   `.wui-hdr-tabs` has no such control: it is plain `overflow-x: auto` with
+   `scrollbar-width: none` (drag/swipe/trackpad scroll only — confirmed by
+   reading the rule directly above). The `.wui-fab.tabs-scroll-left/-right`
+   buttons also present in weoc-navigation.css are a separate, opt-in
+   feature bolted on by board-specific JS on top of the base tab-strip, not
+   part of its default style, and have no dt() token to map to regardless.
+   Left unset, same "no weoc-ui equivalent" pattern already used for
+   button.help/.contrast/.link/.badge in the Button block above — not an
+   oversight.
+
+   *** tabs.tabpanel.focus.ring.* — also no weoc-ui equivalent, left unset ***
+   `.wui-tab-panel` (weoc-layout.css) carries no `:focus-visible` rule of its
+   own — confirmed by grepping every `:focus-visible` selector across
+   CSS/weoc-ui/; it is a content region, not an interactive control, and
+   nothing in the library applies a focus ring to a panel container. Left
+   unset for the same "no weoc-ui equivalent" reason as nav.button above.
+
+   *** tabs.tab.focus.ring.* — extrapolated from weoc-ui's ONE global
+   focus-visible convention, not a literal per-tab source ***
+   `.wui-hdr-tab` itself has no `:focus-visible` rule of its own (also
+   confirmed by that same grep). The values below instead extend weoc-ui's
+   single general-purpose focus convention, read directly in
+   CSS/weoc-ui/weoc-reset.css: `button:focus-visible { outline: 2px solid
+   var(--color-10); outline-offset: 2px; }` — the same convention this
+   file's Button block already relied on for its own focus-ring
+   extrapolation (mismatch #2 in the Button section above). `focus.ring.
+   shadow` is set to `none`, matching that outline-only convention (no
+   box-shadow anywhere in weoc-ui's focus treatment, same exact-match
+   reasoning as Button's `focus.ring.shadow: none` above).
+
+   tabs.tab.background / .hover.background / .active.background are all set
+   to `transparent` — a hard-sourced fact, not a soft default: `.wui-hdr-tab`
+   (resting), `:hover`, and `.active` (read in full above) never set a
+   background property in ANY state, only `color` and `border-bottom-color`
+   change. Likewise tabs.tabpanel.background is `transparent`: `.wui-tab-
+   panel` sets no background property at all — same absence-is-the-fact
+   pattern, confirmed by reading weoc-layout.css directly.
+
+   tabs.tab.border.width uses the bottom-only shorthand `0 0 2px 0`, mirroring
+   the exact shorthand pattern Aura's own default uses (`"0 0 1px 0"`,
+   confirmed in aura/tabs/index.mjs) to match `.wui-hdr-tab`'s real
+   `border-bottom: 2px solid transparent`. tabs.tab.margin is `0` — a
+   hard-sourced absence, not a filler default: `.wui-hdr-tab` sets no margin
+   of its own (adjacent-tab spacing comes only from each tab's own padding,
+   confirmed by reading the rule directly, unlike Aura's default `"0 0 -1px
+   0"` which exists purely for its own border-overlap trick, not relevant
+   here). tabs.transition.duration is the literal `0.15s`, matching
+   `.wui-hdr-tab`'s own `transition: all 0.15s` — weoc-ui-css has no
+   dedicated `--duration-*` token to reference instead (same reasoning as
+   `--p-button-transition-duration` above).
+
+   All weoc-ui-css tokens referenced below (--color-30, --color-border,
+   --border-radius is NOT used here — tabs has no tablist.border.radius
+   token at all, confirmed absent from the dt() list — --space-sm, --space-3,
+   --text-xs, --font-bold, --space-2, --color-text-secondary, --color-text-
+   primary, --color-10) were all confirmed present in
+   angular/packages/weoc-ui-css/tokens/agency-theme.css before use.
+
+   Same !important justification as every block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  /* ── Tablist (.wui-hdr-tabs) ── */
+  --p-tabs-tablist-background: var(--color-30) !important;
+  --p-tabs-tablist-border-color: var(--color-border) !important;
+  /* Literal, .wui-hdr-tabs's own `border: 1px solid ...` — no dedicated
+     weoc-ui border-width token to reference instead. */
+  --p-tabs-tablist-border-width: 1px !important;
+
+  /* ── Tab (.wui-hdr-tab) ── */
+  --p-tabs-tab-background: transparent !important;
+  --p-tabs-tab-color: var(--color-text-secondary) !important;
+  --p-tabs-tab-border-color: transparent !important;
+  --p-tabs-tab-border-width: 0 0 2px 0 !important;
+  --p-tabs-tab-padding: var(--space-sm) var(--space-3) !important;
+  --p-tabs-tab-margin: 0 !important;
+  --p-tabs-tab-gap: var(--space-2) !important;
+  --p-tabs-tab-font-size: var(--text-xs) !important;
+  --p-tabs-tab-font-weight: var(--font-bold) !important;
+  --p-tabs-tab-hover-background: transparent !important;
+  --p-tabs-tab-hover-color: var(--color-text-primary) !important;
+  /* .wui-hdr-tab:hover only changes color, never border-bottom-color (that
+     is .active's job) — hard-sourced, not a copy of the resting value. */
+  --p-tabs-tab-hover-border-color: transparent !important;
+  --p-tabs-tab-active-background: transparent !important;
+  --p-tabs-tab-active-color: var(--color-10) !important;
+  --p-tabs-tab-active-border-color: var(--color-10) !important;
+
+  /* Tab focus ring — extrapolated from weoc-ui's single global
+     button:focus-visible convention (weoc-reset.css), see header note. */
+  --p-tabs-tab-focus-ring-width: 2px !important;
+  --p-tabs-tab-focus-ring-style: solid !important;
+  --p-tabs-tab-focus-ring-color: var(--color-10) !important;
+  --p-tabs-tab-focus-ring-offset: 2px !important;
+  --p-tabs-tab-focus-ring-shadow: none !important;
+
+  /* Active bar — pure-token translation of a structurally different
+     indicator mechanism, see header note. No CSS override needed. */
+  --p-tabs-active-bar-background: var(--color-10) !important;
+  --p-tabs-active-bar-height: 2px !important;
+  --p-tabs-active-bar-bottom: 0 !important;
+
+  /* ── Tab panel (.wui-tab-panel) ── */
+  --p-tabs-tabpanel-background: transparent !important;
+  --p-tabs-tabpanel-color: var(--color-text-primary) !important;
+  --p-tabs-tabpanel-padding: 0 !important;
+
+  /* Literal, .wui-hdr-tab's own `transition: all 0.15s` — no dedicated
+     weoc-ui --duration-* token to reference instead (same reasoning as
+     --p-button-transition-duration above). */
+  --p-tabs-transition-duration: 0.15s !important;
+
+  /* tabs.nav.button.* and tabs.tabpanel.focus.ring.* intentionally NOT
+     set — no weoc-ui equivalent, see header notes above. */
+}
