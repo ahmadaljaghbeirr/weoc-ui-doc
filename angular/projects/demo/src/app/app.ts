@@ -8,14 +8,15 @@ import { Dialog } from 'primeng/dialog';
 import { Drawer } from 'primeng/drawer';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, MenuItem } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
+import { Menu } from 'primeng/menu';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer, Button, ConfirmDialog, Toast, Tabs, TabList, Tab, TabPanels, TabPanel],
+  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer, Button, ConfirmDialog, Toast, Tabs, TabList, Tab, TabPanels, TabPanel, Menu],
   template: `
     <main style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
       <h1>weoc-ui-ng — Buttons</h1>
@@ -135,6 +136,14 @@ import { Tabs, TabList, Tab, TabPanels, TabPanel } from 'primeng/tabs';
         </p-tabs>
       </section>
 
+      <section style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div>
+          <label>PrimeNG Menu (Dropdown), restyled with weoc-ui-css tokens</label><br />
+          <button type="button" (click)="menu.toggle($event)" style="padding: 0.5rem 1rem;">Toggle menu</button>
+          <p-menu #menu [popup]="true" [model]="menuItems" />
+        </div>
+      </section>
+
       <p>Last clicked: {{ lastClicked }}</p>
       <p>Last confirm result: {{ lastConfirmResult }}</p>
     </main>
@@ -153,6 +162,13 @@ export class App {
     { label: 'Primary', value: 'primary' },
     { label: 'Secondary', value: 'secondary' },
     { label: 'Success', value: 'success' },
+  ];
+
+  menuItems: MenuItem[] = [
+    { label: 'Edit', icon: 'pi pi-pencil' },
+    { label: 'Duplicate', icon: 'pi pi-copy' },
+    { separator: true },
+    { label: 'Delete', icon: 'pi pi-trash' },
   ];
 
   constructor(
