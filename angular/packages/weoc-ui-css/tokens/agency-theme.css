@@ -410,6 +410,12 @@
 
 /* End: Dark Theme */
 
+/* NOTE: `angular/packages/Fonts/` is a byte-identical duplicate of the
+   repo-root `/Fonts/` directory, kept in sync manually as a stopgap so
+   this relative path resolves from inside angular/packages/. Future
+   cleanup should symlink it or move the canonical fonts under
+   angular/packages/ directly. */
+
 @font-face {
   font-family: 'Cairo';
   src: url('../../Fonts/Cairo/static/Cairo-ExtraLight.ttf') format('truetype');

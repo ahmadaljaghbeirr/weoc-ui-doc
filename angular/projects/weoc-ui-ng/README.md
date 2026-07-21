@@ -1,64 +1,52 @@
-# WeocUiNg
+# weoc-ui-ng
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
+Angular component library for weoc-ui. Components are thin, standalone wrappers around the
+`weoc-ui-css` package's classes and design tokens, not independent visual implementations, so the
+library stays visually identical to the rest of weoc-ui with no CSS to duplicate or drift.
 
-## Code scaffolding
+## Conventions (mandatory for every component)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **`input()` signals only.** Never use the `@Input()` decorator. Tests set inputs via
+  `fixture.componentRef.setInput(...)`, not by assigning to the component instance directly.
+- **`ChangeDetectionStrategy.OnPush`** on every component.
+- **`ViewEncapsulation.None`, no `styleUrls`/`styles`.** Components render global classes from
+  `weoc-ui-css` (e.g. `wui-btn`); they never own scoped styles. If a component needs a new visual
+  class, it belongs in `packages/weoc-ui-css`, not in the component's own stylesheet.
 
-```bash
-ng generate component component-name
+```ts
+@Component({
+  selector: 'wui-button',
+  standalone: true,
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `<button [class]="hostClasses" [disabled]="disabled()"><ng-content /></button>`,
+})
+export class WuiButtonComponent {
+  color = input<WuiButtonColor>('primary');
+  disabled = input(false);
+  // ...
+}
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Components
 
-```bash
-ng generate --help
-```
+- **`WuiButtonComponent`** (`wui-button`) — `variant`, `color`, `size`, `disabled`, `dashed`,
+  `iconOnly`, `type` inputs; emits `clicked`.
+- **`WuiFabComponent`** (`wui-fab`) — floating action button; `color`, `variant`, `extended`
+  inputs.
 
 ## Building
 
-To build the library, run:
-
 ```bash
-ng build weoc-ui-ng
+npx ng build weoc-ui-ng
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+Output goes to `dist/weoc-ui-ng` (consumed by `demo` via a `tsconfig.json` path mapping).
 
-### Publishing the Library
+## Testing
 
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-
-   ```bash
-   cd dist/weoc-ui-ng
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Tests run on **Jest** (via `@angular-builders/jest`), not Karma:
 
 ```bash
-ng test
+npx ng test weoc-ui-ng --watch=false
 ```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

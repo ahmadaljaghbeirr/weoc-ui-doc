@@ -1,59 +1,47 @@
-# Angular
+# weoc-ui Angular workspace
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.7.
+Angular port of weoc-ui, generated with Angular CLI 22. The workspace holds two publishable
+packages plus a demo app used to develop and visually verify them:
 
-## Development server
-
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
+- **`packages/weoc-ui-css`** — the framework-agnostic CSS layer (design tokens + component
+  classes, e.g. `.wui-btn`). Plain CSS, no build step, portable to any markup (Angular, PrimeNG,
+  static HTML).
+- **`projects/weoc-ui-ng`** — the Angular component library (`weoc-ui-ng`). Every component is a
+  thin, standalone wrapper that renders `weoc-ui-css` classes; see
+  [`projects/weoc-ui-ng/README.md`](./projects/weoc-ui-ng/README.md) for the library's
+  conventions.
+- **`projects/demo`** — a throwaway Angular app that imports `weoc-ui-ng` and PrimeNG side by
+  side, used to eyeball components and prove that PrimeNG can be restyled with `weoc-ui-css`
+  tokens instead of its own theme.
 
 ## Building
 
-To build the project run:
-
 ```bash
-ng build
+npx ng build weoc-ui-ng
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+`demo` consumes the library via a TypeScript path mapping to `./dist/weoc-ui-ng`
+(`tsconfig.json`), so build the library at least once before `ng serve demo` or an `ng build` of
+the app.
 
-## Running unit tests
+## Testing
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+The workspace's test runner is **Jest** (via `@angular-builders/jest`), not Karma or Vitest,
+regardless of what a stock Angular CLI README says elsewhere. Each project is tested
+independently:
 
 ```bash
-ng e2e
+npx ng test weoc-ui-ng --watch=false
+npx ng test demo --watch=false
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+`projects/demo/jest.config.js` maps the `weoc-ui-ng` import to the library's TypeScript source
+(not the built dist output), so `ng test demo` never requires a fresh library build first.
 
-## Additional Resources
+## Serving
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npx ng serve demo
+```
+
+Opens the demo app at `http://localhost:4200/`, reloading on source changes.
