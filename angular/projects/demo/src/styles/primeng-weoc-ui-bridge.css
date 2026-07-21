@@ -36,6 +36,21 @@
      --p-popover-content-padding. (--p-popover-gutter controls the arrow
      size/spacing and is left at its Aura default.)
 
+   Dialog (primeng/dialog) real global tokens, confirmed by reading
+   node_modules/@primeuix/styles/dist/dialog/index.mjs, mapped against the
+   original WebEOC `wui-modal` CSS (CSS/weoc-ui/weoc-overlays.css,
+   .wui-modal-dialog / -header / -title / -body / -footer rules):
+     --p-dialog-border-radius, --p-dialog-shadow, --p-dialog-background,
+     --p-dialog-border-color, --p-dialog-color, --p-dialog-content-padding,
+     --p-dialog-header-padding, --p-dialog-title-font-weight,
+     --p-dialog-title-font-size, --p-dialog-footer-padding,
+     --p-dialog-footer-gap, --p-dialog-header-gap.
+   Two of these (--p-dialog-border-color, --p-dialog-header-gap) have no
+   direct 1:1 WebEOC source — .wui-modal-dialog itself has no visible outer
+   border, only its header/footer have internal divider borders, and the
+   header has no explicit item-gap token distinct from its padding. They are
+   filled with reasonable neutral defaults noted inline below.
+
    NOTE on !important: PrimeNG's ThemeService injects its own generated
    `:root { --p-* : ... }` rule (plus an OS-driven
    `@media (prefers-color-scheme: dark)` variant) into <head> via <style>
@@ -66,4 +81,25 @@
   --p-popover-border-radius: var(--border-radius) !important;
   --p-popover-shadow: var(--shadow-md) !important;
   --p-popover-content-padding: var(--space-3) var(--space-4) !important;
+
+  /* Dialog — same !important justification as above. Modal shadow is
+     intentionally --shadow-xl (more elevated than Popover's --shadow-md);
+     content padding is intentionally --space-2, smaller than the
+     header/footer padding, matching .wui-modal-body in the source WebEOC
+     CSS exactly. --p-dialog-border-color and --p-dialog-header-gap have no
+     hard 1:1 WebEOC source (see header comment above); --color-border and
+     --space-2 are used as reasonable neutral defaults consistent with
+     divider/gap usage elsewhere in this file. */
+  --p-dialog-border-radius: var(--border-radius) !important;
+  --p-dialog-shadow: var(--shadow-xl) !important;
+  --p-dialog-background: var(--color-30) !important;
+  --p-dialog-border-color: var(--color-border) !important;
+  --p-dialog-color: var(--color-text-primary) !important;
+  --p-dialog-content-padding: var(--space-2) !important;
+  --p-dialog-header-padding: var(--space-3) !important;
+  --p-dialog-title-font-weight: var(--font-semibold) !important;
+  --p-dialog-title-font-size: var(--text-md) !important;
+  --p-dialog-footer-padding: var(--space-4) var(--space-5) !important;
+  --p-dialog-footer-gap: var(--space-2) !important;
+  --p-dialog-header-gap: var(--space-2) !important;
 }

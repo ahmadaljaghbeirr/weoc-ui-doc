@@ -4,11 +4,12 @@ import { WuiButtonColor, WuiButtonComponent, WuiButtonVariant, WuiFabComponent }
 import { Select } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
 import { Popover } from 'primeng/popover';
+import { Dialog } from 'primeng/dialog';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover],
+  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog],
   template: `
     <main style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
       <h1>weoc-ui-ng — Buttons</h1>
@@ -60,6 +61,16 @@ import { Popover } from 'primeng/popover';
         </div>
       </section>
 
+      <section style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div>
+          <label>PrimeNG Dialog, restyled with weoc-ui-css tokens</label><br />
+          <button type="button" (click)="dialogVisible = true" style="padding: 0.5rem 1rem;">Open dialog</button>
+          <p-dialog header="weoc-ui-styled Dialog" [modal]="true" [(visible)]="dialogVisible" [style]="{ width: '28rem' }">
+            <p>This dialog is skinned entirely via weoc-ui-css tokens overriding PrimeNG's --p-dialog-* variables.</p>
+          </p-dialog>
+        </div>
+      </section>
+
       <p>Last clicked: {{ lastClicked }}</p>
     </main>
   `,
@@ -69,6 +80,7 @@ export class App {
   variants: WuiButtonVariant[] = ['solid', 'outline', 'ghost', 'neon-outline'];
   sizes: Array<'2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'> = ['2xs', 'sm', 'md', 'lg', '2xl'];
   lastClicked = '(none yet)';
+  dialogVisible = false;
 
   primeOptions = [
     { label: 'Primary', value: 'primary' },
