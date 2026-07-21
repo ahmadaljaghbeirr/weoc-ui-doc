@@ -1,0 +1,44 @@
+/* =============================================
+   primeng-weoc-ui-bridge.css
+   Demonstrates restyling PrimeNG's Aura theme with
+   weoc-ui-css design tokens. Overrides PrimeNG's own
+   global CSS custom properties — no PrimeNG component
+   source is touched.
+
+   Real PrimeNG (Aura, @primeng/themes 21.0.4 / primeng
+   22.0.0) global token names, confirmed by reading
+   node_modules/@primeuix/themes/dist/aura/base/index.mjs
+   (the semantic token object underlying the Aura preset):
+     semantic.colorScheme.light.primary.color        -> --p-primary-color
+     semantic.colorScheme.light.primary.contrastColor -> --p-primary-contrast-color
+     semantic.content.borderRadius                    -> --p-content-border-radius
+     semantic.formField.borderRadius                   -> --p-form-field-border-radius
+     semantic.focusRing.color                          -> --p-focus-ring-color
+
+   Real weoc-ui-css token names, confirmed by reading
+   angular/packages/weoc-ui-css/tokens/agency-theme.css:
+     --color-10        (brand primary, #185fa5 light / #3a80e0 dark)
+     --color-on-accent (white text/icons on a solid accent fill)
+     --radius-md        (alias of --border-radius, 0.5rem)
+
+   NOTE on !important: PrimeNG's ThemeService injects its own generated
+   `:root { --p-* : ... }` rule (plus an OS-driven
+   `@media (prefers-color-scheme: dark)` variant) into <head> via <style>
+   tags at runtime, AFTER the Angular build already placed this stylesheet's
+   <link> earlier in <head>. At equal specificity the later rule in source
+   order wins the cascade, so a plain override here is silently beaten by
+   PrimeNG's own injected values (confirmed empirically: without
+   `!important`, --p-primary-color stayed the Aura default emerald
+   `#34d399` instead of resolving to `--color-10`). `!important` is the
+   correct, minimal fix for a bridge stylesheet whose only job is to win
+   against a third-party runtime style injector — it is not being used to
+   override anything else here.
+   ============================================= */
+
+:root {
+  --p-primary-color: var(--color-10) !important;
+  --p-primary-contrast-color: var(--color-on-accent) !important;
+  --p-content-border-radius: var(--radius-md) !important;
+  --p-form-field-border-radius: var(--radius-md) !important;
+  --p-focus-ring-color: var(--color-10) !important;
+}
