@@ -17,9 +17,24 @@
 
    Real weoc-ui-css token names, confirmed by reading
    angular/packages/weoc-ui-css/tokens/agency-theme.css:
-     --color-10        (brand primary, #185fa5 light / #3a80e0 dark)
-     --color-on-accent (white text/icons on a solid accent fill)
-     --radius-md        (alias of --border-radius, 0.5rem)
+     --color-10          (brand primary, #185fa5 light / #3a80e0 dark)
+     --color-on-accent   (white text/icons on a solid accent fill)
+     --radius-md          (alias of --border-radius, 0.5rem)
+     --color-30           (surface/background, #ffffff light / #282828 dark)
+     --color-border       (#ebebeb light / #3a3a3a dark)
+     --color-text-primary (there is no `--color-text` token in
+                            agency-theme.css; the real primary body-text
+                            token is `--color-text-primary`, #1a1a1a light
+                            / #f1f1f1 dark — used below in place of it)
+     --shadow-md          (elevation shadow, tuned per light/dark)
+     --space-3, --space-4 (0.75rem / 1rem)
+
+   Popover (primeng/popover) real global tokens, confirmed by reading
+   node_modules/@primeuix/styles/dist/popover/index.mjs:
+     --p-popover-background, --p-popover-color, --p-popover-border-color,
+     --p-popover-border-radius, --p-popover-shadow,
+     --p-popover-content-padding. (--p-popover-gutter controls the arrow
+     size/spacing and is left at its Aura default.)
 
    NOTE on !important: PrimeNG's ThemeService injects its own generated
    `:root { --p-* : ... }` rule (plus an OS-driven
@@ -41,4 +56,14 @@
   --p-content-border-radius: var(--radius-md) !important;
   --p-form-field-border-radius: var(--radius-md) !important;
   --p-focus-ring-color: var(--color-10) !important;
+
+  /* Popover — same !important justification as above: PrimeNG's
+     ThemeService injects its own :root { --p-* } rule at runtime, after
+     this stylesheet, so a plain override loses the cascade. */
+  --p-popover-background: var(--color-30) !important;
+  --p-popover-color: var(--color-text-primary) !important;
+  --p-popover-border-color: var(--color-border) !important;
+  --p-popover-border-radius: var(--border-radius) !important;
+  --p-popover-shadow: var(--shadow-md) !important;
+  --p-popover-content-padding: var(--space-3) var(--space-4) !important;
 }

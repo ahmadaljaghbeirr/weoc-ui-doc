@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { WuiButtonColor, WuiButtonComponent, WuiButtonVariant, WuiFabComponent } from 'weoc-ui-ng';
 import { Select } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
+import { Popover } from 'primeng/popover';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker],
+  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover],
   template: `
     <main style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
       <h1>weoc-ui-ng — Buttons</h1>
@@ -46,6 +47,16 @@ import { DatePicker } from 'primeng/datepicker';
         <div>
           <label>PrimeNG DatePicker, restyled with weoc-ui-css tokens</label><br />
           <p-datepicker />
+        </div>
+      </section>
+
+      <section style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div>
+          <label>PrimeNG Popover, restyled with weoc-ui-css tokens</label><br />
+          <button type="button" (click)="pop.toggle($event)" style="padding: 0.5rem 1rem;">Toggle popover</button>
+          <p-popover #pop>
+            <div style="padding: 0.5rem;">This popover is skinned entirely via weoc-ui-css tokens overriding PrimeNG's --p-popover-* variables.</div>
+          </p-popover>
         </div>
       </section>
 
