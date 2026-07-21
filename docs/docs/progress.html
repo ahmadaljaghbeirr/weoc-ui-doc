@@ -687,6 +687,64 @@
           </div>
         </div>
 
+        <!-- ══════════════════════════ weoc-progress stepper ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title"><span class="material-symbols-outlined">linear_scale</span>weoc-progress stepper</div>
+          <p class="docs-desc"><code>.weoc-progress</code> is a responsive horizontal stepper. Use an ordered list, apply exactly one state class to each step, and add <code>aria-current="step"</code> to the current item. The connector belongs to the step before it, so omit it from the final item. No JavaScript is required.</p>
+
+          <div class="docs-subsection-title">Completed, current, and upcoming steps</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <ol class="weoc-progress" aria-label="Request progress" style="--weoc-progress-current:45%">
+                <li class="weoc-progress-step completed">
+                  <span class="weoc-progress-indicator" aria-hidden="true">
+                    <span class="weoc-progress-icon material-symbols-outlined">check</span>
+                  </span>
+                  <span class="weoc-progress-label">Step 1 of 4: Request details, completed</span>
+                  <span class="weoc-progress-connector" aria-hidden="true"></span>
+                </li>
+                <li class="weoc-progress-step current" aria-current="step">
+                  <span class="weoc-progress-indicator" aria-hidden="true"></span>
+                  <span class="weoc-progress-label">Step 2 of 4: Review, current</span>
+                  <span class="weoc-progress-connector" aria-hidden="true"></span>
+                </li>
+                <li class="weoc-progress-step upcoming">
+                  <span class="weoc-progress-indicator" aria-hidden="true"></span>
+                  <span class="weoc-progress-label">Step 3 of 4: Approval, upcoming</span>
+                  <span class="weoc-progress-connector" aria-hidden="true"></span>
+                </li>
+                <li class="weoc-progress-step upcoming">
+                  <span class="weoc-progress-indicator" aria-hidden="true"></span>
+                  <span class="weoc-progress-label">Step 4 of 4: Complete, upcoming</span>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title">Optional disabled state</div>
+          <p class="docs-desc">The existing weoc-ui <code>.disabled</code> convention is supported. Pair it with <code>aria-disabled="true"</code>; the visible block symbol and accessible label ensure the state is not communicated by color alone.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <ol class="weoc-progress" aria-label="Restricted request progress">
+                <li class="weoc-progress-step completed">
+                  <span class="weoc-progress-indicator" aria-hidden="true"><span class="weoc-progress-icon material-symbols-outlined">check</span></span>
+                  <span class="weoc-progress-label">Step 1 of 3: Submitted, completed</span>
+                  <span class="weoc-progress-connector" aria-hidden="true"></span>
+                </li>
+                <li class="weoc-progress-step current" aria-current="step">
+                  <span class="weoc-progress-indicator" aria-hidden="true"></span>
+                  <span class="weoc-progress-label">Step 2 of 3: Review, current</span>
+                  <span class="weoc-progress-connector" aria-hidden="true"></span>
+                </li>
+                <li class="weoc-progress-step disabled" aria-disabled="true">
+                  <span class="weoc-progress-indicator" aria-hidden="true"><span class="weoc-progress-icon material-symbols-outlined">block</span></span>
+                  <span class="weoc-progress-label">Step 3 of 3: Publish, disabled</span>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
