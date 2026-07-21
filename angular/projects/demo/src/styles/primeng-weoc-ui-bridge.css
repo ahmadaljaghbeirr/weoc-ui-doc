@@ -36,6 +36,23 @@
      --p-popover-content-padding. (--p-popover-gutter controls the arrow
      size/spacing and is left at its Aura default.)
 
+   Dialog (primeng/dialog) real global tokens, confirmed by reading
+   node_modules/@primeuix/styles/dist/dialog/index.mjs, mapped against the
+   original WebEOC `wui-modal` CSS (CSS/weoc-ui/weoc-overlays.css,
+   .wui-modal-dialog / -header / -title / -body / -footer rules):
+     --p-dialog-border-radius, --p-dialog-shadow, --p-dialog-background,
+     --p-dialog-border-color, --p-dialog-color, --p-dialog-content-padding,
+     --p-dialog-header-padding, --p-dialog-title-font-weight,
+     --p-dialog-title-font-size, --p-dialog-footer-padding,
+     --p-dialog-footer-gap, --p-dialog-header-gap.
+   One of these (--p-dialog-border-color) has no direct 1:1 WebEOC source —
+   .wui-modal-dialog itself has no visible outer border, only its
+   header/footer have internal divider borders. It is filled with a
+   reasonable neutral default noted inline below. --p-dialog-header-gap DOES
+   have a direct source: .wui-modal-header sets `gap: var(--space-3)`
+   separately from its `padding: var(--space-3)` (same token, distinct
+   property) — mapped exactly below, not defaulted.
+
    NOTE on !important: PrimeNG's ThemeService injects its own generated
    `:root { --p-* : ... }` rule (plus an OS-driven
    `@media (prefers-color-scheme: dark)` variant) into <head> via <style>
@@ -66,4 +83,26 @@
   --p-popover-border-radius: var(--border-radius) !important;
   --p-popover-shadow: var(--shadow-md) !important;
   --p-popover-content-padding: var(--space-3) var(--space-4) !important;
+
+  /* Dialog — same !important justification as above. Modal shadow is
+     intentionally --shadow-xl (more elevated than Popover's --shadow-md);
+     content padding is intentionally --space-2, smaller than the
+     header/footer padding, matching .wui-modal-body in the source WebEOC
+     CSS exactly. --p-dialog-border-color has no hard 1:1 WebEOC source (see
+     header comment above) and uses --color-border as a reasonable neutral
+     default; --p-dialog-header-gap DOES have a direct source
+     (.wui-modal-header's own `gap: var(--space-3)`, distinct from its
+     `padding: var(--space-3)` — same token, different property). */
+  --p-dialog-border-radius: var(--border-radius) !important;
+  --p-dialog-shadow: var(--shadow-xl) !important;
+  --p-dialog-background: var(--color-30) !important;
+  --p-dialog-border-color: var(--color-border) !important;
+  --p-dialog-color: var(--color-text-primary) !important;
+  --p-dialog-content-padding: var(--space-2) !important;
+  --p-dialog-header-padding: var(--space-3) !important;
+  --p-dialog-title-font-weight: var(--font-semibold) !important;
+  --p-dialog-title-font-size: var(--text-md) !important;
+  --p-dialog-footer-padding: var(--space-4) var(--space-5) !important;
+  --p-dialog-footer-gap: var(--space-2) !important;
+  --p-dialog-header-gap: var(--space-3) !important;
 }
