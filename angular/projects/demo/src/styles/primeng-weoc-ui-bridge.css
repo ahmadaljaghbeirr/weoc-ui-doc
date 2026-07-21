@@ -438,3 +438,88 @@
   /* button.text.plain.* and button.link.* intentionally NOT set — no
      weoc-ui equivalent, see scope note in the header comment above. */
 }
+
+/* =============================================
+   ConfirmDialog (primeng/confirmdialog) — the smallest token surface bridged
+   so far. Real global tokens confirmed by reading
+   node_modules/@primeuix/styles/dist/confirmdialog/index.mjs: it only adds
+   six of its own custom properties on top of Dialog —
+   --p-confirmdialog-content-gap, --p-confirmdialog-icon-color,
+   --p-confirmdialog-icon-size, --p-confirmdialog-message-color,
+   --p-confirmdialog-message-font-weight, --p-confirmdialog-message-font-size.
+   Everything else (background, border-radius, shadow, header, footer,
+   buttons) is the `.p-dialog` markup ConfirmDialog renders into, so it is
+   already fully bridged by the Dialog block above — nothing further to add
+   for those.
+
+   *** Honesty note: unlike every block above, NONE of these six tokens has
+   a hard 1:1 WebEOC source. Read in full: WUI.confirm()'s buildConfirmModal
+   in JS/weoc-ui.js (repo root) builds only a `.wui-modal-title` +
+   `<p data-wui-confirm-msg-el>` inside `.wui-modal-body` + ghost-secondary
+   Cancel / primary OK buttons in `.wui-modal-footer` — there is no icon
+   element at all, and the message `<p>` carries no inline style or class of
+   its own. So every value below is either a soft default (no equivalent
+   exists to source from) or an inferred default (derived from what actually
+   renders via inheritance, not from an explicit rule) — never a literal
+   copied property value. Each is labeled individually: ***
+
+     --p-confirmdialog-content-gap: var(--space-3)
+       Soft default. This is the gap between the icon and the message text.
+       weoc-ui's confirm modal has no icon, so there is nothing to measure an
+       icon-to-message gap from. --space-3 (0.75rem) is reused because it is
+       the same rhythm value already used for header/footer internal spacing
+       elsewhere in this file's Dialog block — a reasonable, not sourced,
+       choice.
+
+     --p-confirmdialog-icon-color: var(--color-warning)
+       Soft default. weoc-ui's confirm modal renders no icon at all, so there
+       is no color to copy. --color-warning is chosen because it is
+       semantically the right tone for a confirm/warning prompt (and is the
+       exact token this file's Button block already bridges for PrimeNG's
+       `warn` severity), not because any weoc-ui confirm-icon rule says so.
+
+     --p-confirmdialog-icon-size: var(--icon-lg)
+       Soft default, same reasoning as icon-color — no icon exists in the
+       source to size against. --icon-lg (1.5rem) is confirmed to exist in
+       agency-theme.css and picked as a reasonable icon scale for a modal
+       header, not derived from any real rule.
+
+     --p-confirmdialog-message-color: var(--color-text-primary)
+       Inferred default. buildConfirmModal's message `<p>` has no color rule
+       of its own, and .wui-modal-body (CSS/weoc-ui/weoc-overlays.css) sets
+       none either — confirmed by reading both. The color actually rendered
+       is inherited all the way from `body { color: var(--color-text-primary)
+       }` in CSS/weoc-ui/weoc-reset.css. So this value matches real rendered
+       behavior, but there is no explicit confirm-dialog-specific rule to
+       point to — it is inheritance, not a targeted source.
+
+     --p-confirmdialog-message-font-weight: var(--font-regular)
+       Inferred default, same inheritance chain as message-color. No
+       font-weight rule exists on the message `<p>`, `.wui-modal-body`, or
+       any `p` element reset in weoc-reset.css — the browser's normal-weight
+       default is what actually renders. --font-regular (400) is confirmed to
+       exist in agency-theme.css and matches that rendered default weight,
+       not an explicit source rule.
+
+     --p-confirmdialog-message-font-size: var(--text-base)
+       Inferred default — CORRECTED from an initially suggested
+       --text-sm after actually reading the cascade: .wui-modal-body sets no
+       font-size, and weoc-reset.css defines no `p` element reset either
+       (confirmed by reading both files in full). The only font-size rule in
+       the whole chain is `body { font-size: var(--text-base) }` in
+       weoc-reset.css, which the message `<p>` inherits directly. --text-base
+       (1rem) is therefore what the message text actually renders at in
+       practice — --text-sm would have been a smaller, wrong value with no
+       basis in the real cascade.
+
+   Same !important justification as every block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  --p-confirmdialog-content-gap: var(--space-3) !important;
+  --p-confirmdialog-icon-color: var(--color-warning) !important;
+  --p-confirmdialog-icon-size: var(--icon-lg) !important;
+  --p-confirmdialog-message-color: var(--color-text-primary) !important;
+  --p-confirmdialog-message-font-weight: var(--font-regular) !important;
+  --p-confirmdialog-message-font-size: var(--text-base) !important;
+}

@@ -7,14 +7,18 @@ import { Popover } from 'primeng/popover';
 import { Dialog } from 'primeng/dialog';
 import { Drawer } from 'primeng/drawer';
 import { Button } from 'primeng/button';
+import { ConfirmDialog } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer, Button],
+  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer, Button, ConfirmDialog],
   template: `
     <main style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
       <h1>weoc-ui-ng — Buttons</h1>
+
+      <p-confirmdialog />
 
       <section style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
         <wui-button
@@ -93,7 +97,15 @@ import { Button } from 'primeng/button';
         </div>
       </section>
 
+      <section style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div>
+          <label>PrimeNG ConfirmDialog, restyled with weoc-ui-css tokens</label><br />
+          <button type="button" (click)="confirmDelete()" style="padding: 0.5rem 1rem;">Trigger confirm</button>
+        </div>
+      </section>
+
       <p>Last clicked: {{ lastClicked }}</p>
+      <p>Last confirm result: {{ lastConfirmResult }}</p>
     </main>
   `,
 })
@@ -104,6 +116,7 @@ export class App {
   lastClicked = '(none yet)';
   dialogVisible = false;
   drawerVisible = false;
+  lastConfirmResult = '(none yet)';
 
   primeOptions = [
     { label: 'Primary', value: 'primary' },
@@ -111,7 +124,23 @@ export class App {
     { label: 'Success', value: 'success' },
   ];
 
+  constructor(private confirmationService: ConfirmationService) {}
+
   onClick(color: string): void {
     this.lastClicked = color;
+  }
+
+  confirmDelete(): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to proceed?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.lastConfirmResult = 'accepted';
+      },
+      reject: () => {
+        this.lastConfirmResult = 'rejected';
+      },
+    });
   }
 }
