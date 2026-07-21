@@ -5,11 +5,12 @@ import { Select } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
 import { Popover } from 'primeng/popover';
 import { Dialog } from 'primeng/dialog';
+import { Drawer } from 'primeng/drawer';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog],
+  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer],
   template: `
     <main style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
       <h1>weoc-ui-ng — Buttons</h1>
@@ -71,6 +72,16 @@ import { Dialog } from 'primeng/dialog';
         </div>
       </section>
 
+      <section style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div>
+          <label>PrimeNG Drawer, restyled with weoc-ui-css tokens</label><br />
+          <button type="button" (click)="drawerVisible = true" style="padding: 0.5rem 1rem;">Open drawer</button>
+          <p-drawer header="weoc-ui-styled Drawer" [(visible)]="drawerVisible" position="right">
+            <p>This drawer is skinned entirely via weoc-ui-css tokens overriding PrimeNG's --p-drawer-* variables.</p>
+          </p-drawer>
+        </div>
+      </section>
+
       <p>Last clicked: {{ lastClicked }}</p>
     </main>
   `,
@@ -81,6 +92,7 @@ export class App {
   sizes: Array<'2xs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'> = ['2xs', 'sm', 'md', 'lg', '2xl'];
   lastClicked = '(none yet)';
   dialogVisible = false;
+  drawerVisible = false;
 
   primeOptions = [
     { label: 'Primary', value: 'primary' },

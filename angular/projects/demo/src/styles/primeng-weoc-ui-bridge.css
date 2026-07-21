@@ -106,3 +106,49 @@
   --p-dialog-footer-gap: var(--space-2) !important;
   --p-dialog-header-gap: var(--space-3) !important;
 }
+
+/* =============================================
+   Drawer (primeng/drawer) real global tokens, confirmed by reading
+   node_modules/@primeuix/styles/dist/drawer/index.mjs, mapped against the
+   original WebEOC `wui-drawer` CSS (CSS/weoc-ui/weoc-overlays.css,
+   .wui-drawer-panel / -header / -title / -body / -footer rules):
+     --p-drawer-background, --p-drawer-color, --p-drawer-border-color,
+     --p-drawer-shadow, --p-drawer-content-padding, --p-drawer-header-padding,
+     --p-drawer-footer-padding, --p-drawer-title-font-weight,
+     --p-drawer-title-font-size.
+
+   All nine values below are hard-sourced from the .wui-drawer-* rules read
+   directly in weoc-overlays.css, EXCEPT --p-drawer-border-color, which is
+   soft-defaulted: .wui-drawer-panel itself carries no outer border (only
+   box-shadow + border-radius) — only its header/footer regions have their
+   own internal `border-bottom`/`border-top: 1px solid var(--color-border)`
+   dividers. There is no 1:1 source for a panel-level border-color, so
+   --color-border is reused here as a reasonable neutral default (the same
+   token the header/footer dividers already use nearby), same rationale as
+   --p-dialog-border-color above — not asserted as a hard source.
+
+   Confirmed distinct from the other two overlays already styled in this
+   file: shadow is --shadow-lg (Popover uses --shadow-md, Dialog uses
+   --shadow-xl — three different elevation levels, verified by re-reading
+   each source rule rather than copied from memory); header padding is the
+   two-value `var(--space-4) var(--space-5)` (Dialog's header padding is the
+   single value `var(--space-3)` — these are NOT the same, confirmed by
+   reading .wui-drawer-header vs .wui-modal-header directly).
+
+   There is no --p-drawer-border-radius token in PrimeNG's Drawer CSS (a
+   drawer sits flush against a screen edge, no rounded corners by default),
+   so none is set here.
+
+   Same !important justification as the blocks above: PrimeNG's ThemeService
+   injects its own :root { --p-* } rule at runtime, after this stylesheet. */
+:root {
+  --p-drawer-background: var(--color-30) !important;
+  --p-drawer-color: var(--color-text-primary) !important;
+  --p-drawer-border-color: var(--color-border) !important;
+  --p-drawer-shadow: var(--shadow-lg) !important;
+  --p-drawer-content-padding: var(--space-2) !important;
+  --p-drawer-header-padding: var(--space-4) var(--space-5) !important;
+  --p-drawer-footer-padding: var(--space-4) var(--space-5) !important;
+  --p-drawer-title-font-weight: var(--font-semibold) !important;
+  --p-drawer-title-font-size: var(--text-md) !important;
+}
