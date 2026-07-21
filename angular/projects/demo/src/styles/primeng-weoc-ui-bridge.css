@@ -211,12 +211,19 @@
    2) focus.ring.color: .wui-btn:focus-visible always outlines in
       var(--color-10), regardless of the button's own color — there is no
       literal per-severity focus source on plain .wui-btn. However,
-      buttons.css DOES establish a per-severity focus-outline convention
-      elsewhere, on the neon-outline variant (e.g.
-      `.wui-btn.neon-outline.danger:focus-visible { outline-color:
-      var(--color-danger); }`). button.{severity}.focus.ring.color below
-      follows that established per-color convention (each severity's own
-      color var) rather than hard-defaulting every severity to --color-10.
+      buttons.css DOES establish a per-severity focus-outline convention on
+      the neon-outline variant, but only for danger/success/warning/info
+      (e.g. `.wui-btn.neon-outline.danger:focus-visible { outline-color:
+      var(--color-danger); }`) — primary and secondary have no neon-outline
+      override and fall through to the shared --color-10 default there too.
+      button.{severity}.focus.ring.color below extends that per-color
+      convention to all six severities (each severity's own color var)
+      rather than hard-defaulting every severity to --color-10; for
+      primary/secondary specifically this is an extrapolation beyond a
+      literal source, not a direct 1:1 match, though it lines up with Aura's
+      own real per-severity focus-ring defaults (confirmed in
+      aura/button/index.mjs — e.g. secondary's is a distinct surface color,
+      not primary's).
       button.{severity}.focus.ring.shadow is set to `none` for every
       severity — this is not a gap-filler default, it is an exact match: the
       real Aura preset itself sets focusRing.shadow: "none" for all six
