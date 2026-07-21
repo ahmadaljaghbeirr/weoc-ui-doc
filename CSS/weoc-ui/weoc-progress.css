@@ -352,6 +352,7 @@
     background: var(--weoc-progress-upcoming);
     border: var(--border-xs) solid transparent;
     border-radius: var(--radius-pill);
+    will-change: transform;
 }
 
 .weoc-progress-connector {

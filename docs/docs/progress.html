@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>weoc-ui — Progress</title>
   <script src="../../JS/weoc-ui.js"></script>
+  <script src="../../JS/weoc-anim.js"></script>
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
   <link rel="stylesheet" href="../docs-style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -690,12 +691,12 @@
         <!-- ══════════════════════════ weoc-progress stepper ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">linear_scale</span>weoc-progress stepper</div>
-          <p class="docs-desc"><code>.weoc-progress</code> is a responsive horizontal stepper. Use an ordered list, apply exactly one state class to each step, and add <code>aria-current="step"</code> to the current item. The connector belongs to the step before it, so omit it from the final item. No JavaScript is required.</p>
+          <p class="docs-desc"><code>.weoc-progress</code> is a responsive horizontal stepper. Use an ordered list, apply exactly one state class to each step, and add <code>aria-current="step"</code> to the current item. The connector belongs to the step before it, so omit it from the final item. Markup works without JavaScript; <code>WUIAnim.stepper()</code> progressively enhances state changes with GSAP and pulses the current indicator.</p>
 
           <div class="docs-subsection-title">Completed, current, and upcoming steps</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
-              <ol class="weoc-progress" aria-label="Request progress" style="--weoc-progress-current:45%">
+              <ol id="request-progress" class="weoc-progress" aria-label="Request progress" style="--weoc-progress-current:45%">
                 <li class="weoc-progress-step completed">
                   <span class="weoc-progress-indicator" aria-hidden="true">
                     <span class="weoc-progress-icon material-symbols-outlined">check</span>
@@ -750,5 +751,12 @@
   </div>
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('progress');</script>
+  <script>
+    WUIAnim.ready(function (animation) {
+      window.requestProgress = animation.stepper('#request-progress', { currentProgress: 45 });
+      // Move to the next step after the application saves successfully:
+      // window.requestProgress.setCurrent(2);
+    });
+  </script>
 </body>
 </html>
