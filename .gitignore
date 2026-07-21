@@ -2,6 +2,9 @@
 node_modules/
 *.log
 
+# Isolated worktree workspaces (e.g. weoc-ui-angular-port)
+.worktrees/
+
 # Wrangler local state and development secrets (not the deploy configuration).
 .wrangler/
 .dev.vars*
