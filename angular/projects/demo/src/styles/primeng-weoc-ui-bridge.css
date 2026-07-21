@@ -523,3 +523,195 @@
   --p-confirmdialog-message-font-weight: var(--font-regular) !important;
   --p-confirmdialog-message-font-size: var(--text-base) !important;
 }
+
+/* =============================================
+   Toast (primeng/toast) — the first bridge in this file that is NOT a pure
+   token override. Read this whole block before touching it.
+
+   *** THE ARCHITECTURE MISMATCH ***
+   PrimeNG's Toast design (real dt() tokens confirmed by reading
+   node_modules/@primeuix/styles/dist/toast/index.mjs, defaults confirmed in
+   node_modules/@primeuix/themes/dist/aura/toast/index.mjs) gives EVERY
+   severity (normal/info/warn/error/success/secondary/contrast) its OWN
+   distinct background + border-color + color + detail-color + shadow — e.g.
+   Aura's `success` is a mint-tinted card (`color-mix(... {green.50} ...)`
+   background, `{green.200}` border, `{green.600}` text), `error` is a
+   red-tinted card, etc. The whole design is "solid colored card per
+   severity."
+
+   weoc-ui's own toast (`.wui-toast` etc., CSS/weoc-ui/weoc-feedback.css,
+   repo root, section 5, read in full to confirm) is designed the opposite
+   way: EVERY severity shares the exact SAME neutral card —
+   `.wui-toast { background: var(--color-30); border: 1px solid
+   var(--color-border); }` — with no severity-specific background or border
+   rule anywhere. Severity is expressed only by
+   `border-inline-start: var(--border-sm) solid var(--_accent, ...)` (a
+   colored left accent rail, `--_accent` set per severity class, e.g.
+   `.wui-toast.success { --_accent: var(--color-success-text); }`) plus the
+   icon color reusing the same `--_accent`. Title/message text color
+   (`.wui-toast-title` / `.wui-toast-msg`) is ALSO the same neutral pair for
+   every severity — `var(--color-text-primary)` / `var(--color-text-
+   secondary)` — never tinted.
+
+   A pure token override cannot reproduce this by itself: dt('toast.
+   success.*') and dt('toast.error.*') etc. are independent slots, and
+   setting them all to the same neutral value (Tier 1, below) removes the
+   tinting but ALSO removes any severity differentiation at all, since
+   PrimeNG has no separate token for "the accent rail" — that visual element
+   simply does not exist in PrimeNG's own design. So this bridge is split
+   into two tiers, per the task's design conversation ("if weoc-ui has a
+   visual detail PrimeNG's token surface can't express, write a small
+   override CSS block targeting PrimeNG's own selectors" — the same
+   legitimate escape hatch already used nowhere else in this file until now,
+   because every prior component's weoc-ui design happened to fit PrimeNG's
+   token surface 1:1. Toast is the first one that genuinely doesn't):
+
+   TIER 1 (below, inside :root, exactly like every block above it): override
+   every severity's background/border.color/color/detail.color/shadow to the
+   SAME neutral values, plus the shared (non-per-severity) structural tokens.
+   This alone gets weoc-ui's "neutral card" look but loses severity
+   differentiation.
+
+   TIER 2 (the plain CSS rule block further below, NOT inside :root): add
+   back the ONE thing Tier 1 structurally cannot express — the colored
+   left accent rail — by targeting PrimeNG's own real CSS classes directly.
+   Confirmed by reading node_modules/primeng/fesm2022/primeng-toast.mjs
+   (ToastClasses, ~line 38-44): PrimeNG applies `.p-toast-message-normal` /
+   `-info` / `-warn` / `-error` / `-success` / `-secondary` / `-contrast` to
+   each rendered message, and `.p-toast-message-content` (PrimeNG's own inner
+   wrapper class) is exactly where `.wui-toast`'s own
+   `border-inline-start` rail rule would land if weoc-ui's markup were
+   reused verbatim. No `!important` is needed here (unlike Tier 1) because
+   these are brand new selectors this stylesheet introduces, not a fight
+   against PrimeNG's runtime-injected `:root { --p-* }` rule — there is
+   nothing already targeting `.p-toast-message-content` to out-cascade.
+
+   `.wui-toast.secondary` / `.wui-toast.contrast` do not exist in weoc-ui —
+   skipped entirely below, same "no weoc-ui equivalent" pattern already
+   established for button.help/contrast/link etc. earlier in this file.
+   PrimeNG's `normal` severity (its default / no-severity-set case) is mapped
+   to weoc-ui's `.wui-toast.primary` equivalent (`--color-10`), since that is
+   weoc-ui's own default/primary accent tone.
+
+   All tokens named below were confirmed to already exist in the ported
+   angular/packages/weoc-ui-css/tokens/agency-theme.css (--color-success-
+   text, --color-danger-text, --color-warning-text, --color-info-text,
+   --border-sm, --color-10, --color-text-ui all present) — NONE needed
+   porting from the original repo-root agency-theme.css for this task.
+
+   Real weoc-ui source values below, all read directly from
+   CSS/weoc-ui/weoc-feedback.css section 5 (.wui-toast / -icon / -body /
+   -title / -msg / -close), not guessed:
+     .wui-toast            { gap: var(--space-3); padding: var(--space-3)
+                              var(--space-4); background: var(--color-30);
+                              border: 1px solid var(--color-border);
+                              border-radius: var(--border-radius);
+                              box-shadow: var(--shadow-lg); }
+     .wui-toast-icon        { font-size: var(--text-lg); margin-top: 1px; }
+     .wui-toast-body        { gap: 2px; }
+     .wui-toast-title       { font-size: var(--text-xs);
+                               font-weight: var(--font-semibold);
+                               color: var(--color-text-primary); }
+     .wui-toast-msg         { font-size: var(--text-xs);
+                               font-weight: var(--font-medium);
+                               color: var(--color-text-secondary); }
+     .wui-toast-close       { width/height: var(--icon-lg);
+                               border-radius: var(--radius-sm); }
+     .wui-toast-close .material-symbols-outlined { font-size: var(--icon-sm); }
+
+   toast.border.width maps to `.wui-toast`'s own base `1px solid` border
+   (its EVERY-side border, distinct from the thicker `--border-sm`
+   inline-start rail added on top of it) — confirmed literal `1px`, not
+   `--border-sm`; `--border-sm` is reserved for the Tier 2 rail below only.
+
+   *** Explicitly OUT of scope, left at Aura defaults (deliberate, not an
+   oversight) ***
+     - toast.secondary.*, toast.contrast.*   (no weoc-ui equivalent, see above)
+     - toast.width, toast.blur               (weoc-ui's card has a fully
+       opaque `--color-30` background, so `backdrop-filter: blur(...)` has no
+       visible effect regardless of value — not worth bridging)
+     - toast.{severity}.close.button.hover.background,
+       toast.{severity}.close.button.focus.ring.*  (per-severity close-button
+       interaction states; weoc-ui's own `.wui-toast-close:hover` uses a
+       single neutral `--color-hover` for every severity with no distinct
+       per-severity source to justify five separate overrides here — left at
+       Aura's defaults, out of scope for this task's token list)
+
+   Same !important justification as every Tier 1 block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  /* ── Shared (not per-severity) ── */
+  --p-toast-border-radius: var(--border-radius) !important;
+  --p-toast-border-width: 1px !important;
+  --p-toast-content-gap: var(--space-3) !important;
+  --p-toast-content-padding: var(--space-3) var(--space-4) !important;
+  /* Literal, matches .wui-toast-icon's own `margin-top: 1px` (no left/right
+     margin — inter-element spacing is handled by the flex `gap` above). */
+  --p-toast-icon-margin: 1px 0 0 0 !important;
+  --p-toast-icon-size: var(--text-lg) !important;
+  /* Bonus exact match beyond the task's explicit list: .wui-toast-body's own
+     `gap: 2px` between title and message, sourced directly, not guessed. */
+  --p-toast-text-gap: 2px !important;
+  --p-toast-summary-font-size: var(--text-xs) !important;
+  --p-toast-summary-font-weight: var(--font-semibold) !important;
+  --p-toast-detail-font-size: var(--text-xs) !important;
+  --p-toast-detail-font-weight: var(--font-medium) !important;
+  --p-toast-close-button-width: var(--icon-lg) !important;
+  --p-toast-close-button-height: var(--icon-lg) !important;
+  --p-toast-close-button-border-radius: var(--radius-sm) !important;
+  --p-toast-close-icon-size: var(--icon-sm) !important;
+
+  /* ── Per-severity — INTENTIONALLY IDENTICAL across all five, matching
+     weoc-ui's "one neutral card, no severity-tinted background" design.
+     This is the opposite of Aura's per-severity tinted defaults — that
+     inversion is the entire point of this bridge, not a mistake. Severity
+     differentiation is restored below via the Tier 2 accent-rail rule,
+     which is the ONLY place these severities visually differ. ── */
+  --p-toast-normal-background: var(--color-30) !important;
+  --p-toast-normal-border-color: var(--color-border) !important;
+  --p-toast-normal-color: var(--color-text-primary) !important;
+  --p-toast-normal-detail-color: var(--color-text-secondary) !important;
+  --p-toast-normal-shadow: var(--shadow-lg) !important;
+
+  --p-toast-info-background: var(--color-30) !important;
+  --p-toast-info-border-color: var(--color-border) !important;
+  --p-toast-info-color: var(--color-text-primary) !important;
+  --p-toast-info-detail-color: var(--color-text-secondary) !important;
+  --p-toast-info-shadow: var(--shadow-lg) !important;
+
+  --p-toast-warn-background: var(--color-30) !important;
+  --p-toast-warn-border-color: var(--color-border) !important;
+  --p-toast-warn-color: var(--color-text-primary) !important;
+  --p-toast-warn-detail-color: var(--color-text-secondary) !important;
+  --p-toast-warn-shadow: var(--shadow-lg) !important;
+
+  --p-toast-error-background: var(--color-30) !important;
+  --p-toast-error-border-color: var(--color-border) !important;
+  --p-toast-error-color: var(--color-text-primary) !important;
+  --p-toast-error-detail-color: var(--color-text-secondary) !important;
+  --p-toast-error-shadow: var(--shadow-lg) !important;
+
+  --p-toast-success-background: var(--color-30) !important;
+  --p-toast-success-border-color: var(--color-border) !important;
+  --p-toast-success-color: var(--color-text-primary) !important;
+  --p-toast-success-detail-color: var(--color-text-secondary) !important;
+  --p-toast-success-shadow: var(--shadow-lg) !important;
+
+  /* toast.secondary.* / toast.contrast.* intentionally NOT set — no
+     weoc-ui equivalent, see scope note in the header comment above. */
+}
+
+/* ── Tier 2: the accent rail Tier 1's token surface cannot express ──
+   Targets PrimeNG's own real `.p-toast-message-{severity}
+   .p-toast-message-content` selectors directly (confirmed in
+   node_modules/primeng/fesm2022/primeng-toast.mjs). No !important: these
+   are new selectors, not a fight against PrimeNG's runtime-injected :root
+   rule. `var(--border-sm)` matches `.wui-toast`'s own rail thickness
+   exactly; the accent colors match each `.wui-toast.{severity}`'s own
+   `--_accent` value read directly from weoc-feedback.css. */
+.p-toast-message-success .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-success-text); }
+.p-toast-message-error .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-danger-text); }
+.p-toast-message-warn .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-warning-text); }
+.p-toast-message-info .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-info-text); }
+.p-toast-message-normal .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-10); }
