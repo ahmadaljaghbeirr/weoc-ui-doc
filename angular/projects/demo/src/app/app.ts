@@ -8,17 +8,19 @@ import { Dialog } from 'primeng/dialog';
 import { Drawer } from 'primeng/drawer';
 import { Button } from 'primeng/button';
 import { ConfirmDialog } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer, Button, ConfirmDialog],
+  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer, Button, ConfirmDialog, Toast],
   template: `
     <main style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
       <h1>weoc-ui-ng — Buttons</h1>
 
       <p-confirmdialog />
+      <p-toast />
 
       <section style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
         <wui-button
@@ -104,6 +106,18 @@ import { ConfirmationService } from 'primeng/api';
         </div>
       </section>
 
+      <section style="display: flex; gap: 0.75rem; align-items: center;">
+        <div>
+          <label>PrimeNG Toast, restyled with weoc-ui-css tokens</label><br />
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" (click)="showToast('success')">Success</button>
+            <button type="button" (click)="showToast('info')">Info</button>
+            <button type="button" (click)="showToast('warn')">Warn</button>
+            <button type="button" (click)="showToast('error')">Error</button>
+          </div>
+        </div>
+      </section>
+
       <p>Last clicked: {{ lastClicked }}</p>
       <p>Last confirm result: {{ lastConfirmResult }}</p>
     </main>
@@ -124,10 +138,17 @@ export class App {
     { label: 'Success', value: 'success' },
   ];
 
-  constructor(private confirmationService: ConfirmationService) {}
+  constructor(
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+  ) {}
 
   onClick(color: string): void {
     this.lastClicked = color;
+  }
+
+  showToast(severity: string): void {
+    this.messageService.add({ severity, summary: severity, detail: `This is a ${severity} toast, restyled with weoc-ui-css tokens.` });
   }
 
   confirmDelete(): void {
