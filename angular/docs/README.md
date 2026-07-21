@@ -24,8 +24,9 @@ follow that weighting:
 
 | Section | Page | Status |
 |---|---|---|
-| PrimeNG Bridge | Select + DatePicker | Real implementation exists (Wave 1 Task 8, demo app); page not yet written — placeholder only |
-| PrimeNG Bridge | (more components) | Not started — see `primeng-bridge/README.md` for the candidate list |
+| PrimeNG Bridge | **[GUIDE.md](primeng-bridge/GUIDE.md)** | **Done.** Consolidated reference covering all 8 bridged components (Popover, Dialog, Drawer, Button, ConfirmDialog, Toast, Tabs, Menu) — methodology, per-component token tables, gaps, quick-start checklist for a 9th component |
+| PrimeNG Bridge | Select + DatePicker | Real implementation exists (Wave 1 Task 8, demo app); still only a placeholder stub — not folded into GUIDE.md yet |
+| PrimeNG Bridge | (further components) | Candidates driven by actual consuming-app usage, not a fixed roadmap — see GUIDE.md §6 for the repeatable process |
 | Foundation | Tokens | Ported (Wave 1 Task 3); page not yet written |
 | Foundation | Grid / Layout / Utilities | Not yet ported from the WebEOC library |
 | Components | WuiButton | Built (Wave 1 Task 5); page not yet written |
