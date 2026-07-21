@@ -492,6 +492,69 @@
       if (!el || !el.classList || !el.classList.contains('weoc-progress')) return null;
       if (el._weocProgressAnimation) return el._weocProgressAnimation;
 
+      function stateLabel(state) {
+        if (state === 'completed') return 'Completed';
+        if (state === 'current') return 'In Progress';
+        if (state === 'disabled') return 'Disabled';
+        return 'Pending';
+      }
+
+      function renderSteps(data) {
+        if (!Array.isArray(data)) return;
+        var list = el.classList.contains('weoc-progress-list')
+          ? el : el.querySelector('.weoc-progress-list');
+        if (!list) {
+          list = document.createElement('ol');
+          list.className = 'weoc-progress-list';
+          el.appendChild(list);
+        }
+        list.textContent = '';
+        data.forEach(function (item, index) {
+          var state = item.status === 'in-progress' ? 'current' : item.status;
+          if (state !== 'completed' && state !== 'current' && state !== 'disabled') state = 'upcoming';
+
+          var step = document.createElement('li');
+          step.className = 'weoc-progress-step ' + state;
+          if (state === 'current') step.setAttribute('aria-current', 'step');
+          if (state === 'disabled') step.setAttribute('aria-disabled', 'true');
+
+          var track = document.createElement('div');
+          track.className = 'weoc-progress-track';
+          var indicator = document.createElement('span');
+          indicator.className = 'weoc-progress-indicator';
+          indicator.setAttribute('aria-hidden', 'true');
+          track.appendChild(indicator);
+          if (index < data.length - 1) {
+            var connector = document.createElement('span');
+            connector.className = 'weoc-progress-connector';
+            connector.setAttribute('aria-hidden', 'true');
+            track.appendChild(connector);
+          }
+
+          var content = document.createElement('div');
+          content.className = 'weoc-progress-content';
+          var eyebrow = document.createElement('span');
+          eyebrow.className = 'weoc-progress-eyebrow';
+          eyebrow.textContent = 'Step ' + (index + 1);
+          var title = document.createElement('span');
+          title.className = 'weoc-progress-title';
+          title.textContent = item.label || '';
+          var status = document.createElement('span');
+          status.className = 'weoc-progress-status';
+          status.textContent = stateLabel(state);
+          content.appendChild(eyebrow);
+          content.appendChild(title);
+          content.appendChild(status);
+
+          step.appendChild(track);
+          step.appendChild(content);
+          list.appendChild(step);
+          setIndicatorContent(step, state);
+        });
+      }
+
+      renderSteps(opts.steps);
+
       var steps = Array.from(el.querySelectorAll('.weoc-progress-step'));
       if (!steps.length) return null;
 
@@ -504,13 +567,6 @@
       var destroyed = false;
 
       el.style.setProperty('--weoc-progress-current', currentProgress + '%');
-
-      steps.forEach(function (step) {
-        var label = step.querySelector('.weoc-progress-label');
-        if (label && !label.dataset.weocProgressLabel) {
-          label.dataset.weocProgressLabel = label.textContent.replace(/,\s*(completed|current|upcoming|disabled)\s*$/i, '');
-        }
-      });
 
       function indicatorFor(step) {
         return step && step.querySelector('.weoc-progress-indicator');
@@ -528,10 +584,8 @@
       }
 
       function setAccessibleLabel(step, state) {
-        var label = step.querySelector('.weoc-progress-label');
-        if (!label) return;
-        var base = label.dataset.weocProgressLabel || label.textContent;
-        label.textContent = base + ', ' + state;
+        var status = step.querySelector('.weoc-progress-status');
+        if (status) status.textContent = stateLabel(state);
       }
 
       function stopPulse() {
