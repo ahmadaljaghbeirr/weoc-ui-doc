@@ -45,11 +45,13 @@
      --p-dialog-header-padding, --p-dialog-title-font-weight,
      --p-dialog-title-font-size, --p-dialog-footer-padding,
      --p-dialog-footer-gap, --p-dialog-header-gap.
-   Two of these (--p-dialog-border-color, --p-dialog-header-gap) have no
-   direct 1:1 WebEOC source — .wui-modal-dialog itself has no visible outer
-   border, only its header/footer have internal divider borders, and the
-   header has no explicit item-gap token distinct from its padding. They are
-   filled with reasonable neutral defaults noted inline below.
+   One of these (--p-dialog-border-color) has no direct 1:1 WebEOC source —
+   .wui-modal-dialog itself has no visible outer border, only its
+   header/footer have internal divider borders. It is filled with a
+   reasonable neutral default noted inline below. --p-dialog-header-gap DOES
+   have a direct source: .wui-modal-header sets `gap: var(--space-3)`
+   separately from its `padding: var(--space-3)` (same token, distinct
+   property) — mapped exactly below, not defaulted.
 
    NOTE on !important: PrimeNG's ThemeService injects its own generated
    `:root { --p-* : ... }` rule (plus an OS-driven
@@ -86,10 +88,11 @@
      intentionally --shadow-xl (more elevated than Popover's --shadow-md);
      content padding is intentionally --space-2, smaller than the
      header/footer padding, matching .wui-modal-body in the source WebEOC
-     CSS exactly. --p-dialog-border-color and --p-dialog-header-gap have no
-     hard 1:1 WebEOC source (see header comment above); --color-border and
-     --space-2 are used as reasonable neutral defaults consistent with
-     divider/gap usage elsewhere in this file. */
+     CSS exactly. --p-dialog-border-color has no hard 1:1 WebEOC source (see
+     header comment above) and uses --color-border as a reasonable neutral
+     default; --p-dialog-header-gap DOES have a direct source
+     (.wui-modal-header's own `gap: var(--space-3)`, distinct from its
+     `padding: var(--space-3)` — same token, different property). */
   --p-dialog-border-radius: var(--border-radius) !important;
   --p-dialog-shadow: var(--shadow-xl) !important;
   --p-dialog-background: var(--color-30) !important;
@@ -101,5 +104,5 @@
   --p-dialog-title-font-size: var(--text-md) !important;
   --p-dialog-footer-padding: var(--space-4) var(--space-5) !important;
   --p-dialog-footer-gap: var(--space-2) !important;
-  --p-dialog-header-gap: var(--space-2) !important;
+  --p-dialog-header-gap: var(--space-3) !important;
 }
