@@ -43,6 +43,16 @@
   height: 2px;
 }
 
+/* --- Orientation modifier --- */
+
+.wui-divider--vertical {
+  width: 1px;
+  height: auto;
+  align-self: stretch;
+  margin-block: 0;
+  margin-inline: var(--space-3);
+}
+
 /* --- Labelled divider --- */
 /* Renders a centered text label flanked by lines.
    Apply to a <div> or <span>, not <hr>. */

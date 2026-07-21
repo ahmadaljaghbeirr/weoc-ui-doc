@@ -41,7 +41,21 @@
   transition: transform 0.18s ease;
 }
 
+/* Rest state points toward where children will render (chevron_right glyph,
+   0deg = right). Expanded rotates to point down — a down-pointing chevron is
+   left-right symmetric, so LTR and RTL share the same expanded transform;
+   only the REST state needs RTL mirroring (matches the .wui-chevron /
+   [dir="rtl"] convention in weoc-i18n.css, applied directly here since a
+   single element can't combine two separately-sourced `transform` rules). */
 .wui-tree-node[aria-expanded="true"] > .wui-tree-node-row .wui-tree-chevron {
+  transform: rotate(90deg);
+}
+
+[dir="rtl"] .wui-tree-chevron {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .wui-tree-node[aria-expanded="true"] > .wui-tree-node-row .wui-tree-chevron {
   transform: rotate(90deg);
 }
 

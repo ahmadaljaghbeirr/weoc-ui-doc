@@ -116,6 +116,21 @@
   background: var(--color-secondary);
 }
 
+/* Top orientation — same 6 color rules above, repositioned. Combine as
+   .has-accent.top.<color> (order of .top/.<color> doesn't matter). */
+.wui-card.has-accent.top::before {
+  inset-inline-start: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  width: auto;
+  height: 4px;
+  border-start-start-radius: var(--border-radius);
+  border-start-end-radius: var(--border-radius);
+  border-end-start-radius: 0;
+}
+
 /* Side column — .has-side + color modifier */
 .wui-card.has-side {
   flex-direction: row;
@@ -319,6 +334,34 @@
 .wui-card.has-side .wui-card-body {
   padding-block: var(--_pad);
   padding-inline: var(--_pad) var(--space-11);
+}
+
+/* Fill parent height and scroll body contents — same convention as
+   .wui-panel.is-scrollable. Use whenever a card sits in a fixed-height
+   grid track (e.g. a 2-row dashboard grid): without this, content taller
+   than the track silently bleeds into the next row instead of clipping
+   or scrolling, which is worse than a visible scrollbar.
+
+   Cards that wrap their whole body in <viewlink> (a WebEOC element with no
+   default flex-grow) need that element in the chain too, or the overflow
+   just happens one level higher than wui-card-body's own overflow:auto. */
+.wui-card.is-scrollable {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.wui-card.is-scrollable > viewlink {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.wui-card.is-scrollable .wui-card-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .wui-card-footer {
@@ -542,11 +585,13 @@
   border-radius: var(--border-radius);
   flex: 1;
   background: var(--color-60);
+  border: 1px solid var(--color-border);
 }
 
 .wui-card-stats.is-inline .wui-card-stat {
   flex: unset;
   background: transparent;
+  border: none;
   padding: 0;
   border-radius: 0;
 }
@@ -567,8 +612,20 @@
   line-height: var(--leading-none);
 }
 
+/* Optional third line — deliberately NOT touched by the .success/.danger/
+   .warning/.primary/.secondary color modifiers below (those only recolor
+   -value and -label); the sub-line always stays neutral regardless of the
+   stat's status color. */
+.wui-card-stat-sub {
+  font-size: var(--text-2xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-snug);
+}
+
 .wui-card-stat.success {
   background: var(--color-success-light);
+  border-color: var(--color-success-muted);
 }
 
 .wui-card-stat.success .wui-card-stat-value,
@@ -578,6 +635,7 @@
 
 .wui-card-stat.danger {
   background: var(--color-danger-light);
+  border-color: var(--color-danger-muted);
 }
 
 .wui-card-stat.danger .wui-card-stat-value,
@@ -587,6 +645,7 @@
 
 .wui-card-stat.warning {
   background: var(--color-warning-light);
+  border-color: var(--color-warning-muted);
 }
 
 .wui-card-stat.warning .wui-card-stat-value,
@@ -596,6 +655,7 @@
 
 .wui-card-stat.primary {
   background: var(--color-10-light);
+  border-color: var(--color-10-muted);
 }
 
 .wui-card-stat.primary .wui-card-stat-value,
@@ -605,6 +665,7 @@
 
 .wui-card-stat.secondary {
   background: var(--color-secondary-light);
+  border-color: var(--color-secondary-muted);
 }
 
 .wui-card-stat.secondary .wui-card-stat-value {
@@ -827,6 +888,44 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
+}
+
+/* ─── Multi-level headers ───
+   A wui-panel MAY stack multiple .wui-panel-hdr rows directly as plain
+   sibling divs (each keeps its own padding + border-bottom) — e.g. a
+   title row followed by a breadcrumb row followed by a tab-bar row. No
+   wrapper element needed. */
+
+/* ─── Tab-bar header row (.wui-panel-hdr.tabs) ───
+   A wui-panel-hdr variant that hosts a data-wui-segment tab strip (left)
+   and optional actions (right) on ONE row, instead of the title+sub
+   layout. Reuses .wui-hdr-tab's look but skips the standalone
+   .wui-hdr-tabs box chrome (border/bg/radius) since the panel-hdr row
+   already provides the frame.
+
+     <div class="wui-panel-hdr tabs">
+       <div class="wui-panel-hdr-tabs" data-wui-segment="true" data-wui-active="active">
+         <div class="wui-hdr-tab active" data-wui-value="a">A</div>
+         <div class="wui-hdr-tab" data-wui-value="b">B</div>
+       </div>
+       <div class="wui-panel-hdr-actions"> …buttons… </div>
+     </div>
+*/
+.wui-panel-hdr.tabs {
+  padding-block: 0;
+}
+
+.wui-panel-hdr-tabs {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.wui-panel-hdr-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 /* ============================================================

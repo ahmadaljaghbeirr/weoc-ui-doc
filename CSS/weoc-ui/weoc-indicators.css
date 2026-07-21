@@ -173,6 +173,28 @@
     0 0 0 14px color-mix(in srgb, var(--color-on-accent) 12%, transparent);
 }
 
+/* ─── Pulse Modifier ─── */
+/* Border breathes muted → full color. Reuses wui-card-option-pulse
+   (weoc-card-group.css) by name rather than a second keyframe — one pulse
+   language across the library instead of two near-identical animations. */
+.wui-icon-bubble.pulse {
+  border: 1.5px solid transparent;
+  animation: wui-card-option-pulse 2.4s ease-in-out infinite;
+}
+.wui-icon-bubble.pulse.primary   { --_pulse-muted: var(--color-10-muted);        --_pulse-full: var(--color-10); }
+.wui-icon-bubble.pulse.secondary { --_pulse-muted: var(--color-secondary-muted); --_pulse-full: var(--color-secondary); }
+.wui-icon-bubble.pulse.info      { --_pulse-muted: var(--color-info-muted);      --_pulse-full: var(--color-info); }
+.wui-icon-bubble.pulse.success   { --_pulse-muted: var(--color-success-muted);   --_pulse-full: var(--color-success); }
+.wui-icon-bubble.pulse.warning   { --_pulse-muted: var(--color-warning-muted);   --_pulse-full: var(--color-warning); }
+.wui-icon-bubble.pulse.danger    { --_pulse-muted: var(--color-danger-muted);    --_pulse-full: var(--color-danger); }
+
+@media (prefers-reduced-motion: reduce) {
+  .wui-icon-bubble.pulse {
+    animation: none !important;
+    border-color: var(--_pulse-full) !important;
+  }
+}
+
 /* ============================================================
    3) LEVEL BAR (wui-lvl)
    ============================================================ */

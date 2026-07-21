@@ -100,6 +100,18 @@
   color: var(--color-danger) !important;
 }
 
+.wui-text-warning {
+  color: var(--color-warning) !important;
+}
+
+.wui-text-success {
+  color: var(--color-success) !important;
+}
+
+.wui-text-info {
+  color: var(--color-info) !important;
+}
+
 .wui-text-brand {
   color: var(--color-10) !important;
 }

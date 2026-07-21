@@ -59,7 +59,18 @@ const TomSelectFactory = (function () {
      already localized. TomSelect renders its own placeholder element, so here we
      push the current data-placeholder into every live control whenever the
      language changes. Covers every TomSelect (factory-, dynamic-filter-, or
-     hand-created) — a view needs no wui:langchange handler of its own. */
+     hand-created) — a view needs no wui:langchange handler of its own.
+
+     Every select in this codebase uses the dropdown_input plugin, which MOVES
+     control_input into the dropdown (as the search box) and creates a SEPARATE
+     `.items-placeholder` <input> in the closed control to show placeholder text
+     (set once at plugin setup — see tom-select.complete.min.js's dropdown_input
+     definition). control_input.placeholder is therefore the WRONG target once
+     that plugin is active: it silently updates the hidden dropdown search box
+     instead of the visible closed-state placeholder (TomSelect core itself only
+     touches control_input's placeholder when control_input still lives inside
+     .control — never true here). Target .items-placeholder first; fall back to
+     control_input only for the (currently nonexistent) non-dropdown_input case. */
   function relocalizeTomSelectPlaceholders() {
     document.querySelectorAll('[data-wui-i18n-attr]').forEach((el) => {
       const ts = el.tomselect;
@@ -67,11 +78,80 @@ const TomSelectFactory = (function () {
       if ((el.getAttribute('data-wui-i18n-attr') || '').indexOf('data-placeholder') === -1) return;
       const ph = el.getAttribute('data-placeholder') || ts.settings.placeholder;
       ts.settings.placeholder = ph;
-      if (typeof ts.updatePlaceholder === 'function') ts.updatePlaceholder();
+      const itemsPlaceholder = ts.control ? ts.control.querySelector('.items-placeholder') : null;
+      if (itemsPlaceholder) itemsPlaceholder.placeholder = ph;
       else if (ts.control_input) ts.control_input.placeholder = ph;
     });
   }
   try { document.documentElement.addEventListener('wui:langchange', relocalizeTomSelectPlaceholders); } catch (e) {}
+
+  /* ── Localized TomSelect chrome (no_results / create / clear-button) ──────
+     TomSelect's vendor render defaults ("No results found", "Add <strong>…",
+     the clear_button plugin's baked-once "Clear All" title) are never
+     localized anywhere in this codebase. render.no_results/option_create run
+     live at dropdown-open time, so calling WUI.i18n.t() inside them is
+     self-refreshing — no listener needed. clear_button's title IS baked once
+     into an HTML string at plugin setup, so it needs an explicit DOM patch
+     on wui:langchange. */
+  function i18nText(key, fallback) {
+    return (window.WUI && WUI.i18n) ? WUI.i18n.t(key, fallback) : fallback;
+  }
+
+  function i18nRenderOverrides() {
+    return {
+      no_results: () => '<div class="no-results">' + i18nText('NoResults', 'No results found') + '</div>',
+      option_create: (data, escape) => '<div class="create">' + i18nText('AddNew', 'Add') + ' <strong>' + escape(data.input) + '</strong>&hellip;</div>',
+    };
+  }
+
+  function relocalizeClearButtons() {
+    document.querySelectorAll('.tomselect').forEach((el) => {
+      const ts = el.tomselect;
+      if (!ts || !ts.wrapper) return;
+      const btn = ts.wrapper.querySelector('.clear-button');
+      if (btn) btn.title = i18nText('ClearSelections', 'Clear All');
+    });
+  }
+  try { document.documentElement.addEventListener('wui:langchange', relocalizeClearButtons); } catch (e) {}
+
+  /* ── Localized option labels ────────────────────────────────────────────────
+     TomSelect snapshots <option> text at construction time (or last sync()) —
+     a later WUI.i18n.apply() DOM update to a native <option>'s textContent
+     never reaches TomSelect's own rendered dropdown. This resyncs every live
+     TomSelect from its native <option> elements after WUI.i18n.apply() has
+     already re-translated them on the same wui:langchange event. Only safe
+     for selects whose native <option>s are still in the DOM post-init — NOT
+     for .tomselect-range (see webeoc-dynamic-list-filters.js, which empties
+     its native options and needs its own separate rebuild path). */
+  function relocalizeTomSelectOptions() {
+    document.querySelectorAll('select.tomselect:not(.tomselect-range)').forEach((el) => {
+      const ts = el.tomselect;
+      if (!ts) return;
+      const selected = ts.getValue();
+      ts.clearOptions();
+      Array.from(el.options).forEach((opt) => {
+        // Mirror TomSelect's own native-option parser: when allowEmptyOption is
+        // false (every select in this codebase), an empty-value <option> is
+        // deliberately excluded from the real options list — it only ever seeds
+        // the placeholder text, it is never a selectable item. addOption() has
+        // no such guard, so re-adding it here would let it become a real
+        // (empty-text) selected item below — a DIFFERENT state from "nothing
+        // selected" that hides the placeholder and shows a blank/wrong item
+        // instead. Skip it, exactly like a fresh construction would.
+        if (opt.value === '' && !ts.settings.allowEmptyOption) return;
+        ts.addOption({ value: opt.value, text: opt.text });
+      });
+      ts.refreshOptions(false);
+      // selected === '' means nothing was chosen before the toggle — clear()
+      // guarantees a true zero-items state (placeholder shows). setValue('')
+      // would call addItem(''), which — now that '' isn't a registered option
+      // above — silently no-ops, but clear() is the explicit, unambiguous path.
+      if (selected === '') ts.clear(true);
+      else ts.setValue(selected, true);
+    });
+  }
+  try { document.documentElement.addEventListener('wui:langchange', relocalizeTomSelectOptions); } catch (e) {}
+
   /** @type {Map<string, HTMLSelectElement>} */
   const elementByKey = new Map();
   /** @type {Record<string, object>} */
@@ -190,6 +270,7 @@ const TomSelectFactory = (function () {
       dropdownParent: el.dataset.dropdownParent || 'body',
       plugins,
       maxItems: isMulti ? null : 1,
+      render: i18nRenderOverrides(),
     };
 
     // data-stay-open="true": keep dropdown open after option selection so the
@@ -399,6 +480,33 @@ const TomSelectFactory = (function () {
 
   // ── Public API ────────────────────────────────────────────────────────────
 
+  // Shared constructor for callers that build their own config (e.g.
+  // webeoc-dynamic-list-filters.js's cascading/AJAX-driven filter selects,
+  // whose onChange/onClear + parent-child rebuild logic is fundamentally
+  // different from this factory's own wireDependentSelect and therefore isn't
+  // migrated onto it). This only centralizes the `new TomSelect()` call +
+  // instance registry (so TomSelectFactory.get()/destroy() reach these too) —
+  // it does NOT touch config, does NOT call ensurePlaceholderOption/
+  // clearIfNoExplicitSelection/wireDependentSelect, so it introduces no
+  // behavior change for existing callers.
+  //
+  // Idempotent by design: if el.tomselect already exists, returns it as-is
+  // instead of constructing a second instance. This is what makes it safe for
+  // a view to load both this factory (with its own lazy/scoped init() calls,
+  // e.g. an advanced-filter-drawer's `wui:open`-gated init) AND
+  // webeoc-dynamic-list-filters.js targeting the SAME selects — whichever
+  // runs first wins, the other's construct() call is a no-op. (A caller that
+  // needs a fresh instance, e.g. a cascade rebuild, destroys the old one
+  // itself before calling construct() again — same pattern as before.)
+  function construct(el, config) {
+    if (el.tomselect) return el.tomselect;
+    const key = controlKey(el);
+    const ts = new TomSelect(el, config);
+    instances[key] = ts;
+    elementByKey.set(key, el);
+    return ts;
+  }
+
   function init(scope, options) {
     options = options || {};
     const className = options.className || 'tomselect';
@@ -436,7 +544,7 @@ const TomSelectFactory = (function () {
     delete instances[key];
   }
 
-  return { init, get, destroy, refresh, enable, disable, instances, registerTemplate, stopDomWatch, mountDropdownSlots };
+  return { init, get, destroy, refresh, enable, disable, instances, registerTemplate, stopDomWatch, mountDropdownSlots, construct };
 
 })();
 

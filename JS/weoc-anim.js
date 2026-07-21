@@ -26,6 +26,7 @@
      WUIAnim.completion(el, opts)              — 100% completion flourish
      WUIAnim.counter(el, from, to, opts)       — standalone numeric ticker
      WUIAnim.bar(el, toPct, opts)              — animate a wui-progress-bar-fill
+     WUIAnim.starfield(canvasEl, opts)         — ambient particle-network background; returns { destroy() }
 
    Exposed internals (for extension):
      WUIAnim.RING_CIRC       — 326.73 (2π × r52, matches stroke-dasharray)
@@ -471,6 +472,114 @@
         ease: opts.ease || EASE.standard,
         onComplete: opts.onComplete,
       });
+    };
+
+    // ── starfield(canvasEl, opts) ─────────────────────────────────────────
+    // Ambient particle network background: drifting dots, connection lines
+    // between nearby dots, two static corner radial glows. Ported from the
+    // Group Management Home Page reference — reusable for any board that
+    // wants the same "mission control" backdrop.
+    //
+    // canvasEl: a <canvas> element sized to fill its container (caller owns
+    //           sizing/positioning via CSS — this only draws into it).
+    // opts:
+    //   count        {number}  particle count (default 55)
+    //   dotColor     {string}  "r,g,b" (default '55,138,221')
+    //   lineColor    {string}  "r,g,b" (default '37,68,100')
+    //   connectDist  {number}  px, lines drawn between dots closer than this (default 130)
+    //   cornerGlowTL {string}  "r,g,b" top-left glow color (default '200,116,24')
+    //   cornerGlowBR {string}  "r,g,b" bottom-right glow color (default '55,138,221')
+    //
+    // Returns { destroy() } — removes the ticker callback and resize
+    // listener. No-op (destroy is a harmless empty function) under
+    // prefers-reduced-motion; the canvas is simply left blank.
+    WUIAnim.starfield = function (canvasEl, opts) {
+      opts = opts || {};
+      if (reducedMotion() || !canvasEl) return { destroy: function () {} };
+
+      var ctx = canvasEl.getContext('2d');
+      var count       = opts.count != null ? opts.count : 55;
+      var dotColor    = opts.dotColor || '55,138,221';
+      var lineColor   = opts.lineColor || '37,68,100';
+      var connectDist = opts.connectDist != null ? opts.connectDist : 130;
+      var glowTL      = opts.cornerGlowTL || '200,116,24';
+      var glowBR      = opts.cornerGlowBR || '55,138,221';
+
+      function resize() {
+        canvasEl.width = window.innerWidth;
+        canvasEl.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      var particles = [];
+      for (var i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          vx: (Math.random() - 0.5) * 0.28,
+          vy: (Math.random() - 0.5) * 0.28,
+          r: Math.random() * 1.2 + 0.4,
+          alpha: Math.random() * 0.35 + 0.08,
+          pulse: Math.random() * Math.PI * 2,
+        });
+      }
+
+      function tick() {
+        var W = canvasEl.width, H = canvasEl.height;
+        ctx.clearRect(0, 0, W, H);
+        var now = performance.now() * 0.001;
+
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+          var pulse = 0.5 + 0.5 * Math.sin(now * 1.1 + p.pulse);
+          var a = p.alpha * (0.6 + 0.4 * pulse);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r + pulse * 0.5, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(' + dotColor + ',' + a + ')';
+          ctx.fill();
+        }
+
+        for (var a2 = 0; a2 < particles.length; a2++) {
+          for (var b2 = a2 + 1; b2 < particles.length; b2++) {
+            var dx = particles[a2].x - particles[b2].x;
+            var dy = particles[a2].y - particles[b2].y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < connectDist) {
+              ctx.strokeStyle = 'rgba(' + lineColor + ',' + (0.28 * (1 - dist / connectDist)) + ')';
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(particles[a2].x, particles[a2].y);
+              ctx.lineTo(particles[b2].x, particles[b2].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        var glTL = ctx.createRadialGradient(0, 0, 0, 0, 0, 340);
+        glTL.addColorStop(0, 'rgba(' + glowTL + ',0.045)');
+        glTL.addColorStop(1, 'rgba(' + glowTL + ',0)');
+        ctx.fillStyle = glTL;
+        ctx.fillRect(0, 0, 340, 340);
+
+        var glBR = ctx.createRadialGradient(W, H, 0, W, H, 380);
+        glBR.addColorStop(0, 'rgba(' + glowBR + ',0.04)');
+        glBR.addColorStop(1, 'rgba(' + glowBR + ',0)');
+        ctx.fillStyle = glBR;
+        ctx.fillRect(W - 380, H - 380, 380, 380);
+      }
+
+      gsap.ticker.add(tick);
+
+      return {
+        destroy: function () {
+          gsap.ticker.remove(tick);
+          window.removeEventListener('resize', resize);
+        },
+      };
     };
 
     // ── Morph (lazy MorphSVGPlugin) ────────────────────────────────────────

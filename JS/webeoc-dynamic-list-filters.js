@@ -58,6 +58,39 @@
   var _debounceTimers = {};
 
   // ---------------------------------------------------------------------------
+  // Localized TomSelect chrome (no_results / create) — duplicated from
+  // tom-select-factory.js rather than depended on, because some views load
+  // this file WITHOUT tom-select-factory.js (e.g. Human Resources display).
+  // Render functions run live at dropdown-open time, so this self-refreshes
+  // on language toggle with no extra listener needed.
+  // ---------------------------------------------------------------------------
+
+  function i18nText(key, fallback) {
+    return (window.WUI && window.WUI.i18n) ? window.WUI.i18n.t(key, fallback) : fallback;
+  }
+
+  function i18nRenderOverrides() {
+    return {
+      no_results: function () { return '<div class="no-results">' + i18nText('NoResults', 'No results found') + '</div>'; },
+      option_create: function (data, escape) { return '<div class="create">' + i18nText('AddNew', 'Add') + ' <strong>' + escape(data.input) + '</strong>&hellip;</div>'; },
+    };
+  }
+
+  // Construct via TomSelectFactory when it's loaded on this view (shares its
+  // instance registry + is idempotent — safe alongside the factory's own
+  // lazy/scoped init() calls targeting the same elements, e.g. an
+  // advanced-filter-drawer's wui:open-gated init). Falls back to a raw
+  // `new TomSelect()` on views that don't load tom-select-factory.js at all.
+  // Config (onChange/onClear/cascade wiring) stays entirely with the caller —
+  // this only centralizes the constructor call + registration.
+  function constructTomSelect(el, config) {
+    if (typeof TomSelectFactory !== 'undefined' && TomSelectFactory && typeof TomSelectFactory.construct === 'function') {
+      return TomSelectFactory.construct(el, config);
+    }
+    return new TomSelect(el, config);
+  }
+
+  // ---------------------------------------------------------------------------
   // Utilities
   // ---------------------------------------------------------------------------
 
@@ -150,6 +183,7 @@
       allowEmptyOption: false,
       placeholder: $select.data("placeholder") || "Select...",
       plugins: ["dropdown_input", "clear_button"],
+      render: i18nRenderOverrides(),
       onChange: function () {
         applyFilterDebounced($select);
         rebuildChildren($select);
@@ -165,7 +199,7 @@
       config.plugins.push("remove_button");
     }
 
-    var ts = new TomSelect(el, config);
+    var ts = constructTomSelect(el, config);
     mountDropdownSlots(ts, el);
   }
 
@@ -179,17 +213,27 @@
     var el = $select[0];
     if (el.tomselect) el.tomselect.destroy();
 
+    // Snapshot {value, i18n key} pairs BEFORE emptying — the native <option>s
+    // are about to be destroyed (below), so this is the only chance to read
+    // data-i18n-key. Stored on the element for the wui:langchange rebuild
+    // listener (see bottom of file), since the native DOM is gone afterward.
     var opts = [];
+    var i18nPairs = [];
     $select.find('option').each(function () {
-      opts.push({ value: this.value, text: this.text || this.textContent || '' });
+      var key = this.getAttribute('data-i18n-key');
+      var text = this.text || this.textContent || '';
+      opts.push({ value: this.value, text: key ? i18nText(key, text) : text });
+      if (key) i18nPairs.push({ value: this.value, key: key });
     });
     $select.empty();
+    if (i18nPairs.length) $select.data('i18n-options', i18nPairs);
 
-    new TomSelect(el, {
+    constructTomSelect(el, {
       options: opts,
       allowEmptyOption: true,
       placeholder: $select.data('placeholder') || 'Select...',
       plugins: ['clear_button'],
+      render: i18nRenderOverrides(),
       onChange: function () { applyFilterDebounced($select); },
       onClear:  function () { applyFilterDebounced($select); },
     });
@@ -596,6 +640,28 @@
     });
   } catch (e) {}
 
+  // Re-localize .tomselect-range bucket options on every language toggle.
+  // initRangeSelect() destroys the native <option>s (see above), so this reads
+  // only from the {value, key} pairs it stashed via $select.data('i18n-options')
+  // — the native DOM can't be used as a source anymore.
+  try {
+    document.documentElement.addEventListener('wui:langchange', function () {
+      $('select.tomselect-range').each(function () {
+        var $select = $(this);
+        var pairs = $select.data('i18n-options');
+        var ts = this.tomselect;
+        if (!ts || !pairs || !pairs.length) return;
+        var selected = ts.getValue();
+        ts.clearOptions();
+        pairs.forEach(function (p) {
+          ts.addOption({ value: p.value, text: i18nText(p.key, p.value) });
+        });
+        ts.refreshOptions(false);
+        ts.setValue(selected, true);
+      });
+    });
+  } catch (e) {}
+
   window.initDynamicSearchBar = function (placeholder, placeholderKey) {
     $('#search-bar').show();
     var ph = placeholder || 'Search...';
@@ -634,10 +700,11 @@
   window.initDynamicSelects = function () {
     $('.tomselect:not([data-list]):not([data-sort]):not(.tomselect-range)').each(function () {
       if (this.tomselect) return;
-      var ts = new TomSelect(this, {
+      var ts = constructTomSelect(this, {
         allowEmptyOption: false,
         placeholder: this.dataset.placeholder || 'Select...',
         plugins: ['dropdown_input'],
+        render: i18nRenderOverrides(),
       });
       mountDropdownSlots(ts, this);
     });
@@ -667,12 +734,13 @@
       if (!el.tomselect) {
         // No dropdown_input: the field list is short + static, and the dropdown
         // header (direction cards) is the primary control here.
-        new TomSelect(el, {
+        constructTomSelect(el, {
           allowEmptyOption: false,
           placeholder: $select.data('placeholder') || 'Sort by...',
           plugins: ['clear_button'],
           maxItems: 1,
           closeAfterSelect: el.dataset.stayOpen !== 'true',
+          render: i18nRenderOverrides(),
           onChange: function () { applySort($select); },
           onClear: function () { applyDefaultSort(el); },
         });
@@ -707,9 +775,14 @@
       return;
     }
 
+    function currentFpLocale() {
+      return (window.WUI && WUI.i18n && WUI.i18n.lang === 'ar') ? 'ar' : 'default';
+    }
+
     flatpickr('.flat-range-end', {
       enableTime: true,
       dateFormat: 'Y-m-d H:i:S',
+      locale: currentFpLocale(),
       onOpen: function (_d, _s, instance) {
         var start = getRangePartner(instance.element, '.flat-range-start');
         if (start) instance.set('minDate', start.selectedDates[0] || null);
@@ -729,6 +802,7 @@
     flatpickr('.flat-range-start', {
       enableTime: true,
       dateFormat: 'Y-m-d H:i:S',
+      locale: currentFpLocale(),
       onOpen: function (_d, _s, instance) {
         var end = getRangePartner(instance.element, '.flat-range-end');
         if (end) instance.set('maxDate', end.selectedDates[0] || null);
@@ -748,6 +822,16 @@
         syncDateRangeToWebEOC();
       },
     });
+
+    try {
+      document.documentElement.addEventListener('wui:langchange', function () {
+        var loc = currentFpLocale();
+        var startEl = $('.flat-range-start')[0];
+        var endEl = $('.flat-range-end')[0];
+        if (startEl && startEl._flatpickr) startEl._flatpickr.set('locale', loc);
+        if (endEl && endEl._flatpickr) endEl._flatpickr.set('locale', loc);
+      });
+    } catch (e) {}
   };
 
   /**

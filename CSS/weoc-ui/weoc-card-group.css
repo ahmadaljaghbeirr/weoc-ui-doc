@@ -23,6 +23,15 @@
   gap: var(--space-3);
 }
 
+/* Fixed column-count modifiers — for compact icon/status grids (e.g. a
+   domain-status board) where auto-fit's minmax(160px,1fr) would only ever
+   fit 1-2 columns per row inside a card-width container. Loading order
+   inside this file doesn't matter since both live in the same selector's
+   declaration block, not a separate utility fighting a later import. */
+.wui-card-group.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.wui-card-group.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.wui-card-group.cols-8 { grid-template-columns: repeat(8, 1fr); }
+
 /* ── Option wrapper ─────────────────────────────────────────── */
 .wui-card-option {
   position: relative;
@@ -44,7 +53,7 @@
   gap: var(--space-2);
   padding: var(--space-2);
   background: var(--color-60);
-  border: 2px solid var(--color-border);
+  border: var(--border-2xs) solid var(--color-border);
   border-radius: var(--border-radius);
   text-align: center;
   transition: border-color 0.2s ease, background 0.2s ease;
@@ -124,7 +133,38 @@
      1. hover          (input mode only — blocked by pointer-events in display mode)
      2. :checked       (input mode — radio checked state)
      3. .is-active     (display mode — set in HTML on the selected card)
+
+   .pulse (combine with .is-active) is available on every color, not just
+   danger — the border rests at that color's -muted tint and breathes up to
+   a vibrant -glow color with a soft neon-style box-shadow, on a slow cycle,
+   instead of the static full-color border hover/checked/is-active hold on
+   their own. box-shadow spread stays 0 throughout — only blur softness
+   appears/disappears, so nothing about the element's size or footprint
+   changes, just its color and luminosity (deliberately not the expanding
+   hard-edged "ring" technique — spread > 0 — that weoc-indicators.css uses
+   for .wui-status-dot.live). Opt-in via markup, not automatic on every
+   .is-active: add .pulse only to the cells that should draw the eye (e.g.
+   only .danger ones on a given board), matching how the original
+   dashboard-ref.html reference used it — reserved for crit, not fired on
+   every status.
    ══════════════════════════════════════════════════════════════ */
+
+/* Color-only pulse — border breathes from the muted tint up to the full
+   solid color, nothing else. Uses --_pulse-full (fully opaque), not
+   --_pulse-glow (a semi-transparent rgba token) — a translucent border can
+   read as a soft bleeding edge rather than a crisp line, especially at
+   rounded corners. No box-shadow either: at this element's small size /
+   corner radius, the shadow's blurred bounding box read as a squared-off
+   halo that didn't track the card's rounded corners — dropped rather than
+   fought. */
+@keyframes wui-card-option-pulse {
+  0%, 100% {
+    border-color: var(--_pulse-muted);
+  }
+  50% {
+    border-color: var(--_pulse-full);
+  }
+}
 
 /* primary ─────────────────────────────────────────────────── */
 .wui-card-group:not(.is-display) .wui-card-option.primary:hover .wui-card-content,
@@ -244,6 +284,71 @@
 .wui-card-option.danger.is-active .wui-card-content .material-symbols-outlined,
 .wui-card-option.danger.is-active .wui-card-content .wui-card-label {
   color: var(--color-danger-text);
+}
+
+/* pulse ────────────────────────────────────────────────────── */
+/* Opt-in: add .pulse alongside .is-active + a color class to make that
+   specific cell breathe from -muted to full color instead of holding a
+   static border. Higher specificity (one more class) than the plain
+   .is-active rules above, so it wins wherever both are present. */
+.wui-card-option.primary.pulse.is-active .wui-card-content {
+  --_pulse-muted: var(--color-10-muted);
+  --_pulse-full:  var(--color-10);
+  --_pulse-glow:  var(--color-10-glow);
+  border-color: var(--_pulse-muted);
+  animation: wui-card-option-pulse 2.4s ease-in-out infinite;
+}
+
+.wui-card-option.secondary.pulse.is-active .wui-card-content {
+  --_pulse-muted: var(--color-secondary-muted);
+  --_pulse-full:  var(--color-secondary);
+  --_pulse-glow:  var(--color-secondary-glow);
+  border-color: var(--_pulse-muted);
+  animation: wui-card-option-pulse 2.4s ease-in-out infinite;
+}
+
+.wui-card-option.info.pulse.is-active .wui-card-content {
+  --_pulse-muted: var(--color-info-muted);
+  --_pulse-full:  var(--color-info);
+  --_pulse-glow:  var(--color-info-glow);
+  border-color: var(--_pulse-muted);
+  animation: wui-card-option-pulse 2.4s ease-in-out infinite;
+}
+
+.wui-card-option.success.pulse.is-active .wui-card-content {
+  --_pulse-muted: var(--color-success-muted);
+  --_pulse-full:  var(--color-success);
+  --_pulse-glow:  var(--color-success-glow);
+  border-color: var(--_pulse-muted);
+  animation: wui-card-option-pulse 2.4s ease-in-out infinite;
+}
+
+.wui-card-option.warning.pulse.is-active .wui-card-content {
+  --_pulse-muted: var(--color-warning-muted);
+  --_pulse-full:  var(--color-warning);
+  --_pulse-glow:  var(--color-warning-glow);
+  border-color: var(--_pulse-muted);
+  animation: wui-card-option-pulse 2.4s ease-in-out infinite;
+}
+
+.wui-card-option.danger.pulse.is-active .wui-card-content {
+  --_pulse-muted: var(--color-danger-muted);
+  --_pulse-full:  var(--color-danger);
+  --_pulse-glow:  var(--color-danger-glow);
+  border-color: var(--_pulse-muted);
+  animation: wui-card-option-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* !important: the per-color .pulse.is-active rules above are 4 classes
+     deep (color + pulse + is-active + wui-card-option) and would otherwise
+     out-specificity a plain 3-class override here. --_pulse-full is
+     already set by whichever color-specific rule matched, so this reads
+     back the right color without repeating it per variant. */
+  .wui-card-option.pulse.is-active .wui-card-content {
+    animation: none !important;
+    border-color: var(--_pulse-full) !important;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
