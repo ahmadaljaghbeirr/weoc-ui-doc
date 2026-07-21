@@ -886,3 +886,156 @@
   /* tabs.nav.button.* and tabs.tabpanel.focus.ring.* intentionally NOT
      set — no weoc-ui equivalent, see header notes above. */
 }
+
+/* =============================================
+   Menu (primeng/menu) — the Dropdown equivalent. weoc-ui has no separate
+   "Select-style dropdown menu" component distinct from a popover-anchored
+   action list, so PrimeNG's `Menu` (selector `p-menu`, confirmed by reading
+   node_modules/primeng/fesm2022/primeng-menu.mjs directly — inputs `model`
+   and `popup` and method `toggle(event)` all confirmed present there, same
+   toggle-via-template-ref pattern already used for Popover above) is mapped
+   onto weoc-ui's real `.wui-dropdown` / `.wui-dropdown-item` /
+   `.wui-dropdown-item-icon` component (CSS/weoc-ui/weoc-overlays.css,
+   section 2, read in full to confirm every value below).
+
+   Real global tokens confirmed by grepping every dt('menu.*') call in
+   node_modules/@primeuix/styles/dist/menu/index.mjs, and their generated
+   CSS custom-property names confirmed independently by reading @primeuix/
+   styled's own dt()/getVariableName implementation
+   (node_modules/@primeuix/styled/dist/index.mjs): it generically lowercases
+   and dash-joins ANY dotted token path and prefixes `--p-`, so e.g.
+   `menu.item.icon.size` -> `--p-menu-item-icon-size` regardless of whether
+   that exact path is pre-registered in @primeuix/themes' token catalog
+   (some of the item/label/submenu paths used below are NOT listed in
+   node_modules/@primeuix/themes/tokens/index.mjs, which only catalogues a
+   subset — but the dt() calls literally appear in the shipped menu CSS, and
+   the generic conversion function confirms the resulting variable name is
+   still exactly what dt() would emit).
+
+   Direct 1:1 mappings, hard-sourced from weoc-overlays.css's `.wui-dropdown`
+   rule:
+     menu.background        -> `.wui-dropdown { background: var(--color-30) }`
+     menu.border.color      -> `.wui-dropdown { border: 1px solid var(--color-border) }`
+     menu.border.radius     -> `.wui-dropdown { border-radius: var(--border-radius) }`
+     menu.shadow            -> `.wui-dropdown { box-shadow: var(--shadow-md) }`
+                                (same --shadow-md elevation as Popover above —
+                                confirmed intentional: weoc-ui's dropdown and
+                                popover share one card-elevation level, unlike
+                                Dialog's --shadow-xl / Drawer's --shadow-lg)
+     menu.list.padding      -> `.wui-dropdown { padding: var(--space-1) 0 }`
+     menu.item.padding      -> `.wui-dropdown-item { padding: var(--space-2) var(--space-4) }`
+     menu.item.gap          -> `.wui-dropdown-item { gap: var(--space-2) }`
+                                (gap between the item's own icon and label)
+     menu.item.label.font.size -> `.wui-dropdown-item { font-size: var(--text-sm) }`
+     menu.item.icon.size     -> `.wui-dropdown-item-icon { font-size: var(--text-md) }`
+
+   *** menu.item.label.font.weight -> inferred default, same pattern as
+   ConfirmDialog's message-font-weight above *** `.wui-dropdown-item` sets no
+   `font-weight` of its own (confirmed by re-reading the rule in full), and
+   neither does `body` in CSS/weoc-ui/weoc-reset.css — no font-weight reset
+   exists anywhere in the cascade reaching it. The browser's normal-weight
+   default is what actually renders. `--font-regular` (400) is confirmed
+   present in agency-theme.css and matches that rendered weight — inferred
+   from the absence of any overriding rule, not copied from an explicit
+   source.
+     menu.item.color         -> `.wui-dropdown-item { color: var(--color-text-primary) }`
+     menu.item.icon.color    -> `.wui-dropdown-item-icon { color: var(--color-text-primary) }`
+     menu.item.focus.background -> `.wui-dropdown-item:hover { background: var(--color-10-light) }`
+     menu.item.focus.color      -> `.wui-dropdown-item:hover { color: var(--color-10) }`
+     menu.item.icon.focus.color -> `.wui-dropdown-item:hover .wui-dropdown-item-icon { color: var(--color-10) }`
+       (weoc-ui's dropdown item has no separate keyboard-focus rule, only
+       `:hover` — but this is not an extrapolation: PrimeNG's own menu CSS
+       applies `menu.item.focus.*` to BOTH `.p-menu-item.p-focus` (keyboard)
+       AND the plain `:hover` selector, confirmed by reading the
+       `dist/menu/index.mjs` style string directly — so weoc-ui's single
+       hover rule is already the correct, complete 1:1 source for this
+       token, not a partial one.)
+     menu.transition.duration -> `.wui-dropdown-item { transition: background 0.12s }`
+       (literal 0.12s — distinct from Button/Tabs' 0.15s transition,
+       confirmed by re-reading this rule rather than assumed identical)
+     menu.color -> not set by `.wui-dropdown` itself (the container has no
+       own `color` rule), but every item already carries its own explicit
+       `color`, so this is set to the same `--color-text-primary` value for
+       consistency/inheritance safety (e.g. a custom item template with no
+       color of its own) rather than left at Aura's default.
+
+   *** menu.list.gap -> 0, hard-sourced absence, not a filler default ***
+   `.wui-dropdown-item` rules stack with only their own padding — there is no
+   separate inter-item gap property anywhere in the dropdown rule set
+   (confirmed by reading the full section). Aura's own default is a nonzero
+   gap; weoc-ui's real rendered spacing between adjacent items is zero, so
+   this is set to literal `0` to match actual behavior, not omitted.
+
+   *** menu.item.border.radius -> 0, soft default ***
+   `.wui-dropdown-item` has no `border-radius` of its own (confirmed absent
+   from the rule) — items are full-width rows with only their host
+   `.wui-dropdown`'s own radius (already handled by menu.border.radius plus
+   its `overflow` clipping the corners). There is no per-item radius to
+   source, so this is soft-defaulted to `0` rather than left at Aura's
+   default reasoning.
+
+   *** menu.separator.border.color -> soft default, no separator exists ***
+   weoc-ui's dropdown has NO separator/divider element at all (grepped,
+   confirmed absent from weoc-overlays.css section 2 in full). There is
+   nothing to source a divider color from. Soft-defaulted to
+   `var(--color-border)` (the same neutral divider token every other bridged
+   overlay in this file already reuses for its own internal dividers) rather
+   than left at Aura's default, since a visible separator IS added to this
+   demo's PrimeNG menu model (`{ separator: true }`) and needs to look
+   at-home even without a literal weoc-ui rule to copy.
+
+   *** menu.submenu.* group -> entirely unset, no weoc-ui equivalent ***
+   weoc-ui's dropdown has NO submenu/nested-menu concept at all (grepped,
+   confirmed absent). The task brief refers to this group informally as
+   "submenu.*", but the real generated CSS variables are namespaced under
+   the Menu component itself (`--p-menu-submenu-*`, e.g.
+   `--p-menu-submenu-icon-color`, `--p-menu-submenu-label-font-size`) — NOT
+   a standalone `--p-submenu-*` prefix. All eight of them
+   (icon.color/.focus.color/.icon.size/.label.background/.label.color/
+   .label.font.size/.label.font.weight/.label.padding) are left unset, same
+   "no weoc-ui equivalent" pattern already used for Button's help/contrast
+   and Tabs' nav.button.* / tabpanel.focus.ring.* — not an oversight.
+
+   All weoc-ui-css tokens referenced below (--color-30, --color-border,
+   --border-radius, --shadow-md, --space-1, --space-2, --space-4, --text-sm,
+   --text-md, --color-text-primary, --color-10-light, --color-10) were
+   confirmed present in angular/packages/weoc-ui-css/tokens/agency-theme.css
+   before use.
+
+   Same !important justification as every block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  --p-menu-background: var(--color-30) !important;
+  --p-menu-color: var(--color-text-primary) !important;
+  --p-menu-border-color: var(--color-border) !important;
+  --p-menu-border-radius: var(--border-radius) !important;
+  --p-menu-shadow: var(--shadow-md) !important;
+  --p-menu-transition-duration: 0.12s !important;
+
+  --p-menu-list-padding: var(--space-1) 0 !important;
+  /* Hard-sourced absence, not a filler default — see header note. */
+  --p-menu-list-gap: 0 !important;
+
+  --p-menu-item-padding: var(--space-2) var(--space-4) !important;
+  --p-menu-item-gap: var(--space-2) !important;
+  --p-menu-item-color: var(--color-text-primary) !important;
+  --p-menu-item-icon-color: var(--color-text-primary) !important;
+  --p-menu-item-icon-size: var(--text-md) !important;
+  --p-menu-item-label-font-size: var(--text-sm) !important;
+  /* Inferred default, no font-weight rule anywhere in the cascade — see
+     header note. */
+  --p-menu-item-label-font-weight: var(--font-regular) !important;
+  --p-menu-item-focus-background: var(--color-10-light) !important;
+  --p-menu-item-focus-color: var(--color-10) !important;
+  --p-menu-item-icon-focus-color: var(--color-10) !important;
+  /* Soft default, no per-item radius exists in the source — see header note. */
+  --p-menu-item-border-radius: 0 !important;
+
+  /* Soft default, no separator element exists in weoc-ui's dropdown to
+     source from — see header note. */
+  --p-menu-separator-border-color: var(--color-border) !important;
+
+  /* menu.submenu.* (real vars --p-menu-submenu-*) intentionally NOT set —
+     no weoc-ui equivalent, see header note above. */
+}
