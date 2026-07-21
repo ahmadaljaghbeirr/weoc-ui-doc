@@ -152,3 +152,289 @@
   --p-drawer-title-font-weight: var(--font-semibold) !important;
   --p-drawer-title-font-size: var(--text-md) !important;
 }
+
+/* =============================================
+   Button (primeng/button) — the largest token surface bridged so far.
+   Real global tokens confirmed by grepping every dt('button.*') call in
+   node_modules/@primeuix/styles/dist/button/index.mjs (not re-derived here,
+   used as given), cross-checked against the actual Aura preset defaults in
+   node_modules/@primeuix/themes/dist/aura/button/index.mjs to see which
+   per-severity tokens Aura itself ships (all six severities: primary,
+   secondary, success, info, warn, danger — each with root/outlined/text
+   variants), and mapped against the real, already-ported weoc-ui-css rules
+   in angular/packages/weoc-ui-css/components/buttons.css:
+     .wui-btn (base), .wui-btn:focus-visible, .wui-btn-sm, .wui-btn-lg
+       -> shared button.* tokens
+     .wui-btn.{color}                 (solid)   -> button.{severity}.*
+     .wui-btn.outline.{color}         (outline) -> button.outlined.{severity}.*
+     .wui-btn.ghost.{color}           (ghost)   -> button.text.{severity}.*
+       (PrimeNG's Text style = no border, no fill until hover/active — the
+       closest conceptual match to weoc-ui's "ghost" modifier, not an exact
+       naming match, hence the explicit mapping call-out.)
+
+   *** warn <-> warning naming mismatch ***
+   PrimeNG spells its sixth severity `warn` (button.warn.*, .p-button-warn).
+   weoc-ui-css spells the same semantic color `warning` (.wui-btn.warning,
+   --color-warning*). Every --p-button-warn-* custom property below is
+   intentionally filled from weoc-ui's `warning` tokens (var(--color-warning),
+   var(--color-warning-text), etc.) — this is a deliberate name translation,
+   not a naming coincidence and not a skipped/forgotten severity.
+
+   *** Explicitly OUT of scope (no weoc-ui-css equivalent, do not add) ***
+     - button.help.*                  (Aura-only severity, no weoc-ui color)
+     - button.contrast.*              (Aura-only severity, no weoc-ui color)
+     - button.outlined.plain.*        (neutral outlined variant, no weoc-ui color)
+     - button.text.plain.*            (neutral text variant, no weoc-ui color)
+     - button.link.*                  (underline-link style, no weoc-ui equivalent)
+     - button.badge.size              (PrimeNG-only sub-feature, no wui-btn badge concept)
+   Per the task brief, these are real PrimeNG tokens being deliberately left
+   unbridged, not an oversight.
+
+   *** Two structural mismatches, resolved and documented once here rather
+   than repeated on every severity below ***
+   1) hover/active color reuse: .wui-btn's solid severities (primary,
+      success, warning, danger, info — NOT secondary) implement their hover
+      state purely as `filter: brightness(N)` applied to the whole element,
+      not as a distinct swapped-in color. A PrimeNG dt() token can only hold
+      a flat color value, not a filter function, so button.{severity}.hover.*
+      below reuses the exact same background/border/color var as the resting
+      state for those five severities (secondary is the one exception — see
+      below). This trades away wui-btn's live brightness lift but keeps the
+      hover state color-true to the same var — no invented/brightened hex is
+      introduced, consistent with "use var() references, not hardcoded
+      colors." Likewise, none of the six solid severities defines a distinct
+      :active rule in buttons.css (only secondary's :hover changes actual
+      color/background) — so button.{severity}.active.* below reuses each
+      severity's hover.* value (which for five of the six is itself just the
+      resting value; secondary is the only case where hover.* is a genuinely
+      different color, and active.* reuses that same hover color).
+   2) focus.ring.color: .wui-btn:focus-visible always outlines in
+      var(--color-10), regardless of the button's own color — there is no
+      literal per-severity focus source on plain .wui-btn. However,
+      buttons.css DOES establish a per-severity focus-outline convention on
+      the neon-outline variant, but only for danger/success/warning/info
+      (e.g. `.wui-btn.neon-outline.danger:focus-visible { outline-color:
+      var(--color-danger); }`) — primary and secondary have no neon-outline
+      override and fall through to the shared --color-10 default there too.
+      button.{severity}.focus.ring.color below extends that per-color
+      convention to all six severities (each severity's own color var)
+      rather than hard-defaulting every severity to --color-10; for
+      primary/secondary specifically this is an extrapolation beyond a
+      literal source, not a direct 1:1 match, though it lines up with Aura's
+      own real per-severity focus-ring defaults (confirmed in
+      aura/button/index.mjs — e.g. secondary's is a distinct surface color,
+      not primary's).
+      button.{severity}.focus.ring.shadow is set to `none` for every
+      severity — this is not a gap-filler default, it is an exact match: the
+      real Aura preset itself sets focusRing.shadow: "none" for all six
+      severities (confirmed in aura/button/index.mjs), and wui-btn's own
+      focus-visible rule is outline-only with no box-shadow either, so the
+      two sources agree exactly.
+
+   Outlined tokens also have one sub-mismatch: PrimeNG's `outlined.*` group
+   has no hover.border.color / active.* border/color tokens (only color,
+   border.color, hover.background, active.background exist per the real dt()
+   list) — so the border-color intensification .wui-btn.outline.{color} does
+   on :hover (muted -> full color) is not representable here; only the
+   background-fill half of that hover effect is bridged. active.background
+   reuses hover.background (buttons.css defines no distinct outline :active
+   rule).
+
+   Same !important justification as every block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  /* ── Shared (not per-severity) — sourced from .wui-btn, :focus-visible,
+     .wui-btn-sm, .wui-btn-lg ── */
+  --p-button-border-radius: var(--border-radius) !important;
+  --p-button-padding-x: var(--space-3) !important;
+  --p-button-padding-y: var(--space-1) !important;
+  --p-button-font-size: var(--text-base) !important;
+  --p-button-label-font-weight: var(--font-regular) !important;
+  --p-button-gap: var(--space-xs) !important;
+  /* No rem-based weoc-ui spacing token lands exactly on 2.375rem; this is
+     the literal, hard-sourced width/height of .wui-btn.icon-only itself
+     (not a soft default — it is copied verbatim from the real rule). */
+  --p-button-icon-only-width: 2.375rem !important;
+  /* Literal, hard-sourced from .wui-btn's own `transition: ... 0.15s ease`;
+     weoc-ui-css has no dedicated --duration-* token to reference instead. */
+  --p-button-transition-duration: 0.15s !important;
+  --p-button-focus-ring-width: 2px !important;
+  --p-button-focus-ring-style: solid !important;
+  --p-button-focus-ring-offset: 2px !important;
+  --p-button-sm-font-size: var(--text-sm) !important;
+  --p-button-sm-padding-x: var(--space-2) !important;
+  --p-button-sm-padding-y: var(--space-1) !important;
+  --p-button-sm-icon-only-width: 1.9375rem !important; /* literal, .wui-btn-sm.icon-only */
+  --p-button-lg-font-size: var(--text-lg) !important;
+  --p-button-lg-padding-x: var(--space-4) !important;
+  --p-button-lg-padding-y: var(--space-2) !important;
+  --p-button-lg-icon-only-width: 3rem !important; /* literal, .wui-btn-lg.icon-only */
+  /* "Rounded" = a fully pill-shaped button. wui-btn has no rounded modifier
+     of its own, but weoc-ui-css already has exactly this concept as
+     --radius-pill (used by .wui-fab-extended) — reused here as the natural
+     equivalent rather than a made-up value. */
+  --p-button-rounded-border-radius: var(--radius-pill) !important;
+  /* "Raised" = an elevated drop shadow with no color/border change. wui-btn
+     has no raised modifier; reusing --shadow-md, the same elevation token
+     already established for Popover earlier in this file, as a reasonable
+     soft default. */
+  --p-button-raised-shadow: var(--shadow-md) !important;
+
+  /* ── Solid (.p-button default look) — sourced from .wui-btn.{color} ── */
+
+  /* primary: hover is filter:brightness(1.05) only (no color swap in the
+     source) -> hover/active reuse the resting values, see mismatch #1 above */
+  --p-button-primary-background: var(--color-10) !important;
+  --p-button-primary-border-color: var(--color-10) !important;
+  --p-button-primary-color: var(--color-on-accent) !important;
+  --p-button-primary-hover-background: var(--color-10) !important;
+  --p-button-primary-hover-border-color: var(--color-10) !important;
+  --p-button-primary-hover-color: var(--color-on-accent) !important;
+  --p-button-primary-active-background: var(--color-10) !important;
+  --p-button-primary-active-border-color: var(--color-10) !important;
+  --p-button-primary-active-color: var(--color-on-accent) !important;
+  --p-button-primary-focus-ring-color: var(--color-10) !important;
+  --p-button-primary-focus-ring-shadow: none !important;
+
+  /* secondary: the ONE solid severity with a real, distinct :hover rule
+     (background + color actually change, not just a filter) */
+  --p-button-secondary-background: var(--color-60) !important;
+  --p-button-secondary-border-color: var(--color-border) !important;
+  --p-button-secondary-color: var(--color-text-ui) !important;
+  --p-button-secondary-hover-background: var(--color-border) !important;
+  --p-button-secondary-hover-border-color: var(--color-border) !important;
+  --p-button-secondary-hover-color: var(--color-text-primary) !important;
+  --p-button-secondary-active-background: var(--color-border) !important;
+  --p-button-secondary-active-border-color: var(--color-border) !important;
+  --p-button-secondary-active-color: var(--color-text-primary) !important;
+  --p-button-secondary-focus-ring-color: var(--color-secondary) !important;
+  --p-button-secondary-focus-ring-shadow: none !important;
+
+  /* success: hover is filter:brightness(1.05) only -> reuse resting values */
+  --p-button-success-background: var(--color-success) !important;
+  --p-button-success-border-color: var(--color-success) !important;
+  --p-button-success-color: var(--color-on-accent) !important;
+  --p-button-success-hover-background: var(--color-success) !important;
+  --p-button-success-hover-border-color: var(--color-success) !important;
+  --p-button-success-hover-color: var(--color-on-accent) !important;
+  --p-button-success-active-background: var(--color-success) !important;
+  --p-button-success-active-border-color: var(--color-success) !important;
+  --p-button-success-active-color: var(--color-on-accent) !important;
+  --p-button-success-focus-ring-color: var(--color-success) !important;
+  --p-button-success-focus-ring-shadow: none !important;
+
+  /* info: hover is filter:brightness(1.05) only -> reuse resting values */
+  --p-button-info-background: var(--color-info) !important;
+  --p-button-info-border-color: var(--color-info) !important;
+  --p-button-info-color: var(--color-on-accent) !important;
+  --p-button-info-hover-background: var(--color-info) !important;
+  --p-button-info-hover-border-color: var(--color-info) !important;
+  --p-button-info-hover-color: var(--color-on-accent) !important;
+  --p-button-info-active-background: var(--color-info) !important;
+  --p-button-info-active-border-color: var(--color-info) !important;
+  --p-button-info-active-color: var(--color-on-accent) !important;
+  --p-button-info-focus-ring-color: var(--color-info) !important;
+  --p-button-info-focus-ring-shadow: none !important;
+
+  /* warn -> weoc-ui's `warning`. hover is filter:brightness(1.03) only ->
+     reuse resting values (see the naming-mismatch and mismatch #1 notes
+     above — this is intentional, not a mistaken skip of "warn"). */
+  --p-button-warn-background: var(--color-warning) !important;
+  --p-button-warn-border-color: var(--color-warning) !important;
+  --p-button-warn-color: var(--color-on-accent) !important;
+  --p-button-warn-hover-background: var(--color-warning) !important;
+  --p-button-warn-hover-border-color: var(--color-warning) !important;
+  --p-button-warn-hover-color: var(--color-on-accent) !important;
+  --p-button-warn-active-background: var(--color-warning) !important;
+  --p-button-warn-active-border-color: var(--color-warning) !important;
+  --p-button-warn-active-color: var(--color-on-accent) !important;
+  --p-button-warn-focus-ring-color: var(--color-warning) !important;
+  --p-button-warn-focus-ring-shadow: none !important;
+
+  /* danger: hover is filter:brightness(1.06) only -> reuse resting values */
+  --p-button-danger-background: var(--color-danger) !important;
+  --p-button-danger-border-color: var(--color-danger) !important;
+  --p-button-danger-color: var(--color-on-accent) !important;
+  --p-button-danger-hover-background: var(--color-danger) !important;
+  --p-button-danger-hover-border-color: var(--color-danger) !important;
+  --p-button-danger-hover-color: var(--color-on-accent) !important;
+  --p-button-danger-active-background: var(--color-danger) !important;
+  --p-button-danger-active-border-color: var(--color-danger) !important;
+  --p-button-danger-active-color: var(--color-on-accent) !important;
+  --p-button-danger-focus-ring-color: var(--color-danger) !important;
+  --p-button-danger-focus-ring-shadow: none !important;
+
+  /* ── Outlined ([outlined]="true") — sourced from .wui-btn.outline.{color} ──
+     Per the note above: only color/border.color/hover.background/
+     active.background exist as real dt() tokens; the hover border-color
+     intensification wui-btn does (muted -> full color) has no token to land
+     in, so only the background fill is bridged. active.background reuses
+     hover.background (no distinct outline :active rule in the source). */
+  --p-button-outlined-primary-color: var(--color-10) !important;
+  --p-button-outlined-primary-border-color: var(--color-10) !important;
+  --p-button-outlined-primary-hover-background: var(--color-10-light) !important;
+  --p-button-outlined-primary-active-background: var(--color-10-light) !important;
+
+  --p-button-outlined-secondary-color: var(--color-text-secondary) !important;
+  --p-button-outlined-secondary-border-color: var(--color-secondary-muted) !important;
+  --p-button-outlined-secondary-hover-background: var(--color-secondary-light) !important;
+  --p-button-outlined-secondary-active-background: var(--color-secondary-light) !important;
+
+  --p-button-outlined-success-color: var(--color-success-text) !important;
+  --p-button-outlined-success-border-color: var(--color-success-muted) !important;
+  --p-button-outlined-success-hover-background: var(--color-success-light) !important;
+  --p-button-outlined-success-active-background: var(--color-success-light) !important;
+
+  --p-button-outlined-info-color: var(--color-info-text) !important;
+  --p-button-outlined-info-border-color: var(--color-info-muted) !important;
+  --p-button-outlined-info-hover-background: var(--color-info-light) !important;
+  --p-button-outlined-info-active-background: var(--color-info-light) !important;
+
+  /* warn -> weoc-ui's `warning`, same mapping rationale as the solid group */
+  --p-button-outlined-warn-color: var(--color-warning-text) !important;
+  --p-button-outlined-warn-border-color: var(--color-warning-muted) !important;
+  --p-button-outlined-warn-hover-background: var(--color-warning-light) !important;
+  --p-button-outlined-warn-active-background: var(--color-warning-light) !important;
+
+  --p-button-outlined-danger-color: var(--color-danger-text) !important;
+  --p-button-outlined-danger-border-color: var(--color-danger-muted) !important;
+  --p-button-outlined-danger-hover-background: var(--color-danger-light) !important;
+  --p-button-outlined-danger-active-background: var(--color-danger-light) !important;
+
+  /* button.outlined.plain.* intentionally NOT set — no weoc-ui equivalent,
+     see scope note in the header comment above. */
+
+  /* ── Text ([text]="true") — sourced from .wui-btn.ghost.{color} ──
+     ("Ghost" is weoc-ui's name for a no-border, no-fill-until-interaction
+     button — the closest real match to PrimeNG's Text style.) active.
+     background reuses hover.background (no distinct ghost :active rule in
+     the source). */
+  --p-button-text-primary-color: var(--color-10) !important;
+  --p-button-text-primary-hover-background: var(--color-10-light) !important;
+  --p-button-text-primary-active-background: var(--color-10-light) !important;
+
+  --p-button-text-secondary-color: var(--color-text-secondary) !important;
+  --p-button-text-secondary-hover-background: var(--color-secondary-light) !important;
+  --p-button-text-secondary-active-background: var(--color-secondary-light) !important;
+
+  --p-button-text-success-color: var(--color-success-text) !important;
+  --p-button-text-success-hover-background: var(--color-success-light) !important;
+  --p-button-text-success-active-background: var(--color-success-light) !important;
+
+  --p-button-text-info-color: var(--color-info-text) !important;
+  --p-button-text-info-hover-background: var(--color-info-light) !important;
+  --p-button-text-info-active-background: var(--color-info-light) !important;
+
+  /* warn -> weoc-ui's `warning`, same mapping rationale as the solid group */
+  --p-button-text-warn-color: var(--color-warning-text) !important;
+  --p-button-text-warn-hover-background: var(--color-warning-light) !important;
+  --p-button-text-warn-active-background: var(--color-warning-light) !important;
+
+  --p-button-text-danger-color: var(--color-danger-text) !important;
+  --p-button-text-danger-hover-background: var(--color-danger-light) !important;
+  --p-button-text-danger-active-background: var(--color-danger-light) !important;
+
+  /* button.text.plain.* and button.link.* intentionally NOT set — no
+     weoc-ui equivalent, see scope note in the header comment above. */
+}
