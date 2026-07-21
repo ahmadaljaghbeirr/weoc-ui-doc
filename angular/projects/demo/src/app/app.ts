@@ -6,11 +6,12 @@ import { DatePicker } from 'primeng/datepicker';
 import { Popover } from 'primeng/popover';
 import { Dialog } from 'primeng/dialog';
 import { Drawer } from 'primeng/drawer';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer],
+  imports: [CommonModule, WuiButtonComponent, WuiFabComponent, Select, DatePicker, Popover, Dialog, Drawer, Button],
   template: `
     <main style="padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
       <h1>weoc-ui-ng — Buttons</h1>
@@ -57,7 +58,10 @@ import { Drawer } from 'primeng/drawer';
           <label>PrimeNG Popover, restyled with weoc-ui-css tokens</label><br />
           <button type="button" (click)="pop.toggle($event)" style="padding: 0.5rem 1rem;">Toggle popover</button>
           <p-popover #pop>
-            <div style="padding: 0.5rem;">This popover is skinned entirely via weoc-ui-css tokens overriding PrimeNG's --p-popover-* variables.</div>
+            <div style="padding: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+              <span>This popover is skinned entirely via weoc-ui-css tokens overriding PrimeNG's --p-popover-* variables.</span>
+              <p-button label="Confirm" severity="success" size="small" />
+            </div>
           </p-popover>
         </div>
       </section>
@@ -68,6 +72,10 @@ import { Drawer } from 'primeng/drawer';
           <button type="button" (click)="dialogVisible = true" style="padding: 0.5rem 1rem;">Open dialog</button>
           <p-dialog header="weoc-ui-styled Dialog" [modal]="true" [(visible)]="dialogVisible" [style]="{ width: '28rem' }">
             <p>This dialog is skinned entirely via weoc-ui-css tokens overriding PrimeNG's --p-dialog-* variables.</p>
+            <ng-template #footer>
+              <p-button label="Cancel" severity="secondary" [text]="true" (click)="dialogVisible = false" />
+              <p-button label="Delete" severity="danger" (click)="dialogVisible = false" />
+            </ng-template>
           </p-dialog>
         </div>
       </section>
@@ -78,6 +86,9 @@ import { Drawer } from 'primeng/drawer';
           <button type="button" (click)="drawerVisible = true" style="padding: 0.5rem 1rem;">Open drawer</button>
           <p-drawer header="weoc-ui-styled Drawer" [(visible)]="drawerVisible" position="right">
             <p>This drawer is skinned entirely via weoc-ui-css tokens overriding PrimeNG's --p-drawer-* variables.</p>
+            <ng-template #footer>
+              <p-button label="Save" severity="primary" [outlined]="true" (click)="drawerVisible = false" />
+            </ng-template>
           </p-drawer>
         </div>
       </section>
