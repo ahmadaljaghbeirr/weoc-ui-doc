@@ -1,0 +1,417 @@
+/* =============================================
+   weoc-utilities.css
+   UI utility patterns: search/filter bar and
+   view toggle controls.
+   Loaded via weoc-ui.css barrel.
+   Requires: agency-theme.css (loaded by barrel).
+   ============================================= */
+
+/* ============================================================
+   1) SEARCH & FILTER
+   ============================================================ */
+
+.wui-filter-bar {
+  flex-shrink: 0;
+}
+
+.wui-filter-btn {
+  color: var(--color-text-ui);
+}
+
+.wui-filter-btn:hover {
+  color: var(--color-10);
+  font-weight: bold;
+}
+
+.wui-filter-divider {
+  border-inline-start: 1px solid var(--color-border);
+  height: 1.5rem;
+}
+
+.wui-date-range-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.wui-search-wrap {
+  display: flex !important;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-2) !important;
+  height: 40px;
+  border: 1.5px solid var(--color-border) !important;
+  border-radius: var(--border-radius) !important;
+}
+
+.wui-search-icon {
+  color: var(--color-text-secondary);
+  font-size: var(--icon-md);
+  flex-shrink: 0;
+}
+
+.wui-search-status-icon {
+  font-size: var(--icon-md);
+  display: none;
+  flex-shrink: 0;
+}
+
+.wui-filter-search-filter {
+  height: 100% !important;
+  all: inherit;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  flex: 1 !important;
+  min-width: 0;
+  background: transparent;
+}
+
+
+/* ─── Loading Spinner ─── */
+
+.spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* ============================================================
+   2) VIEW TOGGLE
+   ============================================================ */
+
+.wui-view-toggle-group {
+  display: flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.wui-view-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: var(--color-30);
+  color: var(--color-text-secondary);
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+}
+
+.wui-view-toggle-btn.active {
+  background: var(--color-10);
+  color: var(--color-on-accent);
+}
+
+.wui-view-toggle-btn:hover {
+  background: var(--color-60);
+  color: var(--color-text-primary);
+}
+
+.wui-view-toggle-btn:not(:last-child) {
+  border-inline-end: 1px solid var(--color-border);
+}
+
+.wui-view-toggle-btn .material-symbols-outlined {
+  font-size: var(--text-base);
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================
+   3) SPACING UTILITIES — PADDING & MARGIN
+   ============================================================
+
+   Scale mirrors agency-theme --space-* tokens:
+     0  → 0        xs/1  → 0.25rem   sm/2  → 0.5rem
+     3  → 0.75rem  md/4  → 1rem      5     → 1.5rem
+     lg/6 → 2rem   7     → 2.5rem    xl/8  → 3rem
+     9  → 4rem     2xl/10→ 5rem      11    → 6rem
+     3xl/12→ 8rem
+
+   Padding:  wui-p-*   all sides
+             wui-px-*  inline (left+right)
+             wui-py-*  block  (top+bottom)
+             wui-pt-*  wui-pr-*  wui-pb-*  wui-pl-*
+
+   Margin:   wui-m-*   wui-mx-*  wui-my-*
+             wui-mt-*  wui-mr-*  wui-mb-*  wui-ml-*
+
+   Auto:     wui-m-auto  wui-mx-auto  wui-my-auto
+             wui-mt-auto wui-mr-auto  wui-mb-auto  wui-ml-auto
+*/
+
+/* ── Padding — all sides ── */
+.wui-p-0   { padding: 0 !important; }
+.wui-p-xs  { padding: var(--space-xs)  !important; }
+.wui-p-sm  { padding: var(--space-sm)  !important; }
+.wui-p-1   { padding: var(--space-1)   !important; }
+.wui-p-2   { padding: var(--space-2)   !important; }
+.wui-p-3   { padding: var(--space-3)   !important; }
+.wui-p-4   { padding: var(--space-4)   !important; }
+.wui-p-md  { padding: var(--space-md)  !important; }
+.wui-p-5   { padding: var(--space-5)   !important; }
+.wui-p-6   { padding: var(--space-6)   !important; }
+.wui-p-lg  { padding: var(--space-lg)  !important; }
+.wui-p-7   { padding: var(--space-7)   !important; }
+.wui-p-8   { padding: var(--space-8)   !important; }
+.wui-p-xl  { padding: var(--space-xl)  !important; }
+.wui-p-9   { padding: var(--space-9)   !important; }
+.wui-p-10  { padding: var(--space-10)  !important; }
+.wui-p-2xl { padding: var(--space-2xl) !important; }
+.wui-p-11  { padding: var(--space-11)  !important; }
+.wui-p-12  { padding: var(--space-12)  !important; }
+.wui-p-3xl { padding: var(--space-3xl) !important; }
+
+/* ── Padding — inline (left + right) ── */
+.wui-px-0   { padding-inline: 0 !important; }
+.wui-px-xs  { padding-inline: var(--space-xs)  !important; }
+.wui-px-sm  { padding-inline: var(--space-sm)  !important; }
+.wui-px-1   { padding-inline: var(--space-1)   !important; }
+.wui-px-2   { padding-inline: var(--space-2)   !important; }
+.wui-px-3   { padding-inline: var(--space-3)   !important; }
+.wui-px-4   { padding-inline: var(--space-4)   !important; }
+.wui-px-md  { padding-inline: var(--space-md)  !important; }
+.wui-px-5   { padding-inline: var(--space-5)   !important; }
+.wui-px-6   { padding-inline: var(--space-6)   !important; }
+.wui-px-lg  { padding-inline: var(--space-lg)  !important; }
+.wui-px-7   { padding-inline: var(--space-7)   !important; }
+.wui-px-8   { padding-inline: var(--space-8)   !important; }
+.wui-px-xl  { padding-inline: var(--space-xl)  !important; }
+.wui-px-9   { padding-inline: var(--space-9)   !important; }
+.wui-px-10  { padding-inline: var(--space-10)  !important; }
+.wui-px-2xl { padding-inline: var(--space-2xl) !important; }
+.wui-px-11  { padding-inline: var(--space-11)  !important; }
+.wui-px-12  { padding-inline: var(--space-12)  !important; }
+.wui-px-3xl { padding-inline: var(--space-3xl) !important; }
+
+/* ── Padding — block (top + bottom) ── */
+.wui-py-0   { padding-block: 0 !important; }
+.wui-py-xs  { padding-block: var(--space-xs)  !important; }
+.wui-py-sm  { padding-block: var(--space-sm)  !important; }
+.wui-py-1   { padding-block: var(--space-1)   !important; }
+.wui-py-2   { padding-block: var(--space-2)   !important; }
+.wui-py-3   { padding-block: var(--space-3)   !important; }
+.wui-py-4   { padding-block: var(--space-4)   !important; }
+.wui-py-md  { padding-block: var(--space-md)  !important; }
+.wui-py-5   { padding-block: var(--space-5)   !important; }
+.wui-py-6   { padding-block: var(--space-6)   !important; }
+.wui-py-lg  { padding-block: var(--space-lg)  !important; }
+.wui-py-7   { padding-block: var(--space-7)   !important; }
+.wui-py-8   { padding-block: var(--space-8)   !important; }
+.wui-py-xl  { padding-block: var(--space-xl)  !important; }
+.wui-py-9   { padding-block: var(--space-9)   !important; }
+.wui-py-10  { padding-block: var(--space-10)  !important; }
+.wui-py-2xl { padding-block: var(--space-2xl) !important; }
+.wui-py-11  { padding-block: var(--space-11)  !important; }
+.wui-py-12  { padding-block: var(--space-12)  !important; }
+.wui-py-3xl { padding-block: var(--space-3xl) !important; }
+
+/* ── Padding — top ── */
+.wui-pt-0  { padding-top: 0 !important; }
+.wui-pt-1  { padding-top: var(--space-1)  !important; }
+.wui-pt-2  { padding-top: var(--space-2)  !important; }
+.wui-pt-3  { padding-top: var(--space-3)  !important; }
+.wui-pt-4  { padding-top: var(--space-4)  !important; }
+.wui-pt-5  { padding-top: var(--space-5)  !important; }
+.wui-pt-6  { padding-top: var(--space-6)  !important; }
+.wui-pt-7  { padding-top: var(--space-7)  !important; }
+.wui-pt-8  { padding-top: var(--space-8)  !important; }
+.wui-pt-9  { padding-top: var(--space-9)  !important; }
+.wui-pt-10 { padding-top: var(--space-10) !important; }
+.wui-pt-11 { padding-top: var(--space-11) !important; }
+.wui-pt-12 { padding-top: var(--space-12) !important; }
+
+/* ── Padding — right ── */
+.wui-pr-0  { padding-inline-end: 0 !important; }
+.wui-pr-1  { padding-inline-end: var(--space-1)  !important; }
+.wui-pr-2  { padding-inline-end: var(--space-2)  !important; }
+.wui-pr-3  { padding-inline-end: var(--space-3)  !important; }
+.wui-pr-4  { padding-inline-end: var(--space-4)  !important; }
+.wui-pr-5  { padding-inline-end: var(--space-5)  !important; }
+.wui-pr-6  { padding-inline-end: var(--space-6)  !important; }
+.wui-pr-7  { padding-inline-end: var(--space-7)  !important; }
+.wui-pr-8  { padding-inline-end: var(--space-8)  !important; }
+.wui-pr-9  { padding-inline-end: var(--space-9)  !important; }
+.wui-pr-10 { padding-inline-end: var(--space-10) !important; }
+.wui-pr-11 { padding-inline-end: var(--space-11) !important; }
+.wui-pr-12 { padding-inline-end: var(--space-12) !important; }
+
+/* ── Padding — bottom ── */
+.wui-pb-0  { padding-bottom: 0 !important; }
+.wui-pb-1  { padding-bottom: var(--space-1)  !important; }
+.wui-pb-2  { padding-bottom: var(--space-2)  !important; }
+.wui-pb-3  { padding-bottom: var(--space-3)  !important; }
+.wui-pb-4  { padding-bottom: var(--space-4)  !important; }
+.wui-pb-5  { padding-bottom: var(--space-5)  !important; }
+.wui-pb-6  { padding-bottom: var(--space-6)  !important; }
+.wui-pb-7  { padding-bottom: var(--space-7)  !important; }
+.wui-pb-8  { padding-bottom: var(--space-8)  !important; }
+.wui-pb-9  { padding-bottom: var(--space-9)  !important; }
+.wui-pb-10 { padding-bottom: var(--space-10) !important; }
+.wui-pb-11 { padding-bottom: var(--space-11) !important; }
+.wui-pb-12 { padding-bottom: var(--space-12) !important; }
+
+/* ── Padding — left ── */
+.wui-pl-0  { padding-inline-start: 0 !important; }
+.wui-pl-1  { padding-inline-start: var(--space-1)  !important; }
+.wui-pl-2  { padding-inline-start: var(--space-2)  !important; }
+.wui-pl-3  { padding-inline-start: var(--space-3)  !important; }
+.wui-pl-4  { padding-inline-start: var(--space-4)  !important; }
+.wui-pl-5  { padding-inline-start: var(--space-5)  !important; }
+.wui-pl-6  { padding-inline-start: var(--space-6)  !important; }
+.wui-pl-7  { padding-inline-start: var(--space-7)  !important; }
+.wui-pl-8  { padding-inline-start: var(--space-8)  !important; }
+.wui-pl-9  { padding-inline-start: var(--space-9)  !important; }
+.wui-pl-10 { padding-inline-start: var(--space-10) !important; }
+.wui-pl-11 { padding-inline-start: var(--space-11) !important; }
+.wui-pl-12 { padding-inline-start: var(--space-12) !important; }
+
+/* ── Margin — all sides ── */
+.wui-m-0    { margin: 0 !important; }
+.wui-m-xs   { margin: var(--space-xs)  !important; }
+.wui-m-sm   { margin: var(--space-sm)  !important; }
+.wui-m-1    { margin: var(--space-1)   !important; }
+.wui-m-2    { margin: var(--space-2)   !important; }
+.wui-m-3    { margin: var(--space-3)   !important; }
+.wui-m-4    { margin: var(--space-4)   !important; }
+.wui-m-md   { margin: var(--space-md)  !important; }
+.wui-m-5    { margin: var(--space-5)   !important; }
+.wui-m-6    { margin: var(--space-6)   !important; }
+.wui-m-lg   { margin: var(--space-lg)  !important; }
+.wui-m-7    { margin: var(--space-7)   !important; }
+.wui-m-8    { margin: var(--space-8)   !important; }
+.wui-m-xl   { margin: var(--space-xl)  !important; }
+.wui-m-9    { margin: var(--space-9)   !important; }
+.wui-m-10   { margin: var(--space-10)  !important; }
+.wui-m-2xl  { margin: var(--space-2xl) !important; }
+.wui-m-11   { margin: var(--space-11)  !important; }
+.wui-m-12   { margin: var(--space-12)  !important; }
+.wui-m-3xl  { margin: var(--space-3xl) !important; }
+.wui-m-auto { margin: auto !important; }
+
+/* ── Margin — inline (left + right) ── */
+.wui-mx-0    { margin-inline: 0 !important; }
+.wui-mx-xs   { margin-inline: var(--space-xs)  !important; }
+.wui-mx-sm   { margin-inline: var(--space-sm)  !important; }
+.wui-mx-1    { margin-inline: var(--space-1)   !important; }
+.wui-mx-2    { margin-inline: var(--space-2)   !important; }
+.wui-mx-3    { margin-inline: var(--space-3)   !important; }
+.wui-mx-4    { margin-inline: var(--space-4)   !important; }
+.wui-mx-md   { margin-inline: var(--space-md)  !important; }
+.wui-mx-5    { margin-inline: var(--space-5)   !important; }
+.wui-mx-6    { margin-inline: var(--space-6)   !important; }
+.wui-mx-lg   { margin-inline: var(--space-lg)  !important; }
+.wui-mx-7    { margin-inline: var(--space-7)   !important; }
+.wui-mx-8    { margin-inline: var(--space-8)   !important; }
+.wui-mx-xl   { margin-inline: var(--space-xl)  !important; }
+.wui-mx-9    { margin-inline: var(--space-9)   !important; }
+.wui-mx-10   { margin-inline: var(--space-10)  !important; }
+.wui-mx-2xl  { margin-inline: var(--space-2xl) !important; }
+.wui-mx-11   { margin-inline: var(--space-11)  !important; }
+.wui-mx-12   { margin-inline: var(--space-12)  !important; }
+.wui-mx-3xl  { margin-inline: var(--space-3xl) !important; }
+.wui-mx-auto { margin-inline: auto !important; }
+
+/* ── Margin — block (top + bottom) ── */
+.wui-my-0    { margin-block: 0 !important; }
+.wui-my-xs   { margin-block: var(--space-xs)  !important; }
+.wui-my-sm   { margin-block: var(--space-sm)  !important; }
+.wui-my-1    { margin-block: var(--space-1)   !important; }
+.wui-my-2    { margin-block: var(--space-2)   !important; }
+.wui-my-3    { margin-block: var(--space-3)   !important; }
+.wui-my-4    { margin-block: var(--space-4)   !important; }
+.wui-my-md   { margin-block: var(--space-md)  !important; }
+.wui-my-5    { margin-block: var(--space-5)   !important; }
+.wui-my-6    { margin-block: var(--space-6)   !important; }
+.wui-my-lg   { margin-block: var(--space-lg)  !important; }
+.wui-my-7    { margin-block: var(--space-7)   !important; }
+.wui-my-8    { margin-block: var(--space-8)   !important; }
+.wui-my-xl   { margin-block: var(--space-xl)  !important; }
+.wui-my-9    { margin-block: var(--space-9)   !important; }
+.wui-my-10   { margin-block: var(--space-10)  !important; }
+.wui-my-2xl  { margin-block: var(--space-2xl) !important; }
+.wui-my-11   { margin-block: var(--space-11)  !important; }
+.wui-my-12   { margin-block: var(--space-12)  !important; }
+.wui-my-3xl  { margin-block: var(--space-3xl) !important; }
+.wui-my-auto { margin-block: auto !important; }
+
+/* ── Margin — top ── */
+.wui-mt-0    { margin-top: 0 !important; }
+.wui-mt-1    { margin-top: var(--space-1)  !important; }
+.wui-mt-2    { margin-top: var(--space-2)  !important; }
+.wui-mt-3    { margin-top: var(--space-3)  !important; }
+.wui-mt-4    { margin-top: var(--space-4)  !important; }
+.wui-mt-5    { margin-top: var(--space-5)  !important; }
+.wui-mt-6    { margin-top: var(--space-6)  !important; }
+.wui-mt-7    { margin-top: var(--space-7)  !important; }
+.wui-mt-8    { margin-top: var(--space-8)  !important; }
+.wui-mt-9    { margin-top: var(--space-9)  !important; }
+.wui-mt-10   { margin-top: var(--space-10) !important; }
+.wui-mt-11   { margin-top: var(--space-11) !important; }
+.wui-mt-12   { margin-top: var(--space-12) !important; }
+.wui-mt-auto { margin-top: auto !important; }
+
+/* ── Margin — right ── */
+.wui-mr-0    { margin-inline-end: 0 !important; }
+.wui-mr-1    { margin-inline-end: var(--space-1)  !important; }
+.wui-mr-2    { margin-inline-end: var(--space-2)  !important; }
+.wui-mr-3    { margin-inline-end: var(--space-3)  !important; }
+.wui-mr-4    { margin-inline-end: var(--space-4)  !important; }
+.wui-mr-5    { margin-inline-end: var(--space-5)  !important; }
+.wui-mr-6    { margin-inline-end: var(--space-6)  !important; }
+.wui-mr-7    { margin-inline-end: var(--space-7)  !important; }
+.wui-mr-8    { margin-inline-end: var(--space-8)  !important; }
+.wui-mr-9    { margin-inline-end: var(--space-9)  !important; }
+.wui-mr-10   { margin-inline-end: var(--space-10) !important; }
+.wui-mr-11   { margin-inline-end: var(--space-11) !important; }
+.wui-mr-12   { margin-inline-end: var(--space-12) !important; }
+.wui-mr-auto { margin-inline-end: auto !important; }
+
+/* ── Margin — bottom ── */
+.wui-mb-0    { margin-bottom: 0 !important; }
+.wui-mb-1    { margin-bottom: var(--space-1)  !important; }
+.wui-mb-2    { margin-bottom: var(--space-2)  !important; }
+.wui-mb-3    { margin-bottom: var(--space-3)  !important; }
+.wui-mb-4    { margin-bottom: var(--space-4)  !important; }
+.wui-mb-5    { margin-bottom: var(--space-5)  !important; }
+.wui-mb-6    { margin-bottom: var(--space-6)  !important; }
+.wui-mb-7    { margin-bottom: var(--space-7)  !important; }
+.wui-mb-8    { margin-bottom: var(--space-8)  !important; }
+.wui-mb-9    { margin-bottom: var(--space-9)  !important; }
+.wui-mb-10   { margin-bottom: var(--space-10) !important; }
+.wui-mb-11   { margin-bottom: var(--space-11) !important; }
+.wui-mb-12   { margin-bottom: var(--space-12) !important; }
+.wui-mb-auto { margin-bottom: auto !important; }
+
+/* ── Margin — left ── */
+.wui-ml-0    { margin-inline-start: 0 !important; }
+.wui-ml-1    { margin-inline-start: var(--space-1)  !important; }
+.wui-ml-2    { margin-inline-start: var(--space-2)  !important; }
+.wui-ml-3    { margin-inline-start: var(--space-3)  !important; }
+.wui-ml-4    { margin-inline-start: var(--space-4)  !important; }
+.wui-ml-5    { margin-inline-start: var(--space-5)  !important; }
+.wui-ml-6    { margin-inline-start: var(--space-6)  !important; }
+.wui-ml-7    { margin-inline-start: var(--space-7)  !important; }
+.wui-ml-8    { margin-inline-start: var(--space-8)  !important; }
+.wui-ml-9    { margin-inline-start: var(--space-9)  !important; }
+.wui-ml-10   { margin-inline-start: var(--space-10) !important; }
+.wui-ml-11   { margin-inline-start: var(--space-11) !important; }
+.wui-ml-12   { margin-inline-start: var(--space-12) !important; }
+.wui-ml-auto { margin-inline-start: auto !important; }

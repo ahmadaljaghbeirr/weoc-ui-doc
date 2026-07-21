@@ -1,0 +1,35 @@
+/* =============================================
+   weoc-breadcrumbs.css
+   wui-breadcrumbs: display-only trail. No JS
+   module — nothing to click, no state to manage.
+   Loaded via weoc-ui-core.css barrel.
+   ============================================= */
+
+.wui-breadcrumbs {
+  display: flex;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  min-width: 0;
+  flex: 1;
+}
+
+.wui-breadcrumb-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+.wui-breadcrumb-item.current {
+  color: var(--color-text-primary);
+  font-weight: var(--font-semibold);
+}
+
+/* Direction-agnostic separator — "/" looks identical in LTR and RTL, so no
+   [dir="rtl"] handling is needed (unlike a directional chevron glyph). */
+.wui-breadcrumb-item + .wui-breadcrumb-item::before {
+  content: "/";
+  margin-inline: var(--space-2);
+  color: var(--color-border);
+}
