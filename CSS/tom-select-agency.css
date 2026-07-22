@@ -378,6 +378,32 @@
   padding: var(--ts-gap-small) var(--ts-gap-medium);
 }
 
+.ts-dropdown .optgroup-header {
+  background: var(--ts-bg-soft);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--ts-accent);
+  line-height: var(--leading-none);
+  padding-top: var(--ts-gap-medium);
+  padding-bottom: var(--ts-gap-medium);
+  border-top: var(--border-sm) solid var(--ts-border);
+  border-bottom: var(--border-xs) solid var(--ts-border);
+  cursor: default;
+}
+
+.ts-dropdown .optgroup:first-child .optgroup-header {
+  border-top: none;
+}
+
+/* optgroup_columns plugin: vendor base hardcodes #f2f2f2 for the
+   between-column divider — not theme-aware, same class of bug as the
+   optgroup-header background above. Map to the theme border token instead. */
+.ts-dropdown.plugin-optgroup_columns .optgroup {
+  border-right-color: var(--ts-border);
+}
+
 .ts-dropdown .option {
   border: 1px solid transparent;
   color: var(--ts-fg);

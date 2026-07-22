@@ -34,6 +34,17 @@
  *     → moves a staged <div class="ts-dropdown-slot">…</div> into the dropdown
  *       as a pinned header / footer (see mountDropdownSlots). Also exposed as
  *       TomSelectFactory.mountDropdownSlots(ts, el) for non-factory instances.
+ *   <optgroup label="…"> wraps <option>s in the native <select> markup — Tom
+ *     Select auto-detects optgroups from a real <select> DOM node with zero
+ *     extra config; this factory just supplies a styled, escaped
+ *     render.optgroup_header (sticky uppercase section label, see
+ *     tom-select-agency.css) so every factory-built select gets it for free.
+ *   data-optgroup-columns="true"
+ *     → lays out optgroups as side-by-side columns instead of stacked
+ *       sections (Tom Select's own optgroup_columns plugin, already styled
+ *       in tom-select-agency.css). Widen the control/dropdown yourself when
+ *       using this — columns need real room, the default control width
+ *       won't fit 2+ columns comfortably.
  *
  * Dependent (parent/child) selects:
  *   data-parent="ParentFieldName" or parent="ParentFieldName" on the child.
@@ -101,6 +112,7 @@ const TomSelectFactory = (function () {
     return {
       no_results: () => '<div class="no-results">' + i18nText('NoResults', 'No results found') + '</div>',
       option_create: (data, escape) => '<div class="create">' + i18nText('AddNew', 'Add') + ' <strong>' + escape(data.input) + '</strong>&hellip;</div>',
+      optgroup_header: (data, escape) => '<div class="optgroup-header">' + escape(data.label) + '</div>',
     };
   }
 
@@ -257,10 +269,12 @@ const TomSelectFactory = (function () {
     const isCreate = el.dataset.create === 'true';
     const allowEmpty = el.dataset.allowEmpty === 'true';
     const stayOpen = el.dataset.stayOpen === 'true';
+    const optgroupColumns = el.dataset.optgroupColumns === 'true';
     const tmpl = resolveRenderDefinition(el.dataset.render);
 
     const plugins = ['dropdown_input'];
     if (isMulti) plugins.push('remove_button');
+    if (optgroupColumns) plugins.push('optgroup_columns');
 
     const config = {
       // allowEmptyOption:true lets the user re-select the empty option from the

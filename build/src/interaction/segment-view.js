@@ -73,6 +73,19 @@ import { WUI } from '../core/wui.js';
         else v.removeAttribute('updatesection');
       }
     });
+    // Keep the segment control (tab header) in sync when showView is called
+    // directly instead of via a real click — validator jump-to-invalid-tab,
+    // deep-link opens, etc. The click handler below does this too, but only
+    // for clicks; callers that invoke showView() programmatically need it here.
+    if (typeof scope === 'string') {
+      var segEl = document.querySelector('[data-wui-views="' + scope + '"]');
+      if (segEl) {
+        var target = segEl.querySelector('[data-wui-value="' + name + '"]');
+        if (target) {
+          WUI.selectOne(segEl.querySelectorAll('[data-wui-value]'), target, segEl.getAttribute('data-wui-active') || 'active');
+        }
+      }
+    }
     (host || document).dispatchEvent(new CustomEvent('wui:viewchange', { bubbles: true, detail: { value: name } }));
   };
 
