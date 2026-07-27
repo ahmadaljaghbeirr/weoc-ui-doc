@@ -831,6 +831,61 @@
           ]
         });
       }
+
+      /* ── Neon glow demos (opts.neon) ───────────────────────────────────────
+       * Same data-shape as the plain examples above — the only difference is
+       * the opts.neon flag on each call. */
+      var neonLineEl = document.getElementById('demo-neon-line-chart');
+      if (neonLineEl) {
+        var neonTimes = [], neonIncidents = [];
+        for (var n = 0; n < 24; n++) {
+          neonTimes.push(now - (23 - n) * 3600);
+          neonIncidents.push(Math.round(4 + Math.random() * 10));
+        }
+        window.WUI.chart(neonLineEl, {
+          type:   'line',
+          neon:   'danger',
+          series: [{ label: 'Active Incidents', color: 'danger' }],
+          data:   [neonTimes, neonIncidents],
+          height: 200,
+          cursor: true,
+          legend: true
+        });
+      }
+
+      var neonDonutEl = document.getElementById('demo-neon-donut-chart');
+      if (neonDonutEl && window.WUI.donut) {
+        window.WUI.donut(neonDonutEl, {
+          height: 240,
+          neon:   true,
+          data: [
+            { label: 'Personnel',  value: 65, color: 'primary' },
+            { label: 'Equipment',  value: 48, color: 'warning' },
+            { label: 'Facilities', value: 22, color: 'success' }
+          ],
+          center: { label: '135', sub: 'Resources' }
+        });
+      }
+
+      var neonGaugeEl = document.getElementById('demo-neon-gauge-chart');
+      if (neonGaugeEl && window.WUI.gauge) {
+        window.WUI.gauge(neonGaugeEl, {
+          value:  82,
+          status: 'Critical',
+          neon:   'warning'
+        });
+      }
+
+      var neonBarRowEl = document.getElementById('demo-neon-barrow-chart');
+      if (neonBarRowEl && window.WUI.barRow) {
+        window.WUI.barRow(neonBarRowEl, {
+          neon: 'success',
+          rows: [
+            { label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] },
+            { label: 'Row 2', value: 40, segments: [{ pct: 40, color: 'warning' }] }
+          ]
+        });
+      }
     },
     lists: function () {
       if (!window.EOCLists || !window.TomSelect) return;

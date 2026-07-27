@@ -6,6 +6,26 @@ Dated, append-only log of every meaningful CSS/JS edit to weoc-ui. See the
 sync-discipline rule in [README.md](README.md) — this file gets one new
 entry per session that touches source, in the same session as the edit.
 
+- 2026-07-27 — Added an opt-in "neon" glow variant across 5 more component
+  families, extending the pre-existing `.wui-btn.neon-outline`/
+  `.wui-fab.neon-outline` convention (`weoc-interactive.css`) rather than
+  inventing a new visual language: `.wui-badge.neon`/`.wui-chip.neon`
+  (`weoc-labels.css`), `.wui-plane.neon` (`weoc-containers.css`),
+  `.wui-progress-ring.neon`/`.wui-progress-bar.neon` (`weoc-progress.css`,
+  `filter:drop-shadow` not `box-shadow` — SVG stroke/rounded-fill shapes),
+  and `opts.neon` on all 5 `wui-charts.js` factories (`chart`/`pie`/`donut`/
+  `gauge`/`barRow` — canvas-drawn ones glow via `ctx.shadowBlur`, DOM-drawn
+  ones via a new `weoc-charts.css` file + toggled class, now imported by
+  `weoc-ui-core.css` as module #21). Full detail in
+  [css-classes.md](css-classes.md) and [js-api.md](js-api.md)'s `opts.neon`
+  row. Docs updated on `interactive.html`, `containers.html`, `progress.html`,
+  and `charts.html` (new "Neon Glow" section) — each with matching EN/AR
+  i18n entries, per the lane's default-on localization rule. Dispatched as
+  5 parallel background agents (bar-row's ran after the other 4 landed,
+  since it shares `wui-charts.js` with the chart-neon work). Zero console
+  errors across every verification pass; one pre-existing unrelated bug
+  noticed-but-not-fixed on `interactive.html` (hero title double-escapes
+  `&amp;amp;`, predates this work).
 - 2026-07-24 — Added `WUI.responsive.observe()` primitive
   (`build/src/core/responsive.js`); wired into `wui-charts.js` (chart/pie/donut/gauge
   — **not** barRow, which is CSS-only and already responsive) and `weoc-map.js`;

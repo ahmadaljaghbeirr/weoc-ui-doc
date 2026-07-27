@@ -32,6 +32,7 @@
     18. weoc-tier-colors agency activation tier variants (tier-1 → tier-4) for badge, chip, status-dot, icon-bubble, callout, banner, card, lvl
     19. weoc-calendar   wui-calendar (month/week/day/agenda views, accent event card, event popup) — JS engine: weoc-calendar.js
     20. weoc-loader     body/element busy overlay, WUI.busy/WUI.buttonBusy, data-wui-loading — JS engine: interaction/loader.js
+    21. weoc-charts     wui-chart-neon-* opt-in glow filter for WUI.chart()'s uPlot canvas — JS engine: JS/wui-charts.js
    ============================================= */
 
 @import url("agency-theme.css");
@@ -58,3 +59,4 @@
 @import url("weoc-tier-colors.css");
 @import url("weoc-calendar.css");
 @import url("weoc-i18n.css");
+@import url("weoc-charts.css");

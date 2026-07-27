@@ -655,6 +655,111 @@ function buildMultiSeriesData() {
 });</pre>
         </div>
 
+        <!-- ── Neon Glow ──────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_78"><span class="material-symbols-outlined">bolt</span>Neon Glow</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_79">Every chart type in this adapter supports an opt-in <code>opts.neon</code> glow, matching the <code>.neon-outline</code> convention already used on buttons and fabs (see <code>weoc-interactive.css</code>). It is off by default — no chart's appearance changes unless a caller explicitly asks for it.</p>
+
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_80"><strong>opts.neon</strong></p>
+          <table class="docs-api-table">
+            <thead><tr><th>Value</th><th>Effect</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-api-type">false</span> / omitted</td>
+                <td>No glow (default).</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-type">true</span></td>
+                <td>Glow using the <code>'primary'</code> severity (<code>--color-10-glow</code>).</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-type">'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info'</span></td>
+                <td>Glow tinted with that severity's <code>--color-{name}-glow</code> token — the same six severities the <code>.neon-outline</code> button/fab variants use.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_81"><strong>WUI.chart()</strong> applies a <code>filter: drop-shadow(...)</code> rule to the host container's uPlot canvas — uPlot renders its own internal canvas, so the adapter cannot reach into individual stroke calls and instead toggles the glow from the outside.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_82"><strong>WUI.pie() / WUI.donut() / WUI.gauge()</strong> draw straight to Canvas 2D, so the glow is a real <code>ctx.shadowBlur</code> / <code>ctx.shadowColor</code> set immediately before each colored fill or stroke and reset right after — the same pattern already used by the KPI sparkline recipe's <code>drawSparkline()</code>.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_83"><strong>WUI.barRow()</strong> renders plain DOM, not canvas — like <code>WUI.chart()</code>, it applies a <code>filter: drop-shadow(...)</code> rule to the host container, scoped in CSS to every <code>.fill</code> segment span so the row's label and value text stay unaffected.</p>
+
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Neon line chart host -->
+                <div id="demo-neon-line-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.chart('#demo-neon-line-chart', {
+  type:   'line',
+  height: 200,
+  legend: true,
+  neon:   'danger',
+  series: [
+    { label: 'Active Incidents', color: 'danger' }
+  ],
+  data: [timestamps, activeIncidents]
+});
+            </template>
+          </div>
+
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Neon donut chart host -->
+                <div id="demo-neon-donut-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.donut('#demo-neon-donut-chart', {
+  height: 240,
+  neon:   true,
+  data: [
+    { label: 'Personnel',  value: 65, color: 'primary' },
+    { label: 'Equipment',  value: 48, color: 'warning' },
+    { label: 'Facilities', value: 22, color: 'success' }
+  ],
+  center: { label: '135', sub: 'Resources' }
+});
+            </template>
+          </div>
+
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Neon gauge host -->
+                <div id="demo-neon-gauge-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.gauge('#demo-neon-gauge-chart', {
+  value:  82,
+  status: 'Critical',
+  neon:   'warning'
+});
+            </template>
+          </div>
+
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <!-- Neon bar-row host -->
+                <div id="demo-neon-barrow-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.barRow('#demo-neon-barrow-chart', {
+  neon: 'success',
+  rows: [
+    { label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] },
+    { label: 'Row 2', value: 40, segments: [{ pct: 40, color: 'warning' }] }
+  ]
+});
+            </template>
+          </div>
+        </div>
+
         <!-- ── Resize ──────────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title" data-wui-i18n-html="docs_charts_61"><span class="material-symbols-outlined">open_in_full</span>Resize</div>

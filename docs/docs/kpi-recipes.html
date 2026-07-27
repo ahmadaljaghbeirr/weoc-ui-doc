@@ -25,6 +25,15 @@
     }
     .recipe-card-summary::-webkit-details-marker { display: none; }
     .recipe-card-summary:hover { background: var(--color-surface-2); }
+    /* .wui-demo-preview is a row-flex (align-items:center, no stretch) inside
+       recipe-card-summary's column-flex (also align-items:center, no stretch)
+       — without an explicit width it shrink-wraps to whatever the header
+       text's intrinsic width happens to be, so a chart tile with SHORT header
+       text (e.g. "Event Timeline") never actually reaches its own inline
+       max-width, self-locking uPlot's canvas to that accidental narrow size.
+       Force full width here so every recipe card's preview reliably reaches
+       its own max-width regardless of title length. */
+    .recipe-card-summary .wui-demo-preview { width: 100%; }
     .recipe-card-hint {
       display: flex; align-items: center; gap: var(--space-1);
       font-size: var(--text-xs); color: var(--color-text-secondary);
@@ -218,10 +227,10 @@
 
           <p class="docs-desc" style="margin-top:var(--space-4)" data-wui-i18n-html="docs_kpi_11b"><strong>With icon, trend arrow &amp; sparkline</strong> (real board recipe — a richer variant for when the KPI needs a 7-day trend, not just a bare number):</p>
 
-          <details class="wui-demo recipe-card" id="recipe-gauge">
+          <details class="wui-demo recipe-card" id="recipe-kpi-sparkline">
             <summary class="recipe-card-summary">
               <div class="wui-demo-preview">
-                <div class="wui-bento-tile" style="max-width:280px">
+                <div class="wui-bento-tile" style="width:100%;max-width:280px">
                   <div class="kpi-card">
                     <div class="kpi-header">
                       <div class="kpi-icon"><span class="material-symbols-outlined">event</span></div>
@@ -257,24 +266,26 @@
                     </div>
                     <button class="wui-demo-copy" type="button" data-demo-copy><span class="material-symbols-outlined">content_copy</span>Copy</button>
                   </div>
-                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="kpi-card"&gt;
-  &lt;div class="kpi-header"&gt;
-    &lt;div class="kpi-icon"&gt;&lt;span class="material-symbols-outlined"&gt;event&lt;/span&gt;&lt;/div&gt;
-    &lt;div class="kpi-title"&gt;TOTAL EVENTS&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="kpi-body wui-h-full wui-w-full"&gt;
-    &lt;div class="kpi-main"&gt;
-      &lt;div class="kpi-value"&gt;&lt;value-of select="//@total_events_expr" /&gt;&lt;/div&gt;
-      &lt;div class="kpi-trend"&gt;
-        &lt;span class="material-symbols-outlined kpi-arrow"&gt;arrow_upward&lt;/span&gt;
-        &lt;span class="kpi-percent"&gt;&lt;value-of select="//@events_trend_percentage_expr" /&gt;%&lt;/span&gt;
-        &lt;span class="kpi-text"&gt;vs last 7 days&lt;/span&gt;
-      &lt;/div&gt;
+                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-bento-tile wui-w-2x2"&gt;
+  &lt;div class="kpi-card"&gt;
+    &lt;div class="kpi-header"&gt;
+      &lt;div class="kpi-icon"&gt;&lt;span class="material-symbols-outlined"&gt;event&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="kpi-title"&gt;TOTAL EVENTS&lt;/div&gt;
     &lt;/div&gt;
-    &lt;div class="kpi-chart"&gt;
-      &lt;span id="eventsTrendStatus" style="display: none"&gt;&lt;value-of select="//@events_trend_status_expr" /&gt;&lt;/span&gt;
-      &lt;span id="sparkTotalData" style="display: none"&gt;&lt;value-of select="//@events_daily_last_7_days_expr" /&gt;&lt;/span&gt;
-      &lt;canvas class="sparkline" id="sparkTotal"&gt;&lt;/canvas&gt;
+    &lt;div class="kpi-body wui-h-full wui-w-full"&gt;
+      &lt;div class="kpi-main"&gt;
+        &lt;div class="kpi-value"&gt;&lt;value-of select="//@total_events_expr" /&gt;&lt;/div&gt;
+        &lt;div class="kpi-trend"&gt;
+          &lt;span class="material-symbols-outlined kpi-arrow"&gt;arrow_upward&lt;/span&gt;
+          &lt;span class="kpi-percent"&gt;&lt;value-of select="//@events_trend_percentage_expr" /&gt;%&lt;/span&gt;
+          &lt;span class="kpi-text"&gt;vs last 7 days&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="kpi-chart"&gt;
+        &lt;span id="eventsTrendStatus" style="display: none"&gt;&lt;value-of select="//@events_trend_status_expr" /&gt;&lt;/span&gt;
+        &lt;span id="sparkTotalData" style="display: none"&gt;&lt;value-of select="//@events_daily_last_7_days_expr" /&gt;&lt;/span&gt;
+        &lt;canvas class="sparkline" id="sparkTotal"&gt;&lt;/canvas&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
@@ -349,10 +360,10 @@ $(document).ready(function () {
           <div class="docs-section-title" data-wui-i18n-html="docs_kpi_12"><span class="material-symbols-outlined">speed</span>3. Gauge</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kpi_13">Semi-circle threshold gauge. Auto-resizes and redraws crisply on any container change (bento tile resize, sidebar collapse, theme toggle) — no board-side wiring needed.</p>
 
-          <details class="wui-demo recipe-card" id="recipe-donut">
+          <details class="wui-demo recipe-card" id="recipe-gauge">
             <summary class="recipe-card-summary">
               <div class="wui-demo-preview">
-                <div class="wui-bento-tile" style="max-width:320px">
+                <div class="wui-bento-tile" style="width:100%;max-width:320px">
                   <div class="wui-tile">
                     <div class="wui-tile-hdr">
                       <div class="wui-tile-title-wrap">
@@ -385,16 +396,20 @@ $(document).ready(function () {
                     </div>
                     <button class="wui-demo-copy" type="button" data-demo-copy><span class="material-symbols-outlined">content_copy</span>Copy</button>
                   </div>
-                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-tile-hdr"&gt;
-  &lt;div class="wui-tile-title-wrap"&gt;
-    &lt;h3 class="wui-tile-title"&gt;Event Closure Performance&lt;/h3&gt;
-    &lt;div class="wui-tile-sub"&gt;Percentage of events closed out of total reported events in the last 7 days&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;speed&lt;/span&gt;&lt;/div&gt;
-&lt;/div&gt;
+                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-bento-tile wui-w-2x5"&gt;
+  &lt;div class="wui-tile"&gt;
+    &lt;div class="wui-tile-hdr"&gt;
+      &lt;div class="wui-tile-title-wrap"&gt;
+        &lt;h3 class="wui-tile-title"&gt;Event Closure Performance&lt;/h3&gt;
+        &lt;div class="wui-tile-sub"&gt;Percentage of events closed out of total reported events in the last 7 days&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;speed&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
 
-&lt;div class="wui-tile-body wui-flex wui-flex-col wui-items-center wui-gap-2"&gt;
-  &lt;div id="eventClosureGauge"&gt;&lt;/div&gt;
+    &lt;div class="wui-tile-body wui-flex wui-flex-col wui-items-center wui-gap-2"&gt;
+      &lt;div id="eventClosureGauge"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                   <pre class="docs-code wui-demo-pane" data-demo-pane="1"><code class="language-markup">&lt;span id="eventClosureRateValue" style="display: none"&gt;
   &lt;value-of select="//@event_closure_rate_expr" /&gt;
@@ -428,19 +443,6 @@ function drawEventClosureGauge() {
             </div>
           </details>
 
-          <p class="docs-desc" style="margin-top:var(--space-4)" data-wui-i18n-html="docs_kpi_14"><strong>Generic copy-paste template</strong> (the reusable shape behind the real card above):</p>
-          <pre class="docs-code">&lt;div id="{{unique-element-id}}"&gt;&lt;/div&gt;
-
-&lt;script&gt;
-WUI.gauge('#{{unique-element-id}}', {
-  value: {{0-100}},
-  status: '{{pre-localized status text, e.g. Ready / At Risk}}',
-  height: {{px, default 140}},
-  zones: {{optional — [{ to: 40, color: 'danger' }, { to: 70, color: 'warning' }, { to: 100, color: 'success' }] is the default}}
-});
-&lt;/script&gt;
-
-&lt;!-- OR pull value/status from a BoardScript call instead of a hidden expression span --&gt;</pre>
         </div>
 
         <!-- ══════════════════════════════════════════════════════════
@@ -450,10 +452,10 @@ WUI.gauge('#{{unique-element-id}}', {
           <div class="docs-section-title" data-wui-i18n-html="docs_kpi_15"><span class="material-symbols-outlined">donut_large</span>4. Donut / Pie (category split)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kpi_16">Raw Canvas 2D, no dependency. Use for a categorical breakdown (events by classification, resources by type). <code>WUI.pie()</code> is the same call with <code>cutout</code> omitted.</p>
 
-          <details class="wui-demo recipe-card" id="recipe-kpi-sparkline">
+          <details class="wui-demo recipe-card" id="recipe-donut">
             <summary class="recipe-card-summary">
               <div class="wui-demo-preview">
-                <div class="wui-bento-tile" style="max-width:320px">
+                <div class="wui-bento-tile" style="width:100%;max-width:320px">
                   <div class="wui-tile">
                     <div class="wui-tile-hdr">
                       <div class="wui-tile-title-wrap">
@@ -487,17 +489,21 @@ WUI.gauge('#{{unique-element-id}}', {
                     </div>
                     <button class="wui-demo-copy" type="button" data-demo-copy><span class="material-symbols-outlined">content_copy</span>Copy</button>
                   </div>
-                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-tile-hdr"&gt;
-  &lt;div class="wui-tile-title-wrap"&gt;
-    &lt;h3 class="wui-tile-title"&gt;Events by Classification&lt;/h3&gt;
-    &lt;div class="wui-tile-sub"&gt;Distribution of reported events&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;donut_large&lt;/span&gt;&lt;/div&gt;
-&lt;/div&gt;
+                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-bento-tile wui-w-2x5"&gt;
+  &lt;div class="wui-tile"&gt;
+    &lt;div class="wui-tile-hdr"&gt;
+      &lt;div class="wui-tile-title-wrap"&gt;
+        &lt;h3 class="wui-tile-title"&gt;Events by Classification&lt;/h3&gt;
+        &lt;div class="wui-tile-sub"&gt;Distribution of reported events&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;donut_large&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
 
-&lt;div class="wui-tile-body wui-flex wui-flex-col wui-items-center wui-gap-2"&gt;
-  &lt;div id="classificationDonut"&gt;&lt;/div&gt;
-  &lt;div class="wui-tile-legend" id="classificationLegendDock"&gt;&lt;/div&gt;
+    &lt;div class="wui-tile-body wui-flex wui-flex-col wui-items-center wui-gap-2"&gt;
+      &lt;div id="classificationDonut"&gt;&lt;/div&gt;
+      &lt;div class="wui-tile-legend" id="classificationLegendDock"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                   <pre class="docs-code wui-demo-pane" data-demo-pane="1"><code class="language-markup">&lt;externalexpression name="classification_hse_expr" board="Event Reporting V2.0"
   table="Event Reports Table" filter="isDeleted != 1 AND Classification = 'HSE'"&gt;
@@ -560,23 +566,6 @@ function drawClassificationDonut() {
             </div>
           </details>
 
-          <p class="docs-desc" style="margin-top:var(--space-4)" data-wui-i18n-html="docs_kpi_17"><strong>Generic copy-paste template</strong> (the reusable shape behind the real card above):</p>
-          <pre class="docs-code">&lt;div id="{{unique-element-id}}"&gt;&lt;/div&gt;
-&lt;div class="wui-tile-legend" id="{{unique-legend-id}}"&gt;&lt;/div&gt;
-
-&lt;script&gt;
-WUI.donut('#{{unique-element-id}}', {
-  height: {{px, default 240}},
-  legend: true, // auto-legend appends inside the chart host — relocate the LAST child into your legend dock once
-  data: [
-    { label: '{{Category A}}', value: {{count}}, color: '{{primary/success/warning/danger/info/secondary}}' },
-    { label: '{{Category B}}', value: {{count}}, color: '{{color}}' }
-    {{ … one row per category }}
-  ]
-});
-&lt;/script&gt;
-
-&lt;!-- OR pull the data array from a BoardScript call instead of expression-backed hidden spans --&gt;</pre>
         </div>
 
         <!-- ══════════════════════════════════════════════════════════
@@ -628,7 +617,7 @@ WUI.barRow('#{{unique-element-id}}', {
           <details class="wui-demo recipe-card" id="recipe-location">
             <summary class="recipe-card-summary">
               <div class="wui-demo-preview">
-                <div class="wui-bento-tile" style="max-width:320px">
+                <div class="wui-bento-tile" style="width:100%;max-width:320px">
                   <div class="wui-tile">
                     <div class="wui-tile-hdr">
                       <div class="wui-tile-title-wrap">
@@ -658,22 +647,26 @@ WUI.barRow('#{{unique-element-id}}', {
                     </div>
                     <button class="wui-demo-copy" type="button" data-demo-copy><span class="material-symbols-outlined">content_copy</span>Copy</button>
                   </div>
-                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-tile-hdr"&gt;
-  &lt;div class="wui-tile-title-wrap"&gt;
-    &lt;h3 class="wui-tile-title"&gt;Events By Location&lt;/h3&gt;
-    &lt;div class="wui-tile-sub"&gt;Top 5 event areas&lt;/div&gt;
+                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-bento-tile wui-w-2x5"&gt;
+  &lt;div class="wui-tile"&gt;
+    &lt;div class="wui-tile-hdr"&gt;
+      &lt;div class="wui-tile-title-wrap"&gt;
+        &lt;h3 class="wui-tile-title"&gt;Events By Location&lt;/h3&gt;
+        &lt;div class="wui-tile-sub"&gt;Top 5 event areas&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;location_on&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="wui-tile-body"&gt;
+      &lt;div id="eventsLocationList"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class="wui-tile-footer justify-end"&gt;
+      &lt;button type="button" class="wui-btn ghost primary wui-btn-sm"&gt;
+        View All Events&lt;span class="material-symbols-outlined"&gt;arrow_forward&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
   &lt;/div&gt;
-  &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;location_on&lt;/span&gt;&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;div class="wui-tile-body"&gt;
-  &lt;div id="eventsLocationList"&gt;&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;div class="wui-tile-footer justify-end"&gt;
-  &lt;button type="button" class="wui-btn ghost primary wui-btn-sm"&gt;
-    View All Events&lt;span class="material-symbols-outlined"&gt;arrow_forward&lt;/span&gt;
-  &lt;/button&gt;
 &lt;/div&gt;</code></pre>
                   <pre class="docs-code wui-demo-pane" data-demo-pane="1"><code class="language-javascript">function initEventsLocationWidget() {
   var host = document.getElementById("eventsLocationList");
@@ -703,7 +696,7 @@ WUI.barRow('#{{unique-element-id}}', {
           <details id="recipe-emergency" class="wui-demo recipe-card" style="margin-top:var(--space-3)">
             <summary class="recipe-card-summary">
               <div class="wui-demo-preview">
-                <div class="wui-bento-tile" style="max-width:320px">
+                <div class="wui-bento-tile" style="width:100%;max-width:320px">
                   <div class="wui-tile">
                     <div class="wui-tile-hdr">
                       <div class="wui-tile-title-wrap">
@@ -739,21 +732,25 @@ WUI.barRow('#{{unique-element-id}}', {
                     </div>
                     <button class="wui-demo-copy" type="button" data-demo-copy><span class="material-symbols-outlined">content_copy</span>Copy</button>
                   </div>
-                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-tile-hdr"&gt;
-  &lt;div class="wui-tile-title-wrap"&gt;
-    &lt;h3 class="wui-tile-title"&gt;Events By Emergency Level&lt;/h3&gt;
-    &lt;div class="wui-tile-sub"&gt;Tier distribution by classification&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-tile-icon orange"&gt;&lt;span class="material-symbols-outlined"&gt;emergency&lt;/span&gt;&lt;/div&gt;
-&lt;/div&gt;
+                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-bento-tile wui-w-2x5"&gt;
+  &lt;div class="wui-tile"&gt;
+    &lt;div class="wui-tile-hdr"&gt;
+      &lt;div class="wui-tile-title-wrap"&gt;
+        &lt;h3 class="wui-tile-title"&gt;Events By Emergency Level&lt;/h3&gt;
+        &lt;div class="wui-tile-sub"&gt;Tier distribution by classification&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="wui-tile-icon orange"&gt;&lt;span class="material-symbols-outlined"&gt;emergency&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
 
-&lt;div class="wui-tile-body wui-flex wui-flex-col wui-gap-3"&gt;
-  &lt;div id="emergencyLevelList"&gt;&lt;/div&gt;
-  &lt;div class="emergency-level-legend"&gt;
-    &lt;span class="emergency-level-legend-item"&gt;&lt;span class="emergency-level-dot tier-1"&gt;&lt;/span&gt;Tier 1&lt;/span&gt;
-    &lt;span class="emergency-level-legend-item"&gt;&lt;span class="emergency-level-dot tier-2"&gt;&lt;/span&gt;Tier 2&lt;/span&gt;
-    &lt;span class="emergency-level-legend-item"&gt;&lt;span class="emergency-level-dot tier-3"&gt;&lt;/span&gt;Tier 3&lt;/span&gt;
-    &lt;span class="emergency-level-legend-item"&gt;&lt;span class="emergency-level-dot tier-4"&gt;&lt;/span&gt;Tier 4&lt;/span&gt;
+    &lt;div class="wui-tile-body wui-flex wui-flex-col wui-gap-3"&gt;
+      &lt;div id="emergencyLevelList"&gt;&lt;/div&gt;
+      &lt;div class="emergency-level-legend"&gt;
+        &lt;span class="emergency-level-legend-item"&gt;&lt;span class="emergency-level-dot tier-1"&gt;&lt;/span&gt;Tier 1&lt;/span&gt;
+        &lt;span class="emergency-level-legend-item"&gt;&lt;span class="emergency-level-dot tier-2"&gt;&lt;/span&gt;Tier 2&lt;/span&gt;
+        &lt;span class="emergency-level-legend-item"&gt;&lt;span class="emergency-level-dot tier-3"&gt;&lt;/span&gt;Tier 3&lt;/span&gt;
+        &lt;span class="emergency-level-legend-item"&gt;&lt;span class="emergency-level-dot tier-4"&gt;&lt;/span&gt;Tier 4&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                   <pre class="docs-code wui-demo-pane" data-demo-pane="1"><code class="language-markup">&lt;span id="emergencyHSEData" style="display: none"&gt;&lt;value-of select="//@emergency_hse_tiers_expr" /&gt;&lt;/span&gt;
@@ -816,7 +813,7 @@ function initEmergencyLevelWidget() {
           <details class="wui-demo recipe-card" id="recipe-chart">
             <summary class="recipe-card-summary">
               <div class="wui-demo-preview">
-                <div class="wui-bento-tile" style="max-width:420px">
+                <div class="wui-bento-tile" style="width:100%;max-width:420px">
                   <div class="wui-tile">
                     <div class="wui-tile-hdr">
                       <div class="wui-tile-title-wrap">
@@ -849,16 +846,20 @@ function initEmergencyLevelWidget() {
                     </div>
                     <button class="wui-demo-copy" type="button" data-demo-copy><span class="material-symbols-outlined">content_copy</span>Copy</button>
                   </div>
-                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-tile-hdr"&gt;
-  &lt;div class="wui-tile-title-wrap"&gt;
-    &lt;h3 class="wui-tile-title"&gt;Event Timeline&lt;/h3&gt;
-    &lt;div class="wui-tile-sub"&gt;Weekly event trend&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;timeline&lt;/span&gt;&lt;/div&gt;
-&lt;/div&gt;
+                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-bento-tile wui-w-4x5"&gt;
+  &lt;div class="wui-tile"&gt;
+    &lt;div class="wui-tile-hdr"&gt;
+      &lt;div class="wui-tile-title-wrap"&gt;
+        &lt;h3 class="wui-tile-title"&gt;Event Timeline&lt;/h3&gt;
+        &lt;div class="wui-tile-sub"&gt;Weekly event trend&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;timeline&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
 
-&lt;div class="wui-tile-body" style="height:220px"&gt;
-  &lt;div id="eventTimelineChart" style="height:100%"&gt;&lt;/div&gt;
+    &lt;div class="wui-tile-body" style="height:220px"&gt;
+      &lt;div id="eventTimelineChart" style="height:100%"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                   <pre class="docs-code wui-demo-pane" data-demo-pane="1"><code class="language-markup">&lt;externalexpression name="event_timeline_values_expr" board="Event Reporting V2.0" table="Event Reports Table"
   filter="isDeleted != 1"&gt;
@@ -930,22 +931,6 @@ function drawEventTimelineChart() {
             </div>
           </details>
 
-          <p class="docs-desc" style="margin-top:var(--space-4)" data-wui-i18n-html="docs_kpi_23"><strong>Generic copy-paste template</strong> (the reusable shape behind the real card above):</p>
-          <pre class="docs-code">&lt;div id="{{unique-element-id}}"&gt;&lt;/div&gt;
-
-&lt;script&gt;
-WUI.chart('#{{unique-element-id}}', {
-  type: '{{line/area/bar/stepped}}',
-  height: {{px — 40-60 for a sparkline, 120-220 for a full chart}},
-  series: [{ label: '{{Series name}}', color: '{{primary/success/warning/danger/info/secondary}}' }],
-  data: [
-    {{ [ts1, ts2, ts3, ...] — real ascending Unix-SECOND timestamps }},
-    {{ [v1, v2, v3, ...] — one value per timestamp, same length }}
-  ]
-});
-&lt;/script&gt;
-
-&lt;!-- OR pull data from a BoardScript call instead of an expression-backed hidden span --&gt;</pre>
         </div>
 
         <!-- ══════════════════════════════════════════════════════════
@@ -996,7 +981,7 @@ WUI.chart('#{{unique-element-id}}', {
           <details class="wui-demo recipe-card" id="recipe-quick-actions">
             <summary class="recipe-card-summary">
               <div class="wui-demo-preview">
-                <div class="wui-bento-tile" style="max-width:420px">
+                <div class="wui-bento-tile" style="width:100%;max-width:420px">
                   <div class="wui-tile">
                     <div class="wui-tile-hdr">
                       <div class="wui-tile-title-wrap">
@@ -1032,20 +1017,24 @@ WUI.chart('#{{unique-element-id}}', {
                     </div>
                     <button class="wui-demo-copy" type="button" data-demo-copy><span class="material-symbols-outlined">content_copy</span>Copy</button>
                   </div>
-                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-tile-hdr"&gt;
-  &lt;div class="wui-tile-title-wrap"&gt;
-    &lt;h3 class="wui-tile-title"&gt;Quick Actions&lt;/h3&gt;
-    &lt;div class="wui-tile-sub"&gt;Quick actions to modules&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;arrow_split&lt;/span&gt;&lt;/div&gt;
-&lt;/div&gt;
+                  <pre class="docs-code wui-demo-pane is-active" data-demo-pane="0"><code class="language-markup">&lt;div class="wui-bento-tile wui-w-10x2"&gt;
+  &lt;div class="wui-tile"&gt;
+    &lt;div class="wui-tile-hdr"&gt;
+      &lt;div class="wui-tile-title-wrap"&gt;
+        &lt;h3 class="wui-tile-title"&gt;Quick Actions&lt;/h3&gt;
+        &lt;div class="wui-tile-sub"&gt;Quick actions to modules&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class="wui-tile-icon blue"&gt;&lt;span class="material-symbols-outlined"&gt;arrow_split&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
 
-&lt;div class="wui-tile-body"&gt;
-  &lt;div class="wui-grid wui-grid-6 compact wui-gap-2"&gt;
-    &lt;button type="button" class="js-quick-action-btn wui-btn vertical square xs outline primary" data-action="add-event" title="Add Event"&gt;
-      &lt;span class="material-symbols-outlined"&gt;add_circle&lt;/span&gt;
-    &lt;/button&gt;
-    &lt;!-- ... 5 more buttons, same shape, one wui-btn color per action group ... --&gt;
+    &lt;div class="wui-tile-body"&gt;
+      &lt;div class="wui-grid wui-grid-6 compact wui-gap-2"&gt;
+        &lt;button type="button" class="js-quick-action-btn wui-btn vertical square xs outline primary" data-action="add-event" title="Add Event"&gt;
+          &lt;span class="material-symbols-outlined"&gt;add_circle&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;!-- ... 5 more buttons, same shape, one wui-btn color per action group ... --&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
                   <pre class="docs-code wui-demo-pane" data-demo-pane="1"><code class="language-javascript">// One delegated handler per action group — don't wire per-button onclick.
@@ -1214,16 +1203,29 @@ document.addEventListener("click", function (e) {
     })();
 
     // Dashboard Overview — click a tile, open + scroll to its recipe below.
+    // Single-open-at-a-time: closes any other open recipe card first so the
+    // page height is stable BEFORE we measure where to scroll (an
+    // already-open unrelated card growing/shrinking the page at the same
+    // time as this one opens was throwing scrollIntoView's target off).
     (function () {
       document.addEventListener('click', function (e) {
         var tile = e.target.closest('.dash-tile[data-recipe]');
         if (!tile) { return; }
         var target = document.getElementById(tile.getAttribute('data-recipe'));
         if (!target) { return; }
+        document.querySelectorAll('.recipe-card[open]').forEach(function (el) {
+          if (el !== target) { el.open = false; }
+        });
         target.open = true;
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        target.classList.add('is-flash');
-        setTimeout(function () { target.classList.remove('is-flash'); }, 1300);
+        // wait a frame so the browser has laid out the now-open (and any
+        // now-closed) <details> before scrollIntoView measures positions.
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('is-flash');
+            setTimeout(function () { target.classList.remove('is-flash'); }, 1300);
+          });
+        });
       });
     })();
   </script>
