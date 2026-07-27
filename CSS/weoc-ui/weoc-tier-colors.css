@@ -427,7 +427,21 @@
 }
 
 /* ============================================================
-   9) DYNAMIC TIER ACCENT (--tier-color)
+   9) MAP POPOVER tier variants
+   ============================================================ */
+
+.wui-map-pop-accent.tier-1 { background: var(--tier-1-color); }
+.wui-map-pop-accent.tier-2 { background: var(--tier-2-color); }
+.wui-map-pop-accent.tier-3 { background: var(--tier-3-color); }
+.wui-map-pop-accent.tier-4 { background: var(--tier-4-color); }
+
+.wui-map-pop-icon-wrap.tier-1 { background: var(--tier-1-light); color: var(--tier-1-text); }
+.wui-map-pop-icon-wrap.tier-2 { background: var(--tier-2-light); color: var(--tier-2-text); }
+.wui-map-pop-icon-wrap.tier-3 { background: var(--tier-3-light); color: var(--tier-3-text); }
+.wui-map-pop-icon-wrap.tier-4 { background: var(--tier-4-light); color: var(--tier-4-text); }
+
+/* ============================================================
+   10) DYNAMIC TIER ACCENT (--tier-color)
    For tier lists that are runtime-configured (not the fixed agency
    tier-1..4 set) — e.g. the Response Configuration per-tier panels,
    where each tier's color comes from the Assessment Matrix config.

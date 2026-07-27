@@ -21,16 +21,16 @@
       Applied SYNCHRONOUSLY the moment this file is parsed — so just including
       weoc-ui.js in <head> sets <html data-theme> before the body paints (no
       flash, no per-board loadTheme()).
-       Resolve order:
+        Resolve order:
         1. 'juvareUserPreferredThemeMode'  — Nexus sets this natively; we read it.
         2. 'eocUserPreferredThemeMode'      — OURS. Legacy WebEOC has no native key,
            so we create + manage this one (the single key everything reads/writes there).
         3. OS preference (prefers-color-scheme), then 'light'.
       On LEGACY first run (neither key present) we CREATE our key so the choice sticks.
-       WUI.getTheme() · WUI.setTheme('dark'|'light'[, {persist:false}]) · WUI.toggleTheme()
+        WUI.getTheme() · WUI.setTheme('dark'|'light'[, {persist:false}]) · WUI.toggleTheme()
       setTheme always writes our key, and ALSO syncs the Nexus key when it's present
       (so a toggle persists in either world). Fires `wui:themechange` on <html> (detail.dark).
-       [data-wui-theme-toggle]  — declarative switch on any button (click = toggleTheme).
+        [data-wui-theme-toggle]  — declarative switch on any button (click = toggleTheme).
         AUTO-HIDDEN on Nexus (native control exists), shown on legacy. WUI.nativeTheme
         flags whether a native theme control is present (true on Nexus).
       ═══════════════════════════════════════════════════════════════════════ */
@@ -110,6 +110,52 @@
      if (document.readyState !== 'loading') wuiHideThemeToggles();else document.addEventListener('DOMContentLoaded', wuiHideThemeToggles);
    }
 
+   /* ── Declarative label/icon swap (optional) ────────────────────────────────
+      A [data-wui-theme-toggle] button MAY carry two child markers plus board-
+      supplied swap values, so a board gets a self-relabeling toggle with no
+      board-local JS: a child [data-wui-theme-label] (textContent swapped) and/or
+      a child [data-wui-theme-icon] (textContent swapped — this project uses
+      ligature icon fonts, e.g. Material Symbols, where the icon name IS the
+      text). Values come from data attributes on the TOGGLE itself, named for
+      the theme they represent — data-wui-theme-label-light/-dark (i18n keys,
+      via WUI.i18n.t(key, key)) and data-wui-theme-icon-light/-dark (literal
+      ligature strings — icons aren't translated). data-wui-theme-aria-light/
+      -dark (i18n keys) optionally set the button's own aria-label. A button's
+      shown label/icon/aria is always the ONE NAMED FOR THE THEME A CLICK WOULD
+      SWITCH TO (e.g. while the page is light, the "-dark" set is shown — "Dark
+      Mode" / dark_mode — matching the existing HomePage markup convention).
+      Entirely optional: any toggle missing the child markers or data
+      attributes is skipped silently, never throws. Runs once at initial load
+      and on every wui:themechange (a sibling listener to the TinyMCE one
+      below — that one stays untouched). */
+   function wuiThemeToggleSwap(theme) {
+     var target = theme === 'dark' ? 'light' : 'dark'; // the theme a click would switch TO
+     var toggles = document.querySelectorAll('[data-wui-theme-toggle]');
+     var i, toggle, labelEl, iconEl, labelKey, iconVal, ariaKey;
+     for (i = 0; i < toggles.length; i++) {
+       toggle = toggles[i];
+       labelEl = toggle.querySelector('[data-wui-theme-label]');
+       if (labelEl) {
+         labelKey = toggle.getAttribute('data-wui-theme-label-' + target);
+         if (labelKey) labelEl.textContent = window.WUI && WUI.i18n ? WUI.i18n.t(labelKey, labelKey) : labelKey;
+       }
+       iconEl = toggle.querySelector('[data-wui-theme-icon]');
+       if (iconEl) {
+         iconVal = toggle.getAttribute('data-wui-theme-icon-' + target);
+         if (iconVal) iconEl.textContent = iconVal;
+       }
+       ariaKey = toggle.getAttribute('data-wui-theme-aria-' + target);
+       if (ariaKey) toggle.setAttribute('aria-label', window.WUI && WUI.i18n ? WUI.i18n.t(ariaKey, ariaKey) : ariaKey);
+     }
+   }
+   var wuiInitThemeToggleSwap = function wuiInitThemeToggleSwap() {
+     wuiThemeToggleSwap(WUI.getTheme());
+   };
+   if (document.readyState !== 'loading') wuiInitThemeToggleSwap();else document.addEventListener('DOMContentLoaded', wuiInitThemeToggleSwap);
+   document.documentElement.addEventListener('wui:themechange', function (e) {
+     wuiThemeToggleSwap(e && e.detail ? e.detail.theme : WUI.getTheme());
+   });
+
    /* ── TinyMCE theme sync ────────────────────────────────────────────────────
       A TinyMCE editor renders its content in an <iframe> — a SEPARATE document
       that inherits nothing from the page, so setting <html data-theme> here does
@@ -118,7 +164,7 @@
       it in lock-step with the page. The .tox-* chrome lives in THIS document and
       already follows the page theme via agency tokens — only the content iframe
       needs the bridge.
-       Per editor, one line in your init (init_instance_callback fires once the
+        Per editor, one line in your init (init_instance_callback fires once the
       iframe exists AND content_css has applied — the reliable hook):
         init_instance_callback: function (ed) { WUI.applyTinyMCETheme(ed); }
       Live toggles are handled for you: wui:themechange re-syncs every editor. */
@@ -537,6 +583,91 @@
      if (lockCount === 0) document.body.classList.remove('wui-scroll-locked');
    };
 
+   /* §RESPONSIVE — WUI.responsive.observe(el, onResize, opts) -> { disconnect() }
+      One ResizeObserver per call site (not pooled — cheap at dashboard widget
+      counts, simpler than managing a shared registry).
+
+      - rAF-coalesced: multiple entries firing within one frame collapse into a
+        single onResize call.
+      - Skip-if-unchanged: rounds width/height, no-ops if identical to last call.
+      - Min-size guard: opts.minWidth / opts.minHeight — below threshold,
+        onResize fires with { tooSmall: true } instead of usable dimensions, so
+        callers can render a defined empty-state instead of broken geometry.
+      - Falls back to a throttled window-resize listener when ResizeObserver is
+        unavailable (mirrors interaction/tab-scroll.js's existing fallback). */
+   WUI.responsive = {};
+   WUI.responsive.observe = function (el, onResize, opts) {
+     opts = opts || {};
+     var minWidth = opts.minWidth || 0;
+     var minHeight = opts.minHeight || 0;
+     var lastW = null;
+     var lastH = null;
+     var rafId = null;
+     var pendingW = 0;
+     var pendingH = 0;
+     var disconnected = false;
+     function flush() {
+       rafId = null;
+       if (disconnected) {
+         return;
+       }
+       var w = Math.round(pendingW);
+       var h = Math.round(pendingH);
+       if (w === lastW && h === lastH) {
+         return;
+       }
+       lastW = w;
+       lastH = h;
+       onResize({
+         tooSmall: w < minWidth || h < minHeight,
+         width: w,
+         height: h
+       });
+     }
+     function schedule(w, h) {
+       pendingW = w;
+       pendingH = h;
+       if (rafId === null) {
+         rafId = requestAnimationFrame(flush);
+       }
+     }
+     var ro = null;
+     var fallbackHandler = null;
+     if (typeof window.ResizeObserver !== 'undefined') {
+       ro = new window.ResizeObserver(function (entries) {
+         if (disconnected || !entries.length) {
+           return;
+         }
+         var box = entries[0].contentRect;
+         schedule(box.width, box.height);
+       });
+       ro.observe(el);
+     } else {
+       var measure = function measure() {
+         var r = el.getBoundingClientRect();
+         schedule(r.width, r.height);
+       };
+       fallbackHandler = WUI.throttle(measure, 60);
+       window.addEventListener('resize', fallbackHandler);
+       measure();
+     }
+     return {
+       disconnect: function disconnect() {
+         disconnected = true;
+         if (rafId !== null) {
+           cancelAnimationFrame(rafId);
+           rafId = null;
+         }
+         if (ro) {
+           ro.disconnect();
+         }
+         if (fallbackHandler) {
+           window.removeEventListener('resize', fallbackHandler);
+         }
+       }
+     };
+   };
+
    /* ═══════════════════════════════════════════════════════════════════════
       2) CLASS HELPERS
       ═══════════════════════════════════════════════════════════════════════ */
@@ -803,7 +934,7 @@
       interactive control inside it (button, link, field) or [data-wui-no-activate].
       That guard replaces the per-board check
       ( !closest('.ev-actions-wrap') && !closest('.wui-popover') && … ).
-       data-wui-panel="#id" (optional)
+        data-wui-panel="#id" (optional)
         Also opens the named panel on activate. When that panel is closed (by any
         mechanism — Esc, dismiss button, outside click) the active class is cleared
         from the item's group so the selection doesn't linger after dismissal.
@@ -880,7 +1011,7 @@
       [data-wui-collapse] toggles `is-open` on the nearest [data-wui-collapsible]
       (or data-wui-collapse="#id"). In-flow content, so deliberately NO Esc /
       outside-click — unlike the dismissible overlays above.
-       XSL note: data-wui-collapse="true" is valid (XML boolean) — treated the same
+        XSL note: data-wui-collapse="true" is valid (XML boolean) — treated the same
       as no value (finds nearest [data-wui-collapsible]). Only strings starting with
       #, ., or [ are treated as a CSS selector.
       ═══════════════════════════════════════════════════════════════════════ */
@@ -916,7 +1047,7 @@
       as activate). Independent — no accordion; many rows can be open at once.
       Keep the detail OUTSIDE the [data-wui-row] element (a sibling), so clicks in
       it — including its action buttons — never toggle the row.
-         <div class="wui-log-item">
+          <div class="wui-log-item">
           <div class="wui-log-row" data-wui-row="true"> …cells… </div>
           <div class="wui-log-detail"> …description, actions… </div>
         </div>
@@ -938,30 +1069,269 @@
    });
 
    /* ═══════════════════════════════════════════════════════════════════════
+      SIDEBAR  (collapsible nav rail — collapse toggle, search-filter, active
+      highlight). Generalized from a board-local jQuery sidebar.js. Vanilla JS,
+      delegated on `document`, bound only off data-wui-sidebar-* attributes
+      (classes stay for CSS only).
+       Markup contract:
+        [data-wui-sidebar-root]           the scrollable nav — scoping boundary
+                                           for search/filter/highlight.
+        [data-wui-sidebar-item]           a nav link/viewlink.
+        [data-wui-sidebar-section-title]  a group heading above a run of items.
+        [data-wui-sidebar-empty]          static "no matches" element (board
+                                           owns its own i18n marker on it; this
+                                           module only toggles its display).
+        [data-wui-sidebar-search]         the filter <input>.
+        [data-wui-sidebar-search-clear]   the clear button next to it.
+        [data-wui-sidebar-toggle]         collapse/expand button. Value is
+                                           either a CSS selector (starts with
+                                           #, . or [ ) naming the scope element
+                                           directly, or anything else (e.g.
+                                           "true") -> nearest ancestor
+                                           [data-wui-sidebar-scope]. Same
+                                           selector-or-nearest-ancestor
+                                           convention as data-wui-collapse
+                                           (see disclosure.js).
+          data-wui-sidebar-breakpoint     px width below which the sidebar is
+                                           force-collapsed once it's crossed
+                                           while expanded (int, default 992;
+                                           one-directional — never forces back
+                                           open).
+          data-wui-sidebar-label-expanded / -collapsed
+                                           i18n keys for the button's
+                                           .wui-sidebar-btn-label child (the
+                                           one child-class lookup this module
+                                           allows, same convenience disclosure/
+                                           theme modules use).
+          data-wui-sidebar-aria-expanded / -collapsed
+                                           i18n keys for the button's own
+                                           aria-label.
+          data-wui-sidebar-ratio-expanded / -collapsed
+                                           optional class names toggled on
+                                           the scope element as it
+                                           collapses/expands (e.g. a
+                                           wui-split ratio-1-3/ratio-1-4
+                                           pair) — lets a board size its
+                                           whole split off this same state
+                                           with no CSS of its own.
+        [data-wui-sidebar-scope]          the ancestor whose `sidebar-collapsed`
+                                           class is toggled; fires
+                                           `wui:sidebarcollapse`
+                                           (detail: {collapsed}) on ITSELF so
+                                           board-local code can react (resize a
+                                           map, redraw a chart) with no
+                                           knowledge of this module.
+      ═══════════════════════════════════════════════════════════════════════ */
+
+   function wuiSidebarT(key, fallback) {
+     return window.WUI && WUI.i18n ? WUI.i18n.t(key, fallback) : fallback;
+   }
+
+   /* Walk up from el's parent looking for an ancestor whose subtree contains a
+      `selector` match — finds the nearest ENCLOSING scope for a control even
+      when the target isn't a plain ancestor of el (e.g. the search input lives
+      in the sidebar header, a sibling of the nav root, not a descendant of
+      it). Falls back to the whole document (single-sidebar-per-page case). */
+   function wuiSidebarNearest(el, selector) {
+     var node = el.parentElement;
+     var found;
+     while (node) {
+       found = node.querySelector(selector);
+       if (found) return found;
+       node = node.parentElement;
+     }
+     return document.querySelector(selector);
+   }
+
+   /* Scoped nav root for any item/input: nearest ancestor first (the normal
+      case), else the nearest-enclosing fallback above, else `document`. */
+   function wuiSidebarRootFor(el) {
+     var root = el.closest && el.closest('[data-wui-sidebar-root]');
+     return root || wuiSidebarNearest(el, '[data-wui-sidebar-root]') || document;
+   }
+
+   /* Scope element for a toggle trigger: selector string wins, else nearest
+      [data-wui-sidebar-scope] ancestor — mirrors data-wui-collapse exactly. */
+   function wuiSidebarScopeFor(trigger) {
+     var sel = trigger.getAttribute('data-wui-sidebar-toggle');
+     var isSelector = sel && /^[#.[[]/.test(sel);
+     return isSelector ? document.querySelector(sel) : trigger.closest('[data-wui-sidebar-scope]');
+   }
+
+   /* Sync one toggle button's label/aria to the scope's current collapsed
+      state. Missing data attributes fall back to a generic English literal
+      (used as both the i18n key and the fallback) as a last resort. */
+   function wuiSidebarUpdateToggle(trigger, scopeEl) {
+     if (!trigger || !scopeEl) return;
+     var collapsed = scopeEl.classList.contains('sidebar-collapsed');
+     var label = trigger.querySelector('.wui-sidebar-btn-label');
+     if (label) {
+       var labelKey = collapsed ? trigger.getAttribute('data-wui-sidebar-label-collapsed') || 'Expand' : trigger.getAttribute('data-wui-sidebar-label-expanded') || 'Collapse';
+       label.textContent = wuiSidebarT(labelKey, collapsed ? 'Expand' : 'Collapse');
+     }
+     var ariaKey = collapsed ? trigger.getAttribute('data-wui-sidebar-aria-collapsed') || 'ExpandSidebar' : trigger.getAttribute('data-wui-sidebar-aria-expanded') || 'CollapseSidebar';
+     trigger.setAttribute('aria-label', wuiSidebarT(ariaKey, collapsed ? 'Expand sidebar' : 'Collapse sidebar'));
+
+     /* Optional: swap a ratio class (e.g. a wui-split ratio-1-3/ratio-1-4
+        pair) on the scope element as the sidebar collapses/expands, so a
+        board can size its whole split off the same collapse state instead
+        of writing its own CSS. No-op if the trigger doesn't carry these. */
+     var ratioExpanded = trigger.getAttribute('data-wui-sidebar-ratio-expanded');
+     var ratioCollapsed = trigger.getAttribute('data-wui-sidebar-ratio-collapsed');
+     if (ratioExpanded) scopeEl.classList.toggle(ratioExpanded, !collapsed);
+     if (ratioCollapsed) scopeEl.classList.toggle(ratioCollapsed, collapsed);
+   }
+   function wuiSidebarUpdateAllToggles() {
+     var triggers = document.querySelectorAll('[data-wui-sidebar-toggle]');
+     for (var i = 0; i < triggers.length; i++) {
+       var scopeEl = wuiSidebarScopeFor(triggers[i]);
+       if (scopeEl) wuiSidebarUpdateToggle(triggers[i], scopeEl);
+     }
+   }
+
+   /* click: collapse/expand -------------------------------------------------- */
+   document.addEventListener('click', function (e) {
+     var trigger = e.target.closest('[data-wui-sidebar-toggle]');
+     if (!trigger) return;
+     var scopeEl = wuiSidebarScopeFor(trigger);
+     if (!scopeEl) return;
+     var collapsed = scopeEl.classList.toggle('sidebar-collapsed');
+     wuiSidebarUpdateToggle(trigger, scopeEl);
+     scopeEl.dispatchEvent(new CustomEvent('wui:sidebarcollapse', {
+       bubbles: true,
+       detail: {
+         collapsed: collapsed
+       }
+     }));
+   });
+
+   /* Initial label/aria pass + one matchMedia breakpoint watcher per toggle
+      button found at ready-time. One-directional: only forces collapse when
+      crossing INTO narrow while currently expanded; never forces back open. */
+   WUI.ready(function () {
+     var triggers = document.querySelectorAll('[data-wui-sidebar-toggle]');
+     for (var i = 0; i < triggers.length; i++) {
+       (function (trigger) {
+         var scopeEl = wuiSidebarScopeFor(trigger);
+         if (!scopeEl) return;
+         wuiSidebarUpdateToggle(trigger, scopeEl);
+         var bp = parseInt(trigger.getAttribute('data-wui-sidebar-breakpoint'), 10);
+         if (!bp || bp <= 0) bp = 992;
+         var mq = window.matchMedia('(max-width: ' + bp + 'px)');
+         function handleBreakpoint(e) {
+           if (e.matches && !scopeEl.classList.contains('sidebar-collapsed')) {
+             scopeEl.classList.add('sidebar-collapsed');
+             wuiSidebarUpdateToggle(trigger, scopeEl);
+             scopeEl.dispatchEvent(new CustomEvent('wui:sidebarcollapse', {
+               bubbles: true,
+               detail: {
+                 collapsed: true
+               }
+             }));
+           }
+         }
+         mq.addEventListener('change', handleBreakpoint);
+         handleBreakpoint(mq);
+       })(triggers[i]);
+     }
+   });
+
+   /* Re-localize every toggle's label/aria on language change — same
+      document.documentElement listener idiom used across the codebase (see
+      JS/tom-select-factory.js's wui:langchange handlers). */
+   document.documentElement.addEventListener('wui:langchange', wuiSidebarUpdateAllToggles);
+
+   /* search filter ------------------------------------------------------------
+      Filters [data-wui-sidebar-item] within the scoped root by substring match
+      on textContent, then re-derives section-title visibility (a title is
+      visible only if at least one item between it and the next title — or the
+      end of root — is currently visible; plain-DOM equivalent of jQuery's
+      nextUntil), then toggles the static empty-state. */
+   function wuiSidebarFilter(root, keyword) {
+     var items = root.querySelectorAll('[data-wui-sidebar-item]');
+     var i,
+       item,
+       text,
+       visible,
+       anyVisible = false;
+     for (i = 0; i < items.length; i++) {
+       item = items[i];
+       text = (item.textContent || '').toLowerCase();
+       visible = !keyword || text.indexOf(keyword) !== -1;
+       item.style.display = visible ? '' : 'none';
+       if (visible) anyVisible = true;
+     }
+     var titles = root.querySelectorAll('[data-wui-sidebar-section-title]');
+     for (i = 0; i < titles.length; i++) {
+       var title = titles[i];
+       var hasVisible = false;
+       var sib = title.nextElementSibling;
+       while (sib && !sib.hasAttribute('data-wui-sidebar-section-title')) {
+         if (sib.hasAttribute('data-wui-sidebar-item') && sib.style.display !== 'none') {
+           hasVisible = true;
+           break;
+         }
+         sib = sib.nextElementSibling;
+       }
+       title.style.display = hasVisible ? '' : 'none';
+     }
+     var empty = root.querySelector('[data-wui-sidebar-empty]');
+     if (empty) empty.style.display = anyVisible ? 'none' : '';
+   }
+   document.addEventListener('input', function (e) {
+     var input = e.target.closest && e.target.closest('[data-wui-sidebar-search]');
+     if (!input) return;
+     var keyword = (input.value || '').replace(/^\s+|\s+$/g, '').toLowerCase();
+     var clearBtn = wuiSidebarNearest(input, '[data-wui-sidebar-search-clear]');
+     if (clearBtn) clearBtn.style.display = keyword.length > 0 ? '' : 'none';
+     wuiSidebarFilter(wuiSidebarRootFor(input), keyword);
+   });
+   document.addEventListener('click', function (e) {
+     var clearBtn = e.target.closest('[data-wui-sidebar-search-clear]');
+     if (!clearBtn) return;
+     var input = wuiSidebarNearest(clearBtn, '[data-wui-sidebar-search]');
+     if (!input) return;
+     input.value = '';
+     wuiSidebarFilter(wuiSidebarRootFor(input), '');
+     clearBtn.style.display = 'none';
+     input.focus();
+   });
+
+   /* active-item highlight, scoped to the same root ------------------------- */
+   document.addEventListener('click', function (e) {
+     var item = e.target.closest('[data-wui-sidebar-item]');
+     if (!item) return;
+     var root = wuiSidebarRootFor(item);
+     var items = root.querySelectorAll('[data-wui-sidebar-item]');
+     for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
+     item.classList.add('active');
+   });
+
+   /* ═══════════════════════════════════════════════════════════════════════
       7) SEGMENT / VIEW SWITCH  (segmented control, tab bar, view toggle)
       A group where exactly one item is active. Click an item → it becomes active,
       siblings clear, and `wui:select` fires (detail.value). Absorbs view-toggle,
       basemap-picker, header-tab patterns.
-         <div data-wui-segment data-wui-active="active">
+          <div data-wui-segment data-wui-active="active">
           <button data-wui-value="map">…</button>
           <button data-wui-value="list" class="active">…</button>
         </div>
         document.addEventListener('wui:select', function (e) {
           if (e.target.closest('#view-toggle')) switchView(e.detail.value);
         });
-       VIEW SWITCH — group views by NAME (data-wui-view-group), so the switch is tied to the
+        VIEW SWITCH — group views by NAME (data-wui-view-group), so the switch is tied to the
       views themselves, NOT to whatever wrapper happens to contain them. WUI.showView('<group>',
       name) shows the matching view, hides the rest, and moves WebEOC's updatesection onto the
       shown one (WebEOC reads the LIVE attribute, so the client-side move is enough). Put
       data-wui-views="<group>" on the segment to wire it automatically.
-         <div data-wui-segment data-wui-active="active" data-wui-views="records">
+          <div data-wui-segment data-wui-active="active" data-wui-views="records">
           <button data-wui-value="cards" class="active">Cards</button>
           <button data-wui-value="table">Table</button>
         </div>
         <!-- the views can sit ANYWHERE; only group + view names bind them -->
         <div data-wui-view-group="records" data-wui-view="cards" id="card-list" updatesection="true"> …repeat… </div>
         <div data-wui-view-group="records" data-wui-view="table" id="log-list" style="display: none"> …repeat… </div>
-       Put data-wui-view ON the element WebEOC actually refreshes — the one with the id +
+        Put data-wui-view ON the element WebEOC actually refreshes — the one with the id +
       eocrepeatallrecords (the scroll-area), NOT a wrapper around it. That element gains/loses
       updatesection. CALL showView ONCE ON LOAD too, to set the initial state in JS rather than
       rely on the markup. Fires `wui:viewchange`. (Back-compat: showView(container-element-or-
@@ -1009,6 +1379,19 @@
          if (on) v.setAttribute('updatesection', 'true');else v.removeAttribute('updatesection');
        }
      });
+     // Keep the segment control (tab header) in sync when showView is called
+     // directly instead of via a real click — validator jump-to-invalid-tab,
+     // deep-link opens, etc. The click handler below does this too, but only
+     // for clicks; callers that invoke showView() programmatically need it here.
+     if (typeof scope === 'string') {
+       var segEl = document.querySelector('[data-wui-views="' + scope + '"]');
+       if (segEl) {
+         var target = segEl.querySelector('[data-wui-value="' + name + '"]');
+         if (target) {
+           WUI.selectOne(segEl.querySelectorAll('[data-wui-value]'), target, segEl.getAttribute('data-wui-active') || 'active');
+         }
+       }
+     }
      (host || document).dispatchEvent(new CustomEvent('wui:viewchange', {
        bubbles: true,
        detail: {
@@ -1039,7 +1422,7 @@
       (cloneTemplate loops, same as any other JS-built list in this codebase);
       this module only reacts to clicks via document-level delegation, so it
       needs no init call and is automatically correct after any rebuild.
-         <div data-wui-tree role="tree">
+          <div data-wui-tree role="tree">
           <div class="wui-tree-node" data-wui-tree-node role="treeitem"
                aria-expanded="false" data-value="...">
             <div class="wui-tree-node-row">
@@ -1051,7 +1434,7 @@
             <div class="wui-tree-children" role="group"><!-- recursive nodes --></div>
           </div>
         </div>
-       Leaf nodes simply omit the toggle span + .wui-tree-children — the
+        Leaf nodes simply omit the toggle span + .wui-tree-children — the
       component never inspects node content to decide branch vs leaf.
       Consumer sets initial aria-expanded/is-open/is-selected/aria-selected
       when it builds each node; this module has no load-time seeding pass
@@ -1267,21 +1650,21 @@
       since the given start timestamp and re-renders every 1000ms, in the style
       "1d 02h 03m 04s" (days omitted when zero; hours/mins/secs zero-padded to 2).
       Replaces hand-rolled startTimer()/#det-timer countup code (e.g. ER Details).
-         <span data-wui-elapsed="2026-07-13T10:00:00Z"></span>
+          <span data-wui-elapsed="2026-07-13T10:00:00Z"></span>
         WUI.timer(el)                 // reads the start ts off the attribute
         WUI.timer(el, '2026-07-13T10:00:00Z')
         WUI.timer(el, 1752400800000)  // epoch ms also accepted
-       WUI.timer(el, startTs) starts (or re-starts) the ticker on `el`. Idempotent
+        WUI.timer(el, startTs) starts (or re-starts) the ticker on `el`. Idempotent
       per element: a prior interval (if any) is always cleared first, so repeat
       calls never leak timers — safe to call again with a new/older `el.__wuiTimer`
       already attached. The ticker self-stops once `el` is no longer attached to
       the document (checked every tick), so removed cards don't keep ticking in
       the background.
-       Unit letters (d/h/m/s) are localized via WUI.i18n (TimerDay/TimerHour/
+        Unit letters (d/h/m/s) are localized via WUI.i18n (TimerDay/TimerHour/
       TimerMin/TimerSec, default en values registered below) so `ar` resources
       can override them. Digits are always plain ASCII — RTL layout is handled
       by CSS/dir on the surrounding markup, not by this module.
-       Delegated init on load + WUI.ready fallback, matching every other
+        Delegated init on load + WUI.ready fallback, matching every other
       interaction module (view-mode.js, tab-scroll.js, …).
       ═══════════════════════════════════════════════════════════════════════ */
 
@@ -1381,15 +1764,15 @@
       through the overlays engine (WUI.open/WUI.close) — backdrop, focus-trap,
       scroll-lock, Esc, and focus-restore all come free from overlays.js; this
       module only owns text/tone population and promise resolution.
-       opts: { messageKey, titleKey, confirmKey, cancelKey, tone, message, title }
+        opts: { messageKey, titleKey, confirmKey, cancelKey, tone, message, title }
         *Key are WUI.i18n lookup keys (never literal text); message/title are
         optional literal fallbacks when no key applies. tone (e.g. 'danger')
         becomes a class on the confirm button.
-       Declarative: a trigger carrying [data-wui-confirm="<message-key>"] auto-
+        Declarative: a trigger carrying [data-wui-confirm="<message-key>"] auto-
       wires. Its default action (submit / navigation / click) is intercepted;
       the dialog opens; the original action is re-dispatched ONLY on confirm.
       Replaces legacy destructive confirm() calls (remove-file, delete-record).
-       Optional trigger attributes:
+        Optional trigger attributes:
         data-wui-confirm-title    i18n key for the dialog title
         data-wui-confirm-ok       i18n key for the confirm button label
         data-wui-confirm-cancel   i18n key for the cancel button label
@@ -1659,7 +2042,7 @@
       REST POST flow DragAndDropFiles.js used, generalized to per-instance
       config instead of hardcoded module vars. Non-WebEOC callers get the same
       zone UI/validation with a plain onUpload(file) callback instead.
-       Declarative markup (auto-boots, zero JS):
+        Declarative markup (auto-boots, zero JS):
         <div data-wui-dropzone
              data-wui-dz-max-mb="30"
              data-wui-dz-max-files="5"
@@ -1670,7 +2053,7 @@
              data-wui-dz-table="Attachments"
              data-wui-dz-attachment-field="file_attachment"
              data-wui-dz-id-field="attachmentsIDs"></div>
-       Explicit factory (same shape as WeocMap.create) — use when config is
+        Explicit factory (same shape as WeocMap.create) — use when config is
       dynamic or you need the returned instance's methods. Mark the zone
       data-wui-dz-manual="true" so auto-boot skips it (same convention as
       data-map-manual on WeocMap) — otherwise auto-boot races ahead on script
@@ -1689,7 +2072,7 @@
         dz.getFiles() / dz.addFiles(fileList) / dz.removeAt(i) / dz.clear()
         await dz.createFileRecord();  // webeoc: AddRecord+REST per file, writes idField
                                        // generic (webeoc:false): runs options.onUpload(file) per file
-       - data-wui-dz-input / options.input points at the native file input to
+        - data-wui-dz-input / options.input points at the native file input to
         feed. Default: a hidden multiple <input type="file"> the component
         injects inside the zone.
       - Owns ONE DataTransfer per zone. drag-over / drop / click-to-browse.
@@ -1702,7 +2085,7 @@
         file selection intact (no managed list); createFileRecord() falls back
         to reading input.files directly.
       - All user-facing text localized via WUI.i18n. RTL-safe.
-       API: WUI.dropzone.create(elOrSelector, options) — explicit, returns an
+        API: WUI.dropzone.create(elOrSelector, options) — explicit, returns an
       instance. WUI.initDropzone(el) — declarative back-compat, reads
       data-wui-dz-* attrs into an options object and delegates to create().
       Both idempotent per zone (el.__wuiDropzone holds the instance once built).
@@ -2162,21 +2545,21 @@
 
    /* ═══════════════════════════════════════════════════════════════════════
       11) BUSY / LOADING OVERLAY  (WUI.busy / WUI.buttonBusy / data-wui-loading)
-       A reusable animated-overlay loader. Two surfaces:
+        A reusable animated-overlay loader. Two surfaces:
         • WUI.busy(on [, targetEl])  — full-page (no target) or element-scoped
                                        (absolute over targetEl) busy overlay.
         • WUI.buttonBusy(btn, on)    — inline busy state on a single button.
-       The overlay markup + the localizable "Please wait" label live HERE (in the
+        The overlay markup + the localizable "Please wait" label live HERE (in the
       bundle). The animated energy→TAQA MorphSVG timeline lives in the companion
       script JS/weoc-loader.js (window.WUILoader) which is NOT bundled and loads
       GSAP itself. This module has NO hard dependency on GSAP or on the companion:
       if window.WUILoader is present it is asked to mount() the branded SVG into
       the overlay; if absent, a pure-CSS fallback spinner (.wui-busy-spinner)
       shows instead. Everything degrades to a static, working overlay.
-       Declarative: [data-wui-loading] on a <form> shows a busy overlay on submit
+        Declarative: [data-wui-loading] on a <form> shows a busy overlay on submit
       (attribute value optionally a CSS selector to scope the overlay, or "self"
       to scope it over the form); on a <button> it sets that button busy on click.
-       i18n keys: LoaderPleaseWait.  Delegated on document + idempotent per target.
+        i18n keys: LoaderPleaseWait.  Delegated on document + idempotent per target.
       ═══════════════════════════════════════════════════════════════════════ */
 
    var OVERLAY_CLASS = 'wui-busy-overlay';
@@ -2350,14 +2733,14 @@
       the two [data-wui-step] buttons are appended. The stepping itself lives in
       overlays.js (delegated [data-wui-step] → input.stepUp()/stepDown()); this
       module ONLY injects the markup so that handler has buttons to drive.
-       Opt out with data-wui-no-step / data-wui-no-number on the input or any
+        Opt out with data-wui-no-step / data-wui-no-number on the input or any
       ancestor. Idempotent (input.__wuiNumber guard + "already child of
       .wui-number" check) so a second pass, WUI.ready, and the MutationObserver
       never double-wrap. Stepper aria-labels are localized via WUI.i18n
       (NumberStepUp / NumberStepDown) with data-wui-i18n-attr markers so they
       re-localize live on language switch. The buttons are aria-hidden mouse aids
       (tabindex=-1); the input stays keyboard-steppable and submits normally.
-       API: WUI.enhanceNumbers(root) — boards call it after their own AJAX.
+        API: WUI.enhanceNumbers(root) — boards call it after their own AJAX.
       Boot: immediate + WUI.ready + debounced MutationObserver on document.body.
       ═══════════════════════════════════════════════════════════════════════ */
 
@@ -2476,7 +2859,7 @@
       decide what actually renders there, out of existing wui-components
       (wui-badge, wui-plane, wui-flex utilities, form-control, ...) or raw
       HTML/DOM the board owns.
-       Explicit factory (same shape as WeocMap.create / WUI.dropzone.create):
+        Explicit factory (same shape as WeocMap.create / WUI.dropzone.create):
         const feed = WUI.timeline.create('#history-list', {
           node:   function (entry, i, all) { return { icon: 'edit_note', variant: i === 0 ? 'success' : 'secondary' }; },
           header: function (entry, i, all) { return '&lt;span class="wui-badge primary"&gt;' + entry.Action + '&lt;/span&gt;'; },
@@ -2490,7 +2873,7 @@
         feed.prepend(entry);    // build+insert one item at the top (e.g. an inline "add new" row)
         feed.append(entry);     // build+insert one item at the bottom
         feed.clear();           // empty the container, no empty-state shown
-       node(entry, i, all) return value:
+        node(entry, i, all) return value:
         - {icon, variant}         -> standard `wui-icon-bubble solid {variant}` + material icon
         - {icon, variant, solid:false} -> tinted bubble instead of solid (see weoc-indicators.css)
         - a string                -> raw HTML, replaces the node's inner content wholesale
@@ -2505,9 +2888,9 @@
                                       (e.g. {class: 'tier-accent dotted', style: {'--tier-color': entry.color}}
                                       for a runtime-colored dotted rail — see weoc-tier-colors.css
                                       §9 / weoc-timeline.css .tier-accent/.dotted for what's defined).
-       RTL: identical DOM either direction — .wui-timeline-item is a plain flex row,
+        RTL: identical DOM either direction — .wui-timeline-item is a plain flex row,
       the browser mirrors node/content order under dir="rtl" with no overrides here.
-       Declarative note: unlike dropzone/map, there is no auto-boot from a
+        Declarative note: unlike dropzone/map, there is no auto-boot from a
       data-wui-* attribute — a timeline feed always needs at least header/body
       callbacks supplied by the board, so it is create()-only.
       ═══════════════════════════════════════════════════════════════════════ */
@@ -2670,7 +3053,7 @@
    /* ═══════════════════════════════════════════════════════════════════════
       9) SECTION OBSERVER & PROGRAMMATIC REFRESH
       Utilities for WebEOC updatesection integration:
-       WUI.observeSection(target, callback)
+        WUI.observeSection(target, callback)
         Passive watcher. Fires callback() whenever WebEOC replaces the
         element's innerHTML (on section refresh) OR the element itself
         (full-element replacement by updatesection). Uses MutationObserver
@@ -2678,7 +3061,7 @@
         the same pattern proven in Display - Kanban Tasks. Safe to call N
         times per view for N independent sections. Callback must be
         idempotent: WebEOC can fire more than one mutation per refresh cycle.
-       WUI.refreshSection(target, opts)
+        WUI.refreshSection(target, opts)
         Active trigger. jQuery AJAX GET to the current view URL (or opts.url),
         parses the response with DOMParser, extracts the matching element by id,
         swaps innerHTML. Fires wui:sectionrefresh after swap. The MutationObserver
@@ -2796,11 +3179,11 @@
       transparent) plus a 0-height sentinel watched with an IntersectionObserver
       that toggles .is-stuck the moment the header pins to the top of its scroll
       container (CSS swaps it back to opaque).
-       Until JS runs (or if IntersectionObserver is absent) the header stays opaque
+        Until JS runs (or if IntersectionObserver is absent) the header stays opaque
       via the CSS fallback, so it never bleeds. Needs a scrolling ancestor
       (overflow-y: auto|scroll|overlay — e.g. .wui-scroll-area); falls back to the
       viewport. Idempotent + re-scans after WebEOC section refreshes / view switches.
-       WUI.initStickyHeaders([root])   bind any unbound cards / [data-wui-sticky-head] tables
+        WUI.initStickyHeaders([root])   bind any unbound cards / [data-wui-sticky-head] tables
       ═══════════════════════════════════════════════════════════════════════ */
 
    /* Nearest scrolling ancestor, or null for the viewport. Mirrors where a
@@ -2862,11 +3245,11 @@
       down after the exit transition. Skinned by weoc-feedback.css §5. No GSAP
       dependency (CSS transitions + WUI.afterTransition). Position regions are
       fixed and self-managing (created on first use, removed when emptied).
-         WUI.toast(message[, opts])     corner toast; returns a handle { el, dismiss }
+          WUI.toast(message[, opts])     corner toast; returns a handle { el, dismiss }
         WUI.snackbar(message[, opts])  bottom-center, single-at-a-time, inline action
         WUI.dismissToast(handle|el)    dismiss one
         WUI.dismissToasts()            dismiss all live toasts/snackbars
-       opts: { variant, position, duration, icon, title, dismissible, action }
+        opts: { variant, position, duration, icon, title, dismissible, action }
         variant     '' | primary | info | success | warning | danger  (drives rail + icon)
         position    top-right (default) | top-left | top-center | bottom-right |
                     bottom-left | bottom-center   (ignored for snackbar → bottom-center)
@@ -2876,7 +3259,7 @@
         title       optional bold heading above the message
         dismissible show a close button (default true)
         action      string label, or { label, onClick(handle) }. Fires wui:toast:action.
-       Events (bubble on the toast element): wui:toast:show / wui:toast:dismiss /
+        Events (bubble on the toast element): wui:toast:show / wui:toast:dismiss /
       wui:toast:action. detail.toast = the element.
       ──────────────────────────────────────────────────────────────────────── */
    var TOAST_ICONS = {

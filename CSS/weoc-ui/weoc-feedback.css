@@ -210,14 +210,16 @@
    3) SKELETON (wui-skeleton)
    Shimmer placeholder for loading states. Swap any content
    element 1-for-1: same parent wrapper, same size, inner
-   text removed. Width: inline style or .w-* utilities.
+   text removed.
+   Width: style="--wui-skeleton-w: 120px" (custom-property
+   override — NOT a banned literal style="width:...") or the
+   .w-* fraction utilities below for common cases.
    ============================================================ */
 
 .wui-skeleton {
   display: block;
+  width: var(--wui-skeleton-w, auto);
   border-radius: var(--radius-xs);
-  /* base: color-border (#ebebeb light / #3a3a3a dark)
-     sweep: translucent white highlight — works in both modes */
   background-color: var(--color-border);
   background-image: linear-gradient(
     90deg,

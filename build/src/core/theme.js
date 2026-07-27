@@ -85,6 +85,56 @@ import { WUI } from './wui.js';
     else document.addEventListener('DOMContentLoaded', wuiHideThemeToggles);
   }
 
+  /* ── Declarative label/icon swap (optional) ────────────────────────────────
+     A [data-wui-theme-toggle] button MAY carry two child markers plus board-
+     supplied swap values, so a board gets a self-relabeling toggle with no
+     board-local JS: a child [data-wui-theme-label] (textContent swapped) and/or
+     a child [data-wui-theme-icon] (textContent swapped — this project uses
+     ligature icon fonts, e.g. Material Symbols, where the icon name IS the
+     text). Values come from data attributes on the TOGGLE itself, named for
+     the theme they represent — data-wui-theme-label-light/-dark (i18n keys,
+     via WUI.i18n.t(key, key)) and data-wui-theme-icon-light/-dark (literal
+     ligature strings — icons aren't translated). data-wui-theme-aria-light/
+     -dark (i18n keys) optionally set the button's own aria-label. A button's
+     shown label/icon/aria is always the ONE NAMED FOR THE THEME A CLICK WOULD
+     SWITCH TO (e.g. while the page is light, the "-dark" set is shown — "Dark
+     Mode" / dark_mode — matching the existing HomePage markup convention).
+     Entirely optional: any toggle missing the child markers or data
+     attributes is skipped silently, never throws. Runs once at initial load
+     and on every wui:themechange (a sibling listener to the TinyMCE one
+     below — that one stays untouched). */
+  function wuiThemeToggleSwap(theme) {
+    var target = (theme === 'dark') ? 'light' : 'dark';   // the theme a click would switch TO
+    var toggles = document.querySelectorAll('[data-wui-theme-toggle]');
+    var i, toggle, labelEl, iconEl, labelKey, iconVal, ariaKey;
+    for (i = 0; i < toggles.length; i++) {
+      toggle = toggles[i];
+
+      labelEl = toggle.querySelector('[data-wui-theme-label]');
+      if (labelEl) {
+        labelKey = toggle.getAttribute('data-wui-theme-label-' + target);
+        if (labelKey) labelEl.textContent = (window.WUI && WUI.i18n) ? WUI.i18n.t(labelKey, labelKey) : labelKey;
+      }
+
+      iconEl = toggle.querySelector('[data-wui-theme-icon]');
+      if (iconEl) {
+        iconVal = toggle.getAttribute('data-wui-theme-icon-' + target);
+        if (iconVal) iconEl.textContent = iconVal;
+      }
+
+      ariaKey = toggle.getAttribute('data-wui-theme-aria-' + target);
+      if (ariaKey) toggle.setAttribute('aria-label', (window.WUI && WUI.i18n) ? WUI.i18n.t(ariaKey, ariaKey) : ariaKey);
+    }
+  }
+
+  var wuiInitThemeToggleSwap = function () { wuiThemeToggleSwap(WUI.getTheme()); };
+  if (document.readyState !== 'loading') wuiInitThemeToggleSwap();
+  else document.addEventListener('DOMContentLoaded', wuiInitThemeToggleSwap);
+
+  document.documentElement.addEventListener('wui:themechange', function (e) {
+    wuiThemeToggleSwap(e && e.detail ? e.detail.theme : WUI.getTheme());
+  });
+
   /* ── TinyMCE theme sync ────────────────────────────────────────────────────
      A TinyMCE editor renders its content in an <iframe> — a SEPARATE document
      that inherits nothing from the page, so setting <html data-theme> here does

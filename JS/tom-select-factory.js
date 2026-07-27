@@ -34,6 +34,17 @@
  *     → moves a staged <div class="ts-dropdown-slot">…</div> into the dropdown
  *       as a pinned header / footer (see mountDropdownSlots). Also exposed as
  *       TomSelectFactory.mountDropdownSlots(ts, el) for non-factory instances.
+ *   <optgroup label="…"> wraps <option>s in the native <select> markup — Tom
+ *     Select auto-detects optgroups from a real <select> DOM node with zero
+ *     extra config; this factory just supplies a styled, escaped
+ *     render.optgroup_header (sticky uppercase section label, see
+ *     tom-select-agency.css) so every factory-built select gets it for free.
+ *   data-optgroup-columns="true"
+ *     → lays out optgroups as side-by-side columns instead of stacked
+ *       sections (Tom Select's own optgroup_columns plugin, already styled
+ *       in tom-select-agency.css). Widen the control/dropdown yourself when
+ *       using this — columns need real room, the default control width
+ *       won't fit 2+ columns comfortably.
  *
  * Dependent (parent/child) selects:
  *   data-parent="ParentFieldName" or parent="ParentFieldName" on the child.
@@ -78,9 +89,16 @@ const TomSelectFactory = (function () {
       if ((el.getAttribute('data-wui-i18n-attr') || '').indexOf('data-placeholder') === -1) return;
       const ph = el.getAttribute('data-placeholder') || ts.settings.placeholder;
       ts.settings.placeholder = ph;
+      // Both live at once, in different states — .items-placeholder shows in
+      // the CLOSED control, control_input is what dropdown_input moves INTO
+      // the open dropdown as the visible search box. They aren't
+      // interchangeable: update both unconditionally, not else-if (else-if
+      // meant control_input never got touched, since .items-placeholder
+      // always exists — the open-dropdown search box stayed on whatever
+      // language was active at construction, forever).
       const itemsPlaceholder = ts.control ? ts.control.querySelector('.items-placeholder') : null;
       if (itemsPlaceholder) itemsPlaceholder.placeholder = ph;
-      else if (ts.control_input) ts.control_input.placeholder = ph;
+      if (ts.control_input) ts.control_input.placeholder = ph;
     });
   }
   try { document.documentElement.addEventListener('wui:langchange', relocalizeTomSelectPlaceholders); } catch (e) {}
@@ -101,6 +119,7 @@ const TomSelectFactory = (function () {
     return {
       no_results: () => '<div class="no-results">' + i18nText('NoResults', 'No results found') + '</div>',
       option_create: (data, escape) => '<div class="create">' + i18nText('AddNew', 'Add') + ' <strong>' + escape(data.input) + '</strong>&hellip;</div>',
+      optgroup_header: (data, escape) => '<div class="optgroup-header">' + escape(data.label) + '</div>',
     };
   }
 
@@ -128,7 +147,35 @@ const TomSelectFactory = (function () {
       const ts = el.tomselect;
       if (!ts) return;
       const selected = ts.getValue();
-      ts.clearOptions();
+      // Capture each option's CURRENT optgroup assignment from ts.options
+      // (TomSelect's own data model) BEFORE clearing — NOT from the live
+      // DOM's opt.parentElement. Confirmed in the vendor source:
+      // updateOriginalInput() (called by setValue()/addItem() on every
+      // select-tag instance, to keep the native <select>'s option:checked
+      // state in sync) does `t.input.append(existingOptionNode)` for
+      // whichever value is selected — .append() on an already-attached
+      // node MOVES it, so the moment an option is ever selected, TomSelect
+      // itself physically reparents that <option> directly under <select>,
+      // ripping it out of its <optgroup>. Any code (including an earlier
+      // version of this function) that re-derives group membership from
+      // the live DOM after that point silently loses it forever — the
+      // corruption is TomSelect's own doing, not a DOM issue this factory
+      // created. ts.options[value].optgroup is set once at construction
+      // (or by this same function's own last correct pass) and is never
+      // touched by that DOM reparenting, so it stays authoritative.
+      const optgroupField = ts.settings.optgroupField;
+      const groupByValue = {};
+      Object.keys(ts.options).forEach((v) => {
+        const g = ts.options[v][optgroupField];
+        if (g !== undefined && g !== '') groupByValue[v] = g;
+      });
+      // clearOptions()'s DEFAULT filter keeps whatever option is currently
+      // selected instead of actually clearing it (meant to stop a selected
+      // chip flashing away mid-refresh) — force a real full clear with an
+      // always-false filter so every option (selected or not) goes through
+      // the same fresh addOption() below; setValue() at the end re-selects
+      // it from that freshly-added, correctly-grouped entry.
+      ts.clearOptions(() => false);
       Array.from(el.options).forEach((opt) => {
         // Mirror TomSelect's own native-option parser: when allowEmptyOption is
         // false (every select in this codebase), an empty-value <option> is
@@ -139,7 +186,11 @@ const TomSelectFactory = (function () {
         // selected" that hides the placeholder and shows a blank/wrong item
         // instead. Skip it, exactly like a fresh construction would.
         if (opt.value === '' && !ts.settings.allowEmptyOption) return;
-        ts.addOption({ value: opt.value, text: opt.text });
+        const data = { value: opt.value, text: opt.text };
+        if (Object.prototype.hasOwnProperty.call(groupByValue, opt.value)) {
+          data[optgroupField] = groupByValue[opt.value];
+        }
+        ts.addOption(data);
       });
       ts.refreshOptions(false);
       // selected === '' means nothing was chosen before the toggle — clear()
@@ -151,6 +202,38 @@ const TomSelectFactory = (function () {
     });
   }
   try { document.documentElement.addEventListener('wui:langchange', relocalizeTomSelectOptions); } catch (e) {}
+
+  /* ── RTL re-sync ────────────────────────────────────────────────────────
+     TomSelect reads getComputedStyle(input).direction ONCE at construction
+     and stores it as this.rtl — a plain boolean, never re-read afterwards.
+     refreshState() (called internally on focus/blur/item changes) only
+     re-applies that STALE captured value via wrapper.classList.toggle('rtl',
+     this.rtl); it does not recheck direction. WUI.i18n.setLang() flips
+     <html dir> live with no reload, so every already-constructed TomSelect
+     instance's .rtl class (and anything else gated on it, e.g. advanceSelection's
+     arrow-key reversal) silently goes stale the moment the user switches
+     language — matches the exact symptom reported: correct on fresh load in
+     EITHER language, broken immediately after switching, fixed only by a
+     full refresh (which re-constructs the instance against the new direction).
+     Force the instance's own rtl flag back in sync with the live <html dir>
+     and let its own refreshState() reapply everything gated on it. */
+  function resyncTomSelectDirection() {
+    const rtl = document.documentElement.getAttribute('dir') === 'rtl';
+    document.querySelectorAll('.tomselect').forEach((el) => {
+      const ts = el.tomselect;
+      // ts.input guard: refreshState() → refreshValidityState() does
+      // `e.input.validity && ...` with no null-check on e.input itself —
+      // a vendor bug that throws instead of no-op'ing on any instance
+      // whose .input is missing (stale/mid-teardown TomSelect, e.g. a
+      // cascading child select TomSelectFactory just destroyed/rebuilt
+      // for a parent change). Skip those rather than crash the whole
+      // langchange handler chain for every other select on the page.
+      if (!ts || !ts.input || ts.rtl === rtl) return;
+      ts.rtl = rtl;
+      try { ts.refreshState(); } catch (e) {}
+    });
+  }
+  try { document.documentElement.addEventListener('wui:langchange', resyncTomSelectDirection); } catch (e) {}
 
   /** @type {Map<string, HTMLSelectElement>} */
   const elementByKey = new Map();
@@ -257,10 +340,12 @@ const TomSelectFactory = (function () {
     const isCreate = el.dataset.create === 'true';
     const allowEmpty = el.dataset.allowEmpty === 'true';
     const stayOpen = el.dataset.stayOpen === 'true';
+    const optgroupColumns = el.dataset.optgroupColumns === 'true';
     const tmpl = resolveRenderDefinition(el.dataset.render);
 
     const plugins = ['dropdown_input'];
     if (isMulti) plugins.push('remove_button');
+    if (optgroupColumns) plugins.push('optgroup_columns');
 
     const config = {
       // allowEmptyOption:true lets the user re-select the empty option from the

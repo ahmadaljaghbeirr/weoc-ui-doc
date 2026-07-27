@@ -107,6 +107,13 @@
         { key: 'views', label: 'Board Views', file: 'views.html', kw: 'display input details remove board view scaffold zone' },
         { key: 'maps', label: 'Maps', file: 'maps.html', kw: 'map esri basemap point popover controls location' }
       ]
+    },
+    {
+      group: 'Conventions',
+      items: [
+        { key: 'conventions', label: 'Conventions & Rules', file: 'conventions.html', kw: 'rules inline style viewtype css agency theme device tier breakpoint promotion minimal declarative' },
+        { key: 'kpi-recipes', label: 'KPI & Tile Recipes', file: 'kpi-recipes.html', kw: 'kpi dashboard tile recipe template placeholder gauge donut bar-row chart sparkline progress ring wui-tile' }
+      ]
     }
   ];
 
@@ -335,7 +342,7 @@
   // Per-page translation files (chrome + several pages live in docs-i18n.js;
   // the rest are one file each under i18n/ to keep them maintainable).
   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
-    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home'];
+    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes'];
   function ensureI18nStore(root) {
     if (i18nStoreLoaded) return Promise.resolve();
     i18nStoreLoaded = true;
@@ -802,6 +809,26 @@
             { label: 'Facilities', value: 22, color: 'success' }
           ],
           center: { label: '135', sub: 'Resources' }
+        });
+      }
+
+      /* ── Gauge chart demo ────────────────────────────────────────────────── */
+      var gaugeEl = document.getElementById('demo-gauge-chart');
+      if (gaugeEl && window.WUI.gauge) {
+        window.WUI.gauge(gaugeEl, {
+          value: 62,
+          status: 'Elevated'
+        });
+      }
+
+      /* ── Bar-row chart demo ──────────────────────────────────────────────── */
+      var barRowEl = document.getElementById('demo-barrow-chart');
+      if (barRowEl && window.WUI.barRow) {
+        window.WUI.barRow(barRowEl, {
+          rows: [
+            { label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] },
+            { label: 'Row 2', value: 40, segments: [{ pct: 40, color: 'warning' }] }
+          ]
         });
       }
     },

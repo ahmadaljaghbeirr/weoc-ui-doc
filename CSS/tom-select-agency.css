@@ -378,6 +378,48 @@
   padding: var(--ts-gap-small) var(--ts-gap-medium);
 }
 
+.ts-dropdown .optgroup-header {
+  background: var(--ts-bg-soft);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--ts-accent);
+  line-height: var(--leading-none);
+  padding-top: var(--ts-gap-medium);
+  padding-bottom: var(--ts-gap-medium);
+  border-top: var(--border-sm) solid var(--ts-border);
+  border-bottom: var(--border-xs) solid var(--ts-border);
+  cursor: default;
+}
+
+.ts-dropdown .optgroup:first-child .optgroup-header {
+  border-top: none;
+}
+
+/* optgroup_columns plugin: vendor base hardcodes #f2f2f2 for the
+   between-column divider — not theme-aware, same class of bug as the
+   optgroup-header background above. Map to the theme border token instead. */
+.ts-dropdown.plugin-optgroup_columns .optgroup {
+  border-right-color: var(--ts-border);
+}
+
+/* optgroup_columns plugin: vendor base gives every column flex-basis:0 +
+   min-width:0 (so N columns always divide the available width evenly) but
+   sets no white-space/overflow safeguard on the option text itself. With
+   enough columns, a column can end up narrower than a single option's
+   label — text then wraps or overflows into its neighbour instead of
+   being clipped cleanly, which reads as outright garbled/interleaved
+   fragments once a longer translated string (e.g. Arabic) pushes an
+   already-tight column over the edge. Force single-line + ellipsis so
+   any column that's too narrow truncates predictably instead. */
+.ts-dropdown.plugin-optgroup_columns .option,
+.ts-dropdown.plugin-optgroup_columns .optgroup-header {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .ts-dropdown .option {
   border: 1px solid transparent;
   color: var(--ts-fg);

@@ -26,6 +26,7 @@
      WUIAnim.completion(el, opts)              — 100% completion flourish
      WUIAnim.counter(el, from, to, opts)       — standalone numeric ticker
      WUIAnim.bar(el, toPct, opts)              — animate a wui-progress-bar-fill
+     WUIAnim.stepper(el, opts)                 — animate step changes + current pulse
      WUIAnim.starfield(canvasEl, opts)         — ambient particle-network background; returns { destroy() }
 
    Exposed internals (for extension):
@@ -73,6 +74,7 @@
       completion: function () {},
       counter: function () {},
       bar: function () {},
+      stepper: function () { return null; },
       morphLoop: function () { return null; },
       ready: function (fn) { _readyQueue.push(fn); },
       RING_CIRC: 326.73,
@@ -472,6 +474,205 @@
         ease: opts.ease || EASE.standard,
         onComplete: opts.onComplete,
       });
+    };
+
+    // ── stepper(el, opts) ────────────────────────────────────────────────
+    // Adds animated state changes to a .weoc-progress stepper.
+    // Returns { setCurrent(index), destroy() }. Indices are zero-based.
+    // Disabled steps are preserved and cannot become current.
+    //
+    // opts:
+    //   currentProgress {number}   blue fill after the current step (default 50)
+    //   duration        {number}   state-change duration (default DUR.base)
+    //   pulseDuration   {number}   one half of the current pulse (default 0.75)
+    //   pulseScale      {number}   current indicator pulse scale (default 1.08)
+    WUIAnim.stepper = function (el, opts) {
+      opts = opts || {};
+      if (typeof el === 'string') el = document.querySelector(el);
+      if (!el || !el.classList || !el.classList.contains('weoc-progress')) return null;
+      if (el._weocProgressAnimation) return el._weocProgressAnimation;
+
+      function stateLabel(state) {
+        if (state === 'completed') return 'Completed';
+        if (state === 'current') return 'In Progress';
+        if (state === 'disabled') return 'Disabled';
+        return 'Pending';
+      }
+
+      function renderSteps(data) {
+        if (!Array.isArray(data)) return;
+        var list = el.classList.contains('weoc-progress-list')
+          ? el : el.querySelector('.weoc-progress-list');
+        if (!list) {
+          list = document.createElement('ol');
+          list.className = 'weoc-progress-list';
+          el.appendChild(list);
+        }
+        list.textContent = '';
+        data.forEach(function (item, index) {
+          var state = item.status === 'in-progress' ? 'current' : item.status;
+          if (state !== 'completed' && state !== 'current' && state !== 'disabled') state = 'upcoming';
+
+          var step = document.createElement('li');
+          step.className = 'weoc-progress-step ' + state;
+          if (state === 'current') step.setAttribute('aria-current', 'step');
+          if (state === 'disabled') step.setAttribute('aria-disabled', 'true');
+
+          var track = document.createElement('div');
+          track.className = 'weoc-progress-track';
+          var indicator = document.createElement('span');
+          indicator.className = 'weoc-progress-indicator';
+          indicator.setAttribute('aria-hidden', 'true');
+          track.appendChild(indicator);
+          if (index < data.length - 1) {
+            var connector = document.createElement('span');
+            connector.className = 'weoc-progress-connector';
+            connector.setAttribute('aria-hidden', 'true');
+            track.appendChild(connector);
+          }
+
+          var content = document.createElement('div');
+          content.className = 'weoc-progress-content';
+          var eyebrow = document.createElement('span');
+          eyebrow.className = 'weoc-progress-eyebrow';
+          eyebrow.textContent = 'Step ' + (index + 1);
+          var title = document.createElement('span');
+          title.className = 'weoc-progress-title';
+          title.textContent = item.label || '';
+          var status = document.createElement('span');
+          status.className = 'weoc-progress-status';
+          status.textContent = stateLabel(state);
+          content.appendChild(eyebrow);
+          content.appendChild(title);
+          content.appendChild(status);
+
+          step.appendChild(track);
+          step.appendChild(content);
+          list.appendChild(step);
+          setIndicatorContent(step, state);
+        });
+      }
+
+      renderSteps(opts.steps);
+
+      var steps = Array.from(el.querySelectorAll('.weoc-progress-step'));
+      if (!steps.length) return null;
+
+      var currentProgress = Math.max(0, Math.min(100,
+        opts.currentProgress !== undefined ? opts.currentProgress : 50));
+      var duration = opts.duration !== undefined ? opts.duration : DUR.base;
+      var pulseDuration = opts.pulseDuration !== undefined ? opts.pulseDuration : 0.75;
+      var pulseScale = opts.pulseScale !== undefined ? opts.pulseScale : 1.08;
+      var pulseTween = null;
+      var destroyed = false;
+
+      el.style.setProperty('--weoc-progress-current', currentProgress + '%');
+
+      function indicatorFor(step) {
+        return step && step.querySelector('.weoc-progress-indicator');
+      }
+
+      function setIndicatorContent(step, state) {
+        var indicator = indicatorFor(step);
+        if (!indicator) return;
+        indicator.textContent = '';
+        if (state !== 'completed' && state !== 'disabled') return;
+        var icon = document.createElement('span');
+        icon.className = 'weoc-progress-icon material-symbols-outlined';
+        icon.textContent = state === 'completed' ? 'check' : 'block';
+        indicator.appendChild(icon);
+      }
+
+      function setAccessibleLabel(step, state) {
+        var status = step.querySelector('.weoc-progress-status');
+        if (status) status.textContent = stateLabel(state);
+      }
+
+      function stopPulse() {
+        if (pulseTween) pulseTween.kill();
+        pulseTween = null;
+        steps.forEach(function (step) {
+          var indicator = indicatorFor(step);
+          if (indicator) gsap.set(indicator, { clearProps: 'scale' });
+        });
+      }
+
+      function startPulse(step) {
+        stopPulse();
+        if (reducedMotion() || destroyed) return;
+        var indicator = indicatorFor(step);
+        if (!indicator) return;
+        pulseTween = gsap.to(indicator, {
+          scale: pulseScale,
+          duration: pulseDuration,
+          ease: 'sine.inOut',
+          repeat: -1,
+          yoyo: true,
+        });
+      }
+
+      function currentIndex() {
+        for (var i = 0; i < steps.length; i++) {
+          if (steps[i].classList.contains('current')) return i;
+        }
+        return -1;
+      }
+
+      function setCurrent(index) {
+        index = Number(index);
+        if (destroyed || !isFinite(index) || Math.floor(index) !== index || index < 0 || index >= steps.length) return false;
+        if (steps[index].classList.contains('disabled')) return false;
+
+        var previous = currentIndex();
+        stopPulse();
+
+        steps.forEach(function (step, i) {
+          var disabled = step.classList.contains('disabled');
+          var state = disabled ? 'disabled' : (i < index ? 'completed' : (i === index ? 'current' : 'upcoming'));
+          step.classList.remove('completed', 'current', 'upcoming');
+          if (!disabled) step.classList.add(state);
+          if (state === 'current') step.setAttribute('aria-current', 'step');
+          else step.removeAttribute('aria-current');
+          if (disabled) step.setAttribute('aria-disabled', 'true');
+          setIndicatorContent(step, state);
+          setAccessibleLabel(step, state);
+        });
+
+        if (!reducedMotion() && previous !== index) {
+          var currentIndicator = indicatorFor(steps[index]);
+          gsap.fromTo(currentIndicator,
+            { scale: 0.72 },
+            { scale: 1, duration: duration, ease: EASE.spring, clearProps: 'scale', onComplete: function () { startPulse(steps[index]); } });
+
+          if (index > previous) {
+            for (var i = Math.max(0, previous); i < index; i++) {
+              var completedIndicator = indicatorFor(steps[i]);
+              var completedConnector = steps[i].querySelector('.weoc-progress-connector');
+              if (completedIndicator) gsap.fromTo(completedIndicator,
+                { scale: 0.82 }, { scale: 1, duration: duration, ease: EASE.spring, clearProps: 'scale' });
+              if (completedConnector) gsap.fromTo(completedConnector,
+                { scaleX: 0, transformOrigin: document.documentElement.dir === 'rtl' ? 'right center' : 'left center' },
+                { scaleX: 1, duration: duration, ease: EASE.standard, clearProps: 'transform,transformOrigin' });
+            }
+          }
+        } else {
+          startPulse(steps[index]);
+        }
+        return true;
+      }
+
+      var controller = {
+        setCurrent: setCurrent,
+        destroy: function () {
+          destroyed = true;
+          stopPulse();
+          delete el._weocProgressAnimation;
+        },
+      };
+      el._weocProgressAnimation = controller;
+      var initialCurrent = currentIndex();
+      if (initialCurrent >= 0) startPulse(steps[initialCurrent]);
+      return controller;
     };
 
     // ── starfield(canvasEl, opts) ─────────────────────────────────────────

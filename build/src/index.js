@@ -29,6 +29,7 @@ import './core/wui.js';
 import './core/theme.js';
 import './core/i18n.js';
 import './core/utils.js';
+import './core/responsive.js';
 import './core/dom.js';
 
 /* interaction/ — user-facing behaviours. Relative order not load-bearing: they
@@ -36,6 +37,7 @@ import './core/dom.js';
 import './interaction/overlays.js';
 import './interaction/activate.js';
 import './interaction/disclosure.js';
+import './interaction/sidebar.js';
 import './interaction/segment-view.js';
 import './interaction/tree-view.js';
 import './interaction/tab-scroll.js';
