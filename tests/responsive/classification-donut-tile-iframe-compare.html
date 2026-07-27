@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>weoc-ui — Events by Classification (direct vs iframe compare)</title>
+<link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css">
+<link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+<style>
+  .compare-row { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+  .compare-col { display: flex; flex-direction: column; gap: 8px; }
+  .compare-label { font: 600 13px/1.4 system-ui, sans-serif; color: var(--color-text-secondary, #888); }
+  .compare-frame { width: 320px; height: 420px; border: 1px solid var(--color-border, #333); }
+</style>
+</head>
+<body>
+  <div class="wui-p-3">
+    <div class="compare-row">
+
+      <!-- Direct: same markup as classification-donut-tile.html, rendered inline in THIS page -->
+      <div class="compare-col">
+        <div class="compare-label">Direct (this page)</div>
+        <div style="max-width: 320px;">
+          <div class="wui-bento-tile">
+            <div class="chart-card">
+              <div class="wui-tile">
+                <div class="wui-tile-hdr">
+                  <div class="wui-tile-title-wrap">
+                    <h3 class="wui-tile-title">Events by Classification</h3>
+                    <div class="wui-tile-sub">Distribution of reported events</div>
+                  </div>
+                  <div class="wui-tile-icon blue"><span class="material-symbols-outlined">donut_large</span></div>
+                </div>
+                <div class="wui-tile-body wui-flex wui-flex-col wui-items-center wui-gap-2">
+                  <div id="classificationDonut"></div>
+                  <div class="wui-tile-legend" id="classificationLegendDock"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Iframe: loads the real recipe file itself, unmodified -->
+      <div class="compare-col">
+        <div class="compare-label">Inside &lt;iframe&gt; (classification-donut-tile.html)</div>
+        <iframe class="compare-frame" src="classification-donut-tile.html"></iframe>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../../JS/weoc-ui.js"></script>
+  <script src="../../JS/wui-charts.js"></script>
+  <script>
+    // Same static sample data as classification-donut-tile.html, standing in
+    // for the real board's <value-of select="//@classification_*_expr" /> expressions.
+    var CLASSIFICATION_DATA = [
+      { label: 'HSE',             value: 1, color: '#185fa5' },
+      { label: 'Fire and Safety', value: 0, color: '#dc2626' },
+      { label: 'Environmental',   value: 2, color: '#16a34a' },
+      { label: 'Compliance',      value: 0, color: '#6d5bd0' },
+      { label: 'Security',        value: 0, color: '#0284c7' },
+      { label: 'Operations',      value: 0, color: '#ea7c14' }
+    ];
+
+    var classificationDonutHandle = null;
+
+    function drawClassificationDonut() {
+      var host = document.getElementById('classificationDonut');
+      var total = CLASSIFICATION_DATA.reduce(function (sum, item) { return sum + item.value; }, 0);
+
+      var donutOpts = {
+        height: 124, // matches real board.web donutOpts.height exactly
+        legend: true,
+        center: { label: String(total), sub: 'Events' },
+        data: CLASSIFICATION_DATA.map(function (item) {
+          return { label: item.label, value: item.value, color: item.color };
+        })
+      };
+
+      if (classificationDonutHandle) {
+        classificationDonutHandle.update(donutOpts.data);
+      } else if (window.WUI && WUI.donut) {
+        classificationDonutHandle = WUI.donut(host, donutOpts);
+
+        var dock = document.getElementById('classificationLegendDock');
+        var generatedLegend = host.lastElementChild;
+        if (dock && generatedLegend && generatedLegend !== host.firstElementChild) {
+          dock.appendChild(generatedLegend);
+        }
+      }
+    }
+
+    WUI.ready(drawClassificationDonut);
+  </script>
+</body>
+</html>

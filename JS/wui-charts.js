@@ -32,6 +32,8 @@
      opts.height                 px (default: 200)
      opts.cursor                 boolean (default: true)
      opts.legend                 boolean (default: false)
+     opts.neon                   false (default) | true | severity name — opt-in glow,
+                                  see "Neon glow" below
    WUI.chart.readTokens()        Returns resolved CSS token map.
 
    WUI.pie(el, opts)             Create a raw-canvas pie chart.
@@ -39,8 +41,20 @@
      opts.data                   Array of { label, value, color }
      opts.height                 px (default: 240)
      opts.legend                 boolean (default: true)
+     opts.neon                   false (default) | true | severity name — opt-in glow,
+                                  see "Neon glow" below
    WUI.donut opts.center         { label, sub } — text overlaid in the hole
    WUI.donut opts.cutout         0..1 inner radius ratio (default: 0.62)
+
+   WUI.gauge(el, opts)           Create a semi-circle threshold gauge.
+     opts.value                   0..100 (clamped)
+     opts.zones                   [{ to, color }] threshold bands
+                                   (default: <40 danger, <70 warning, else success)
+     opts.status                  pre-localized status string (board owns i18n, same as
+                                   donut's opts.center — the engine never calls WUI.i18n itself)
+     opts.height                  px (default: 140)
+     opts.neon                    false (default) | true | severity name — opt-in glow,
+                                   see "Neon glow" below
 
    ── Instance handles ─────────────────────────────────────────────────────────
    All handles expose:
@@ -99,6 +113,14 @@
     '--tier-4-color'
   ];
 
+  /* Default gauge zones: red/orange/green thresholds, matches the previous
+   * bespoke event-gauge.css bands (<40 danger, <70 warning, else success). */
+  var _DEFAULT_GAUGE_ZONES = [
+    { to: 40, color: 'danger' },
+    { to: 70, color: 'warning' },
+    { to: 100, color: 'success' }
+  ];
+
   /* ── Token reader ─────────────────────────────────────────────────────────── */
 
   /*
@@ -122,10 +144,27 @@
       border:     get('--color-border'),
       textSec:    get('--color-text-secondary'),
       bg:         get('--color-bg'),
-      text:       get('--color-90'),
+      text:       get('--color-text-primary'),
       fontFamily: get('--font-body') || 'system-ui, sans-serif',
       textSm:     get('--text-sm')   || '0.875rem'
     };
+  }
+
+  /*
+   * _fitCanvasToBox(canvas, cssW, cssH)
+   * Sizes a canvas's backing store for devicePixelRatio correctness and syncs
+   * its CSS box to match. Setting canvas.width/height resets the 2D context's
+   * transform to identity (per spec), so re-applying ctx.setTransform here on
+   * every call is safe — it never compounds across repeated resizes/redraws.
+   */
+  function _fitCanvasToBox(canvas, cssW, cssH) {
+    var dpr = root.devicePixelRatio || 1;
+    canvas.width  = Math.max(1, Math.round(cssW * dpr));
+    canvas.height = Math.max(1, Math.round(cssH * dpr));
+    canvas.style.width  = cssW + 'px';
+    canvas.style.height = cssH + 'px';
+    var ctx = canvas.getContext('2d');
+    if (ctx && ctx.setTransform) { ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
   }
 
   /* ── Color helpers ────────────────────────────────────────────────────────── */
@@ -281,8 +320,17 @@
    */
   function _drawPieCanvas(canvas, data, opts, tokens) {
     var ctx = canvas.getContext('2d');
-    var W   = canvas.width;
-    var H   = canvas.height;
+    /* canvas.width/height are the DEVICE-pixel backing store (cssW*dpr, set by
+     * _fitCanvasToBox). ctx already carries a setTransform(dpr,...) from that
+     * same call, so every coordinate handed to ctx from here on is expected in
+     * CSS-pixel space — the transform re-scales it to the backing store. Using
+     * the raw device-pixel canvas.width/height as W/H here double-applies dpr:
+     * on any DPR!=1 display the circle's center/radius land outside the CSS
+     * box and get clipped by the canvas's own buffer edge. Divide back to
+     * CSS-pixel space first. */
+    var dpr = root.devicePixelRatio || 1;
+    var W   = canvas.width  / dpr;
+    var H   = canvas.height / dpr;
     ctx.clearRect(0, 0, W, H);
 
     if (!data || !data.length) { return; }
@@ -301,9 +349,20 @@
 
     var startAngle = -Math.PI / 2; /* 12 o'clock */
 
+    /* Gap between slices is a small transparent notch cut from each slice's
+     * own sweep, NOT a solid stroke — a stroke needs a color to blend into,
+     * but the canvas sits on whatever card/page background the board uses
+     * (which can differ from the --color-bg token, e.g. dark theme's card
+     * is --color-30 #282828 while --color-bg is --color-60 #161616 —
+     * stroking with --color-bg drew a visibly darker/near-black seam on
+     * top of the lighter card). A gap has nothing to stroke, so it's
+     * correct against any surface automatically. */
+    var gap = data.length > 1 ? 0.02 : 0;
+
     for (var i = 0; i < data.length; i++) {
       var slice = data[i];
       var sweep = (slice.value / total) * Math.PI * 2;
+      var endAngle = startAngle + sweep - (sweep > gap * 2 ? gap : 0);
       var color = _resolveColor(
         slice.color || _DEFAULT_PALETTE[i % _DEFAULT_PALETTE.length],
         tokens
@@ -311,20 +370,15 @@
 
       ctx.beginPath();
       if (cutout > 0) {
-        ctx.arc(cx, cy, r,      startAngle,         startAngle + sweep);
-        ctx.arc(cx, cy, innerR, startAngle + sweep, startAngle,         true);
+        ctx.arc(cx, cy, r,      startAngle, endAngle);
+        ctx.arc(cx, cy, innerR, endAngle,   startAngle, true);
       } else {
         ctx.moveTo(cx, cy);
-        ctx.arc(cx, cy, r, startAngle, startAngle + sweep);
+        ctx.arc(cx, cy, r, startAngle, endAngle);
       }
       ctx.closePath();
       ctx.fillStyle = color;
       ctx.fill();
-
-      /* Thin slice separator using surface background — no visible border line */
-      ctx.strokeStyle = tokens.bg || '#ffffff';
-      ctx.lineWidth   = 2;
-      ctx.stroke();
 
       startAngle += sweep;
     }
@@ -350,6 +404,169 @@
         ctx.fillText(cSub, cx, cy + Math.round(r * 0.22));
       }
     }
+  }
+
+  /*
+   * _drawGaugeCanvas(canvas, opts, tokens)
+   * Renders a semi-circle threshold gauge (background track + colored zone
+   * bands + needle + center value text) onto `canvas`. Returns the resolved
+   * color of the zone the current value falls in (the "active" color),
+   * which the caller uses to color the status chip below the canvas.
+   */
+  function _drawGaugeCanvas(canvas, opts, tokens) {
+    var ctx = canvas.getContext('2d');
+    /* Same DPR double-scale issue as _drawPieCanvas — see comment there. */
+    var dpr = root.devicePixelRatio || 1;
+    var W   = canvas.width  / dpr;
+    var H   = canvas.height / dpr;
+    ctx.clearRect(0, 0, W, H);
+
+    var value = Math.max(0, Math.min(opts.value || 0, 100));
+    var zones = opts.zones || _DEFAULT_GAUGE_ZONES;
+
+    var margin = 10;
+    var cx = W / 2;
+    var cy = H - margin;
+    var r  = Math.min(W / 2, H) - margin - 8;
+    if (r < 20) { return tokens.primary; }
+    var trackWidth = Math.max(6, r * 0.22);
+
+    /* The arc's peak sits at (cx, cy - r); its stroke extends trackWidth/2
+     * beyond that path in every direction. If cy - r is smaller than that
+     * half-width, the stroke's outer edge pokes above y=0 and gets clipped
+     * by the tile — happened in practice once `height` was tuned down.
+     * One corrective pass keeps this safe at any height/width combination. */
+    var topOverflow = (trackWidth / 2) - (cy - r);
+    if (topOverflow > 0) {
+      r -= topOverflow;
+      trackWidth = Math.max(6, r * 0.22);
+    }
+
+    /* Background track — full semicircle, left (180deg) to right (360deg) */
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, Math.PI, Math.PI * 2);
+    ctx.strokeStyle = tokens.border;
+    ctx.lineWidth   = trackWidth;
+    ctx.lineCap     = 'butt';
+    ctx.stroke();
+
+    /* Zone bands */
+    var prevTo = 0;
+    var i;
+    for (i = 0; i < zones.length; i++) {
+      var zone       = zones[i];
+      var zoneColor  = _resolveColor(zone.color, tokens);
+      var startAngle = Math.PI + (prevTo / 100) * Math.PI;
+      var endAngle   = Math.PI + (zone.to  / 100) * Math.PI;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, startAngle, endAngle);
+      ctx.strokeStyle = zoneColor;
+      ctx.lineWidth   = trackWidth;
+      ctx.lineCap     = 'butt';
+      ctx.globalAlpha = 0.9;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      prevTo = zone.to;
+    }
+
+    /* Active zone = first zone whose "to" threshold the value doesn't exceed */
+    var activeColor = tokens.primary;
+    for (i = 0; i < zones.length; i++) {
+      activeColor = _resolveColor(zones[i].color, tokens);
+      if (value <= zones[i].to) { break; }
+    }
+
+    /* Needle */
+    var needleAngle = Math.PI + (value / 100) * Math.PI;
+    var needleLen   = r - trackWidth * 0.7;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(needleAngle) * needleLen, cy + Math.sin(needleAngle) * needleLen);
+    ctx.strokeStyle = activeColor;
+    ctx.lineWidth   = 3;
+    ctx.lineCap     = 'round';
+    ctx.stroke();
+
+    /* Hub — flat filled dot, no outline stroke. A stroke needs a color to
+     * blend into the surrounding card, but the canvas doesn't know the
+     * card's actual background (only the page-level --color-bg token,
+     * which reads visibly darker than the card in dark theme) — same
+     * reasoning as the donut's slice gaps above. */
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+    ctx.fillStyle = activeColor;
+    ctx.fill();
+
+    /* Center value text */
+    var ff        = tokens.fontFamily || 'system-ui,sans-serif';
+    var valueSize = Math.round(r * 0.34);
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font      = '800 ' + valueSize + 'px ' + ff;
+    ctx.fillStyle = tokens.text || '#1a1a1a';
+    ctx.fillText(value + '%', cx, cy - r * 0.16);
+
+    return activeColor;
+  }
+
+  /*
+   * _renderGaugeStatus(statusEl, opts, activeColor)
+   * Writes the status chip below the gauge canvas. Uses the existing
+   * .wui-chip component (already part of the shared CSS fleet) with its
+   * documented inline-custom-property override API, matching how
+   * _renderPieLegend already writes self-contained inline-styled markup
+   * rather than depending on a chart-specific CSS file.
+   */
+  function _renderGaugeStatus(statusEl, opts, activeColor) {
+    if (!statusEl) { return; }
+    var bg     = _alphaColor(activeColor, 0.14);
+    var border = _alphaColor(activeColor, 0.3);
+    statusEl.innerHTML =
+      '<span class="wui-chip wui-chip-sm" style="margin-top:8px;--wui-chip-bg:' + bg +
+      ';--wui-chip-border:' + border + ';--wui-chip-text:' + activeColor + ';">' +
+      (opts.status || '') +
+      '</span>';
+  }
+
+  /*
+   * _drawBarRows(container, rows, tokens)
+   * Renders `.wui-bar-row` markup. The colored bar is the row's own
+   * background — a hard-stop linear-gradient built from `segments` — not a
+   * separate track/fill element. A single segment is a plain progress bar;
+   * multiple segments back-to-back fake a stacked/tiered bar with zero
+   * extra DOM per segment.
+   */
+  function _drawBarRows(container, rows, tokens) {
+    var html = '';
+    var i, s;
+    for (i = 0; i < rows.length; i++) {
+      var row      = rows[i];
+      var segments = row.segments || [];
+      var stops    = [];
+      var cursor   = 0;
+
+      for (s = 0; s < segments.length; s++) {
+        var seg   = segments[s];
+        var pct   = Math.max(0, Math.min(seg.pct, 100));
+        if (pct <= 0) { continue; }
+        var color = _alphaColor(_resolveColor(seg.color, tokens), 0.5);
+        stops.push(color + ' ' + cursor + '%', color + ' ' + (cursor + pct) + '%');
+        cursor += pct;
+      }
+      stops.push('transparent ' + cursor + '%');
+
+      var gradient = stops.length > 1
+        ? 'linear-gradient(90deg, ' + stops.join(', ') + ')'
+        : 'transparent';
+
+      html +=
+        '<div class="wui-bar-row"><span class="fill" style="background:' + gradient + '"></span>' +
+        '<span class="name">' + (row.label != null ? row.label : '') + '</span>' +
+        '<span class="val">'  + (row.value != null ? row.value : '') + '</span></div>';
+    }
+    container.innerHTML = html;
   }
 
   /*
@@ -421,6 +638,17 @@
     if (entry.type === 'pie' || entry.type === 'donut') {
       _drawPieCanvas(entry.canvas, entry.data, entry.opts, tokens);
       if (entry.legendEl) { _renderPieLegend(entry.legendEl, entry.data, tokens); }
+      return;
+    }
+
+    if (entry.type === 'gauge') {
+      var activeColor = _drawGaugeCanvas(entry.canvas, entry.opts, tokens);
+      _renderGaugeStatus(entry.statusEl, entry.opts, activeColor);
+      return;
+    }
+
+    if (entry.type === 'barrow') {
+      _drawBarRows(entry.el, entry.rows, tokens);
       return;
     }
 
@@ -498,6 +726,16 @@
     });
     _ensureThemeListener();
 
+    var _responsiveHandle = null;
+    if (root.WUI.responsive) {
+      _responsiveHandle = root.WUI.responsive.observe(container, function (info) {
+        if (info.tooSmall) { return; }
+        var e = _getEntry(id);
+        if (!e || !e.instance) { return; }
+        e.instance.setSize({ width: info.width, height: e.instance.height });
+      }, { minWidth: opts.minWidth || 60, minHeight: opts.minHeight || 60 });
+    }
+
     var handle = {
       /*
        * update(data)
@@ -526,6 +764,7 @@
        * may still be registered); it short-circuits when the registry is empty.
        */
       destroy: function () {
+        if (_responsiveHandle) { _responsiveHandle.disconnect(); }
         var e = _getEntry(id);
         if (!e) { return; }
         if (e.instance) { e.instance.destroy(); }
@@ -580,12 +819,15 @@
     }
 
     /* Canvas — pixel-exact size; offsetWidth fallback for hidden containers */
-    var canvas    = document.createElement('canvas');
-    canvas.width  = container.offsetWidth || 320;
-    canvas.height = height;
+    var canvas = document.createElement('canvas');
     canvas.style.display = 'block';
-    canvas.style.width   = '100%';
     container.appendChild(canvas);
+    var initialWidth = container.offsetWidth || 320;
+    /* opts.height is the SEED aspect ratio, not a permanent fixed value — the
+     * responsive callback below scales it with the container's width so the
+     * whole ring (not just its width) grows/shrinks as the tile resizes. */
+    var aspect = height / initialWidth;
+    _fitCanvasToBox(canvas, initialWidth, height);
 
     /* HTML legend below canvas */
     var legendEl = null;
@@ -608,6 +850,20 @@
     });
     _ensureThemeListener();
 
+    var _responsiveHandle = null;
+    if (root.WUI.responsive) {
+      _responsiveHandle = root.WUI.responsive.observe(container, function (info) {
+        if (info.tooSmall) { return; }
+        var e = _getEntry(id);
+        if (!e) { return; }
+        var t = _tokenMap();
+        var scaledHeight = Math.max(60, Math.round(info.width * aspect));
+        _fitCanvasToBox(e.canvas, info.width, scaledHeight);
+        _drawPieCanvas(e.canvas, e.data, e.opts, t);
+        if (e.legendEl) { _renderPieLegend(e.legendEl, e.data, t); }
+      }, { minWidth: opts.minWidth || 40, minHeight: opts.minHeight || 40 });
+    }
+
     return {
       update: function (newData) {
         var e = _getEntry(id);
@@ -618,6 +874,7 @@
         if (e.legendEl) { _renderPieLegend(e.legendEl, newData, t); }
       },
       destroy: function () {
+        if (_responsiveHandle) { _responsiveHandle.disconnect(); }
         var e = _getEntry(id);
         if (!e) { return; }
         if (e.canvas && e.canvas.parentNode) { e.canvas.parentNode.removeChild(e.canvas); }
@@ -649,9 +906,166 @@
     return _createPieOrDonut('donut', el, opts);
   }
 
+  /*
+   * _createGauge(el, opts)
+   * Canvas semi-circle threshold gauge + a DOM status chip below it.
+   * Same registry/re-theme pattern as pie/donut (redraw in place, no
+   * teardown, on wui:themechange).
+   */
+  function _createGauge(el, opts) {
+    var container = _resolveEl(el);
+    if (!container) {
+      if (root.console && root.console.warn) {
+        console.warn('[wui-charts] WUI.gauge(): could not resolve element:', el);
+      }
+      return null;
+    }
+
+    opts = opts || {};
+    if (!opts.zones) { opts.zones = _DEFAULT_GAUGE_ZONES; }
+
+    var height = opts.height || 140;
+
+    var id = container.getAttribute(_ATTR);
+    if (!id) {
+      _idCounter++;
+      id = String(_idCounter);
+      container.setAttribute(_ATTR, id);
+    }
+
+    var existing = _getEntry(id);
+    if (existing) {
+      if (existing.canvas && existing.canvas.parentNode) {
+        existing.canvas.parentNode.removeChild(existing.canvas);
+      }
+      if (existing.statusEl && existing.statusEl.parentNode) {
+        existing.statusEl.parentNode.removeChild(existing.statusEl);
+      }
+      _unregister(id);
+    }
+
+    var canvas = document.createElement('canvas');
+    canvas.style.display = 'block';
+    container.appendChild(canvas);
+    _fitCanvasToBox(canvas, container.offsetWidth || 220, height);
+
+    var statusEl = document.createElement('div');
+    statusEl.style.textAlign = 'center';
+    container.appendChild(statusEl);
+
+    var tokens      = _tokenMap();
+    var activeColor = _drawGaugeCanvas(canvas, opts, tokens);
+    _renderGaugeStatus(statusEl, opts, activeColor);
+
+    _register(id, {
+      type:     'gauge',
+      canvas:   canvas,
+      statusEl: statusEl,
+      opts:     opts,
+      el:       container
+    });
+    _ensureThemeListener();
+
+    var _responsiveHandle = null;
+    if (root.WUI.responsive) {
+      _responsiveHandle = root.WUI.responsive.observe(container, function (info) {
+        if (info.tooSmall) { return; }
+        var e = _getEntry(id);
+        if (!e) { return; }
+        _fitCanvasToBox(e.canvas, info.width, height);
+        var color = _drawGaugeCanvas(e.canvas, e.opts, _tokenMap());
+        _renderGaugeStatus(e.statusEl, e.opts, color);
+      }, { minWidth: opts.minWidth || 40, minHeight: opts.minHeight || 40 });
+    }
+
+    return {
+      update: function (newOpts) {
+        var e = _getEntry(id);
+        if (!e) { return; }
+        e.opts = newOpts || e.opts;
+        if (!e.opts.zones) { e.opts.zones = _DEFAULT_GAUGE_ZONES; }
+        var t     = _tokenMap();
+        var color = _drawGaugeCanvas(e.canvas, e.opts, t);
+        _renderGaugeStatus(e.statusEl, e.opts, color);
+      },
+      destroy: function () {
+        if (_responsiveHandle) { _responsiveHandle.disconnect(); }
+        var e = _getEntry(id);
+        if (!e) { return; }
+        if (e.canvas && e.canvas.parentNode)   { e.canvas.parentNode.removeChild(e.canvas); }
+        if (e.statusEl && e.statusEl.parentNode) { e.statusEl.parentNode.removeChild(e.statusEl); }
+        container.removeAttribute(_ATTR);
+        _unregister(id);
+      }
+    };
+  }
+
+  /*
+   * WUI.gauge(el, opts)
+   * ───────────────────
+   * Semi-circle threshold gauge. opts.value 0..100, opts.zones
+   * [{to,color}], opts.status pre-localized string, opts.height px.
+   */
+  function gauge(el, opts) {
+    return _createGauge(el, opts);
+  }
+
+  /*
+   * WUI.barRow(el, opts)
+   * ────────────────────
+   * opts.rows = [{ label, value, segments: [{ pct, color }] }]
+   * Renders one .wui-bar-row per item into `el`, replacing its contents.
+   */
+  function _createBarRow(el, opts) {
+    var container = _resolveEl(el);
+    if (!container) {
+      if (root.console && root.console.warn) {
+        console.warn('[wui-charts] WUI.barRow(): could not resolve element:', el);
+      }
+      return null;
+    }
+
+    opts = opts || {};
+    var rows = opts.rows || [];
+
+    var id = container.getAttribute(_ATTR);
+    if (!id) {
+      _idCounter++;
+      id = String(_idCounter);
+      container.setAttribute(_ATTR, id);
+    }
+
+    _drawBarRows(container, rows, _tokenMap());
+
+    _register(id, { type: 'barrow', el: container, rows: rows });
+    _ensureThemeListener();
+
+    return {
+      update: function (newRows) {
+        var e = _getEntry(id);
+        if (!e) { return; }
+        e.rows = newRows;
+        _drawBarRows(e.el, newRows, _tokenMap());
+      },
+      destroy: function () {
+        var e = _getEntry(id);
+        if (!e) { return; }
+        container.innerHTML = '';
+        container.removeAttribute(_ATTR);
+        _unregister(id);
+      }
+    };
+  }
+
+  function barRow(el, opts) {
+    return _createBarRow(el, opts);
+  }
+
   /* ── Attach to WUI namespace ──────────────────────────────────────────────── */
-  root.WUI.chart = chart;
-  root.WUI.pie   = pie;
-  root.WUI.donut = donut;
+  root.WUI.chart  = chart;
+  root.WUI.pie    = pie;
+  root.WUI.donut  = donut;
+  root.WUI.gauge  = gauge;
+  root.WUI.barRow = barRow;
 
 }(window));

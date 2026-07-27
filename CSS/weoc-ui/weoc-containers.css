@@ -373,6 +373,12 @@
   flex-shrink: 0;
 }
 
+/* Removes the divider — for footers that sit against a differently-toned
+   parent (e.g. inside a .wui-tile) where a seam would look redundant. */
+.wui-card-footer.flush {
+  border-top-color: transparent;
+}
+
 .wui-card-footer.justify-end {
   justify-content: flex-end;
 }
@@ -828,6 +834,21 @@
   background: var(--color-60);
 }
 
+/* Compact header row — half the base vertical padding, for panels stacked
+   tightly together (e.g. a sidebar of small widget panels) where the base
+   header's height reads as too roomy. Combine freely with .color-60/.tabs. */
+.wui-panel-hdr.thin {
+  padding-block: var(--space-1);
+}
+
+/* Removes the divider — the true flush look the .color-60 comment above
+   describes as the default; use when the header shouldn't read as a
+   separate band at all (e.g. a borderless dashboard tile). Combine freely
+   with .thin/.color-60/.tabs. */
+.wui-panel-hdr.flush {
+  border-bottom-color: transparent;
+}
+
 .wui-panel-title-wrap {
   flex: 1;
   min-width: 0;
@@ -884,6 +905,17 @@
   flex: 0 0 auto;
 }
 
+/* Compact footer row — pairs with .wui-panel-hdr.thin for panels stacked
+   tightly together. A quarter of the base vertical padding (space-3 → space-1). */
+.wui-panel-footer.thin {
+  padding-block: var(--space-1);
+}
+
+/* Removes the divider — pairs with .wui-panel-hdr.flush. */
+.wui-panel-footer.flush {
+  border-top-color: transparent;
+}
+
 .wui-panel-actions {
   display: flex;
   align-items: center;
@@ -926,6 +958,182 @@
 
 .wui-panel-hdr-tabs::-webkit-scrollbar {
   display: none;
+}
+
+/* ============================================================
+  2b) TILE (wui-tile)
+  Structured dashboard-tile content component: optional header, a
+  responsive/scrollable body, optional footer pinned to the bottom
+  regardless of which of hdr/footer are present. Drop inside a
+  .wui-bento-tile placement wrapper (or use standalone) — same
+  relationship .wui-card/.wui-panel already have with .wui-bento-tile;
+  .wui-tile is a distinct component, not an alias for the grid's
+  transparent placement class.
+
+  Base variant matches the real dashboard-widget convention already in use
+  across eoc-makeover (`wui-plane wui-p-2 color-30 wui-h-full` + a borderless
+  header with a trailing icon chip): one uniform padding on the tile itself
+  (not per-region), header/footer borderless by default with only a
+  margin-gap, and a `.wui-tile-icon` chip slot for the header's trailing
+  icon. This is the OPPOSITE polarity from `.wui-panel-hdr`/`.wui-card-footer`
+  (which default to bordered, with `.flush` to remove it) — `.wui-tile`'s
+  hdr/footer default to borderless, with `.has-border` to add one, matching
+  `.wui-card-hdr.has-border`'s existing convention.
+
+    <div class="wui-tile">
+      <div class="wui-tile-hdr">                 <!-- optional -->
+        <div class="wui-tile-title-wrap">
+          <h3 class="wui-tile-title">Title</h3>
+          <div class="wui-tile-sub">Subtitle</div>
+        </div>
+        <div class="wui-tile-icon blue"><span class="material-symbols-outlined">…</span></div>
+      </div>
+      <div class="wui-tile-body">                <!-- required -->
+        content — bare by default, wrap in .wui-content-wrap only if you
+        need the library's standard content padding on top of the tile's
+        own uniform padding
+      </div>
+      <div class="wui-tile-footer">              <!-- optional -->
+        …actions…
+      </div>
+    </div>
+
+  Body-only tiles: just omit .wui-tile-hdr/.wui-tile-footer, no other
+  markup change needed. Scrollable body: add .is-scrollable to .wui-tile
+  itself (same convention as .wui-panel.is-scrollable/.wui-card.is-scrollable).
+  Border toggle: `.has-border` on .wui-tile-hdr/.wui-tile-footer
+  independently, for the rare case that wants a divider back.
+  ============================================================ */
+
+.wui-tile {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: var(--space-2);
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* Base is borderless — every real dashboard widget in eoc-makeover uses this
+   look (a plain margin-gap, no divider). Additive opt-in for the rare case
+   that DOES want a divider, same polarity as .wui-card-hdr.has-border. */
+.wui-tile-hdr {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.wui-tile-hdr.has-border {
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Matches .widget-icon — a colored icon chip trailing the title block. */
+.wui-tile-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+.wui-tile-icon.blue   { background: var(--color-10-light);      color: var(--color-10); }
+.wui-tile-icon.orange { background: var(--color-warning-light); color: var(--color-warning); }
+.wui-tile-icon .material-symbols-outlined { font-size: 18px; }
+
+.wui-tile-title-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.wui-tile-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.wui-tile-title .material-symbols-outlined {
+  font-size: var(--text-base);
+  color: var(--color-10);
+}
+
+.wui-tile-sub {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.wui-tile-hdr-actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Bare by default — pad real content with a nested .wui-content-wrap,
+   same pairing convention as .wui-panel-body/.wui-collapse-panel-body.
+   flex:1 1 auto is what makes the body the one region that actually
+   grows/shrinks with the tile, and what keeps the footer pinned below it
+   without needing the footer's own margin-top:auto to do all the work. */
+.wui-tile-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scroll the body instead of letting content overflow the tile. */
+.wui-tile.is-scrollable .wui-tile-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* The designated legend dock: pins to the bottom of the BODY specifically
+   (sits above the footer, if one exists), regardless of what other content
+   is above it in the body. Same margin-top:auto mechanism .wui-tile-footer
+   uses to pin to the bottom of the whole tile, just one level in. This is
+   the anatomical answer to "where do chart legends go" — always here, never
+   in the footer (footer is for actions/captions, a legend is still content
+   describing the chart, not a peripheral action). */
+.wui-tile-legend {
+  flex-shrink: 0;
+  width: 100%;
+  margin-top: auto;
+}
+
+/* margin-top:auto is the actual "always at the bottom" guarantee — it
+   holds even for a header+footer tile with no body at all (an edge case
+   .wui-tile-body's own flex:1 can't cover, since there's nothing to grow). */
+.wui-tile-footer {
+  flex: 0 0 auto;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.wui-tile-footer.has-border {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+.wui-tile-footer.justify-end {
+  justify-content: flex-end;
+}
+
+.wui-tile-footer.justify-between {
+  justify-content: space-between;
 }
 
 /* ============================================================
@@ -1016,6 +1224,7 @@
   4) PLANE (wui-plane)
   Color variants: .color-60 (default) | .color-30 | .primary |
   .success | .warning | .danger | .info | .secondary
+  Opt-in glow: .neon, combined with a severity variant (see below).
   ============================================================ */
 
 .wui-plane {
@@ -1041,6 +1250,24 @@
 .wui-plane.danger    { --_bg: var(--color-danger-light);   --_border: var(--color-danger-muted); }
 .wui-plane.info      { --_bg: var(--color-info-light);     --_border: var(--color-info-muted); }
 .wui-plane.secondary { --_bg: var(--color-secondary-light);--_border: var(--color-secondary-muted); }
+
+/* Neon glow — opt-in modifier, combine with one of the 6 severity/color
+   variants above (e.g. `wui-plane neon primary`, `wui-plane color-30 neon
+   danger`). Mirrors the .wui-btn/.wui-fab `.neon-outline` convention in
+   weoc-interactive.css (idle box-shadow off the matching --color-X-glow
+   token) but scaled up for a card-sized surface: a plane is a much bigger
+   area than a button/fab, so its tight 2px halo would barely register here.
+   A wider, softer blur with a small negative spread keeps it a "lit panel"
+   edge instead of a floodlight. Idle-only, no hover state — a plane is a
+   static container, not an interactive control, so there is nothing that
+   should change on hover the way the button's neon-outline text-shadow does.
+   Purely additive: has no effect unless paired with a severity variant. */
+.wui-plane.neon.primary   { border-color: var(--color-10);        box-shadow: 0 0 0.9rem -0.15rem var(--color-10-glow); }
+.wui-plane.neon.secondary { border-color: var(--color-secondary); box-shadow: 0 0 0.9rem -0.15rem var(--color-secondary-glow); }
+.wui-plane.neon.success   { border-color: var(--color-success);   box-shadow: 0 0 0.9rem -0.15rem var(--color-success-glow); }
+.wui-plane.neon.warning   { border-color: var(--color-warning);   box-shadow: 0 0 0.9rem -0.15rem var(--color-warning-glow); }
+.wui-plane.neon.danger    { border-color: var(--color-danger);    box-shadow: 0 0 0.9rem -0.15rem var(--color-danger-glow); }
+.wui-plane.neon.info      { border-color: var(--color-info);      box-shadow: 0 0 0.9rem -0.15rem var(--color-info-glow); }
 
 /* ============================================================
   5) WIDGET (wui-widget)
@@ -1489,6 +1716,13 @@
 .wui-collapse-panel.is-open > .wui-collapse-panel-hdr,
 [data-wui-collapsible].is-open > .wui-collapse-panel-hdr {
   border-bottom-color: var(--color-border);
+}
+
+/* Removes the open-state divider — for panels stacked directly against each
+   other with no visual seam wanted between header and body. */
+.wui-collapse-panel.flush.is-open > .wui-collapse-panel-hdr,
+[data-wui-collapsible].flush.is-open > .wui-collapse-panel-hdr {
+  border-bottom-color: transparent;
 }
 
 /* Leading icon — square container, tinted by variant */

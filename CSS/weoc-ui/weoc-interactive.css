@@ -44,6 +44,65 @@
   pointer-events: none;
 }
 
+/* ─── Layout: Vertical ───
+   Icon on top, label below — both axes stay centered for free (base
+   .wui-btn already sets align-items/justify-content:center; flipping to a
+   column just re-centers the same two axes). Combine with any color/style
+   modifier, e.g. wui-btn.ghost.vertical.primary. Sized for an icon-bubble +
+   short label (quick-action tiles, grid buttons) — width:100% so it fills
+   its grid cell instead of shrinking to content.
+   Size comes from --wui-btn-vsize (default 4.5rem) so .vertical and .square
+   always stay in sync off the ONE variable — see the .sm/.xs modifiers
+   below instead of overriding min-height/max-width separately, which drifts
+   the two apart the moment only one of them gets resized. */
+.wui-btn.vertical {
+  flex-direction: column;
+  width: 100%;
+  min-height: var(--wui-btn-vsize, 4.5rem);
+  gap: var(--space-1);
+  padding: var(--space-2);
+  text-align: center;
+  white-space: normal;
+}
+
+/* Perfect square — capped, not stretched. Grid items stretch to their
+   column's full width by default, and .vertical's own width:100% does the
+   same — so a bare aspect-ratio:1 blows up to match whatever (possibly
+   wide) column it lands in instead of staying a tidy button. Cap the width
+   and opt out of the grid stretch (justify-self:center) so it sizes off
+   its own max-width instead of its column, then aspect-ratio holds it
+   square at that fixed size. Pairs with .vertical: wui-btn.vertical.square. */
+.wui-btn.square {
+  aspect-ratio: 1;
+  width: auto;
+  max-width: var(--wui-btn-vsize, 4.5rem);
+  justify-self: center;
+}
+
+/* Smaller vertical/square presets — set the ONE shared variable, both
+   min-height (.vertical) and max-width (.square) follow automatically.
+   Also scales down the padding/gap/label size to match, so a .sm button
+   doesn't just shrink the box around unchanged full-size content. */
+.wui-btn.vertical.sm,
+.wui-btn.square.sm {
+  --wui-btn-vsize: 3rem;
+}
+
+.wui-btn.vertical.sm {
+  gap: var(--space-xs);
+  padding: var(--space-1);
+}
+
+.wui-btn.vertical.xs,
+.wui-btn.square.xs {
+  --wui-btn-vsize: 2.25rem;
+}
+
+.wui-btn.vertical.xs {
+  gap: 0;
+  padding: var(--space-xs);
+}
+
 /* ─── Size Scale ─── */
 
 .wui-btn-2xs {

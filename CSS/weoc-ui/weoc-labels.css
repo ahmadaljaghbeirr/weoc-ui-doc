@@ -301,6 +301,116 @@
   animation: badge-info-pulse 1s ease-in-out infinite;
 }
 
+/* ─── Neon Glow ───
+   Opt-in outer glow — combine with an existing color class, e.g.
+   wui-badge.danger.neon. Mirrors .wui-btn.neon-outline /
+   .wui-fab.neon-outline (weoc-interactive.css): idle box-shadow glow,
+   hover intensifies with an added glow layer + text-shadow. Purely
+   additive — background, padding, and sizing are untouched; nothing
+   renders differently unless .neon is present. */
+
+.wui-badge.primary.neon,
+.wui-badge-sm.primary.neon,
+.wui-badge-md.primary.neon,
+.wui-badge-lg.primary.neon,
+.wui-badge-xl.primary.neon {
+  box-shadow: 0 0 2px var(--color-10-glow);
+}
+
+.wui-badge.secondary.neon,
+.wui-badge-sm.secondary.neon,
+.wui-badge-md.secondary.neon,
+.wui-badge-lg.secondary.neon,
+.wui-badge-xl.secondary.neon {
+  box-shadow: 0 0 2px var(--color-secondary-glow);
+}
+
+.wui-badge.success.neon,
+.wui-badge-sm.success.neon,
+.wui-badge-md.success.neon,
+.wui-badge-lg.success.neon,
+.wui-badge-xl.success.neon {
+  box-shadow: 0 0 2px var(--color-success-glow);
+}
+
+.wui-badge.warning.neon,
+.wui-badge-sm.warning.neon,
+.wui-badge-md.warning.neon,
+.wui-badge-lg.warning.neon,
+.wui-badge-xl.warning.neon {
+  box-shadow: 0 0 2px var(--color-warning-glow);
+}
+
+.wui-badge.danger.neon,
+.wui-badge-sm.danger.neon,
+.wui-badge-md.danger.neon,
+.wui-badge-lg.danger.neon,
+.wui-badge-xl.danger.neon {
+  box-shadow: 0 0 2px var(--color-danger-glow);
+}
+
+.wui-badge.info.neon,
+.wui-badge-sm.info.neon,
+.wui-badge-md.info.neon,
+.wui-badge-lg.info.neon,
+.wui-badge-xl.info.neon {
+  box-shadow: 0 0 2px var(--color-info-glow);
+}
+
+.wui-badge.primary.neon:hover,
+.wui-badge-sm.primary.neon:hover,
+.wui-badge-md.primary.neon:hover,
+.wui-badge-lg.primary.neon:hover,
+.wui-badge-xl.primary.neon:hover {
+  box-shadow: 0 0 2px var(--color-10-glow), 0 0 4px var(--color-10-glow);
+  text-shadow: 0 0 4px var(--color-10-glow);
+}
+
+.wui-badge.secondary.neon:hover,
+.wui-badge-sm.secondary.neon:hover,
+.wui-badge-md.secondary.neon:hover,
+.wui-badge-lg.secondary.neon:hover,
+.wui-badge-xl.secondary.neon:hover {
+  box-shadow: 0 0 2px var(--color-secondary-glow), 0 0 4px var(--color-secondary-glow);
+  text-shadow: 0 0 4px var(--color-secondary-glow);
+}
+
+.wui-badge.success.neon:hover,
+.wui-badge-sm.success.neon:hover,
+.wui-badge-md.success.neon:hover,
+.wui-badge-lg.success.neon:hover,
+.wui-badge-xl.success.neon:hover {
+  box-shadow: 0 0 2px var(--color-success-glow), 0 0 4px var(--color-success-glow);
+  text-shadow: 0 0 4px var(--color-success-glow);
+}
+
+.wui-badge.warning.neon:hover,
+.wui-badge-sm.warning.neon:hover,
+.wui-badge-md.warning.neon:hover,
+.wui-badge-lg.warning.neon:hover,
+.wui-badge-xl.warning.neon:hover {
+  box-shadow: 0 0 2px var(--color-warning-glow), 0 0 4px var(--color-warning-glow);
+  text-shadow: 0 0 4px var(--color-warning-glow);
+}
+
+.wui-badge.danger.neon:hover,
+.wui-badge-sm.danger.neon:hover,
+.wui-badge-md.danger.neon:hover,
+.wui-badge-lg.danger.neon:hover,
+.wui-badge-xl.danger.neon:hover {
+  box-shadow: 0 0 2px var(--color-danger-glow), 0 0 4px var(--color-danger-glow);
+  text-shadow: 0 0 4px var(--color-danger-glow);
+}
+
+.wui-badge.info.neon:hover,
+.wui-badge-sm.info.neon:hover,
+.wui-badge-md.info.neon:hover,
+.wui-badge-lg.info.neon:hover,
+.wui-badge-xl.info.neon:hover {
+  box-shadow: 0 0 2px var(--color-info-glow), 0 0 4px var(--color-info-glow);
+  text-shadow: 0 0 4px var(--color-info-glow);
+}
+
 /* ============================================================
    2) CHIP (wui-chip)
    ============================================================ */
@@ -442,6 +552,68 @@
 .wui-chip-2xl.icon-only {
   padding: var(--space-4);
   justify-content: center;
+}
+
+/* ─── Neon Glow ───
+   Opt-in outer glow — combine with an existing color class, e.g.
+   wui-chip.danger.neon. Mirrors .wui-btn.neon-outline /
+   .wui-fab.neon-outline (weoc-interactive.css): idle box-shadow glow,
+   hover intensifies with an added glow layer + text-shadow. Purely
+   additive — background, border, and sizing are untouched; nothing
+   renders differently unless .neon is present. */
+
+.wui-chip.primary.neon {
+  box-shadow: 0 0 2px var(--color-10-glow);
+}
+
+.wui-chip.secondary.neon {
+  box-shadow: 0 0 2px var(--color-secondary-glow);
+}
+
+.wui-chip.success.neon {
+  box-shadow: 0 0 2px var(--color-success-glow);
+}
+
+.wui-chip.warning.neon {
+  box-shadow: 0 0 2px var(--color-warning-glow);
+}
+
+.wui-chip.danger.neon {
+  box-shadow: 0 0 2px var(--color-danger-glow);
+}
+
+.wui-chip.info.neon {
+  box-shadow: 0 0 2px var(--color-info-glow);
+}
+
+.wui-chip.primary.neon:hover {
+  box-shadow: 0 0 2px var(--color-10-glow), 0 0 4px var(--color-10-glow);
+  text-shadow: 0 0 4px var(--color-10-glow);
+}
+
+.wui-chip.secondary.neon:hover {
+  box-shadow: 0 0 2px var(--color-secondary-glow), 0 0 4px var(--color-secondary-glow);
+  text-shadow: 0 0 4px var(--color-secondary-glow);
+}
+
+.wui-chip.success.neon:hover {
+  box-shadow: 0 0 2px var(--color-success-glow), 0 0 4px var(--color-success-glow);
+  text-shadow: 0 0 4px var(--color-success-glow);
+}
+
+.wui-chip.warning.neon:hover {
+  box-shadow: 0 0 2px var(--color-warning-glow), 0 0 4px var(--color-warning-glow);
+  text-shadow: 0 0 4px var(--color-warning-glow);
+}
+
+.wui-chip.danger.neon:hover {
+  box-shadow: 0 0 2px var(--color-danger-glow), 0 0 4px var(--color-danger-glow);
+  text-shadow: 0 0 4px var(--color-danger-glow);
+}
+
+.wui-chip.info.neon:hover {
+  box-shadow: 0 0 2px var(--color-info-glow), 0 0 4px var(--color-info-glow);
+  text-shadow: 0 0 4px var(--color-info-glow);
 }
 
 /* ============================================================

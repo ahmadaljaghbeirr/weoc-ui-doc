@@ -757,6 +757,9 @@
               </div>
             </template>
           </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_54">Overflow utilities</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_grid_55"><code>wui-overflow-hidden</code>, <code>wui-overflow-auto</code>, and <code>wui-overflow-y-auto</code> (vertical scroll only, horizontal clipped) — all <code>!important</code>, for forcing overflow behavior on a tile or panel regardless of its component defaults.</p>
         </div>
 
         <!-- ══════════════════════════ Flex utilities ══════════════════════════ -->
@@ -1258,7 +1261,7 @@
         <!-- ══════════════════════════ Bento ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title" data-wui-i18n-html="docs_grid_46"><span class="material-symbols-outlined">dashboard</span>wui-bento</div>
-          <p class="docs-desc" data-wui-i18n-html="docs_grid_47">A configurable dashboard grid set entirely with classes. <code>wui-bento</code> + <code>cols-1 … cols-8</code> sets the column count; tiles are placed with <code>wui-w-{cols}x{rows}</code> (from <code>1x1</code> to <code>2x3</code>). Gap reuses <code>wui-gap-*</code>. A tile can be the component itself, or a transparent <code>wui-bento-tile</code> wrapper that stretches whatever it holds. <code>cell-sm/md/lg</code> tune the flow auto-row height; <code>is-page</code> + <code>rows-*</code> switch to a fixed, non-scrolling single-screen layout where rows share the height.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_grid_47">A configurable dashboard grid set entirely with classes. <code>wui-bento</code> + <code>cols-1 … cols-8</code> sets the column count; tiles are placed with <code>wui-w-{cols}x{rows}</code> (from <code>1x1</code> to <code>12x12</code>). Gap reuses <code>wui-gap-*</code>. A tile can be the component itself, or a transparent <code>wui-bento-tile</code> wrapper that stretches whatever it holds. <code>cell-sm/md/lg</code> tune the flow auto-row height; <code>is-page</code> + <code>rows-*</code> switch to a fixed, non-scrolling single-screen layout where rows share the height.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_grid_48">Basic bento — cols-4 with mixed tile sizes</div>
           <div class="wui-demo stacked" data-wui-demo>
@@ -1288,7 +1291,7 @@
             </template>
           </div>
 
-          <div class="docs-subsection-title" data-wui-i18n="docs_grid_49">Every tile size — wui-w-1x1 … wui-w-2x3</div>
+          <div class="docs-subsection-title" data-wui-i18n="docs_grid_49">Common tile sizes — wui-w-1x1 … wui-w-12x12 (full matrix, showing 8 common combinations)</div>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- cols-4 grid holding one of each declared size -->

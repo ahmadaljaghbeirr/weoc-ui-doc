@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>weoc-ui — Responsive Engine Harness</title>
+<link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+<link rel="stylesheet" href="../../CSS/uPlot.min.css">
+<link rel="stylesheet" href="harness.css">
+</head>
+<body>
+  <div class="harness-toolbar">
+    <button data-wui-theme-toggle class="wui-btn secondary sm">Toggle theme</button>
+    <button id="btn-sidebar-ratio" class="wui-btn secondary sm">Swap sidebar ratio (1-6 &harr; 1-30)</button>
+    <span class="harness-hint">Or drag any tile's bottom-right corner (CSS resize handle).</span>
+  </div>
+
+  <div id="sidebar-demo" class="harness-sidebar-demo ratio-1-6">
+    <div class="harness-sidebar-pane">sidebar pane</div>
+    <div class="harness-sidebar-main">
+      <div class="harness-tile-label">ratio swap resizes THIS gauge's container &mdash; no window resize involved</div>
+      <div id="tile-sidebar-gauge-host"></div>
+    </div>
+  </div>
+
+  <div class="wui-bento cell-lg cols-3 harness-bento">
+    <div class="wui-bento-tile harness-tile" data-tile="uplot">
+      <div class="harness-tile-label">uPlot chart</div>
+      <div id="tile-uplot-host" class="harness-tile-host"></div>
+    </div>
+    <div class="wui-bento-tile harness-tile" data-tile="donut">
+      <div class="harness-tile-label">donut</div>
+      <div id="tile-donut-host" class="harness-tile-host"></div>
+    </div>
+    <div class="wui-bento-tile harness-tile" data-tile="gauge">
+      <div class="harness-tile-label">gauge</div>
+      <div id="tile-gauge-host" class="harness-tile-host"></div>
+    </div>
+    <div class="wui-bento-tile harness-tile" data-tile="barrow">
+      <div class="harness-tile-label">bar-row (CSS-only, no JS wiring — control case)</div>
+      <div id="tile-barrow-host" class="harness-tile-host"></div>
+    </div>
+    <div class="wui-bento-tile harness-tile" data-tile="ring">
+      <div class="harness-tile-label">progress-ring (fluid CSS, no JS)</div>
+      <div class="harness-tile-host">
+        <div class="wui-progress-ring primary">
+          <svg viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+            <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+              stroke-dasharray="326.73" style="stroke-dashoffset:81.68" transform="rotate(-90 60 60)"/>
+          </svg>
+          <div class="wui-progress-ring-center">
+            <div class="wui-progress-ring-pct">75%</div>
+            <div class="wui-progress-ring-label">Fluid</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../JS/uPlot.iife.min.js"></script>
+  <script src="../../JS/weoc-ui.js"></script>
+  <script src="../../JS/wui-charts.js"></script>
+  <script>
+    (function () {
+      var now = Math.floor(Date.now() / 1000);
+      var ts = [];
+      for (var i = 0; i < 6; i++) { ts.push(now - (5 - i) * 3600); }
+      WUI.chart('#tile-uplot-host', {
+        type: 'line', height: 180,
+        series: [{ label: 'A', color: 'primary' }],
+        data: [ts, [3,5,4,7,6,8]]
+      });
+    })();
+    WUI.donut('#tile-donut-host', {
+      height: 180,
+      data: [{ label: 'A', value: 42, color: 'danger' }, { label: 'B', value: 58, color: 'success' }]
+    });
+    WUI.gauge('#tile-gauge-host', { value: 62, height: 140 });
+    WUI.gauge('#tile-sidebar-gauge-host', { value: 40, height: 140 });
+    WUI.barRow('#tile-barrow-host', {
+      rows: [{ label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] }]
+    });
+
+    document.getElementById('btn-sidebar-ratio').addEventListener('click', function () {
+      var el = document.getElementById('sidebar-demo');
+      el.classList.toggle('ratio-1-6');
+      el.classList.toggle('ratio-1-30');
+    });
+  </script>
+</body>
+</html>

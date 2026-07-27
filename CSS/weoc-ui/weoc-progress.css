@@ -19,8 +19,9 @@
 .wui-progress-ring {
     position: relative;
     flex-shrink: 0;
-    width: 8.5rem;
-    height: 8.5rem;
+    width: clamp(2.25rem, 20cqw, 13.75rem);
+    height: clamp(2.25rem, 20cqw, 13.75rem);
+    aspect-ratio: 1 / 1;
 }
 
 .wui-progress-ring > svg {
@@ -121,6 +122,35 @@
 .wui-progress-ring.xs .wui-progress-ring-center,
 .wui-progress-ring.sm .wui-progress-ring-center { gap: 0.0625rem; }
 
+/* Fluid font/stroke scaling for the base (no xs/sm/md/lg/xl pin) case —
+   tracks the same clamp() range as the ring's own width/height above. */
+.wui-progress-ring:not(.xs):not(.sm):not(.md):not(.lg):not(.xl) .wui-progress-ring-pct {
+  font-size: clamp(0.4375rem, 5cqw, var(--text-3xl));
+}
+.wui-progress-ring:not(.xs):not(.sm):not(.md):not(.lg):not(.xl) .wui-progress-ring-label {
+  font-size: clamp(0.5rem, 2.2cqw, var(--text-xs));
+}
+.wui-progress-ring:not(.xs):not(.sm):not(.md):not(.lg):not(.xl) .wui-progress-ring-track,
+.wui-progress-ring:not(.xs):not(.sm):not(.md):not(.lg):not(.xl) .wui-progress-ring-fill {
+  stroke-width: clamp(6, 4.5cqw, 10);
+}
+
+/* ── Ring neon glow (opt-in) ──────────────── */
+/*
+   Add .neon alongside a severity class to glow the fill stroke.
+   Uses filter: drop-shadow (not box-shadow) — the visible shape is an
+   SVG stroke, and drop-shadow follows the actual rendered path, unlike
+   box-shadow which follows the element's box. Tokens match the
+   .neon-outline convention in weoc-interactive.css.
+*/
+
+.wui-progress-ring.neon.primary   .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-10-glow)); }
+.wui-progress-ring.neon.secondary .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-secondary-glow)); }
+.wui-progress-ring.neon.success   .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-success-glow)); }
+.wui-progress-ring.neon.warning   .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-warning-glow)); }
+.wui-progress-ring.neon.danger    .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-danger-glow)); }
+.wui-progress-ring.neon.info      .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-info-glow)); }
+
 /* ── Bar ──────────────────────────────────── */
 
 .wui-progress-bar {
@@ -188,6 +218,22 @@
 .wui-progress-bar.lg .wui-progress-bar-track { height: var(--space-3); }
 .wui-progress-bar.xl .wui-progress-bar-track { height: var(--space-4); }
 
+/* ── Bar neon glow (opt-in) ───────────────── */
+/*
+   Add .neon alongside a severity class to glow the fill. Uses
+   filter: drop-shadow rather than box-shadow so the glow hugs the
+   fill's own rounded-pill shape (including when it's shorter than
+   the track). Tokens match the .neon-outline convention in
+   weoc-interactive.css.
+*/
+
+.wui-progress-bar.neon.primary   .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-10-glow)); }
+.wui-progress-bar.neon.secondary .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-secondary-glow)); }
+.wui-progress-bar.neon.success   .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-success-glow)); }
+.wui-progress-bar.neon.warning   .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-warning-glow)); }
+.wui-progress-bar.neon.danger    .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-danger-glow)); }
+.wui-progress-bar.neon.info      .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-info-glow)); }
+
 /* ── Segmented (multi-color) ring ─────────── */
 /*
    Each arc is a <circle> with:
@@ -220,6 +266,14 @@
 
 /* xl ring: match the thinner stroke used on .wui-progress-ring-fill */
 .wui-progress-ring.xl .wui-progress-ring-segment { stroke-width: 8; }
+
+/* neon glow (opt-in) — same convention as .wui-progress-ring-fill above */
+.wui-progress-ring-segment.neon.primary   { filter: drop-shadow(0 0 4px var(--color-10-glow)); }
+.wui-progress-ring-segment.neon.secondary { filter: drop-shadow(0 0 4px var(--color-secondary-glow)); }
+.wui-progress-ring-segment.neon.success   { filter: drop-shadow(0 0 4px var(--color-success-glow)); }
+.wui-progress-ring-segment.neon.warning   { filter: drop-shadow(0 0 4px var(--color-warning-glow)); }
+.wui-progress-ring-segment.neon.danger    { filter: drop-shadow(0 0 4px var(--color-danger-glow)); }
+.wui-progress-ring-segment.neon.info      { filter: drop-shadow(0 0 4px var(--color-info-glow)); }
 
 /* ── Segmented (multi-color) bar ─────────── */
 /*
@@ -472,4 +526,72 @@
     font-size: var(--icon-sm);
     font-variation-settings: "FILL" 1, "wght" 700, "GRAD" 0, "opsz" 20;
     line-height: 1;
+}
+
+/* =============================================================================
+   wui-bar-row (WUI.barRow() companion styles)
+
+   Compact single-row progress bar. The colored bar is the row's own
+   background (a hard-stop linear-gradient written inline by
+   WUI.barRow() — see wui-charts.js's _drawBarRows), not a separate
+   track/fill element; segmented (tiered) bars are just more color stops
+   in the same gradient, zero extra DOM per segment.
+
+   Scales down inside narrow bento tiles via the `wui-tile` container
+   query (see weoc-grid.css's `.wui-bento.is-page > *`).
+   ============================================================================= */
+
+.wui-bar-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  flex-shrink: 0;
+  padding: 0 var(--space-2);
+  border-radius: var(--border-radius);
+  background: var(--color-30);
+  overflow: hidden;
+  gap: var(--space-2);
+}
+
+.wui-bar-row + .wui-bar-row {
+  margin-top: var(--space-1);
+}
+
+.wui-bar-row .fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.wui-bar-row .name {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wui-bar-row .val {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  color: var(--color-text-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+}
+
+@container wui-tile (max-width: 220px) {
+  .wui-bar-row {
+    height: 19px;
+  }
+  .wui-bar-row .name,
+  .wui-bar-row .val {
+    font-size: var(--text-2xs);
+  }
 }

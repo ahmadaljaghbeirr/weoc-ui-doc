@@ -404,6 +404,22 @@
   border-right-color: var(--ts-border);
 }
 
+/* optgroup_columns plugin: vendor base gives every column flex-basis:0 +
+   min-width:0 (so N columns always divide the available width evenly) but
+   sets no white-space/overflow safeguard on the option text itself. With
+   enough columns, a column can end up narrower than a single option's
+   label — text then wraps or overflows into its neighbour instead of
+   being clipped cleanly, which reads as outright garbled/interleaved
+   fragments once a longer translated string (e.g. Arabic) pushes an
+   already-tight column over the edge. Force single-line + ellipsis so
+   any column that's too narrow truncates predictably instead. */
+.ts-dropdown.plugin-optgroup_columns .option,
+.ts-dropdown.plugin-optgroup_columns .optgroup-header {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .ts-dropdown .option {
   border: 1px solid transparent;
   color: var(--ts-fg);

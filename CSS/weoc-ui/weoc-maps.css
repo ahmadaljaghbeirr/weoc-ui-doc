@@ -45,6 +45,23 @@
     background: var(--color-30);
 }
 
+/* .wui-map-wrap is the canonical root class per the weoc-map.js README —
+   WeocMapInstance._toggleFullscreen() toggles .is-fs on whatever
+   [data-map-wrap] marks. .location-map-wrap/.map-wrapper above are the
+   same rule under two earlier migration rounds' class names; this is the
+   third, kept identical rather than consolidating (renaming those would
+   risk boards already deployed against them). */
+.wui-map-wrap.is-fs {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 99999 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    background: var(--color-30);
+}
+
 /* Start: Map Controls */
 
 .wui-map-controls-overlay * {
@@ -188,6 +205,16 @@
     flex-shrink: 0;
 }
 
+/* Regular semantic color variants — tier-specific variants (.tier-1..4)
+   live in weoc-tier-colors.css instead, alongside every other component's
+   tier overrides, not duplicated here. */
+.wui-map-pop-accent.primary   { background: var(--color-10); }
+.wui-map-pop-accent.success   { background: var(--color-success); }
+.wui-map-pop-accent.warning   { background: var(--color-warning); }
+.wui-map-pop-accent.danger    { background: var(--color-danger); }
+.wui-map-pop-accent.info      { background: var(--color-info); }
+.wui-map-pop-accent.secondary { background: var(--color-secondary); }
+
 .wui-map-pop-header {
     display: flex;
     align-items: flex-start;
@@ -208,6 +235,16 @@
 .wui-map-pop-icon-wrap .material-symbols-outlined {
     font-size: var(--icon-xs);
 }
+
+/* Regular semantic color variants — tier-specific variants (.tier-1..4)
+   live in weoc-tier-colors.css instead, alongside every other component's
+   tier overrides, not duplicated here. */
+.wui-map-pop-icon-wrap.primary   { background: var(--color-10-light);       color: var(--color-10); }
+.wui-map-pop-icon-wrap.success   { background: var(--color-success-light);  color: var(--color-success-text); }
+.wui-map-pop-icon-wrap.warning   { background: var(--color-warning-light);  color: var(--color-warning-text); }
+.wui-map-pop-icon-wrap.danger    { background: var(--color-danger-light);   color: var(--color-danger-text); }
+.wui-map-pop-icon-wrap.info      { background: var(--color-info-light);     color: var(--color-info-text); }
+.wui-map-pop-icon-wrap.secondary { background: var(--color-secondary-light); color: var(--color-secondary); }
 
 .wui-map-pop-titles {
     flex: 1;
@@ -350,6 +387,103 @@
 }
 
 /* End: Map Point Popover */
+
+/* Start: Map Weather Widget — an optional overlay card for map-based
+   dashboard widgets (e.g. a facility/incident overview map). Generated (not
+   hand-authored) by weoc-map.js's `_renderWeather()` from `opts.weather` —
+   see the header comment there. As a component this class owns LAYOUT only
+   (flex structure + gaps); every piece that already has a shared component
+   is composed from the fleet instead of a bespoke rule: the location/temp
+   icons are `.wui-icon-bubble.sm.warning`, the "Live" pill is
+   `.wui-chip.wui-chip-xs.success`, each metric box is `.wui-plane.wui-p-1`,
+   and all text sizing/weight/color is typography utilities
+   (`.wui-text-*`/`.wui-bold`/`.wui-semibold`) — nothing here reinvents any
+   of those. First adopter: HomePage's Operation Home Page incident map
+   (2026-07-23). */
+.wui-map-weather {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.wui-map-weather-hdr {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.wui-map-weather-location {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.wui-map-weather-main {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.wui-map-weather-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-1);
+}
+
+/* End: Map Weather Widget */
+
+/* Start: Map Legend — a floating tier/status key, bottom-end corner of the
+   map (opposite the bottom-start .wui-map-controls-overlay stack — sharing
+   that corner hid the legend under/behind the control buttons). The dot
+   itself IS `.wui-status-dot(-sm).tier-N` (weoc-indicators.css /
+   weoc-tier-colors.css) — no bespoke dot geometry/color here, just a legend-
+   scoped glow flourish on top of the shared component. Column-gap (item
+   spacing) is NOT fixed here — `_renderLegend()` appends `wui-gap-x-N`
+   sized to the tier count, so more items get more breathing room. `row-gap`
+   stays fixed for the (rare) wrapped case. `inset-inline-end` self-flips
+   for RTL — no separate override needed, same convention as
+   .wui-map-controls-overlay above. First adopter: HomePage's Operation Home
+   Page incident map (2026-07-23). */
+.wui-map-legend {
+    position: absolute;
+    inset-inline-end: var(--space-3);
+    bottom: var(--space-3);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    row-gap: var(--space-2);
+    flex-wrap: wrap;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="dark"] .wui-map-legend {
+    background: rgba(40, 40, 40, 0.92);
+}
+
+.wui-map-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--text-2xs);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-ui);
+    white-space: nowrap;
+}
+
+.wui-map-legend .wui-status-dot.tier-1 { box-shadow: 0 0 5px var(--tier-1-muted); }
+.wui-map-legend .wui-status-dot.tier-2 { box-shadow: 0 0 5px var(--tier-2-muted); }
+.wui-map-legend .wui-status-dot.tier-3 { box-shadow: 0 0 5px var(--tier-3-muted); }
+.wui-map-legend .wui-status-dot.tier-4 { box-shadow: 0 0 5px var(--tier-4-muted); }
+
+/* End: Map Legend */
 
 /* End: Map View */
 

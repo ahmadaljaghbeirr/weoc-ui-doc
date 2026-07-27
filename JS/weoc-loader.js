@@ -1,19 +1,21 @@
 /* =============================================
    weoc-loader.js — Busy-overlay animation companion for weoc-ui
-   Version: 0.1.0
+   Version: 0.2.0
 
    Drives the branded energy→TAQA MorphSVG loader inside a .wui-busy-overlay
    created by weoc-ui.js (WUI.busy). This file is NOT part of the weoc-ui bundle
    — it is a separate companion script, exactly like weoc-anim.js, and it loads
    gsap.min.js + MorphSVGPlugin.min.js itself from its own directory.
 
-   Deploy all three files to the same folder on the server:
+   Deploy to the server:
 
      Shared/JS/gsap.min.js              ← from gsap.com
      Shared/JS/MorphSVGPlugin.min.js    ← from gsap.com (Club plugin)
      Shared/JS/weoc-loader.js           ← this file
+     Shared/Assets/loader/agency-loader.html   ← source-of-truth artwork (viewBox 0 0 760 400)
 
-   Board <head> only needs (in addition to weoc-ui.js):
+   Board <head> only needs (in addition to weoc-ui.js) — no board markup change
+   required to update the artwork, ever:
 
      <script src="Shared/JS/weoc-ui.js"></script>
      <script src="Shared/JS/weoc-loader.js" defer></script>
@@ -25,36 +27,48 @@
      WUILoader.unmount(overlayEl)  — stop the timeline and remove the injected SVG.
 
    Graceful degradation (mirrors weoc-anim.js):
-     • No companion at all      → weoc-ui.js shows a pure-CSS fallback spinner.
+     • No companion at all       → weoc-ui.js shows a pure-CSS fallback spinner.
+     • CDN artwork unreachable   → falls back to the STATIC_SVG baked in below.
      • Companion but no GSAP     → mount() injects the STATIC branded SVG (energy
                                    glyphs, peach/orange gradients); no morph.
      • GSAP + MorphSVG ready     → mount() morphs bolt/flame/drop/turbine into the
                                    TAQA letters and back, forever, yoyo.
      • prefers-reduced-motion    → static SVG, no timeline.
 
-   The SVG markup is inlined below (no runtime fetch of agency-loader.html) so a
-   busy state never costs a network round-trip. Source of truth for the artwork:
-   Assets/loader/agency-loader.html (viewBox 0 0 760 400).
+   Artwork source: fetched at runtime from Shared/Assets/loader/agency-loader.html (a
+   sibling directory of this script, resolved off document.currentScript.src —
+   no board or CDN-base-path hardcoding). Fetched once per page, cached module-
+   wide, and shared by every overlay mounted afterward. The overlay always shows
+   the CSS spinner first and swaps in the animated SVG once the fetch resolves,
+   so a slow/blocked fetch never delays the busy state itself. If the fetch
+   fails (network, 404, CORS) STATIC_SVG below is used instead — keep it in sync
+   with Assets/loader/agency-loader.html by hand as a last-resort fallback only.
    ============================================= */
 
 (function (global) {
   'use strict';
 
   // Capture synchronously — document.currentScript is only valid during IIFE
-  // evaluation. Used to derive sibling paths to the GSAP files so boards need a
-  // single <script> tag (this one). gsap.min.js + MorphSVGPlugin.min.js must
-  // live in the same directory as this file on the server.
+  // evaluation. Used to derive sibling paths so boards need a single <script>
+  // tag (this one). gsap.min.js + MorphSVGPlugin.min.js must live in the same
+  // directory as this file; Assets/loader/agency-loader.html one directory up.
   var _selfSrc = document.currentScript && document.currentScript.src;
   function sibling(name) {
     return _selfSrc ? _selfSrc.replace(/\/[^/?#]+$/, '/' + name) : name;
   }
+  function siblingDir(dir, name) {
+    // Shared/JS/weoc-loader.js -> Shared/<dir>/<name>
+    return _selfSrc ? _selfSrc.replace(/\/[^/]+\/[^/?#]+$/, '/' + dir + '/' + name) : (dir + '/' + name);
+  }
+  var LOADER_ARTWORK_URL = _selfSrc ? siblingDir('Assets/loader', 'agency-loader.html') : null;
   // gsap.min.js + MorphSVGPlugin.min.js are owned + loaded by weoc-anim.js.
 
-  // ── Branded loader SVG (inlined from Assets/loader/agency-loader.html) ──────
-  // Four energy glyphs (#bolt #flame #drop #turbine) gradient-filled via the
-  // --wui-loader-peach / --wui-loader-orange CSS vars, plus a hidden #letters
-  // group (#t #a #q #a2 = "TAQA") used only as MorphSVG morph targets.
-  var SVG_MARKUP =
+  // ── Fallback loader SVG (last resort if the CDN fetch fails) ────────────────
+  // Mirrors Assets/loader/agency-loader.html by hand. Four energy glyphs
+  // (#bolt #flame #drop #turbine) gradient-filled via the --wui-loader-peach /
+  // --wui-loader-orange CSS vars, plus a hidden #letters group (#t #a #q #a2 =
+  // "TAQA") used only as MorphSVG morph targets.
+  var STATIC_SVG =
     '<svg class="wui-busy-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" aria-hidden="true" focusable="false">' +
       '<defs>' +
         '<linearGradient id="wui-loader-grad-1" x1="100" y1="260" x2="165" y2="140" gradientUnits="userSpaceOnUse">' +
@@ -88,6 +102,7 @@
 
   var GLYPHS = ['bolt', 'flame', 'drop', 'turbine'];
   var LETTERS = { bolt: 't', flame: 'a', drop: 'q', turbine: 'a2' };
+  var GRADS = ['grad-1', 'grad-2', 'grad-3', 'grad-4'];
 
   var mounted = [];                 // overlays currently showing the SVG
 
@@ -101,12 +116,66 @@
     return overlay.querySelector('.wui-busy-figure') || overlay;
   }
 
-  // Inject the branded SVG into the overlay's figure (replacing the fallback
-  // spinner). Idempotent — a second call is a no-op if the SVG is already there.
-  function injectSVG(overlay) {
+  // ── CDN artwork fetch (Shared/Assets/loader/agency-loader.html) ────────────────────
+  // agency-loader.html is a full standalone demo document (own <head> with a
+  // CSS/JS <link>/<script>) — only its <svg> is wanted here. Ids in that file
+  // are plain (#bolt, #grad-1, ...) because it only ever shows one instance;
+  // rewritten to wui-loader-* classes here so N overlays can mount at once
+  // without colliding (matches the class-based scoping startMorph() expects).
+  // Gradient elements keep an id (SVG needs one for fill="url(#...)"), just
+  // renamed/prefixed and re-pointed from the matching fill attribute.
+  var _svgHTML = null;     // cached, extracted <svg>.outerHTML — resolved once
+  var _svgPromise = null;  // in-flight fetch, shared by concurrent mount() calls
+
+  function toClass(svg, id, cls) {
+    var el = svg.querySelector('#' + id);
+    if (!el) return;
+    el.classList.add(cls);
+    el.removeAttribute('id');
+  }
+
+  function renameGradId(svg, oldId) {
+    var el = svg.querySelector('#' + oldId);
+    if (!el) return;
+    var newId = 'wui-loader-' + oldId;
+    var ref = svg.querySelector('[fill="url(#' + oldId + ')"]');
+    el.id = newId;
+    if (ref) ref.setAttribute('fill', 'url(#' + newId + ')');
+  }
+
+  function extractSVG(html) {
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var svg = doc.querySelector('svg');
+    if (!svg) return null;
+    svg.classList.add('wui-busy-svg');
+    GLYPHS.forEach(function (g) { toClass(svg, g, 'wui-loader-' + g); });
+    toClass(svg, 'letters', 'wui-loader-letters');
+    Object.keys(LETTERS).forEach(function (g) { toClass(svg, LETTERS[g], 'wui-loader-' + LETTERS[g]); });
+    GRADS.forEach(function (id) { renameGradId(svg, id); });
+    return svg.outerHTML;
+  }
+
+  function fetchLoaderSVG() {
+    if (_svgHTML) return Promise.resolve(_svgHTML);
+    if (_svgPromise) return _svgPromise;
+    if (!LOADER_ARTWORK_URL || typeof fetch !== 'function') return Promise.resolve(null);
+    _svgPromise = fetch(LOADER_ARTWORK_URL, { credentials: 'omit' })
+      .then(function (res) { return res.ok ? res.text() : null; })
+      .then(function (html) {
+        var svg = html && extractSVG(html);
+        _svgHTML = svg || null;
+        return _svgHTML;
+      })
+      ['catch'](function () { return null; });
+    return _svgPromise;
+  }
+
+  // Inject markup into the overlay's figure (replacing the fallback spinner).
+  // Idempotent — a second call is a no-op if the SVG is already there.
+  function injectSVG(overlay, markup) {
     var fig = figureOf(overlay);
     if (!fig || fig.querySelector('.wui-busy-svg')) return fig;
-    fig.innerHTML = SVG_MARKUP;
+    fig.innerHTML = markup;
     overlay.classList.add('wui-busy-has-svg');
     return fig;
   }
@@ -151,14 +220,23 @@
     }
   }
 
-  // ── Public API ──────────────────────────────────────────────────────────
-  function mount(overlay) {
-    if (!overlay) return;
-    injectSVG(overlay);
-    if (mounted.indexOf(overlay) === -1) mounted.push(overlay);
-    // Static SVG shows immediately; morph starts once weoc-anim confirms GSAP ready.
+  function readyThenMorph(overlay) {
+    if (mounted.indexOf(overlay) === -1) return;    // unmounted before we got here
     if (global.WUIAnim && global.WUIAnim.ready) global.WUIAnim.ready(function () { startMorph(overlay); });
     else startMorph(overlay);
+  }
+
+  // ── Public API ──────────────────────────────────────────────────────────
+  // CSS fallback spinner (already in the overlay, built by weoc-ui.js) shows
+  // immediately; this only ever upgrades it, async, once artwork is in hand.
+  function mount(overlay) {
+    if (!overlay) return;
+    if (mounted.indexOf(overlay) === -1) mounted.push(overlay);
+    fetchLoaderSVG().then(function (fetched) {
+      if (mounted.indexOf(overlay) === -1) return;  // unmounted while fetch was in flight
+      injectSVG(overlay, fetched || STATIC_SVG);
+      readyThenMorph(overlay);
+    });
   }
 
   function unmount(overlay) {

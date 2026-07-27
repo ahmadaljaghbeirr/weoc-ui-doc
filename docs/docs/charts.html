@@ -682,6 +682,91 @@ window.addEventListener('resize', WUI.debounce(function () {
 }, 200));</pre>
         </div>
 
+        <!-- ── WUI.gauge(el, opts) API ────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_69"><span class="material-symbols-outlined">speed</span>WUI.gauge(el, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_70">Semi-circle threshold gauge. Raw Canvas 2D, no dependency. Theme-aware and resize-aware like every other chart type — auto-redraws on <code>wui:themechange</code> and on container resize.</p>
+
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_71"><strong>Parameters</strong></p>
+          <table class="docs-api-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-api-method">el</span></td><td><span class="docs-api-type">Element | string</span></td><td>—</td><td>Container element or CSS selector.</td></tr>
+              <tr><td><span class="docs-api-method">opts.value</span></td><td><span class="docs-api-type">number</span></td><td>0</td><td>0-100, clamped.</td></tr>
+              <tr><td><span class="docs-api-method">opts.zones</span></td><td><span class="docs-api-type">Array&lt;{to, color}&gt;</span></td><td><code>&lt;40 danger, &lt;70 warning, else success</code></td><td>Threshold color bands.</td></tr>
+              <tr><td><span class="docs-api-method">opts.status</span></td><td><span class="docs-api-type">string</span></td><td>—</td><td>Pre-localized status text — the engine never calls <code>WUI.i18n</code> itself, same convention as <code>WUI.donut</code>'s <code>center</code> option.</td></tr>
+              <tr><td><span class="docs-api-method">opts.height</span></td><td><span class="docs-api-type">number</span></td><td>140</td><td>Pixels.</td></tr>
+            </tbody>
+          </table>
+
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_72"><strong>Return value</strong></p>
+          <table class="docs-api-table">
+            <thead><tr><th>Method</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-api-method">handle.update(opts)</span></td><td>Feed new value/zones/status. Redraws in place.</td></tr>
+              <tr><td><span class="docs-api-method">handle.destroy()</span></td><td>Remove the canvas, disconnect the resize observer, unregister from theme listener.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Live example: gauge ────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_73"><span class="material-symbols-outlined">speed</span>Example — Gauge</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <div id="demo-gauge-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.gauge('#demo-gauge-chart', {
+  value: 62,
+  status: 'Elevated'
+});
+            </template>
+          </div>
+        </div>
+
+        <!-- ── WUI.barRow(el, opts) API ───────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_74"><span class="material-symbols-outlined">bar_chart</span>WUI.barRow(el, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_75">Segmented horizontal bar rows. Pure CSS/DOM — no canvas, no resize wiring needed; it already reflows for free with its container, including a built-in density reduction inside narrow <code>wui-tile</code> containers.</p>
+
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_charts_76"><strong>Data contract</strong></p>
+          <pre class="docs-code">var rows = [
+  { label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] },
+  { label: 'Row 2', value: 40, segments: [{ pct: 40, color: 'warning' }] }
+];</pre>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Method</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-api-method">handle.update(rows)</span></td><td>Feed a new rows array. Re-renders in place.</td></tr>
+              <tr><td><span class="docs-api-method">handle.destroy()</span></td><td>Clear the container's contents.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Live example: bar-row ──────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_charts_77"><span class="material-symbols-outlined">bar_chart</span>Example — Bar Row</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
+                <div id="demo-barrow-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.barRow('#demo-barrow-chart', {
+  rows: [
+    { label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] },
+    { label: 'Row 2', value: 40, segments: [{ pct: 40, color: 'warning' }] }
+  ]
+});
+            </template>
+          </div>
+        </div>
+
         <!-- ── destroy() ──────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title" data-wui-i18n-html="docs_charts_64"><span class="material-symbols-outlined">delete</span>destroy()</div>

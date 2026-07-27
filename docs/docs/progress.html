@@ -688,6 +688,152 @@
           </div>
         </div>
 
+        <!-- ══════════════════════════ Neon glow ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_progress_28"><span class="material-symbols-outlined">flare</span>Neon glow — .neon</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_progress_29">Opt-in glow modifier for both progress components. Add <code>.neon</code> alongside a color class and the fill picks up a soft <code>filter: drop-shadow(...)</code> using that severity's <code>--color-X-glow</code> token — the same convention as <code>.wui-btn.neon-outline</code> / <code>.wui-fab.neon-outline</code> (see the Buttons page). <code>filter</code> is used instead of <code>box-shadow</code> because the visible shape is an SVG stroke / rounded fill, not a box; drop-shadow follows the rendered shape itself. Purely additive: both components render identically when <code>.neon</code> is omitted.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_30">wui-progress-ring.neon</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary · neon · 75% → offset 81.68 -->
+              <div class="wui-progress-ring primary neon">
+                <svg viewBox="0 0 120 120" width="90" height="90">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:81.68" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">75%</div>
+                  <div class="wui-progress-ring-label">Primary</div>
+                </div>
+              </div>
+              <!-- Secondary · neon · 50% → offset 163.37 -->
+              <div class="wui-progress-ring secondary neon">
+                <svg viewBox="0 0 120 120" width="90" height="90">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:163.37" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">50%</div>
+                  <div class="wui-progress-ring-label">Secondary</div>
+                </div>
+              </div>
+              <!-- Success · neon · 60% → offset 130.69 -->
+              <div class="wui-progress-ring success neon">
+                <svg viewBox="0 0 120 120" width="90" height="90">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:130.69" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">60%</div>
+                  <div class="wui-progress-ring-label">Success</div>
+                </div>
+              </div>
+              <!-- Warning · neon · 30% → offset 228.71 -->
+              <div class="wui-progress-ring warning neon">
+                <svg viewBox="0 0 120 120" width="90" height="90">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:228.71" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">30%</div>
+                  <div class="wui-progress-ring-label">Warning</div>
+                </div>
+              </div>
+              <!-- Danger · neon · 10% → offset 294.06 -->
+              <div class="wui-progress-ring danger neon">
+                <svg viewBox="0 0 120 120" width="90" height="90">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:294.06" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">10%</div>
+                  <div class="wui-progress-ring-label">Danger</div>
+                </div>
+              </div>
+              <!-- Info · neon · 100% → offset 0 -->
+              <div class="wui-progress-ring info neon">
+                <svg viewBox="0 0 120 120" width="90" height="90">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:0" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">100%</div>
+                  <div class="wui-progress-ring-label">Info</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_progress_31">wui-progress-bar.neon</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary · neon · 78% -->
+              <div class="wui-progress-bar primary neon">
+                <div class="wui-progress-bar-info">
+                  <div class="wui-progress-bar-label">Shelter Capacity</div>
+                  <div class="wui-progress-bar-pct">78%</div>
+                </div>
+                <div class="wui-progress-bar-track">
+                  <div class="wui-progress-bar-fill" style="width:78%"></div>
+                </div>
+              </div>
+              <!-- Secondary · neon · 30% (no info row) -->
+              <div class="wui-progress-bar secondary neon">
+                <div class="wui-progress-bar-track">
+                  <div class="wui-progress-bar-fill" style="width:30%"></div>
+                </div>
+              </div>
+              <!-- Success · neon · 92% -->
+              <div class="wui-progress-bar success neon">
+                <div class="wui-progress-bar-info">
+                  <div class="wui-progress-bar-label">Resources Available</div>
+                  <div class="wui-progress-bar-pct">92%</div>
+                </div>
+                <div class="wui-progress-bar-track">
+                  <div class="wui-progress-bar-fill" style="width:92%"></div>
+                </div>
+              </div>
+              <!-- Warning · neon · 65% -->
+              <div class="wui-progress-bar warning neon">
+                <div class="wui-progress-bar-info">
+                  <div class="wui-progress-bar-label">Hospital Beds Used</div>
+                  <div class="wui-progress-bar-pct">65%</div>
+                </div>
+                <div class="wui-progress-bar-track">
+                  <div class="wui-progress-bar-fill" style="width:65%"></div>
+                </div>
+              </div>
+              <!-- Danger · neon · 43% -->
+              <div class="wui-progress-bar danger neon">
+                <div class="wui-progress-bar-info">
+                  <div class="wui-progress-bar-label">Road Closures</div>
+                  <div class="wui-progress-bar-pct">43%</div>
+                </div>
+                <div class="wui-progress-bar-track">
+                  <div class="wui-progress-bar-fill" style="width:43%"></div>
+                </div>
+              </div>
+              <!-- Info · neon · 55% -->
+              <div class="wui-progress-bar info neon">
+                <div class="wui-progress-bar-info">
+                  <div class="wui-progress-bar-label">Training Completion</div>
+                  <div class="wui-progress-bar-pct">55%</div>
+                </div>
+                <div class="wui-progress-bar-track">
+                  <div class="wui-progress-bar-fill" style="width:55%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- ══════════════════════════ weoc-progress stepper ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title"><span class="material-symbols-outlined">linear_scale</span>weoc-progress stepper</div>

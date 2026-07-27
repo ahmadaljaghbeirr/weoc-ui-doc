@@ -80,9 +80,12 @@
               <tr><td><code>getLang()</code> / <code>setLang(lang)</code> / <code>toggleLang()</code></td><td>Read / set / flip the active language. <code>setLang</code> updates <code>&lt;html dir lang&gt;</code>, persists, re-applies, and fires <code>wui:langchange</code>.</td></tr>
               <tr><td><code>apply(root)</code></td><td>Idempotent, re-runnable localization pass over a subtree. Call after injecting markup.</td></tr>
               <tr><td><code>mark(el, id)</code></td><td>Set <code>data-wui-i18n</code> on a node and localize it in one call.</td></tr>
+              <tr><td><code>mountTopToggle()</code></td><td data-wui-i18n-html="docs_localization_16">Injects a language-toggle link into WebEOC's top chrome (<code>[data-test="right-menu"]</code>), walking up through nested same-origin iframes. Self-mounts on load with a retry loop; safely no-ops where that chrome selector is absent (e.g. this docs site).</td></tr>
+              <tr><td><code>wui:langchange</code></td><td data-wui-i18n-html="docs_localization_17">Event dispatched on <code>document.documentElement</code> on every <code>setLang</code>/<code>toggleLang</code> call, with <code>detail: {lang, rtl}</code>. Use this to re-run any custom rendering that depends on language.</td></tr>
+              <tr><td><code>storage</code> event sync</td><td data-wui-i18n-html="docs_localization_18">WebEOC boards run in nested same-origin iframes. Changing the language in one frame persists it and fires a native <code>storage</code> event in every sibling frame, which re-applies live (without re-persisting, to avoid an echo loop) — no extra wiring needed.</td></tr>
             </tbody>
           </table>
-          <p class="docs-desc" data-wui-i18n-html="docs_localization_15">Declarative: <code>[data-wui-i18n="Key"]</code> (text), <code>[data-wui-i18n-attr="placeholder:Key"]</code> (attributes), <code>[data-wui-lang-toggle]</code> and <code>[data-wui-lang="ar"]</code> (controls). Legacy <code>&lt;resource id&gt;</code> / <code>[l-key]</code> and the <code>window.getResource</code> / <code>changeLang</code> globals keep working.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_localization_15">Declarative: <code>[data-wui-i18n="Key"]</code> (text), <code>[data-wui-i18n-attr="placeholder:Key"]</code> (attributes), <code>[data-wui-lang-toggle]</code> and <code>[data-wui-lang="ar"]</code> (controls). Legacy <code>&lt;resource id&gt;</code> / <code>[l-key]</code>, <code>[isresources="yes"][resourcekeys]</code>, <code>.resourceTip[data-resource]</code>, <code>.tooltip-localization[titleEN][titleAR]</code>, and the <code>window.getResource</code> / <code>changeLang</code> globals keep working.</p>
         </div>
 
       </div>
