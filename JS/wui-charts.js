@@ -81,6 +81,25 @@
    timestamp until the next data point. Ideal for discrete state changes:
    activation levels, resource tiers, status transitions.
 
+   ── Neon glow (opts.neon) ────────────────────────────────────────────────────
+   Opt-in only — omitted/false opts.neon changes nothing about a chart's default
+   appearance. Mirrors the existing `.neon-outline` convention on buttons/fabs
+   (see weoc-interactive.css): a glow keyed to one of the same six severities,
+   using the matching `--color-{name}-glow` token from agency-theme.css.
+     opts.neon === false | undefined   No glow (default).
+     opts.neon === true                Glow using 'primary' (--color-10-glow).
+     opts.neon === 'primary'|'secondary'|'success'|'warning'|'danger'|'info'
+                                        Glow using that severity's glow token.
+   WUI.chart(): uPlot renders its own canvas internally, so the adapter cannot
+   reach into individual stroke calls — the glow is a CSS class toggled on the
+   host container (`wui-chart-neon-{severity}`, see weoc-charts.css) that
+   applies `filter: drop-shadow(...)` to the canvas uPlot renders inside it.
+   WUI.pie() / WUI.donut() / WUI.gauge(): these draw straight to Canvas 2D, so
+   the glow is a real `ctx.shadowBlur` / `ctx.shadowColor` set immediately
+   before each colored fill/stroke and reset to 0 immediately after — the same
+   pattern already used by the KPI sparkline recipe's drawSparkline() (see
+   tests/responsive/kpi-sparkline-tile.html).
+
    ============================================================================= */
 
 (function (root) {
@@ -137,6 +156,14 @@
       warning:    get('--color-warning'),
       success:    get('--color-success'),
       secondary:  get('--color-secondary'),
+      /* Neon glow tokens — already rgba() with alpha baked in (agency-theme.css),
+       * used verbatim as ctx.shadowColor / var() inside filter: drop-shadow(). */
+      glowPrimary:   get('--color-10-glow'),
+      glowDanger:    get('--color-danger-glow'),
+      glowWarning:   get('--color-warning-glow'),
+      glowSuccess:   get('--color-success-glow'),
+      glowSecondary: get('--color-secondary-glow'),
+      glowInfo:      get('--color-info-glow'),
       tier1:      get('--tier-1-color'),
       tier2:      get('--tier-2-color'),
       tier3:      get('--tier-3-color'),
@@ -188,6 +215,43 @@
 
   function _paletteColor(index, tokens) {
     return _resolveColor(_DEFAULT_PALETTE[index % _DEFAULT_PALETTE.length], tokens);
+  }
+
+  /*
+   * _resolveGlowColor(neonSpec, tokens)
+   * opts.neon accepts true (→ 'primary') or one of the six severity names.
+   * Returns the resolved --color-{name}-glow token (already rgba(), see
+   * _tokenMap). Unknown/missing severities fall back to primary, same as
+   * _resolveColor's fallback behavior.
+   */
+  function _resolveGlowColor(neonSpec, tokens) {
+    var key = (typeof neonSpec === 'string') ? neonSpec : 'primary';
+    var map = {
+      primary:   tokens.glowPrimary,
+      secondary: tokens.glowSecondary,
+      success:   tokens.glowSuccess,
+      warning:   tokens.glowWarning,
+      danger:    tokens.glowDanger,
+      info:      tokens.glowInfo
+    };
+    return map[key] || tokens.glowPrimary;
+  }
+
+  /*
+   * _neonClassFor(neonSpec, prefix)
+   * Returns `prefix + severity` (weoc-charts.css) for a given opts.neon value,
+   * or null when neon is falsy (opt-in — no class means no visual change).
+   * Shared by WUI.chart() ('wui-chart-neon-') and WUI.barRow()
+   * ('wui-barrow-neon-') — both toggle a class on a plain host container
+   * rather than drawing to Canvas 2D, so the class-name prefix is the only
+   * thing that differs between them.
+   */
+  function _neonClassFor(neonSpec, prefix) {
+    if (!neonSpec) { return null; }
+    var key = (typeof neonSpec === 'string') ? neonSpec : 'primary';
+    var valid = { primary:1, secondary:1, success:1, warning:1, danger:1, info:1 };
+    if (!valid[key]) { key = 'primary'; }
+    return prefix + key;
   }
 
   /*
@@ -359,6 +423,10 @@
      * correct against any surface automatically. */
     var gap = data.length > 1 ? 0.02 : 0;
 
+    /* opts.neon (opt-in, default falsy — no glow, no appearance change unless
+     * a caller explicitly asks for it). See "Neon glow" header comment. */
+    var glow = opts.neon ? _resolveGlowColor(opts.neon, tokens) : null;
+
     for (var i = 0; i < data.length; i++) {
       var slice = data[i];
       var sweep = (slice.value / total) * Math.PI * 2;
@@ -378,7 +446,9 @@
       }
       ctx.closePath();
       ctx.fillStyle = color;
+      if (glow) { ctx.shadowBlur = 10; ctx.shadowColor = glow; }
       ctx.fill();
+      if (glow) { ctx.shadowBlur = 0; }
 
       startAngle += sweep;
     }
@@ -450,6 +520,13 @@
     ctx.lineCap     = 'butt';
     ctx.stroke();
 
+    /* opts.neon (opt-in, default falsy — no glow, no appearance change unless
+     * a caller explicitly asks for it). See "Neon glow" header comment.
+     * Only the colored bands/needle glow — the grey background track is left
+     * alone, same reasoning as the gap/hub comments above (nothing meaningful
+     * to tint). */
+    var glow = opts.neon ? _resolveGlowColor(opts.neon, tokens) : null;
+
     /* Zone bands */
     var prevTo = 0;
     var i;
@@ -465,7 +542,9 @@
       ctx.lineWidth   = trackWidth;
       ctx.lineCap     = 'butt';
       ctx.globalAlpha = 0.9;
+      if (glow) { ctx.shadowBlur = 8; ctx.shadowColor = glow; }
       ctx.stroke();
+      if (glow) { ctx.shadowBlur = 0; }
       ctx.globalAlpha = 1;
 
       prevTo = zone.to;
@@ -487,7 +566,9 @@
     ctx.strokeStyle = activeColor;
     ctx.lineWidth   = 3;
     ctx.lineCap     = 'round';
+    if (glow) { ctx.shadowBlur = 8; ctx.shadowColor = glow; }
     ctx.stroke();
+    if (glow) { ctx.shadowBlur = 0; }
 
     /* Hub — flat filled dot, no outline stroke. A stroke needs a color to
      * blend into the surrounding card, but the canvas doesn't know the
@@ -649,6 +730,12 @@
 
     if (entry.type === 'barrow') {
       _drawBarRows(entry.el, entry.rows, tokens);
+      /* _drawBarRows only replaces entry.el's innerHTML, so the neon class
+       * (set directly on entry.el, not inside the redrawn markup) already
+       * survives this redraw untouched — reapplying here is a defensive
+       * no-op today and keeps the two in lockstep if _drawBarRows ever
+       * starts rebuilding the container itself instead of its contents. */
+      _applyBarRowNeonClass(entry.el, entry.opts && entry.opts.neon);
       return;
     }
 
@@ -665,6 +752,56 @@
     if (_themeHandlerBound) { return; }
     document.documentElement.addEventListener('wui:themechange', _onThemeChange);
     _themeHandlerBound = true;
+  }
+
+  /*
+   * _NEON_CLASSES
+   * All possible wui-chart-neon-* class names, so any previous one can be
+   * stripped cleanly before applying (or omitting) the current opts.neon.
+   */
+  var _NEON_CLASSES = [
+    'wui-chart-neon-primary', 'wui-chart-neon-secondary', 'wui-chart-neon-success',
+    'wui-chart-neon-warning', 'wui-chart-neon-danger', 'wui-chart-neon-info'
+  ];
+
+  /*
+   * _applyNeonClass(container, neonSpec)
+   * WUI.chart() needs this — uPlot renders its own internal canvas, so
+   * the glow is a CSS filter: drop-shadow(...) toggled via class on the host
+   * container the caller passed in (see weoc-charts.css). WUI.pie/donut/gauge
+   * draw straight to Canvas 2D and glow via ctx.shadowBlur/shadowColor instead
+   * (see _drawPieCanvas / _drawGaugeCanvas) — no class needed for those.
+   * WUI.barRow() also renders plain DOM, not canvas — see
+   * _applyBarRowNeonClass() below, same idea with a different class prefix.
+   */
+  function _applyNeonClass(container, neonSpec) {
+    for (var i = 0; i < _NEON_CLASSES.length; i++) { container.classList.remove(_NEON_CLASSES[i]); }
+    var cls = _neonClassFor(neonSpec, 'wui-chart-neon-');
+    if (cls) { container.classList.add(cls); }
+  }
+
+  /*
+   * _BARROW_NEON_CLASSES
+   * All possible wui-barrow-neon-* class names, so any previous one can be
+   * stripped cleanly before applying (or omitting) the current opts.neon.
+   */
+  var _BARROW_NEON_CLASSES = [
+    'wui-barrow-neon-primary', 'wui-barrow-neon-secondary', 'wui-barrow-neon-success',
+    'wui-barrow-neon-warning', 'wui-barrow-neon-danger', 'wui-barrow-neon-info'
+  ];
+
+  /*
+   * _applyBarRowNeonClass(container, neonSpec)
+   * WUI.barRow() renders plain DOM (.wui-bar-row > .fill spans) into
+   * `container`, so — like WUI.chart(), and unlike the canvas-drawn
+   * pie/donut/gauge — the glow is a CSS filter: drop-shadow(...) toggled via
+   * a class on the host container (see weoc-charts.css's .wui-barrow-neon-*
+   * rules, which target the descendant .fill spans).
+   */
+  function _applyBarRowNeonClass(container, neonSpec) {
+    for (var i = 0; i < _BARROW_NEON_CLASSES.length; i++) { container.classList.remove(_BARROW_NEON_CLASSES[i]); }
+    var cls = _neonClassFor(neonSpec, 'wui-barrow-neon-');
+    if (cls) { container.classList.add(cls); }
   }
 
   /* ── Public API ───────────────────────────────────────────────────────────── */
@@ -714,6 +851,8 @@
     var tokens = _tokenMap();
     var data   = opts.data || [[], []];
     var config = _buildConfig(opts, tokens, width);
+
+    _applyNeonClass(container, opts.neon);
 
     var instance = new root.uPlot(config, data, container);
 
@@ -768,6 +907,7 @@
         var e = _getEntry(id);
         if (!e) { return; }
         if (e.instance) { e.instance.destroy(); }
+        _applyNeonClass(container, false);
         container.removeAttribute(_ATTR);
         _unregister(id);
       }
@@ -1014,6 +1154,10 @@
    * WUI.barRow(el, opts)
    * ────────────────────
    * opts.rows = [{ label, value, segments: [{ pct, color }] }]
+   * opts.neon (opt-in, default falsy — no glow, no appearance change unless
+   * a caller explicitly asks for it): false/omitted, true (→ 'primary'), or
+   * one of 'primary'|'secondary'|'success'|'warning'|'danger'|'info'. Same
+   * six-severity API shape as WUI.chart()'s opts.neon — see _applyBarRowNeonClass.
    * Renders one .wui-bar-row per item into `el`, replacing its contents.
    */
   function _createBarRow(el, opts) {
@@ -1036,8 +1180,9 @@
     }
 
     _drawBarRows(container, rows, _tokenMap());
+    _applyBarRowNeonClass(container, opts.neon);
 
-    _register(id, { type: 'barrow', el: container, rows: rows });
+    _register(id, { type: 'barrow', el: container, rows: rows, opts: opts });
     _ensureThemeListener();
 
     return {
@@ -1046,11 +1191,13 @@
         if (!e) { return; }
         e.rows = newRows;
         _drawBarRows(e.el, newRows, _tokenMap());
+        _applyBarRowNeonClass(e.el, e.opts && e.opts.neon);
       },
       destroy: function () {
         var e = _getEntry(id);
         if (!e) { return; }
         container.innerHTML = '';
+        _applyBarRowNeonClass(container, false);
         container.removeAttribute(_ATTR);
         _unregister(id);
       }

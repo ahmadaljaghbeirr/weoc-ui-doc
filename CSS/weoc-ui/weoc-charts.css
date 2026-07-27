@@ -1,0 +1,46 @@
+/* =============================================================================
+   weoc-charts.css  —  chart-adapter opt-in styling
+
+   The "neon glow" toggle for WUI.chart() (uPlot-backed line / area / bar /
+   stepped charts) and WUI.barRow() (stacked/segmented progress-bar rows).
+   JS engine: JS/wui-charts.js.
+
+   WUI.pie() / WUI.donut() / WUI.gauge() draw straight to Canvas 2D, so their
+   neon glow is real ctx.shadowBlur / ctx.shadowColor set inside wui-charts.js
+   itself — nothing to style here for those three.
+
+   uPlot always renders into a plain <canvas> that is a direct child of its
+   own internal `.u-wrap` div, which in turn lives inside the host container
+   element the board passed to WUI.chart(el, opts). wui-charts.js toggles one
+   of the .wui-chart-neon-* classes below on that host container when
+   opts.neon is set, scoping `filter: drop-shadow(...)` to the actual data
+   canvas only — axis labels, the crosshair cursor layer, and the HTML legend
+   are unaffected.
+
+   WUI.barRow() renders plain DOM instead of canvas — one .wui-bar-row per
+   item, each holding a `.fill` span whose own inline `background` is a
+   hard-stop linear-gradient (or a single flat color) built from the row's
+   segments (see _drawBarRows in wui-charts.js). wui-charts.js toggles one of
+   the .wui-barrow-neon-* classes below on the host container the caller
+   passed to WUI.barRow(el, opts), scoping the same `filter: drop-shadow(...)`
+   to every `.fill` span — the `.name` / `.val` text stays unaffected since
+   those are separate siblings, not descendants of `.fill`.
+
+   Six severities per component, matching the `.neon-outline` convention
+   already used on .wui-btn / .wui-fab (see weoc-interactive.css) and the
+   same six --color-{name}-glow tokens (agency-theme.css).
+   ============================================================================= */
+
+.wui-chart-neon-primary   .u-wrap > canvas { filter: drop-shadow(0 0 4px var(--color-10-glow))        drop-shadow(0 0 9px var(--color-10-glow)); }
+.wui-chart-neon-secondary .u-wrap > canvas { filter: drop-shadow(0 0 4px var(--color-secondary-glow)) drop-shadow(0 0 9px var(--color-secondary-glow)); }
+.wui-chart-neon-success   .u-wrap > canvas { filter: drop-shadow(0 0 4px var(--color-success-glow))   drop-shadow(0 0 9px var(--color-success-glow)); }
+.wui-chart-neon-warning   .u-wrap > canvas { filter: drop-shadow(0 0 4px var(--color-warning-glow))   drop-shadow(0 0 9px var(--color-warning-glow)); }
+.wui-chart-neon-danger    .u-wrap > canvas { filter: drop-shadow(0 0 4px var(--color-danger-glow))    drop-shadow(0 0 9px var(--color-danger-glow)); }
+.wui-chart-neon-info      .u-wrap > canvas { filter: drop-shadow(0 0 4px var(--color-info-glow))      drop-shadow(0 0 9px var(--color-info-glow)); }
+
+.wui-barrow-neon-primary   .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-10-glow))        drop-shadow(0 0 9px var(--color-10-glow)); }
+.wui-barrow-neon-secondary .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-secondary-glow)) drop-shadow(0 0 9px var(--color-secondary-glow)); }
+.wui-barrow-neon-success   .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-success-glow))   drop-shadow(0 0 9px var(--color-success-glow)); }
+.wui-barrow-neon-warning   .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-warning-glow))   drop-shadow(0 0 9px var(--color-warning-glow)); }
+.wui-barrow-neon-danger    .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-danger-glow))    drop-shadow(0 0 9px var(--color-danger-glow)); }
+.wui-barrow-neon-info      .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-info-glow))      drop-shadow(0 0 9px var(--color-info-glow)); }
