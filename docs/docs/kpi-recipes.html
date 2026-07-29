@@ -34,6 +34,23 @@
        Force full width here so every recipe card's preview reliably reaches
        its own max-width regardless of title length. */
     .recipe-card-summary .wui-demo-preview { width: 100%; }
+    /* Visual aid for the (often much bigger than the tile) preview canvas —
+       a faint dot-grid + soft center spotlight, so the empty space around a
+       small tile reads as "canvas", not "broken/empty box". Purely
+       decorative, page-local. */
+    .recipe-card-summary .wui-demo-preview {
+      justify-content: center;
+      position: relative;
+      background-color: var(--color-60);
+      background-image:
+        radial-gradient(ellipse 60% 70% at center, var(--color-10-light) 0%, transparent 70%),
+        radial-gradient(var(--color-border) 1px, transparent 1px);
+      background-size: 100% 100%, 22px 22px;
+      background-position: center, 0 0;
+      border: 1px dashed var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .recipe-card-summary .wui-demo-preview > * { position: relative; z-index: 1; }
     .recipe-card-hint {
       display: flex; align-items: center; gap: var(--space-1);
       font-size: var(--text-xs); color: var(--color-text-secondary);

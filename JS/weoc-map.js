@@ -84,6 +84,32 @@
     "esri/layers/GraphicsLayer"
   ];
 
+  var ARCGIS_URL = "https://js.arcgis.com/4.29/";
+  var arcgisReady = null;
+
+  // Reuse an already-loaded ArcGIS/Dojo instance if one exists on the page
+  // (common when a view opens as an overlay into a document that already has
+  // its own map, e.g. WebEOC's Input dialogs) instead of injecting another
+  // copy of the bootstrap script, which throws Dojo's "multipleDefine" when
+  // it re-runs in a realm where the loader is already live. Callers no longer
+  // need their own <script src="js.arcgis.com/..."> tag.
+  function ensureArcgisLoader() {
+    if (arcgisReady) return arcgisReady;
+    if (typeof global.require === "function" && global.require.toUrl) {
+      arcgisReady = Promise.resolve();
+      return arcgisReady;
+    }
+    arcgisReady = new Promise(function (resolve) {
+      var existing = document.querySelector('script[src="' + ARCGIS_URL + '"]');
+      if (existing) { existing.addEventListener("load", resolve, { once: true }); return; }
+      var s = document.createElement("script");
+      s.src = ARCGIS_URL;
+      s.onload = function () { resolve(); };
+      document.head.appendChild(s);
+    });
+    return arcgisReady;
+  }
+
   /* ---------------------------------------------------------------------------
    * Registries
    * ------------------------------------------------------------------------ */
@@ -284,43 +310,41 @@
 
   WeocMapInstance.prototype._init = function () {
     var self = this;
-    if (typeof global.require === "undefined") {
-      console.warn("[WeocMap] ArcGIS `require` not found — is js.arcgis.com loaded before weoc-map.js?");
-      return;
-    }
     var o = this.opts;
 
-    global.require(ESRI_MODULES, function (Map, MapView, Graphic, GraphicsLayer) {
-      self._Graphic = Graphic;
-      self.layer = new GraphicsLayer({ id: "weoc-marker-layer" });
+    ensureArcgisLoader().then(function () {
+      global.require(ESRI_MODULES, function (Map, MapView, Graphic, GraphicsLayer) {
+        self._Graphic = Graphic;
+        self.layer = new GraphicsLayer({ id: "weoc-marker-layer" });
 
-      self.map = new Map({
-        basemap: themedBasemapId(self._basemapIndex),
-        layers: [self.layer]
-      });
+        self.map = new Map({
+          basemap: themedBasemapId(self._basemapIndex),
+          layers: [self.layer]
+        });
 
-      // Details mode can start centred on the record if it has coords.
-      var startCenter = o.center, startZoom = o.zoom;
-      if (o.mode === "details" && o.lat != null && o.lon != null) {
-        startCenter = [o.lon, o.lat];
-        startZoom = o.focusZoom;
-      }
+        // Details mode can start centred on the record if it has coords.
+        var startCenter = o.center, startZoom = o.zoom;
+        if (o.mode === "details" && o.lat != null && o.lon != null) {
+          startCenter = [o.lon, o.lat];
+          startZoom = o.focusZoom;
+        }
 
-      self.view = new MapView({
-        container: self._viewDiv,
-        map: self.map,
-        center: startCenter,
-        zoom: startZoom,
-        ui: { components: [] }
-      });
-      self.view.popupEnabled = false;
+        self.view = new MapView({
+          container: self._viewDiv,
+          map: self.map,
+          center: startCenter,
+          zoom: startZoom,
+          ui: { components: [] }
+        });
+        self.view.popupEnabled = false;
 
-      self.view.when(function () {
-        self._isReady = true;
-        self._wireControls();
-        MODES[o.mode].onReady(self);
-        self._readyCbs.forEach(function (cb) { cb(self); });
-        self._readyCbs = [];
+        self.view.when(function () {
+          self._isReady = true;
+          self._wireControls();
+          MODES[o.mode].onReady(self);
+          self._readyCbs.forEach(function (cb) { cb(self); });
+          self._readyCbs = [];
+        });
       });
     });
   };

@@ -41,8 +41,8 @@
      opts.data                   Array of { label, value, color }
      opts.height                 px (default: 240)
      opts.legend                 boolean (default: true)
-     opts.neon                   false (default) | true | severity name — opt-in glow,
-                                  see "Neon glow" below
+     opts.neon                   false (default) | true — opt-in glow, per-slice, each in
+                                  that slice's own color, see "Neon glow" below
    WUI.donut opts.center         { label, sub } — text overlaid in the hole
    WUI.donut opts.cutout         0..1 inner radius ratio (default: 0.62)
 
@@ -53,8 +53,8 @@
      opts.status                  pre-localized status string (board owns i18n, same as
                                    donut's opts.center — the engine never calls WUI.i18n itself)
      opts.height                  px (default: 140)
-     opts.neon                    false (default) | true | severity name — opt-in glow,
-                                   see "Neon glow" below
+     opts.neon                    false (default) | true — opt-in glow, per-zone-band, each in
+                                   that zone's own color, see "Neon glow" below
 
    ── Instance handles ─────────────────────────────────────────────────────────
    All handles expose:
@@ -83,22 +83,39 @@
 
    ── Neon glow (opts.neon) ────────────────────────────────────────────────────
    Opt-in only — omitted/false opts.neon changes nothing about a chart's default
-   appearance. Mirrors the existing `.neon-outline` convention on buttons/fabs
-   (see weoc-interactive.css): a glow keyed to one of the same six severities,
-   using the matching `--color-{name}-glow` token from agency-theme.css.
+   appearance. Two different flavors depending on the component:
+
+   WUI.pie() / WUI.donut() / WUI.gauge() / WUI.barRow() — opts.neon is a
+   plain boolean. Each slice / zone-band / segment glows in ITS OWN
+   already-assigned color (not one blanket color for the whole chart), and
+   the glow stays INSIDE that slice's / band's / segment's own silhouette —
+   no outer halo bleeding onto the page/card behind it, same "refracted from
+   behind" intent as .wui-plane.neon (weoc-containers.css). Pie/donut and
+   gauge's zone bands achieve the inward-only look via a Canvas 2D
+   clip-then-stroke trick (clip to the shape's own path/annulus-segment,
+   then stroke that same path with a wider, blurred line — only the portion
+   of the blur that falls inside the clip survives). barRow achieves it with
+   a real `box-shadow: inset ...` per segment, since it's plain DOM, not
+   canvas. All four use a lightened (toward-white) tint for the actual glow
+   color, not the exact base color — a same-hue shadow against an
+   already-that-color, mostly-opaque fill/stroke is nearly invisible
+   (verified by direct pixel sampling during this work).
+     opts.neon === false | undefined (default)   No glow.
+     opts.neon === true (or any truthy value)     Glow, per-slice/-band/-segment color.
+
+   WUI.chart() — opts.neon still mirrors the `.neon-outline` convention on
+   buttons/fabs (weoc-interactive.css): ONE glow color for the whole chart,
+   keyed to a severity, using that severity's `--color-{name}-glow` token
+   from agency-theme.css. (The odd one out — uPlot renders its own canvas
+   internally, so the adapter can't reach individual series' stroke calls to
+   glow each one in its own color the way the other four components do.)
      opts.neon === false | undefined   No glow (default).
      opts.neon === true                Glow using 'primary' (--color-10-glow).
      opts.neon === 'primary'|'secondary'|'success'|'warning'|'danger'|'info'
                                         Glow using that severity's glow token.
-   WUI.chart(): uPlot renders its own canvas internally, so the adapter cannot
-   reach into individual stroke calls — the glow is a CSS class toggled on the
-   host container (`wui-chart-neon-{severity}`, see weoc-charts.css) that
-   applies `filter: drop-shadow(...)` to the canvas uPlot renders inside it.
-   WUI.pie() / WUI.donut() / WUI.gauge(): these draw straight to Canvas 2D, so
-   the glow is a real `ctx.shadowBlur` / `ctx.shadowColor` set immediately
-   before each colored fill/stroke and reset to 0 immediately after — the same
-   pattern already used by the KPI sparkline recipe's drawSparkline() (see
-   tests/responsive/kpi-sparkline-tile.html).
+   The glow is a CSS class toggled on the host container
+   (`wui-chart-neon-{severity}`, see weoc-charts.css) that applies
+   `filter: drop-shadow(...)` to the canvas uPlot renders inside it.
 
    ============================================================================= */
 
@@ -156,6 +173,7 @@
       warning:    get('--color-warning'),
       success:    get('--color-success'),
       secondary:  get('--color-secondary'),
+      info:       get('--color-info'),
       /* Neon glow tokens — already rgba() with alpha baked in (agency-theme.css),
        * used verbatim as ctx.shadowColor / var() inside filter: drop-shadow(). */
       glowPrimary:   get('--color-10-glow'),
@@ -203,7 +221,8 @@
       'danger':    tokens.danger,
       'warning':   tokens.warning,
       'success':   tokens.success,
-      'secondary': tokens.secondary
+      'secondary': tokens.secondary,
+      'info':      tokens.info
     };
     if (map[colorSpec] !== undefined) { return map[colorSpec]; }
     if (colorSpec === '--tier-1-color') { return tokens.tier1; }
@@ -280,6 +299,50 @@
       return 'rgba(' + r2 + ',' + g2 + ',' + b2 + ',' + alpha + ')';
     }
     return colorStr;
+  }
+
+  /*
+   * _toRgbChannels(colorStr)
+   * Best-effort parse to [r,g,b], reused by _lightenColor. Handles the same
+   * set of formats _alphaColor does (#rrggbb, #rgb, rgb(), rgba()).
+   */
+  function _toRgbChannels(colorStr) {
+    if (!colorStr) { return [0, 0, 0]; }
+    if (colorStr.charAt(0) === '#' && colorStr.length === 7) {
+      return [
+        parseInt(colorStr.slice(1, 3), 16),
+        parseInt(colorStr.slice(3, 5), 16),
+        parseInt(colorStr.slice(5, 7), 16)
+      ];
+    }
+    if (colorStr.charAt(0) === '#' && colorStr.length === 4) {
+      return [
+        parseInt(colorStr[1] + colorStr[1], 16),
+        parseInt(colorStr[2] + colorStr[2], 16),
+        parseInt(colorStr[3] + colorStr[3], 16)
+      ];
+    }
+    var m = colorStr.match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)/);
+    if (m) { return [parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3])]; }
+    return [0, 0, 0];
+  }
+
+  /*
+   * _lightenColor(colorStr, ratio)
+   * Mixes colorStr toward white by `ratio` (0 = unchanged, 1 = pure white).
+   * Used for the neon "inward glow" on pie/donut slices and gauge zones: a
+   * same-color shadow on an already fully-opaque same-color fill is nearly
+   * invisible (nothing to contrast against), so the glow stroke uses this
+   * lightened tint instead — reads as a soft rim-light bleeding in from the
+   * slice's own edge, closer to "light source behind it, refracting through"
+   * than a flat re-statement of the exact same color would.
+   */
+  function _lightenColor(colorStr, ratio) {
+    var c = _toRgbChannels(colorStr);
+    var r = Math.round(c[0] + (255 - c[0]) * ratio);
+    var g = Math.round(c[1] + (255 - c[1]) * ratio);
+    var b = Math.round(c[2] + (255 - c[2]) * ratio);
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
   }
 
   /* ── uPlot config builder ─────────────────────────────────────────────────── */
@@ -424,8 +487,19 @@
     var gap = data.length > 1 ? 0.02 : 0;
 
     /* opts.neon (opt-in, default falsy — no glow, no appearance change unless
-     * a caller explicitly asks for it). See "Neon glow" header comment. */
-    var glow = opts.neon ? _resolveGlowColor(opts.neon, tokens) : null;
+     * a caller explicitly asks for it). See "Neon glow" header comment.
+     * Each slice glows in ITS OWN color (not one blanket severity color for
+     * the whole chart) — resolved per-iteration below from that slice's own
+     * `color`, same value already used for its fill. The glow also stays
+     * INSIDE the slice, never bleeding onto the page/card behind it: after
+     * filling normally, the same path is clipped (ctx.clip() operates on
+     * whatever path is currently set) and a second, wider glow-stroke is
+     * drawn along that same path — since it's clipped to the slice's own
+     * silhouette, only the inward-facing half of that stroke (and its blur)
+     * survives, reading as an inner glow along the slice's edges instead of
+     * an outer halo. Mirrors the refracted-glow technique used for
+     * .wui-plane.neon (weoc-containers.css), adapted to Canvas 2D. */
+    var neonOn = !!opts.neon;
 
     for (var i = 0; i < data.length; i++) {
       var slice = data[i];
@@ -445,10 +519,30 @@
         ctx.arc(cx, cy, r, startAngle, endAngle);
       }
       ctx.closePath();
-      ctx.fillStyle = color;
-      if (glow) { ctx.shadowBlur = 10; ctx.shadowColor = glow; }
+      /* Neon step 1: translucent low-opacity fill — same alpha as the real
+       * --color-{name}-light tokens (agency-theme.css, ~0.08-0.12), applied
+       * via _alphaColor rather than a token lookup since slice colors are
+       * often literal hex, not severity names. Regular (non-neon) slices
+       * stay fully vivid/opaque, unchanged. */
+      ctx.fillStyle = neonOn ? _alphaColor(color, 0.12) : color;
       ctx.fill();
-      if (glow) { ctx.shadowBlur = 0; }
+
+      /* Neon step 2: a soft glow INSIDE the section, on top of the
+       * translucent fill above. Clip to the slice's own path (still current
+       * from the fill/closePath above) then stroke that same path with
+       * shadowBlur — clipping confines the blur to this slice's own
+       * silhouette, so it never bleeds onto neighboring slices or the page
+       * behind the donut. */
+      if (neonOn) {
+        ctx.save();
+        ctx.clip();
+        ctx.lineWidth   = Math.max(2, r * 0.05);
+        ctx.strokeStyle = color;
+        ctx.shadowBlur  = 12;
+        ctx.shadowColor = color;
+        ctx.stroke();
+        ctx.restore();
+      }
 
       startAngle += sweep;
     }
@@ -521,11 +615,21 @@
     ctx.stroke();
 
     /* opts.neon (opt-in, default falsy — no glow, no appearance change unless
-     * a caller explicitly asks for it). See "Neon glow" header comment.
-     * Only the colored bands/needle glow — the grey background track is left
-     * alone, same reasoning as the gap/hub comments above (nothing meaningful
-     * to tint). */
-    var glow = opts.neon ? _resolveGlowColor(opts.neon, tokens) : null;
+     * a caller explicitly asks for it): plain boolean, same shape as
+     * pie/donut/barRow (NOT the severity-keyed shape WUI.chart() still uses —
+     * a gauge's zones/needle already each have their own meaningful color,
+     * same as a pie's slices, so there's no need for a single blanket
+     * override color here either). Each zone band glows in ITS OWN color,
+     * clipped to stay entirely inside that band's own annulus-segment area
+     * (built from inner/outer radius arcs) so nothing bleeds onto the grey
+     * background track or past the gauge's outer edge — same clip-then-
+     * stroke technique _drawPieCanvas uses, adapted for a stroked ring
+     * segment instead of a filled wedge. Uses the lightened (toward-white)
+     * tint for the actual glow color, same reason as pie/donut/barRow: a
+     * same-hue shadow against an already-that-color band is nearly
+     * invisible. The grey background track itself is left alone — nothing
+     * meaningful to tint. */
+    var neonOn = !!opts.neon;
 
     /* Zone bands */
     var prevTo = 0;
@@ -538,14 +642,37 @@
 
       ctx.beginPath();
       ctx.arc(cx, cy, r, startAngle, endAngle);
-      ctx.strokeStyle = zoneColor;
+      /* Neon step 1: translucent low-opacity body — same alpha as the real
+       * --color-{name}-light tokens (~0.12), same recipe as
+       * _drawPieCanvas's slices. Regular (non-neon) bands stay fully vivid,
+       * unchanged. */
+      ctx.strokeStyle = neonOn ? _alphaColor(zoneColor, 0.12) : zoneColor;
       ctx.lineWidth   = trackWidth;
       ctx.lineCap     = 'butt';
       ctx.globalAlpha = 0.9;
-      if (glow) { ctx.shadowBlur = 8; ctx.shadowColor = glow; }
       ctx.stroke();
-      if (glow) { ctx.shadowBlur = 0; }
       ctx.globalAlpha = 1;
+
+      /* Neon step 2: a thin glow tracing the band's FULL perimeter (outer
+       * arc, inner arc, and the two straight radial end-caps where it
+       * meets neighboring bands) — same technique as the pie/donut slices:
+       * clip to the section's own closed shape, then stroke that SAME
+       * current path (not a separate offset arc), so the accent surrounds
+       * the whole section instead of hugging just one edge. */
+      if (neonOn) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r + trackWidth / 2, startAngle, endAngle);
+        ctx.arc(cx, cy, r - trackWidth / 2, endAngle, startAngle, true);
+        ctx.closePath();
+        ctx.clip();
+        ctx.strokeStyle = zoneColor;
+        ctx.lineWidth   = Math.max(2, trackWidth * 0.15);
+        ctx.shadowBlur  = 8;
+        ctx.shadowColor = zoneColor;
+        ctx.stroke();
+        ctx.restore();
+      }
 
       prevTo = zone.to;
     }
@@ -566,9 +693,9 @@
     ctx.strokeStyle = activeColor;
     ctx.lineWidth   = 3;
     ctx.lineCap     = 'round';
-    if (glow) { ctx.shadowBlur = 8; ctx.shadowColor = glow; }
+    if (neonOn) { ctx.shadowBlur = 8; ctx.shadowColor = _lightenColor(activeColor, 0.55); }
     ctx.stroke();
-    if (glow) { ctx.shadowBlur = 0; }
+    if (neonOn) { ctx.shadowBlur = 0; }
 
     /* Hub — flat filled dot, no outline stroke. A stroke needs a color to
      * blend into the surrounding card, but the canvas doesn't know the
@@ -612,38 +739,52 @@
   }
 
   /*
-   * _drawBarRows(container, rows, tokens)
-   * Renders `.wui-bar-row` markup. The colored bar is the row's own
-   * background — a hard-stop linear-gradient built from `segments` — not a
-   * separate track/fill element. A single segment is a plain progress bar;
-   * multiple segments back-to-back fake a stacked/tiered bar with zero
-   * extra DOM per segment.
+   * _drawBarRows(container, rows, tokens, neon)
+   * Renders `.wui-bar-row` markup. Each segment is its own absolutely-
+   * positioned child span inside `.fill` (left/width % matching its slot in
+   * the row), not a single shared gradient background — this is what lets
+   * `neon` give EACH segment its own glow, in that segment's own color,
+   * rather than one blanket color for the whole bar (there is no way to
+   * attach a per-stop shadow to a single-element CSS gradient).
+   *
+   * neon (opt-in, default falsy — no glow, no appearance change unless a
+   * caller explicitly asks for it): each segment gets an inline
+   * `box-shadow: inset ...` in ITS OWN resolved color. Inset keeps the glow
+   * entirely inside the bar — no outer halo bleeding onto the row's own
+   * background — same "refracted from behind" intent as .wui-plane.neon
+   * (weoc-containers.css), just expressed as a real inset box-shadow instead
+   * of a canvas clip trick, since this is plain DOM/CSS, not Canvas 2D.
    */
-  function _drawBarRows(container, rows, tokens) {
+  function _drawBarRows(container, rows, tokens, neon) {
     var html = '';
     var i, s;
     for (i = 0; i < rows.length; i++) {
       var row      = rows[i];
       var segments = row.segments || [];
-      var stops    = [];
+      var segHtml  = '';
       var cursor   = 0;
 
       for (s = 0; s < segments.length; s++) {
         var seg   = segments[s];
         var pct   = Math.max(0, Math.min(seg.pct, 100));
         if (pct <= 0) { continue; }
-        var color = _alphaColor(_resolveColor(seg.color, tokens), 0.5);
-        stops.push(color + ' ' + cursor + '%', color + ' ' + (cursor + pct) + '%');
+        var color = _resolveColor(seg.color, tokens);
+        /* Neon step 1: translucent low-opacity body — same alpha as the
+         * real --color-{name}-light tokens (~0.12), same recipe as
+         * _drawPieCanvas's slices / _drawGaugeCanvas's zone bands. Regular
+         * (non-neon) segments keep the original 0.5-alpha fill, unchanged.
+         * Neon step 2: a thin inset glow in the ORIGINAL vivid color. */
+        var fill = neon ? _alphaColor(color, 0.12) : _alphaColor(color, 0.5);
+        var glowStyle = neon
+          ? ';box-shadow:inset 0 0 0.35rem 0 ' + color
+          : '';
+        segHtml +=
+          '<span class="seg" style="left:' + cursor + '%;width:' + pct + '%;background:' + fill + glowStyle + '"></span>';
         cursor += pct;
       }
-      stops.push('transparent ' + cursor + '%');
-
-      var gradient = stops.length > 1
-        ? 'linear-gradient(90deg, ' + stops.join(', ') + ')'
-        : 'transparent';
 
       html +=
-        '<div class="wui-bar-row"><span class="fill" style="background:' + gradient + '"></span>' +
+        '<div class="wui-bar-row"><span class="fill">' + segHtml + '</span>' +
         '<span class="name">' + (row.label != null ? row.label : '') + '</span>' +
         '<span class="val">'  + (row.value != null ? row.value : '') + '</span></div>';
     }
@@ -729,13 +870,7 @@
     }
 
     if (entry.type === 'barrow') {
-      _drawBarRows(entry.el, entry.rows, tokens);
-      /* _drawBarRows only replaces entry.el's innerHTML, so the neon class
-       * (set directly on entry.el, not inside the redrawn markup) already
-       * survives this redraw untouched — reapplying here is a defensive
-       * no-op today and keeps the two in lockstep if _drawBarRows ever
-       * starts rebuilding the container itself instead of its contents. */
-      _applyBarRowNeonClass(entry.el, entry.opts && entry.opts.neon);
+      _drawBarRows(entry.el, entry.rows, tokens, entry.opts && entry.opts.neon);
       return;
     }
 
@@ -768,39 +903,17 @@
    * _applyNeonClass(container, neonSpec)
    * WUI.chart() needs this — uPlot renders its own internal canvas, so
    * the glow is a CSS filter: drop-shadow(...) toggled via class on the host
-   * container the caller passed in (see weoc-charts.css). WUI.pie/donut/gauge
-   * draw straight to Canvas 2D and glow via ctx.shadowBlur/shadowColor instead
-   * (see _drawPieCanvas / _drawGaugeCanvas) — no class needed for those.
-   * WUI.barRow() also renders plain DOM, not canvas — see
-   * _applyBarRowNeonClass() below, same idea with a different class prefix.
+   * container the caller passed in (see weoc-charts.css). WUI.pie/donut draw
+   * straight to Canvas 2D and glow per-slice via ctx.shadowBlur/shadowColor
+   * instead (see _drawPieCanvas). WUI.gauge also draws to Canvas 2D (see
+   * _drawGaugeCanvas). WUI.barRow() renders plain DOM but glows per-segment
+   * via an inline inset box-shadow set directly in _drawBarRows — not a
+   * container-level class like this one, since each segment needs its own
+   * color (a single class can only carry one).
    */
   function _applyNeonClass(container, neonSpec) {
     for (var i = 0; i < _NEON_CLASSES.length; i++) { container.classList.remove(_NEON_CLASSES[i]); }
     var cls = _neonClassFor(neonSpec, 'wui-chart-neon-');
-    if (cls) { container.classList.add(cls); }
-  }
-
-  /*
-   * _BARROW_NEON_CLASSES
-   * All possible wui-barrow-neon-* class names, so any previous one can be
-   * stripped cleanly before applying (or omitting) the current opts.neon.
-   */
-  var _BARROW_NEON_CLASSES = [
-    'wui-barrow-neon-primary', 'wui-barrow-neon-secondary', 'wui-barrow-neon-success',
-    'wui-barrow-neon-warning', 'wui-barrow-neon-danger', 'wui-barrow-neon-info'
-  ];
-
-  /*
-   * _applyBarRowNeonClass(container, neonSpec)
-   * WUI.barRow() renders plain DOM (.wui-bar-row > .fill spans) into
-   * `container`, so — like WUI.chart(), and unlike the canvas-drawn
-   * pie/donut/gauge — the glow is a CSS filter: drop-shadow(...) toggled via
-   * a class on the host container (see weoc-charts.css's .wui-barrow-neon-*
-   * rules, which target the descendant .fill spans).
-   */
-  function _applyBarRowNeonClass(container, neonSpec) {
-    for (var i = 0; i < _BARROW_NEON_CLASSES.length; i++) { container.classList.remove(_BARROW_NEON_CLASSES[i]); }
-    var cls = _neonClassFor(neonSpec, 'wui-barrow-neon-');
     if (cls) { container.classList.add(cls); }
   }
 
@@ -1155,9 +1268,9 @@
    * ────────────────────
    * opts.rows = [{ label, value, segments: [{ pct, color }] }]
    * opts.neon (opt-in, default falsy — no glow, no appearance change unless
-   * a caller explicitly asks for it): false/omitted, true (→ 'primary'), or
-   * one of 'primary'|'secondary'|'success'|'warning'|'danger'|'info'. Same
-   * six-severity API shape as WUI.chart()'s opts.neon — see _applyBarRowNeonClass.
+   * a caller explicitly asks for it): plain boolean, unlike WUI.chart()'s
+   * severity-keyed opts.neon. Each segment glows in ITS OWN color, inset
+   * (never bleeding outside the bar) — see _drawBarRows.
    * Renders one .wui-bar-row per item into `el`, replacing its contents.
    */
   function _createBarRow(el, opts) {
@@ -1179,8 +1292,8 @@
       container.setAttribute(_ATTR, id);
     }
 
-    _drawBarRows(container, rows, _tokenMap());
-    _applyBarRowNeonClass(container, opts.neon);
+    var tokens = _tokenMap();
+    _drawBarRows(container, rows, tokens, opts.neon);
 
     _register(id, { type: 'barrow', el: container, rows: rows, opts: opts });
     _ensureThemeListener();
@@ -1190,14 +1303,13 @@
         var e = _getEntry(id);
         if (!e) { return; }
         e.rows = newRows;
-        _drawBarRows(e.el, newRows, _tokenMap());
-        _applyBarRowNeonClass(e.el, e.opts && e.opts.neon);
+        var t = _tokenMap();
+        _drawBarRows(e.el, newRows, t, e.opts && e.opts.neon);
       },
       destroy: function () {
         var e = _getEntry(id);
         if (!e) { return; }
         container.innerHTML = '';
-        _applyBarRowNeonClass(container, false);
         container.removeAttribute(_ATTR);
         _unregister(id);
       }

@@ -853,6 +853,19 @@
         });
       }
 
+      var neonPieEl = document.getElementById('demo-neon-pie-chart');
+      if (neonPieEl && window.WUI.pie) {
+        window.WUI.pie(neonPieEl, {
+          height: 240,
+          neon:   true,
+          data: [
+            { label: 'Personnel',  value: 65, color: 'primary' },
+            { label: 'Equipment',  value: 48, color: 'warning' },
+            { label: 'Facilities', value: 22, color: 'success' }
+          ]
+        });
+      }
+
       var neonDonutEl = document.getElementById('demo-neon-donut-chart');
       if (neonDonutEl && window.WUI.donut) {
         window.WUI.donut(neonDonutEl, {

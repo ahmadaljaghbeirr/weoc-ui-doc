@@ -2,12 +2,14 @@
    weoc-charts.css  —  chart-adapter opt-in styling
 
    The "neon glow" toggle for WUI.chart() (uPlot-backed line / area / bar /
-   stepped charts) and WUI.barRow() (stacked/segmented progress-bar rows).
-   JS engine: JS/wui-charts.js.
+   stepped charts) and structural positioning for WUI.barRow()'s per-segment
+   fill. JS engine: JS/wui-charts.js.
 
    WUI.pie() / WUI.donut() / WUI.gauge() draw straight to Canvas 2D, so their
    neon glow is real ctx.shadowBlur / ctx.shadowColor set inside wui-charts.js
-   itself — nothing to style here for those three.
+   itself — nothing to style here for those three. Pie/donut glow per-slice,
+   each in that slice's own color, clipped so the glow never leaves the
+   slice's own silhouette (see _drawPieCanvas).
 
    uPlot always renders into a plain <canvas> that is a direct child of its
    own internal `.u-wrap` div, which in turn lives inside the host container
@@ -17,18 +19,9 @@
    canvas only — axis labels, the crosshair cursor layer, and the HTML legend
    are unaffected.
 
-   WUI.barRow() renders plain DOM instead of canvas — one .wui-bar-row per
-   item, each holding a `.fill` span whose own inline `background` is a
-   hard-stop linear-gradient (or a single flat color) built from the row's
-   segments (see _drawBarRows in wui-charts.js). wui-charts.js toggles one of
-   the .wui-barrow-neon-* classes below on the host container the caller
-   passed to WUI.barRow(el, opts), scoping the same `filter: drop-shadow(...)`
-   to every `.fill` span — the `.name` / `.val` text stays unaffected since
-   those are separate siblings, not descendants of `.fill`.
-
-   Six severities per component, matching the `.neon-outline` convention
-   already used on .wui-btn / .wui-fab (see weoc-interactive.css) and the
-   same six --color-{name}-glow tokens (agency-theme.css).
+   Six severities, matching the `.neon-outline` convention already used on
+   .wui-btn / .wui-fab (see weoc-interactive.css) and the same six
+   --color-{name}-glow tokens (agency-theme.css).
    ============================================================================= */
 
 .wui-chart-neon-primary   .u-wrap > canvas { filter: drop-shadow(0 0 4px var(--color-10-glow))        drop-shadow(0 0 9px var(--color-10-glow)); }
@@ -38,9 +31,19 @@
 .wui-chart-neon-danger    .u-wrap > canvas { filter: drop-shadow(0 0 4px var(--color-danger-glow))    drop-shadow(0 0 9px var(--color-danger-glow)); }
 .wui-chart-neon-info      .u-wrap > canvas { filter: drop-shadow(0 0 4px var(--color-info-glow))      drop-shadow(0 0 9px var(--color-info-glow)); }
 
-.wui-barrow-neon-primary   .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-10-glow))        drop-shadow(0 0 9px var(--color-10-glow)); }
-.wui-barrow-neon-secondary .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-secondary-glow)) drop-shadow(0 0 9px var(--color-secondary-glow)); }
-.wui-barrow-neon-success   .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-success-glow))   drop-shadow(0 0 9px var(--color-success-glow)); }
-.wui-barrow-neon-warning   .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-warning-glow))   drop-shadow(0 0 9px var(--color-warning-glow)); }
-.wui-barrow-neon-danger    .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-danger-glow))    drop-shadow(0 0 9px var(--color-danger-glow)); }
-.wui-barrow-neon-info      .wui-bar-row .fill { filter: drop-shadow(0 0 4px var(--color-info-glow))      drop-shadow(0 0 9px var(--color-info-glow)); }
+/* ── WUI.barRow() segment layout ──────────────────────────────────────────────
+   Each `.wui-bar-row .fill` is a plain absolute/inset:0 layer (see
+   weoc-progress.css); its children are now one real `.seg` span PER data
+   segment (positioned via inline left/width %, colored via inline
+   background) instead of one shared multi-stop gradient. This is what lets
+   _drawBarRows give each segment its own `neon` glow, in that segment's own
+   color, via an inline `box-shadow: inset ...` — a single CSS class (the old
+   .wui-barrow-neon-* approach) can only carry one color for the whole bar,
+   which can't represent a multi-color stacked row correctly. No severity
+   classes needed here — every color and glow value is inline, per segment,
+   set directly by wui-charts.js. */
+.wui-bar-row .fill .seg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
