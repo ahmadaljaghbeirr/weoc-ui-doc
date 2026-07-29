@@ -707,6 +707,26 @@ WUI.chart('#demo-neon-line-chart', {
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
               <div class="demo-chart-wrap">
+                <!-- Neon pie chart host -->
+                <div id="demo-neon-pie-chart"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.pie('#demo-neon-pie-chart', {
+  height: 240,
+  neon:   true,
+  data: [
+    { label: 'Personnel',  value: 65, color: 'primary' },
+    { label: 'Equipment',  value: 48, color: 'warning' },
+    { label: 'Facilities', value: 22, color: 'success' }
+  ]
+});
+            </template>
+          </div>
+
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-chart-wrap">
                 <!-- Neon donut chart host -->
                 <div id="demo-neon-donut-chart"></div>
               </div>

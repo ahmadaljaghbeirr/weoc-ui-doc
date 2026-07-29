@@ -184,6 +184,24 @@ window.GenericValidator = (function ($) {
         const $activeInvalid = $activePanel.find(".is-invalid").first();
         return $activeInvalid.length ? $activeInvalid : $allInvalid;
     }
+
+    // Nearest scrolling ancestor of an element, or null if none. Scrolling
+    // this instead of always falling back to the document keeps a fixed
+    // page header/footer (outside the scrollable region) from scrolling away.
+    function scrollParentOf($el) {
+        let node = $el[0] && $el[0].parentElement;
+        while (node && node !== document.body && node !== document.documentElement) {
+            const oy = window.getComputedStyle(node).overflowY;
+            if (
+                (oy === "auto" || oy === "scroll" || oy === "overlay") &&
+                node.scrollHeight > node.clientHeight
+            ) {
+                return node;
+            }
+            node = node.parentElement;
+        }
+        return null;
+    }
     // â”€â”€ Core validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function validateRadioGroup($form, name) {
@@ -354,10 +372,21 @@ window.GenericValidator = (function ($) {
             setTimeout(
                 function () {
                     if ($target.is(":visible")) {
-                        $("html, body").animate(
-                            { scrollTop: $target.offset().top - 120 },
-                            250,
-                        );
+                        const scroller = scrollParentOf($target);
+                        if (scroller) {
+                            const delta =
+                                $target[0].getBoundingClientRect().top -
+                                scroller.getBoundingClientRect().top;
+                            $(scroller).animate(
+                                { scrollTop: scroller.scrollTop + delta - 20 },
+                                250,
+                            );
+                        } else {
+                            $("html, body").animate(
+                                { scrollTop: $target.offset().top - 120 },
+                                250,
+                            );
+                        }
                         $target.trigger("focus");
                     }
                 },

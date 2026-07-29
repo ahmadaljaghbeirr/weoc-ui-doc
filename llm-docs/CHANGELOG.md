@@ -6,6 +6,108 @@ Dated, append-only log of every meaningful CSS/JS edit to weoc-ui. See the
 sync-discipline rule in [README.md](README.md) — this file gets one new
 entry per session that touches source, in the same session as the edit.
 
+- 2026-07-27 — **Superseding correction** to `opts.neon` on `WUI.pie`/
+  `donut`/`gauge`/`barRow`: the "muted/lightened body + own-color rim" design
+  described in the entry directly below (same day) was ITSELF replaced, per
+  explicit user spec — "can you make the neon variant only have the
+  color-{whatever color}-light (the one with low opacity to appear
+  translucent?)". The lighten-toward-white body (`_lightenColor(color,
+  0.65)`) was too visually close to the vivid color and not the actual
+  low-opacity "-light" token look the user meant. Fixed by switching the
+  section body to `_alphaColor(color, 0.12)` — the SAME low alpha the real
+  `--color-{name}-light` tokens use (`agency-theme.css`, confirmed
+  0.08-0.12) — applied via the color-string helper rather than a token
+  lookup, since slice/segment colors are frequently literal hex, not
+  severity names. First pass of this correction (per explicit follow-up:
+  "now can you add the neon shadow effect inside each section?") shipped
+  with NO glow at all, translucent-only; the thin inward glow (original
+  vivid color, `ctx.clip()`-confined) was added as an immediate step 2 on
+  top of that, then thinned twice more on further feedback ("let the stroke
+  size(the border) thinner", then "turn it up to 0.05") — pie/donut's
+  accent `lineWidth` went wide → `max(2, r*0.03)` → **final: `max(2,
+  r*0.05)`**. The exact same body+glow recipe was then applied to `gauge`'s
+  zone bands and `barRow`'s segments (previously on the older
+  muted-lighten design) to keep all 4 components consistent. Separately,
+  live user feedback ("the gauge's borders are on the inside instead of
+  outside") caught that the gauge accent was being traced at the band's
+  CENTERLINE (radius `r`) instead of its true outer edge — fixed by moving
+  the accent stroke to `r + trackWidth/2 - accentWidth/2`. A follow-up
+  question ("is it possible to make the gauge section stroke surround the
+  section instead of just being at either top, bottom or middle?") showed
+  even the outer-edge-only stroke wasn't enough — fixed properly by
+  building the CLOSED annulus-segment path (outer arc + inner arc +
+  `closePath()`, giving it the two straight radial end-caps too), clipping
+  to it, then stroking that SAME current path instead of a separate offset
+  arc — the exact clip-then-stroke-the-clip-path technique the pie/donut
+  slices already used, which is why their accent already surrounded the
+  whole slice and the gauge's didn't. Now all 3 canvas-drawn components
+  (pie/donut/gauge) use this identical pattern. Also
+  added a new "Neon pie chart" demo to `charts.html` (`WUI.pie()` shares its
+  drawing code with `WUI.donut()` via `_drawPieCanvas`, so this was a
+  docs-only addition, not new drawing logic) — full pie (no cutout),
+  verified visually: translucent slices, thin vivid glowing rim, matches
+  the donut. All 4 components (pie/donut/gauge/barRow) re-verified visually
+  post-fix with zero console errors. `_lightenColor()`/`_toRgbChannels()`
+  remain in the file but are no longer used for any section body — only the
+  gauge needle's own always-on glow still uses `_lightenColor`. This is now
+  the FINAL, locked-in design — see the updated `opts.neon` row in
+  [js-api.md](js-api.md) for the authoritative per-component mechanism (the
+  entry below is superseded and kept only for history).
+- 2026-07-27 — **Final correction** to `opts.neon` on `WUI.pie`/`donut`/
+  `gauge`/`barRow`, replacing BOTH of the two designs below same day: the
+  "wrap the container in a glass panel" idea (`_applyGlassPanel`, entry
+  below) was explicitly rejected — "I don't want it to wrap... let the
+  actual sections of the chart match the plane neon style." `_applyGlassPanel`
+  was deleted entirely (function + all 14 call sites). Real fix: each
+  slice/zone-band/segment's own BODY becomes a muted/light tint (via the
+  existing `_lightenColor()` helper) instead of the fully vivid color, and
+  the ORIGINAL vivid color becomes a thin glowing rim on top — same
+  body-vs-border relationship `.wui-plane.neon` has, just applied per-section
+  instead of to a wrapper. First attempt at this used a WIDE/heavily-blurred
+  rim stroke that ended up repainting most of each section back to full
+  saturation, defeating the muted body — fixed by shrinking the rim to a
+  thin accent (`lineWidth` ~5% of radius for pie/donut, ~25% of track width
+  for gauge bands, small `shadowBlur`). Verified via direct canvas pixel
+  sampling (muted body ~176-186 RGB range vs. vivid rim ~58-69 range) plus
+  visual zoom screenshots. Full detail in [js-api.md](js-api.md).
+- 2026-07-27 — Extended `opts.neon` to ALL 5 chart-family factories
+  (`chart`/`pie`/`donut`/`gauge`/`barRow`, not just pie/donut/barRow) with a
+  new `_applyGlassPanel()` that gives the host container the exact same
+  border+radial-wash+inset-shadow treatment as `.wui-plane.neon.{severity}` —
+  per explicit user correction after an earlier misread of the request (see
+  `.wui-plane.neon`'s own row in [css-classes.md](css-classes.md) for that
+  detour: it was briefly changed then reverted back to its original
+  inset+wash recipe, since the ask was to make the CHARTS match the PLANE,
+  not the reverse). Also added gauge to the per-own-color/inward-only group
+  (zone bands each glow in their own color via a clip-built annulus-segment
+  mask, needle uses a plain lightened shadow) — see the entry below for the
+  full per-own-color mechanism. Required filling a real gap: `_tokenMap()`/
+  `_resolveColor()` had no plain solid-color entry for 'info' (only the glow
+  token existed) — fixed before `_applyGlassPanel` could resolve an info
+  border/wash. Verified: all 4 canvas/DOM chart types show a bordered,
+  tinted "glass panel" container PLUS their own per-element glow
+  simultaneously; regular (non-`.neon`) usage is pixel-identical to before
+  (checked against the real, non-neon Event Timeline/Bar-Row recipe cards in
+  `kpi-recipes.html` — zero regression).
+- 2026-07-27 — Refined `WUI.pie`/`donut`/`barRow`'s `opts.neon` (same day as
+  the entry below) per explicit user feedback: each slice/segment now glows
+  in its OWN already-assigned color instead of one blanket severity color,
+  and the glow stays entirely inside the slice/segment (no outer bleed) —
+  matching `.wui-plane.neon`'s "refracted from behind" look. `pie`/`donut`
+  use a Canvas 2D clip-then-stroke trick; `barRow` was restructured from one
+  shared gradient span to one real child `<span class="seg">` per segment so
+  each can carry its own inline glow (a single gradient span can't carry a
+  per-stop shadow). Both use a NEW `_lightenColor()` helper for the actual
+  glow tint (lightened toward white) — a same-hue glow against an
+  already-that-color fill was measured (via direct canvas pixel sampling) to
+  be visually a complete no-op before this fix. `WUI.chart`/`gauge` keep
+  their original severity-keyed single-color glow — that distinction is now
+  explicit in both [css-classes.md](css-classes.md) and
+  [js-api.md](js-api.md) (two separate `opts.neon` rows, not one). Also: the
+  plane's glow itself went through 2 rounds of user-directed refinement this
+  same day (outer halo → refracted inset+wash → inset-only, outer halo
+  removed) — see [css-classes.md](css-classes.md)'s `.wui-plane.neon` row for
+  the full sequence.
 - 2026-07-27 — Added an opt-in "neon" glow variant across 5 more component
   families, extending the pre-existing `.wui-btn.neon-outline`/
   `.wui-fab.neon-outline` convention (`weoc-interactive.css`) rather than

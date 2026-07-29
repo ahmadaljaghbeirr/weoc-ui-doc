@@ -1261,13 +1261,49 @@
    edge instead of a floodlight. Idle-only, no hover state — a plane is a
    static container, not an interactive control, so there is nothing that
    should change on hover the way the button's neon-outline text-shadow does.
-   Purely additive: has no effect unless paired with a severity variant. */
-.wui-plane.neon.primary   { border-color: var(--color-10);        box-shadow: 0 0 0.9rem -0.15rem var(--color-10-glow); }
-.wui-plane.neon.secondary { border-color: var(--color-secondary); box-shadow: 0 0 0.9rem -0.15rem var(--color-secondary-glow); }
-.wui-plane.neon.success   { border-color: var(--color-success);   box-shadow: 0 0 0.9rem -0.15rem var(--color-success-glow); }
-.wui-plane.neon.warning   { border-color: var(--color-warning);   box-shadow: 0 0 0.9rem -0.15rem var(--color-warning-glow); }
-.wui-plane.neon.danger    { border-color: var(--color-danger);    box-shadow: 0 0 0.9rem -0.15rem var(--color-danger-glow); }
-.wui-plane.neon.info      { border-color: var(--color-info);      box-shadow: 0 0 0.9rem -0.15rem var(--color-info-glow); }
+   Purely additive: has no effect unless paired with a severity variant.
+
+   The glow stays entirely INSIDE the panel, as if the light source sits
+   behind it and refracts through the surface — no outer halo at all: an
+   `inset` box-shadow softly lights the inside edges, and a low-opacity
+   radial-gradient wash (color-mixed down so it reads as a tint, not a solid
+   fill) sits behind the panel's own background, brightest near the top and
+   fading out by mid-panel. `background-image` layers on top of the base
+   rule's `background: var(--_bg)` shorthand without needing !important —
+   different property, later/more-specific selector wins normally. This is
+   the reference "neon container" recipe — WUI.chart/pie/donut/gauge/barRow's
+   opts.neon (wui-charts.js) gives their host container this same
+   border+wash+inset treatment, see js-api.md. */
+.wui-plane.neon.primary {
+  border-color: var(--color-10);
+  background-image: radial-gradient(ellipse 130% 90% at 50% -10%, color-mix(in srgb, var(--color-10-glow) 30%, transparent) 0%, transparent 70%);
+  box-shadow: inset 0 0 2.5rem -1rem var(--color-10-glow);
+}
+.wui-plane.neon.secondary {
+  border-color: var(--color-secondary);
+  background-image: radial-gradient(ellipse 130% 90% at 50% -10%, color-mix(in srgb, var(--color-secondary-glow) 30%, transparent) 0%, transparent 70%);
+  box-shadow: inset 0 0 2.5rem -1rem var(--color-secondary-glow);
+}
+.wui-plane.neon.success {
+  border-color: var(--color-success);
+  background-image: radial-gradient(ellipse 130% 90% at 50% -10%, color-mix(in srgb, var(--color-success-glow) 30%, transparent) 0%, transparent 70%);
+  box-shadow: inset 0 0 2.5rem -1rem var(--color-success-glow);
+}
+.wui-plane.neon.warning {
+  border-color: var(--color-warning);
+  background-image: radial-gradient(ellipse 130% 90% at 50% -10%, color-mix(in srgb, var(--color-warning-glow) 30%, transparent) 0%, transparent 70%);
+  box-shadow: inset 0 0 2.5rem -1rem var(--color-warning-glow);
+}
+.wui-plane.neon.danger {
+  border-color: var(--color-danger);
+  background-image: radial-gradient(ellipse 130% 90% at 50% -10%, color-mix(in srgb, var(--color-danger-glow) 30%, transparent) 0%, transparent 70%);
+  box-shadow: inset 0 0 2.5rem -1rem var(--color-danger-glow);
+}
+.wui-plane.neon.info {
+  border-color: var(--color-info);
+  background-image: radial-gradient(ellipse 130% 90% at 50% -10%, color-mix(in srgb, var(--color-info-glow) 30%, transparent) 0%, transparent 70%);
+  box-shadow: inset 0 0 2.5rem -1rem var(--color-info-glow);
+}
 
 /* ============================================================
   5) WIDGET (wui-widget)
