@@ -24,7 +24,6 @@
             Alpine.data('listsPage', function () {
               return {
                 init: function () {
-                  var self = this;
                   window.DocShell.ready.then(function () {
                     if (!window.EOCLists || !window.TomSelect) return;
 

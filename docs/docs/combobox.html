@@ -24,7 +24,6 @@
             Alpine.data('comboboxPage', function () {
               return {
                 init: function () {
-                  var self = this;
                   window.DocShell.ready.then(function () {
                     if (!window.TomSelectFactory) return;
                     // Custom renderer — register BEFORE init so data-render="DocsPersonTmpl" resolves.

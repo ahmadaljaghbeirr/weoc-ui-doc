@@ -25,7 +25,6 @@
             Alpine.data('homePage', function () {
               return {
                 init: function () {
-                  var self = this;
                   window.DocShell.ready.then(function () {
                     var el = document.getElementById('theme-display');
                     if (el && window.WUI) el.textContent = window.WUI.getTheme();

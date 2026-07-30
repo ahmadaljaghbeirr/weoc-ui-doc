@@ -19,7 +19,7 @@
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <style>
         /* ── Zone diagram helpers — scoped to this page ───────────── */
-        /* Lives inside the Barba container so Barba carries it on navigation */
+        /* Lives inside #docs-main, so it's replaced along with the rest of the page on every htmx-boosted navigation */
         .vz-board { display:flex;flex-direction:column;border:1.5px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;background:var(--color-bg);font-family:var(--font-mono);font-size:var(--text-2xs);font-weight:600;gap:2px;padding:2px }
         .vz-row { display:flex;gap:2px }
         .vz-zone { padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);display:flex;flex-direction:column;gap:2px }
@@ -48,9 +48,9 @@
             Alpine.data('viewsPage', function () {
               return {
                 init: function () {
-                  var self = this;
                   window.DocShell.ready.then(function () {
-                    // interactive zone demos mount here via DocShell.mount()
+                    // Stub: this page is static reference markup only — no
+                    // interactive zone demos to mount yet.
                   });
                 }
               };

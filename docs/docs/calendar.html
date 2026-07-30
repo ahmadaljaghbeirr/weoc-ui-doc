@@ -24,10 +24,9 @@
             Alpine.data('calendarPage', function () {
               return {
                 init: function () {
-                  var self = this;
                   window.DocShell.ready.then(function () {
                     if (!window.WUICalendar) return;
-                    // pick up any [data-wui-calendar] auto-init examples (also runs after Barba nav)
+                    // pick up any [data-wui-calendar] auto-init examples (also runs after every SPA navigation to this page)
                     window.WUICalendar.init();
                     var host = document.getElementById('cal-demo');
                     if (!host) return;
@@ -299,7 +298,7 @@ cal.openEvent(42);
         <!-- ── Auto-init ─────────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title" data-wui-i18n-html="docs_calendar_21"><span class="material-symbols-outlined">bolt</span>Declarative auto-init</div>
-          <p class="docs-desc" data-wui-i18n-html="docs_calendar_22">Drop <code>data-wui-calendar</code> on an element and the engine instantiates it on load (and via <code>WUICalendar.init()</code> after AJAX/Barba refreshes). Seed events inline with a <code>data-events</code> JSON array — ideal for WebEOC views that already render their records to JSON.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_calendar_22">Drop <code>data-wui-calendar</code> on an element and the engine instantiates it on load (and via <code>WUICalendar.init()</code> after any SPA navigation to this page). Seed events inline with a <code>data-events</code> JSON array — ideal for WebEOC views that already render their records to JSON.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
               <!-- Declarative: auto-inits on load; seed events with data-events JSON -->

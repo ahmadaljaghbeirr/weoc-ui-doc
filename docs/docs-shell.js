@@ -118,7 +118,6 @@
   ];
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var barbaStarted = false;
   var themeHooked = false;
   var swatchHooked = false;
   var swatchStylesInjected = false;
@@ -304,9 +303,10 @@
   }
 
   /* Render the persistent chrome (header + sidebar) for a namespace.
-     Called on first load AND after every Barba navigation — re-rendering the
-     sidebar with the CURRENT root keeps relative links correct across the
-     root/docs directory boundary, and refreshes the active item + title. */
+     Called on first load AND after every htmx-boosted / popstate navigation —
+     re-rendering the sidebar with the CURRENT root keeps relative links
+     correct across the root/docs directory boundary, and refreshes the
+     active item + title. */
   function renderChrome(ns, root) {
     var hdr = document.getElementById('docs-hdr');
     if (hdr) hdr.innerHTML = renderHeader(root);
@@ -328,9 +328,11 @@
   }
 
   /* ── On-demand global assets ──────────────────────────────────────────────
-     Barba never swaps <head>, so anything a page needs must be present
-     site-wide. Inject the add-on CSS (tables/maps/forms) + gsap + barba once.
-     Guarded so direct loads that already link them don't double-load. */
+     htmx's hx-select only pulls #docs-main out of the response — <head> is
+     never touched by a swap — so anything a page needs must be present
+     site-wide. Inject the add-on CSS (tables/maps/forms) + the shared JS
+     libraries once. Guarded so direct loads that already link them don't
+     double-load. */
   function loadScript(src) {
     return new Promise(function (resolve) {
       var s = document.createElement('script');
@@ -376,7 +378,8 @@
       ensureCSS(shared + 'CSS/weoc-ui/' + f);
     });
     // TomSelect + Flatpickr styles — needed on the Forms page but loaded here
-    // site-wide because Barba never re-processes incoming <head> link tags.
+    // site-wide because an htmx-boosted swap never re-processes incoming
+    // <head> link tags (hx-select only pulls #docs-main out of the response).
     ['tom-select.min.css', 'tom-select-agency.css',
      'flatpickr.min.css', 'flatpickr-agency.css',
      'tinymce-theme.css'].forEach(function (f) {
@@ -398,7 +401,8 @@
     // Alpine.data('tinymcePage', ...) component.
     if (!window.tinymce)     jobs.push(loadScript(root + 'vendor/tinymce-8.6.0/tinymce.min.js'));
     if (!window.gsap)        jobs.push(loadScript(shared + 'JS/gsap.min.js'));
-    /* Barba removed — navigation is now the Alpine-driven fetch/swap router below. */
+    /* Navigation is handled by htmx (hx-boost on #docs-split/#docs-hdr, set in
+       DocShell.init) plus the popstate listener in bindHtmxNav() below. */
     if (!window.WUICalendar) jobs.push(loadScript(shared + 'JS/weoc-calendar.js'));
     if (!window.TomSelect)   jobs.push(loadScript(shared + 'JS/tom-select.complete.min.js'));
     if (!window.flatpickr)   jobs.push(loadScript(shared + 'JS/flatpickr.min.js'));
@@ -451,9 +455,10 @@
           activePage: null,
 
           // ── Page-scoped reactive state ──────────────────────────────
-          // PAGE_INIT functions write into page.* for x-data blocks on
-          // that page. Alpine destroys element-bound scopes automatically
-          // when Barba removes the old container — no manual cleanup needed.
+          // runPageInit() writes into page.* for x-data blocks on that page.
+          // Alpine destroys element-bound scopes automatically when the htmx
+          // swap (outerHTML) removes the old #docs-main container — no
+          // manual cleanup needed.
           page: {}
         });
         // NOTE: no window.Alpine.start() call here — Alpine's own vendored
@@ -675,9 +680,10 @@
     });
   }
 
-  /* First-load entrance — stagger the hero + sections. One-shot; Barba
-     navigations use the page-fade transition instead. gsap.from so nothing
-     gets stuck hidden if gsap somehow fails. */
+  /* First-load entrance — stagger the hero + sections. One-shot; subsequent
+     htmx-boosted navigations use the GSAP curtain wipe instead (coverIn/
+     revealOut below). gsap.from so nothing gets stuck hidden if gsap
+     somehow fails. */
   function entranceAnimate() {
     if (reduceMotion || !window.gsap) return;
     window.gsap.from('.docs-hero, .docs-section', {
@@ -685,9 +691,11 @@
     });
   }
 
-  /* ── Barba — DOC-SITE ONLY ────────────────────────────────────────────────
-     Static sidebar + header (outside the wrapper's container); only
-     #docs-main swaps, with a barba.js-style fade (out then in). NOTE: this is
+  /* ── GSAP curtain wipe — DOC-SITE ONLY ────────────────────────────────────
+     Static sidebar + header (outside #docs-main); only #docs-main swaps.
+     The wipe is driven off htmx's own swap lifecycle hooks (coverIn from
+     htmx:beforeSwap, revealOut from applySwappedPage after afterSwap/
+     popstate) — see the "htmx swap lifecycle" section below. NOTE: this is
      for the documentation site only — NOT a WebEOC pattern. */
   /* The cover panel — a single brand-colored curtain that wipes across the
      content pane. Lives on <body> (persistent), positioned over whatever
@@ -727,9 +735,10 @@
     return window.gsap.to(el, { scaleX: 0, duration: 0.55, ease: 'power3.inOut', delay: 0.08 });
   }
 
-  /* ── htmx swap lifecycle (Barba- and hand-rolled-router-free) ────────────
-     htmx owns navigation (hx-boost on #docs-split, set in DocShell.init).
-     We hang chrome re-render + PAGE_INIT + the GSAP curtain off htmx's own
+  /* ── htmx swap lifecycle ──────────────────────────────────────────────────
+     htmx owns navigation (hx-boost on #docs-split and #docs-hdr, set in
+     DocShell.init).
+     We hang chrome re-render + runPageInit + the GSAP curtain off htmx's own
      documented swap/settle delay window instead of overriding htmx's
      internal swap/history handling (that interaction is undocumented and
      was deliberately avoided — see plan Task 2 header note). */
@@ -762,16 +771,16 @@
      matters. */
   var latestNav = 0;
 
-  /* Apply an already-fetched page's content: renderChrome + i18n re-apply +
-     PAGE_INIT + the GSAP reveal. Shared by both the htmx:afterSwap listener
+  /* Apply an already-fetched page's content: renderChrome (which ends with
+     its own WUI.i18n.apply) + runPageInit + the GSAP reveal. Shared by both
+     the htmx:afterSwap listener
      (which already has the swapped-in DOM from evt.detail) and the popstate
      listener (which does its own separate fetch) — only the fetching differs
      between the two call sites, everything after "we know ns/root and the
      new content is already in #docs-main" lives here once. */
   function applySwappedPage(ns, root) {
-    renderChrome(ns, root);
-    if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
-    runPageInit(ns);
+    renderChrome(ns, root); // already ends with its own WUI.i18n.apply(document)
+    runPageInit();
     revealOut(document.getElementById('docs-main'));
   }
 
@@ -918,15 +927,35 @@
     if (!panel) return;
     var res = searchMatches(q);
     if (!res.length) { panel.innerHTML = q ? '<div class="docs-search-empty">No matches</div>' : ''; panel.classList.toggle('is-open', !!q); return; }
+    // Explicit hx-get/hx-target/hx-select/hx-swap on each hit (mirroring
+    // #docs-hdr's own hx-boost config) rather than relying on inherited
+    // hx-boost + a later htmx.process() re-walk: live-verified that
+    // re-processing #docs-hdr (or just this panel) AFTER its first process()
+    // pass — needed since these anchors don't exist yet at that first pass —
+    // does NOT correctly inherit hx-select/hx-swap for the newly-discovered
+    // anchors; it falls back to a default swap of the ENTIRE fetched
+    // document's body into the old #docs-main (confirmed via inspecting the
+    // resulting DOM: the stale target's innerHTML started with the whole
+    // fetched <div id="docs-hdr">... page again), producing a duplicate
+    // #docs-main instead of a clean outerHTML replace. Explicit attributes
+    // on the anchor itself sidestep that re-processing/inheritance quirk.
     var root = getRoot(), html = '';
+    var swapSpec = 'outerHTML ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
     for (var i = 0; i < res.length; i++) {
       var href = getHref(res[i].item, root);
-      html += '<a class="docs-search-hit" href="' + href + '" data-search-hit>' +
+      html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
+        ' hx-get="' + href + '" hx-push-url="true" hx-target="#docs-main"' +
+        ' hx-select="#docs-main" hx-swap="' + swapSpec + '">' +
         '<span class="docs-search-hit-label">' + res[i].item.label + '</span>' +
         '<span class="docs-search-hit-group">' + res[i].group + '</span></a>';
     }
     panel.innerHTML = html;
     panel.classList.add('is-open');
+    // This vendored htmx build has no MutationObserver auto-processing new
+    // nodes (grepped htmx.min.js to confirm), so these freshly-injected
+    // anchors still need one process() call to wire up their (now explicit,
+    // self-contained) hx-get click binding.
+    if (window.htmx) window.htmx.process(panel);
   }
   function bindSearch() {
     if (searchBound) return;
@@ -990,27 +1019,47 @@
       hookThemeReadout();
       hookThemeSwatches();
       var splitEl = document.getElementById('docs-split');
-      if (splitEl) {
-        splitEl.setAttribute('hx-boost', 'true');
-        splitEl.setAttribute('hx-target', '#docs-main');
-        splitEl.setAttribute('hx-select', '#docs-main');
-        splitEl.setAttribute('hx-swap', 'innerHTML swap:500ms settle:630ms');
-        if (window.htmx) window.htmx.process(splitEl);
-      }
+      var hdrEl = document.getElementById('docs-hdr');
+      // #docs-split (sidebar/content) and #docs-hdr (header/search) are
+      // SIBLINGS in the page markup, not nested — hx-boost only boosts
+      // descendants of the element carrying it, so both containers need the
+      // same attributes set independently, or links inside the header
+      // (search results, brand link) silently fall back to full page loads.
+      //
+      // hx-select="#docs-main" + hx-swap="outerHTML" (not innerHTML): htmx's
+      // hx-select extracts the MATCHED element itself into the swap
+      // fragment. Pairing that with an innerHTML swap would place the
+      // fetched #docs-main INSIDE the target #docs-main (same id), producing
+      // a nested duplicate id in the DOM. outerHTML replaces the target
+      // element with the fetched one instead, so there's exactly one
+      // #docs-main afterward. evt.detail.target in the htmx:beforeSwap/
+      // afterSwap handlers below is still the (now-detached) old #docs-main
+      // node at fire time, so the existing token-guard + coverIn/revealOut
+      // logic is unaffected by this swap-style change.
+      var swapSpec = 'outerHTML ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
+      var boostTargets = [splitEl, hdrEl];
+      boostTargets.forEach(function (el) {
+        if (!el) return;
+        el.setAttribute('hx-boost', 'true');
+        el.setAttribute('hx-target', '#docs-main');
+        el.setAttribute('hx-select', '#docs-main');
+        el.setAttribute('hx-swap', swapSpec);
+        if (window.htmx) window.htmx.process(el);
+      });
       bindSearch();
       bindHtmxNav();
       ensureI18nStore(root);
 
       window.DocShell.ready = ensureGlobalAssets(root).then(function () {
         // htmx loads lazily as one of ensureGlobalAssets' jobs, so the
-        // htmx.process(splitEl) call above (at attribute-set time) almost
-        // always no-ops — window.htmx isn't defined yet. Re-process now that
-        // the load is guaranteed complete, so hx-boost's click binding
-        // actually attaches instead of silently falling back to full
-        // page navigations (which never fire htmx:beforeSwap/afterSwap).
-        if (window.htmx && splitEl) window.htmx.process(splitEl);
+        // htmx.process() calls above (at attribute-set time) almost always
+        // no-op — window.htmx isn't defined yet. Re-process now that the
+        // load is guaranteed complete, so hx-boost's click binding actually
+        // attaches instead of silently falling back to full page
+        // navigations (which never fire htmx:beforeSwap/afterSwap).
+        if (window.htmx) boostTargets.forEach(function (el) { if (el) window.htmx.process(el); });
         entranceAnimate();
-        runPageInit(ns);
+        runPageInit();
       });
     }
   };

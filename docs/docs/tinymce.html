@@ -35,15 +35,15 @@
                     if (!window.tinymce) return;
                     var sel = '#demo-tinymce';
                     if (!document.querySelector(sel)) return;
-                    // Barba re-enter: tear down any prior editor bound to a now-detached node.
+                    // Re-enter via SPA navigation: tear down any prior editor bound to a now-detached node.
                     try { window.tinymce.remove(sel); } catch (e) {}
                     // The editor iframe is a separate document, so the agency theme must be
                     // loaded INTO it (tokens + Cairo + light/dark) BEFORE our content styling,
                     // which consumes those tokens. Load agency-theme.css, NOT weoc-ui-core.css
                     // (the core reset's body rules would break the editor content body).
-                    // Use the ACTIVE palette file so Barba navigation into this page lands on
+                    // Use the ACTIVE palette file so navigating into this page lands on
                     // the right palette (no refresh needed). Absolute URLs so they resolve
-                    // correctly even after Barba navigation.
+                    // correctly even after an htmx-boosted navigation.
                     var contentCss = [
                       new URL('../../CSS/weoc-ui/' + agencyThemeFile(activePalette()), document.baseURI).href,
                       new URL('../../CSS/tinymce-content-tokens.css', document.baseURI).href

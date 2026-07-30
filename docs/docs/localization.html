@@ -24,7 +24,6 @@
             Alpine.data('localizationPage', function () {
               return {
                 init: function () {
-                  var self = this;
                   window.DocShell.ready.then(function () {
                     var W = window.WUI;
                     if (!W || !W.i18n) return;
