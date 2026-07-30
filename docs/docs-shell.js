@@ -531,18 +531,6 @@
         if (rd && rd.wrapper) rd.wrapper.classList.add('is-readonly');
       }
     },
-    dates: function () {
-      if (!window.FlatpickrFactory) return;
-      // Binds every [data-fp-preset] input in the page; skips already-inited ones.
-      // Re-runs after each SPA swap because runPageInit(ns) calls PAGE_INIT[ns].
-      FlatpickrFactory.init();
-      // Readonly display demo: lock it so it renders a value but never opens.
-      var ro = document.getElementById('fp-readonly');
-      if (ro && ro._flatpickr) {
-        ro.classList.add('is-readonly');
-        ro._flatpickr.set('clickOpens', false);
-      }
-    },
     tinymce: function () {
       if (!window.tinymce) return;
       var sel = '#demo-tinymce';

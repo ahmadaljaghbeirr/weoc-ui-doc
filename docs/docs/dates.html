@@ -17,7 +17,31 @@
   <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="dates">
-      <div class="docs-page">
+      <div class="docs-page" x-data="datesPage()" x-init="init()">
+        <script>
+        (function () {
+          function registerDatesPage() {
+            Alpine.data('datesPage', function () {
+              return {
+                init: function () {
+                  var self = this;
+                  window.DocShell.ready.then(function () {
+                    if (!window.FlatpickrFactory) return;
+                    FlatpickrFactory.init();
+                    var ro = document.getElementById('fp-readonly');
+                    if (ro && ro._flatpickr) {
+                      ro.classList.add('is-readonly');
+                      ro._flatpickr.set('clickOpens', false);
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerDatesPage();
+          else document.addEventListener('alpine:init', registerDatesPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_dates_1">Dates</div>
