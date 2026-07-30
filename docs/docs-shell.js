@@ -1488,11 +1488,44 @@
 
     document.body.addEventListener('htmx:beforeSwap', function (evt) {
       if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
+      // Staleness MUST be checked here, not in htmx:afterSwap: by the time
+      // afterSwap fires, htmx has already unconditionally written the
+      // response into #docs-main's innerHTML — a check there is too late to
+      // stop the bad write, it can only skip our own chrome/PAGE_INIT re-run
+      // afterward, leaving #docs-main's visible content stale while the
+      // sidebar/title/URL correctly show the newer page. beforeSwap is
+      // htmx's own documented cancellation point: setting
+      // evt.detail.shouldSwap = false stops htmx performing the swap at all
+      // (confirmed by tracing docs/vendor/htmx/htmx.min.js: the swap-and-
+      // history-update call, which also fires htmx:afterSwap internally,
+      // lives entirely inside `if (m.shouldSwap) { ... }` in the response
+      // handler — setting it false skips the DOM write, the history push,
+      // AND afterSwap for this transaction).
+      var myNav = (evt.detail.xhr && evt.detail.xhr.__navToken) || 0;
+      if (myNav !== latestNav) {
+        // A newer navigation has started since this request began. Cancel
+        // htmx's swap outright and bail before covering — there is nothing
+        // to animate a curtain over since this content will never be
+        // written to the DOM. (Covering here unconditionally, even for a
+        // transaction later found to be stale, was the cause of the GSAP
+        // curtain getting stuck: revealOut() only runs from
+        // applySwappedPage(), which the stale branch never reaches.)
+        evt.detail.shouldSwap = false;
+        return;
+      }
       coverIn(document.getElementById('docs-main'));
     });
 
     document.body.addEventListener('htmx:afterSwap', function (evt) {
       if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
+      // Defensive backstop only: htmx:beforeSwap above already cancels the
+      // swap (shouldSwap = false) for a stale transaction, and tracing
+      // htmx.min.js confirmed afterSwap never even fires in that case (it's
+      // dispatched from inside the same `if (m.shouldSwap)` block as the
+      // swap itself). This check is therefore dead code for the stale-token
+      // case today; kept as a harmless second guard in case htmx's internals
+      // ever change, or in case shouldSwap gets reset by some other
+      // htmx:beforeSwap listener between here and there.
       var myNav = (evt.detail.xhr && evt.detail.xhr.__navToken) || 0;
       var url = (evt.detail.xhr && evt.detail.xhr.responseURL) || location.href;
       var ns = nsForUrl(url);
