@@ -17,7 +17,105 @@
   <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="calendar">
-      <div class="docs-page">
+      <div class="docs-page" x-data="calendarPage()" x-init="init()">
+        <script>
+        (function () {
+          function registerCalendarPage() {
+            Alpine.data('calendarPage', function () {
+              return {
+                init: function () {
+                  var self = this;
+                  window.DocShell.ready.then(function () {
+                    if (!window.WUICalendar) return;
+                    // pick up any [data-wui-calendar] auto-init examples (also runs after Barba nav)
+                    window.WUICalendar.init();
+                    var host = document.getElementById('cal-demo');
+                    if (!host) return;
+
+                    // demo events anchored to the current week so the calendar always looks live
+                    var now = new Date();
+                    function on(dayOffset, h, m) {
+                      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayOffset, h || 0, m || 0);
+                    }
+                    function dayOf(dayOffset) {
+                      var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayOffset);
+                      // date-only string → treated as all-day by the component
+                      return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+                    }
+                    function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+                    var events = [
+                      { id: 1, title: 'EOC Activation Brief', start: on(0, 9, 0), end: on(0, 10, 0),
+                        variant: 'tier-3', location: 'Command Room A', status: 'Active',
+                        attendees: ['Aisha Rahman', 'Samir Khan', 'EOC Duty Officer'],
+                        description: 'Tier-3 standup: situation overview, resource posture, and action assignments.' },
+                      { id: 2, title: 'Shelter capacity check', start: on(0, 11, 30), end: on(0, 12, 15),
+                        variant: 'warning', location: 'Logistics', status: 'In progress',
+                        description: 'Confirm cot and supply counts across the three reception centres.' },
+                      { id: 3, title: 'Press statement review', start: on(0, 13, 0), end: on(0, 14, 0),
+                        variant: 'info', location: 'PIO Desk', status: 'Pending' },
+                      { id: 4, title: 'Damage assessment sweep', start: on(1, 8, 0), end: on(1, 16, 0),
+                        variant: 'primary', location: 'Sector 4', status: 'Scheduled',
+                        attendees: ['Field Team Bravo'], description: 'Full-day structural assessment of the eastern grid.' },
+                      { id: 5, title: 'Stand-down review', start: on(2, 15, 0), end: on(2, 16, 0),
+                        variant: 'success', location: 'Command Room A', status: 'Tentative' },
+                      { id: 6, title: 'Emergency Operations Centre — staffed', start: dayOf(0),
+                        allDay: true, variant: 'tier-3', status: 'Active',
+                        description: 'Continuous staffing while the activation is in effect.' },
+                      { id: 7, title: 'Public holiday', start: dayOf(3), allDay: true, variant: 'secondary' },
+                      { id: 8, title: 'After-action workshop', start: on(4, 10, 0), end: on(4, 12, 30),
+                        variant: 'tier-1', location: 'Training Room', status: 'Scheduled', done: false,
+                        attendees: ['All section chiefs'], description: 'Capture lessons and corrective actions.' },
+                      { id: 9, title: 'Supply convoy ETA', start: on(-1, 14, 0), end: on(-1, 14, 30),
+                        variant: 'tier-2', location: 'Gate 2', status: 'Completed', done: true },
+                      { id: 10, title: 'Overlap demo · briefing', start: on(0, 9, 30), end: on(0, 10, 30),
+                        variant: 'danger', location: 'Command Room A', status: 'Active' }
+                    ];
+
+                    var cal = window.WUICalendar.create(host, {
+                      view: 'week',
+                      events: events,
+                      actions: [
+                        { key: 'open',     label: 'Open record', icon: 'open_in_new', variant: 'primary' },
+                        { key: 'complete', label: 'Mark done',   icon: 'check_circle', variant: 'success' },
+                        { key: 'delete',   label: 'Delete',      icon: 'delete',      variant: 'danger' }
+                      ]
+                    });
+
+                    // live readout of emitted events
+                    var out = document.getElementById('cal-event-log');
+                    if (out && !host._logHooked) {
+                      host._logHooked = true;
+                      function log(msg) { out.textContent = msg; out.classList.remove('is-empty'); }
+                      host.addEventListener('wui:cal:eventclick', function (e) { log('eventclick → ' + e.detail.event.title); });
+                      host.addEventListener('wui:cal:slotclick', function (e) {
+                        log('slotclick → ' + e.detail.date.toLocaleString() + (e.detail.allDay ? ' (all-day)' : ''));
+                      });
+                      host.addEventListener('wui:cal:action', function (e) {
+                        log('action "' + e.detail.action + '" → ' + e.detail.event.title);
+                        if (e.detail.action === 'complete' && cal) cal.updateEvent(e.detail.event.id, { done: true, status: 'Completed', variant: 'success' });
+                        if (e.detail.action === 'delete' && cal) cal.removeEvent(e.detail.event.id);
+                      });
+                      host.addEventListener('wui:cal:viewchange', function (e) { log('viewchange → ' + e.detail.view); });
+                      host.addEventListener('wui:cal:navigate', function (e) { log('navigate → ' + cal.getDate().toDateString()); });
+                    }
+
+                    // external "view" buttons demo (drive the calendar from outside its toolbar)
+                    var extBtns = document.querySelectorAll('[data-cal-ext-view]');
+                    for (var i = 0; i < extBtns.length; i++) {
+                      if (extBtns[i]._wired) continue;
+                      extBtns[i]._wired = true;
+                      extBtns[i].addEventListener('click', function () { if (cal) cal.setView(this.getAttribute('data-cal-ext-view')); });
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerCalendarPage();
+          else document.addEventListener('alpine:init', registerCalendarPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_calendar_1">Components</div>
