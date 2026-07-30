@@ -23,16 +23,10 @@
       <div class="docs-page" x-data="tinymcePage()" x-init="init()">
         <script>
         (function () {
-          // Local copies of docs-shell.js's private agencyThemeFile/activePalette
-          // helpers (they live inside that file's own IIFE closure and are not
-          // exposed on window, so this page-level script can't call them
-          // directly). Logic kept identical to the source.
-          function agencyThemeFile(id) {
-            return (!id || id === 'atlas') ? 'agency-theme.css' : 'agency-theme-' + id + '.css';
-          }
-          function activePalette() {
-            return localStorage.getItem('wui-docs-theme') || 'atlas';
-          }
+          // docs-shell.js exposes these on window.DocShell specifically so
+          // page-level components don't need to duplicate them.
+          function agencyThemeFile(id) { return window.DocShell.agencyThemeFile(id); }
+          function activePalette() { return window.DocShell.activePalette(); }
           function registerTinymcePage() {
             Alpine.data('tinymcePage', function () {
               return {

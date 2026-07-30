@@ -394,7 +394,8 @@
     }
     // TinyMCE — fully self-hosted in vendor/tinymce-8.6.0/ (engine + skins/
     // themes/models/icons/plugins all resolve from that folder at runtime).
-    // content_css / iframe theming is applied in PAGE_INIT.tinymce.
+    // content_css / iframe theming is applied by tinymce.html's own
+    // Alpine.data('tinymcePage', ...) component.
     if (!window.tinymce)     jobs.push(loadScript(root + 'vendor/tinymce-8.6.0/tinymce.min.js'));
     if (!window.gsap)        jobs.push(loadScript(shared + 'JS/gsap.min.js'));
     /* Barba removed — navigation is now the Alpine-driven fetch/swap router below. */
@@ -403,7 +404,17 @@
     if (!window.flatpickr)   jobs.push(loadScript(shared + 'JS/flatpickr.min.js'));
     if (!window.uPlot)       jobs.push(loadScript(shared + 'JS/uPlot.iife.min.js'));
     if (!window.EOCLists)    jobs.push(loadScript(shared + 'JS/eoc-lists.js'));
-    if (!window.Alpine)      jobs.push(loadScript(root + 'vendor/alpine/cdn.min.js'));
+    if (!window.Alpine) {
+      // The CDN build auto-starts itself the instant it finishes executing
+      // (before this Promise.all(jobs).then() below even runs), racing our
+      // own explicit Alpine.start() call further down and firing every
+      // page's x-init twice on first load. deferLoadingAlpine is Alpine's
+      // documented hook for suppressing that auto-start; window.Alpine.start
+      // stays a valid, callable method regardless, so our own call below
+      // remains the ONLY place start() actually runs.
+      window.deferLoadingAlpine = function () {};
+      jobs.push(loadScript(root + 'vendor/alpine/cdn.min.js'));
+    }
     if (!window.htmx)        jobs.push(loadScript(root + 'vendor/htmx/htmx.min.js'));
     ensureCSS(shared + 'CSS/uPlot.min.css');
     // Factory wrappers + weoc-anim must load AFTER their respective libraries.
@@ -938,6 +949,11 @@
     store: function () {
       return window.Alpine ? window.Alpine.store('docs') : null;
     },
+    // Exposed so page-level Alpine components (e.g. tinymce.html) can reach
+    // these without duplicating them locally -- both are private to this
+    // file's own closure otherwise.
+    agencyThemeFile: agencyThemeFile,
+    activePalette: activePalette,
     init: function (activeKey) {
       var root = getRoot();
       var shared = root + '../';
