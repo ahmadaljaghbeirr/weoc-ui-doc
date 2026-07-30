@@ -134,36 +134,41 @@
     .tab-panel  → .wui-tab-panel
     .tab-panel.active → .wui-tab-panel.active
 */
-.wui-det-body {
+/*
+  wui-det-inner is the OUTER shell child (mirrors wui-hdr-wrap / wui-ftr-wrap):
+  full-bleed, no max-width, and it OWNS the scroll. This is what lets you
+  scroll from anywhere between header and footer, not just while hovering
+  over the narrow centered card — the previous version had this backwards
+  (max-width lived on the outer element), which boxed the scrollable area
+  down to the centered column's width and left the surrounding gutter dead.
+*/
+.wui-det-inner {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-/* ─── Detail Inner Frame (wui-det-inner) ─────────────────────── */
+/* ─── Detail Body Frame (wui-det-body) ───────────────────────── */
 /*
   Single max-width centering column for input-view body sections.
-  Mirrors the wui-hdr-wrap.centered / wui-hdr-inner and
-  wui-ftr-wrap.centered / wui-ftr-inner pattern — centering applied
-  once, between header and footer, instead of repeating page-center
-  on every tab panel.
+  Mirrors wui-hdr-wrap.centered .wui-hdr-inner / wui-ftr-wrap.centered
+  .wui-ftr-inner — the INNER element carries the max-width, the outer
+  wrap stays full-bleed. Centering applied once, between header and
+  footer, instead of repeating page-center on every tab panel.
 
-  Place directly inside form.input-form, wrapping wui-det-body:
+  Place directly inside wui-det-inner, wrapping wui-tab-panel:
 
     form.input-form  (flex:1 shell child — styles in weoc-forms.css)
-      └── .wui-det-inner   ← this element
-            └── .wui-det-body
+      └── .wui-det-inner   (full-bleed scroll owner)
+            └── .wui-det-body   ← this element
                   └── .wui-tab-panel
                         └── .wui-panel-wrap > .wui-panel  (no page-center needed)
 */
-.wui-det-inner {
+.wui-det-body {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
 }
 
 /* Vertical breathing room inside the scroll area — replaces the
@@ -174,8 +179,8 @@
 
 .wui-tab-panel {
   display: none;
-  height: 100%;
-  overflow-y: auto;
+  height: auto;
+  overflow-y: visible;
   padding: 0;
   box-sizing: border-box;
 }
@@ -190,16 +195,11 @@
   The data-wui-view-mode behavior (WUI.initViewMode) toggles .is-list-mode on
   the container (default .wui-det-body). In list mode: header tab strip hidden,
   all panels stack vertically (display:block !important beats the segment
-  engine's inline display), and the det-body becomes the scroll container.
+  engine's inline display). wui-det-inner (the outer element) is always the
+  scroll container regardless of mode, so no scroll override needed here.
 */
-.wui-det-body.is-list-mode {
-  overflow-y: auto;
-}
-
 .wui-det-body.is-list-mode .wui-tab-panel {
   display: block !important;
-  height: auto;
-  overflow-y: visible;
 }
 
 /* ─── List Layout ────────────────────────────────────────────── */

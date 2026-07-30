@@ -556,8 +556,9 @@ textarea.form-control {
 /*
   Explicit flex properties for form.input-form so it participates correctly in
   the wui-page-shell flex column without needing style="all: inherit" on the
-  element. The form fills available height and passes its width through to
-  wui-det-inner, which handles the max-width centering.
+  element. The form fills available height and passes its full width through
+  to wui-det-inner (the scroll owner); wui-det-body, nested inside, handles
+  the max-width centering.
 */
 form.input-form {
   display: flex;
