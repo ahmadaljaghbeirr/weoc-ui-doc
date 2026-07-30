@@ -405,14 +405,27 @@
     if (!window.uPlot)       jobs.push(loadScript(shared + 'JS/uPlot.iife.min.js'));
     if (!window.EOCLists)    jobs.push(loadScript(shared + 'JS/eoc-lists.js'));
     if (!window.Alpine) {
-      // The CDN build auto-starts itself the instant it finishes executing
-      // (before this Promise.all(jobs).then() below even runs), racing our
-      // own explicit Alpine.start() call further down and firing every
-      // page's x-init twice on first load. deferLoadingAlpine is Alpine's
-      // documented hook for suppressing that auto-start; window.Alpine.start
-      // stays a valid, callable method regardless, so our own call below
-      // remains the ONLY place start() actually runs.
-      window.deferLoadingAlpine = function () {};
+      // The vendored CDN build (docs/vendor/alpine/cdn.js, confirmed by direct
+      // source read) ends with `window.Alpine = src_default; queueMicrotask(()
+      // => src_default.start());` — it NEVER reads window.deferLoadingAlpine
+      // (grep confirms zero references in this build), so that hook is a
+      // no-op here and must not be relied on. Because loadScript()'s promise
+      // resolves via script.onload, which only fires AFTER the script's own
+      // top-level code (and thus its queueMicrotask call) has already run,
+      // Alpine's auto-start microtask is queued strictly BEFORE the
+      // Promise.all(jobs).then() callback below even gets queued — by FIFO
+      // microtask order, Alpine has already started and walked the DOM once
+      // by the time that .then() runs. We therefore do NOT call
+      // window.Alpine.start() ourselves below; doing so would be a redundant
+      // second start() on top of Alpine's own auto-start, which is exactly
+      // what caused every page's x-init to fire twice (and made
+      // lists.html's `new TomSelect(...)` throw "already initialized" on
+      // most cold loads). The docs.store setup below still runs from this
+      // same .then() — after Alpine's first walk, but nothing in this site's
+      // HTML reads $store('docs') synchronously from x-init/x-data (verified
+      // via `grep -rn "\$store" docs/`: the only reads are from this file
+      // itself, in renderChrome() and DocShell.store()), so a slightly later
+      // store registration is safe.
       jobs.push(loadScript(root + 'vendor/alpine/cdn.min.js'));
     }
     if (!window.htmx)        jobs.push(loadScript(root + 'vendor/htmx/htmx.min.js'));
@@ -443,8 +456,13 @@
           // when Barba removes the old container — no manual cleanup needed.
           page: {}
         });
-
-        window.Alpine.start();
+        // NOTE: no window.Alpine.start() call here — Alpine's own vendored
+        // bundle already auto-started itself via queueMicrotask (see the
+        // long comment above, at the `!window.Alpine` branch). Calling
+        // start() a second time here was the actual bug (double x-init
+        // firing); this store registration alone is sufficient, since
+        // nothing in the site's markup reads $store('docs') synchronously
+        // during Alpine's first DOM walk.
       }
       var jobs2 = [];
       if (!window.TomSelectFactory) jobs2.push(loadScript(shared + 'JS/tom-select-factory.js'));
