@@ -473,11 +473,6 @@
     });
   }
 
-  /* ── Per-page behavior, keyed by namespace ────────────────────────────────
-     Lives here (not in page-level inline <script>) so it re-runs after a
-     Barba swap, where inline scripts in <body> do NOT re-execute. */
-  var PAGE_INIT = {};
-
   /* ── wui-demo: single-source live example + code ──────────────────────────
      The .wui-demo-preview holds the LIVE markup (the source of truth). We read
      its innerHTML and render it as the Markup code box, so the code shown is
@@ -664,10 +659,9 @@
     for (var i = 0; i < els.length; i++) highlightEl(els[i]);
   }
 
-  function runPageInit(ns) {
+  function runPageInit() {
     renderDemos(document);
     bindDemoCopy();
-    if (PAGE_INIT[ns]) { try { PAGE_INIT[ns](); } catch (e) {} }
     highlightStatic(document);
   }
 
