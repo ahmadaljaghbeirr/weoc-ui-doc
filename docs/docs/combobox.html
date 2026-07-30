@@ -17,7 +17,70 @@
   <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="combobox">
-      <div class="docs-page">
+      <div class="docs-page" x-data="comboboxPage()" x-init="init()">
+        <script>
+        (function () {
+          function registerComboboxPage() {
+            Alpine.data('comboboxPage', function () {
+              return {
+                init: function () {
+                  var self = this;
+                  window.DocShell.ready.then(function () {
+                    if (!window.TomSelectFactory) return;
+                    // Custom renderer — register BEFORE init so data-render="DocsPersonTmpl" resolves.
+                    TomSelectFactory.registerTemplate('DocsPersonTmpl', {
+                      option: function (data) {
+                        return '<div class="ts-person-option">' +
+                          '<div class="ts-person-name">' + data.text + '</div>' +
+                          '<div class="ts-person-meta">' + (data.role || '') +
+                            (data.dept ? ' · ' + data.dept : '') + '</div>' +
+                        '</div>';
+                      },
+                      item: function (data) { return '<div>' + data.text + '</div>'; }
+                    });
+
+                    // Dependent select: rebuild child options from the parent value, then resync.
+                    window.docsFilterChild = function (value) {
+                      var child = document.getElementById('cb-child');
+                      if (!child) return;
+                      var map = {
+                        hazmat: [['chem-spill', 'Chemical Spill'], ['radiation', 'Radiation'], ['gas-leak', 'Gas Leak']],
+                        fire:   [['structure', 'Structure Fire'], ['wildfire', 'Wildfire'], ['vehicle', 'Vehicle Fire']],
+                        flood:  [['flash', 'Flash Flood'], ['river', 'River Flood'], ['storm', 'Storm Surge']]
+                      };
+                      var pairs = map[value] || [];
+                      while (child.options.length > 1) child.remove(1);
+                      pairs.forEach(function (p) {
+                        var o = document.createElement('option');
+                        o.value = p[0]; o.text = p[1]; child.appendChild(o);
+                      });
+                      var ts = TomSelectFactory.get('cb-child');
+                      if (ts) { ts.clearOptions(); ts.sync(); ts.clear(true); }
+                    };
+
+                    // Change-callback readout.
+                    window.docsLevelChange = function (value) {
+                      var out = document.getElementById('cb-onchange-out');
+                      if (out) out.textContent = value || 'none';
+                    };
+
+                    // Binds every select.tomselect on the page (single, multi, tags, remote,
+                    // optgroups, person renderer, parent/child, slots, on-change, dropdown-parent,
+                    // disabled, readonly). mountDropdownSlots + wireDependentSelect run inside init.
+                    TomSelectFactory.init();
+
+                    // Readonly is a post-init class on the wrapper.
+                    var rd = TomSelectFactory.get('cb-readonly');
+                    if (rd && rd.wrapper) rd.wrapper.classList.add('is-readonly');
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerComboboxPage();
+          else document.addEventListener('alpine:init', registerComboboxPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_combobox_1">Combobox</div>
