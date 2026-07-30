@@ -15,10 +15,28 @@
 <body class="wui-main-div">
   <div id="docs-hdr"></div>
 
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="home">
-      <div class="docs-page">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="homePage()">
+        <script>
+        (function () {
+          function registerHomePage() {
+            Alpine.data('homePage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    var el = document.getElementById('theme-display');
+                    if (el && window.WUI) el.textContent = window.WUI.getTheme();
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerHomePage();
+          else document.addEventListener('alpine:init', registerHomePage);
+        })();
+        </script>
 
         <!-- Hero -->
         <div class="docs-hero">

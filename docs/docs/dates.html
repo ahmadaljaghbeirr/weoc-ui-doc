@@ -14,10 +14,33 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="dates">
-      <div class="docs-page">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="datesPage()">
+        <script>
+        (function () {
+          function registerDatesPage() {
+            Alpine.data('datesPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    if (!window.FlatpickrFactory) return;
+                    FlatpickrFactory.init();
+                    var ro = document.getElementById('fp-readonly');
+                    if (ro && ro._flatpickr) {
+                      ro.classList.add('is-readonly');
+                      ro._flatpickr.set('clickOpens', false);
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerDatesPage();
+          else document.addEventListener('alpine:init', registerDatesPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_dates_1">Dates</div>
@@ -34,7 +57,7 @@
             <span class="material-symbols-outlined">info</span>
             <div class="wui-callout-body">
               <div class="wui-callout-title" data-wui-i18n="docs_dates_6">Re-init after SPA navigation</div>
-              <span data-wui-i18n-html="docs_dates_7">These demos are initialized by <code>PAGE_INIT.dates</code> in <code>docs-shell.js</code> (which calls <code>FlatpickrFactory.init()</code>), so they re-bind after every Barba/SPA swap. The classes <code>flat-date</code> / <code>flat-time</code> / <code>flat-range-start</code> / <code>flat-range-end</code> are cosmetic only; binding is driven entirely by <code>data-fp-preset</code>.</span>
+              <span data-wui-i18n-html="docs_dates_7">These demos are initialized by an <code>Alpine.data('datesPage', ...)</code> component defined inside this page (which calls <code>FlatpickrFactory.init()</code>), so they re-bind on every navigation to this page. The classes <code>flat-date</code> / <code>flat-time</code> / <code>flat-range-start</code> / <code>flat-range-end</code> are cosmetic only; binding is driven entirely by <code>data-fp-preset</code>.</span>
             </div>
           </div>
         </div>

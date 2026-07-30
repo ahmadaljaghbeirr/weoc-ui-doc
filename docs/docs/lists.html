@@ -14,10 +14,189 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="lists">
-      <div class="docs-page">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="listsPage()">
+        <script>
+        (function () {
+          function registerListsPage() {
+            Alpine.data('listsPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    if (!window.EOCLists || !window.TomSelect) return;
+
+                    // ── Flat list demo — Priority ─────────────────────────────────────────
+                    var flatSel = document.getElementById('demo-list-flat');
+                    var flatOut = document.getElementById('demo-list-flat-out');
+                    var flatChips = document.getElementById('demo-list-flat-chips');
+                    if (flatSel) {
+                      EOCLists.populate(flatSel, 'Priority');
+                      var flatTs = new TomSelect(flatSel, {
+                        plugins: ['clear_button'],
+                        placeholder: '— Select priority —',
+                        allowEmptyOption: true
+                      });
+                      var PRIORITY_VARIANTS = { Critical: 'danger', High: 'warning', Medium: 'primary', Low: 'success' };
+                      flatTs.on('change', function (val) {
+                        if (flatOut) {
+                          var v = PRIORITY_VARIANTS[val] || '';
+                          flatOut.className = val ? 'wui-badge ' + v : 'wui-badge bordered secondary';
+                          flatOut.textContent = val || 'None';
+                        }
+                      });
+                      // Render all items as badge chips below the select
+                      if (flatChips) {
+                        EOCLists.get('Priority').forEach(function (item) {
+                          var chip = document.createElement('span');
+                          chip.className = 'wui-badge ' + (PRIORITY_VARIANTS[item.value] || 'secondary');
+                          chip.textContent = item.text;
+                          chip.style.cursor = 'pointer';
+                          chip.addEventListener('click', function () { flatTs.setValue(item.value); });
+                          flatChips.appendChild(chip);
+                        });
+                      }
+                    }
+
+                    // ── Cascading demo — Resource Category → Sub-category ────────────────
+                    var catSel = document.getElementById('demo-list-cat');
+                    var subSel = document.getElementById('demo-list-sub');
+                    var cascadeOut = document.getElementById('demo-list-cascade-out');
+                    if (catSel && subSel) {
+                      EOCLists.populate(catSel, 'Resource Category');
+                      var catTs = new TomSelect(catSel, {
+                        plugins: ['clear_button'],
+                        placeholder: '— Select category —',
+                        allowEmptyOption: true
+                      });
+                      var subTs = new TomSelect(subSel, {
+                        plugins: ['clear_button'],
+                        placeholder: '— Select category first —',
+                        allowEmptyOption: true
+                      });
+                      subTs.disable();
+
+                      function updateCascadeOut(cat, sub) {
+                        if (!cascadeOut) return;
+                        cascadeOut.innerHTML = '';
+                        if (cat) {
+                          var c = document.createElement('span');
+                          c.className = 'wui-badge primary';
+                          c.textContent = cat;
+                          cascadeOut.appendChild(c);
+                        }
+                        if (cat && sub) {
+                          var arr = document.createElement('span');
+                          arr.className = 'material-symbols-outlined';
+                          arr.style.fontSize = '18px';
+                          arr.style.color = 'var(--color-text-secondary)';
+                          arr.textContent = 'arrow_forward';
+                          cascadeOut.appendChild(arr);
+                          var s = document.createElement('span');
+                          s.className = 'wui-badge info';
+                          s.textContent = sub;
+                          cascadeOut.appendChild(s);
+                        }
+                      }
+
+                      catTs.on('change', function (val) {
+                        subTs.clear(true);
+                        subTs.clearOptions();
+                        if (val) {
+                          EOCLists.getChildren('Resource Category', val).forEach(function (item) {
+                            subTs.addOption({ value: item.value, text: item.text });
+                          });
+                          subTs.enable();
+                          subTs.refreshOptions(false);
+                          updateCascadeOut(val, null);
+                        } else {
+                          subTs.disable();
+                          updateCascadeOut(null, null);
+                        }
+                      });
+                      subTs.on('change', function (val) {
+                        updateCascadeOut(catTs.getValue(), val);
+                      });
+                    }
+
+                    // ── Registry grid — all built-in lists ───────────────────────────────
+                    var grid = document.getElementById('demo-list-registry-grid');
+                    if (grid) {
+                      EOCLists.list().forEach(function (name) {
+                        var items = EOCLists.get(name);
+                        var isTree = EOCLists.hasChildren(name);
+
+                        var card = document.createElement('div');
+                        card.className = 'wui-card';
+                        card.style.cssText = 'min-width:220px;flex:1 1 220px;max-width:320px';
+
+                        var hdr = document.createElement('div');
+                        hdr.className = 'wui-card-hdr';
+                        hdr.innerHTML =
+                          '<div class="wui-card-hdr-left">' +
+                            '<span class="wui-card-label" style="font-size:var(--font-sm)">' + name + '</span>' +
+                          '</div>' +
+                          '<div class="wui-card-hdr-right">' +
+                            '<span class="wui-badge ' + (isTree ? 'info' : 'secondary') + ' bordered" style="font-size:11px">' +
+                              (isTree ? 'tree' : 'flat') +
+                            '</span>' +
+                          '</div>';
+
+                        var body = document.createElement('div');
+                        body.className = 'wui-card-body';
+                        body.style.cssText = 'padding-top:0;display:flex;flex-direction:column;gap:4px';
+
+                        items.slice(0, 5).forEach(function (item) {
+                          var row = document.createElement('div');
+                          row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:var(--space-2)';
+                          row.innerHTML =
+                            '<span style="font-size:var(--font-sm);color:var(--color-text-primary)">' + item.text + '</span>' +
+                            '<code style="font-size:11px;color:var(--color-text-secondary)">' + item.value + '</code>';
+                          body.appendChild(row);
+                          if (isTree) {
+                            var children = EOCLists.getChildren(name, item.value);
+                            if (children.length) {
+                              var sub = document.createElement('div');
+                              sub.style.cssText = 'padding-left:var(--space-3);display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px';
+                              children.slice(0, 3).forEach(function (c) {
+                                var chip = document.createElement('span');
+                                chip.style.cssText = 'font-size:10px;padding:1px 6px;background:var(--color-60);border-radius:var(--radius-full);color:var(--color-text-secondary)';
+                                chip.textContent = c.text;
+                                sub.appendChild(chip);
+                              });
+                              if (children.length > 3) {
+                                var more = document.createElement('span');
+                                more.style.cssText = 'font-size:10px;color:var(--color-text-secondary)';
+                                more.textContent = '+' + (children.length - 3) + ' more';
+                                sub.appendChild(more);
+                              }
+                              body.appendChild(sub);
+                            }
+                          }
+                        });
+
+                        if (items.length > 5) {
+                          var more = document.createElement('div');
+                          more.style.cssText = 'font-size:var(--font-xs);color:var(--color-text-secondary);padding-top:var(--space-1)';
+                          more.textContent = '+ ' + (items.length - 5) + ' more items';
+                          body.appendChild(more);
+                        }
+
+                        card.appendChild(hdr);
+                        card.appendChild(body);
+                        grid.appendChild(card);
+                      });
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerListsPage();
+          else document.addEventListener('alpine:init', registerListsPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_lists_1">Reference</div>

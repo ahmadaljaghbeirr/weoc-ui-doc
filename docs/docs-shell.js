@@ -118,7 +118,17 @@
   ];
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var barbaStarted = false;
+
+  // Shared htmx hx-swap spec for every #docs-main navigation (boosted
+  // clicks on #docs-split/#docs-hdr, and each individually-attributed
+  // search-hit anchor). scroll:top resets #docs-main's own scrollTop on
+  // every swap -- since the swap is innerHTML (the target node persists,
+  // never a fresh element), scroll position would otherwise carry over
+  // from whatever page the user was previously scrolled to.
+  function htmxSwapSpec() {
+    return 'innerHTML scroll:top ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
+  }
+
   var themeHooked = false;
   var swatchHooked = false;
   var swatchStylesInjected = false;
@@ -304,14 +314,19 @@
   }
 
   /* Render the persistent chrome (header + sidebar) for a namespace.
-     Called on first load AND after every Barba navigation — re-rendering the
-     sidebar with the CURRENT root keeps relative links correct across the
-     root/docs directory boundary, and refreshes the active item + title. */
+     Called on first load AND after every htmx-boosted / popstate navigation —
+     re-rendering the sidebar with the CURRENT root keeps relative links
+     correct across the root/docs directory boundary, and refreshes the
+     active item + title. */
   function renderChrome(ns, root) {
     var hdr = document.getElementById('docs-hdr');
     if (hdr) hdr.innerHTML = renderHeader(root);
     var sb = document.getElementById('docs-sidebar');
     if (sb) sb.innerHTML = renderSidebar(ns, root);
+    if (window.htmx) {
+      if (hdr) window.htmx.process(hdr);
+      if (sb) window.htmx.process(sb);
+    }
     var label = labelFor(ns);
     document.title = (label && ns !== 'home') ? 'weoc-ui — ' + label : 'weoc-ui — Component Library';
     if (window.Alpine && window._docsStoreReady) {
@@ -324,9 +339,11 @@
   }
 
   /* ── On-demand global assets ──────────────────────────────────────────────
-     Barba never swaps <head>, so anything a page needs must be present
-     site-wide. Inject the add-on CSS (tables/maps/forms) + gsap + barba once.
-     Guarded so direct loads that already link them don't double-load. */
+     htmx's hx-select only pulls #docs-main's children out of the response —
+     <head> is never touched by a swap — so anything a page needs must be present
+     site-wide. Inject the add-on CSS (tables/maps/forms) + the shared JS
+     libraries once. Guarded so direct loads that already link them don't
+     double-load. */
   function loadScript(src) {
     return new Promise(function (resolve) {
       var s = document.createElement('script');
@@ -372,7 +389,9 @@
       ensureCSS(shared + 'CSS/weoc-ui/' + f);
     });
     // TomSelect + Flatpickr styles — needed on the Forms page but loaded here
-    // site-wide because Barba never re-processes incoming <head> link tags.
+    // site-wide because an htmx-boosted swap never re-processes incoming
+    // <head> link tags (hx-select only pulls #docs-main's children out of
+    // the response).
     ['tom-select.min.css', 'tom-select-agency.css',
      'flatpickr.min.css', 'flatpickr-agency.css',
      'tinymce-theme.css'].forEach(function (f) {
@@ -390,16 +409,42 @@
     }
     // TinyMCE — fully self-hosted in vendor/tinymce-8.6.0/ (engine + skins/
     // themes/models/icons/plugins all resolve from that folder at runtime).
-    // content_css / iframe theming is applied in PAGE_INIT.tinymce.
+    // content_css / iframe theming is applied by tinymce.html's own
+    // Alpine.data('tinymcePage', ...) component.
     if (!window.tinymce)     jobs.push(loadScript(root + 'vendor/tinymce-8.6.0/tinymce.min.js'));
     if (!window.gsap)        jobs.push(loadScript(shared + 'JS/gsap.min.js'));
-    /* Barba removed — navigation is now the Alpine-driven fetch/swap router below. */
+    /* Navigation is handled by htmx (hx-boost on #docs-split/#docs-hdr, set in
+       DocShell.init) plus the popstate listener in bindHtmxNav() below. */
     if (!window.WUICalendar) jobs.push(loadScript(shared + 'JS/weoc-calendar.js'));
     if (!window.TomSelect)   jobs.push(loadScript(shared + 'JS/tom-select.complete.min.js'));
     if (!window.flatpickr)   jobs.push(loadScript(shared + 'JS/flatpickr.min.js'));
     if (!window.uPlot)       jobs.push(loadScript(shared + 'JS/uPlot.iife.min.js'));
     if (!window.EOCLists)    jobs.push(loadScript(shared + 'JS/eoc-lists.js'));
-    if (!window.Alpine)      jobs.push(loadScript(root + 'vendor/alpine/cdn.min.js'));
+    if (!window.Alpine) {
+      // The vendored CDN build (docs/vendor/alpine/cdn.js, confirmed by direct
+      // source read) ends with `window.Alpine = src_default; queueMicrotask(()
+      // => src_default.start());` — it NEVER reads window.deferLoadingAlpine
+      // (grep confirms zero references in this build), so that hook is a
+      // no-op here and must not be relied on. Because loadScript()'s promise
+      // resolves via script.onload, which only fires AFTER the script's own
+      // top-level code (and thus its queueMicrotask call) has already run,
+      // Alpine's auto-start microtask is queued strictly BEFORE the
+      // Promise.all(jobs).then() callback below even gets queued — by FIFO
+      // microtask order, Alpine has already started and walked the DOM once
+      // by the time that .then() runs. We therefore do NOT call
+      // window.Alpine.start() ourselves below; doing so would be a redundant
+      // second start() on top of Alpine's own auto-start, which is exactly
+      // what caused every page's x-init to fire twice (and made
+      // lists.html's `new TomSelect(...)` throw "already initialized" on
+      // most cold loads). The docs.store setup below still runs from this
+      // same .then() — after Alpine's first walk, but nothing in this site's
+      // HTML reads $store('docs') synchronously from x-init/x-data (verified
+      // via `grep -rn "\$store" docs/`: the only reads are from this file
+      // itself, in renderChrome() and DocShell.store()), so a slightly later
+      // store registration is safe.
+      jobs.push(loadScript(root + 'vendor/alpine/cdn.min.js'));
+    }
+    if (!window.htmx)        jobs.push(loadScript(root + 'vendor/htmx/htmx.min.js'));
     ensureCSS(shared + 'CSS/uPlot.min.css');
     // Factory wrappers + weoc-anim must load AFTER their respective libraries.
     return Promise.all(jobs).then(function () {
@@ -422,13 +467,21 @@
           activePage: null,
 
           // ── Page-scoped reactive state ──────────────────────────────
-          // PAGE_INIT functions write into page.* for x-data blocks on
-          // that page. Alpine destroys element-bound scopes automatically
-          // when Barba removes the old container — no manual cleanup needed.
+          // runPageInit() writes into page.* for x-data blocks on that page.
+          // Alpine destroys element-bound scopes automatically when the htmx
+          // swap replaces #docs-main's children with the incoming page's —
+          // no manual cleanup needed. (#docs-main itself never carries
+          // x-data, verified across all pages, so nothing survives the swap
+          // that shouldn't.)
           page: {}
         });
-
-        window.Alpine.start();
+        // NOTE: no window.Alpine.start() call here — Alpine's own vendored
+        // bundle already auto-started itself via queueMicrotask (see the
+        // long comment above, at the `!window.Alpine` branch). Calling
+        // start() a second time here was the actual bug (double x-init
+        // firing); this store registration alone is sufficient, since
+        // nothing in the site's markup reads $store('docs') synchronously
+        // during Alpine's first DOM walk.
       }
       var jobs2 = [];
       if (!window.TomSelectFactory) jobs2.push(loadScript(shared + 'JS/tom-select-factory.js'));
@@ -438,718 +491,6 @@
       return Promise.all(jobs2);
     });
   }
-
-  /* ── Per-page behavior, keyed by namespace ────────────────────────────────
-     Lives here (not in page-level inline <script>) so it re-runs after a
-     Barba swap, where inline scripts in <body> do NOT re-execute. */
-  var PAGE_INIT = {
-    home: function () {
-      var el = document.getElementById('theme-display');
-      if (el && window.WUI) el.textContent = window.WUI.getTheme();
-    },
-    localization: function () {
-      var W = window.WUI;
-      if (!W || !W.i18n) return;
-      W.i18n.register([
-        { lang: 'en', id: 'Demo_Save', value: 'Save' }, { lang: 'ar', id: 'Demo_Save', value: 'حفظ' },
-        { lang: 'en', id: 'Demo_Cancel', value: 'Cancel' }, { lang: 'ar', id: 'Demo_Cancel', value: 'إلغاء' },
-        { lang: 'en', id: 'Demo_Delete', value: 'Delete' }, { lang: 'ar', id: 'Demo_Delete', value: 'حذف' },
-        { lang: 'en', id: 'Demo_Tier1', value: 'Tier 1' }, { lang: 'ar', id: 'Demo_Tier1', value: 'المستوى 1' },
-        { lang: 'en', id: 'Demo_Row', value: 'Generated row' }, { lang: 'ar', id: 'Demo_Row', value: 'صف مُولَّد' }
-      ]);
-      var list = document.getElementById('demo-js-list');
-      if (list) {
-        list.innerHTML = '';
-        for (var i = 1; i <= 3; i++) {
-          var li = document.createElement('li');
-          W.i18n.mark(li, 'Demo_Row');
-          list.appendChild(li);
-        }
-      }
-      var tpl = document.getElementById('demo-tpl');
-      var host = document.getElementById('demo-tpl-host');
-      if (tpl && host && tpl.content) {
-        host.innerHTML = '';
-        host.appendChild(tpl.content.cloneNode(true));
-        W.i18n.apply(host);
-      }
-      W.i18n.apply(document);
-    },
-    // forms.html is CSS-only (weoc-forms.css) — no PAGE_INIT needed.
-    // TomSelect moved to PAGE_INIT.combobox, Flatpickr to PAGE_INIT.dates.
-    combobox: function () {
-      if (window.TomSelectFactory) {
-        // Custom renderer — register BEFORE init so data-render="DocsPersonTmpl" resolves.
-        TomSelectFactory.registerTemplate('DocsPersonTmpl', {
-          option: function (data) {
-            return '<div class="ts-person-option">' +
-              '<div class="ts-person-name">' + data.text + '</div>' +
-              '<div class="ts-person-meta">' + (data.role || '') +
-                (data.dept ? ' · ' + data.dept : '') + '</div>' +
-            '</div>';
-          },
-          item: function (data) { return '<div>' + data.text + '</div>'; }
-        });
-
-        // Dependent select: rebuild child options from the parent value, then resync.
-        window.docsFilterChild = function (value) {
-          var child = document.getElementById('cb-child');
-          if (!child) return;
-          var map = {
-            hazmat: [['chem-spill', 'Chemical Spill'], ['radiation', 'Radiation'], ['gas-leak', 'Gas Leak']],
-            fire:   [['structure', 'Structure Fire'], ['wildfire', 'Wildfire'], ['vehicle', 'Vehicle Fire']],
-            flood:  [['flash', 'Flash Flood'], ['river', 'River Flood'], ['storm', 'Storm Surge']]
-          };
-          var pairs = map[value] || [];
-          while (child.options.length > 1) child.remove(1);
-          pairs.forEach(function (p) {
-            var o = document.createElement('option');
-            o.value = p[0]; o.text = p[1]; child.appendChild(o);
-          });
-          var ts = TomSelectFactory.get('cb-child');
-          if (ts) { ts.clearOptions(); ts.sync(); ts.clear(true); }
-        };
-
-        // Change-callback readout.
-        window.docsLevelChange = function (value) {
-          var out = document.getElementById('cb-onchange-out');
-          if (out) out.textContent = value || 'none';
-        };
-
-        // Binds every select.tomselect on the page (single, multi, tags, remote,
-        // optgroups, person renderer, parent/child, slots, on-change, dropdown-parent,
-        // disabled, readonly). mountDropdownSlots + wireDependentSelect run inside init.
-        TomSelectFactory.init();
-
-        // Readonly is a post-init class on the wrapper.
-        var rd = TomSelectFactory.get('cb-readonly');
-        if (rd && rd.wrapper) rd.wrapper.classList.add('is-readonly');
-      }
-    },
-    dates: function () {
-      if (!window.FlatpickrFactory) return;
-      // Binds every [data-fp-preset] input in the page; skips already-inited ones.
-      // Re-runs after each SPA swap because runPageInit(ns) calls PAGE_INIT[ns].
-      FlatpickrFactory.init();
-      // Readonly display demo: lock it so it renders a value but never opens.
-      var ro = document.getElementById('fp-readonly');
-      if (ro && ro._flatpickr) {
-        ro.classList.add('is-readonly');
-        ro._flatpickr.set('clickOpens', false);
-      }
-    },
-    tinymce: function () {
-      if (!window.tinymce) return;
-      var sel = '#demo-tinymce';
-      if (!document.querySelector(sel)) return;
-      // Barba re-enter: tear down any prior editor bound to a now-detached node.
-      try { window.tinymce.remove(sel); } catch (e) {}
-      // The editor iframe is a separate document, so the agency theme must be
-      // loaded INTO it (tokens + Cairo + light/dark) BEFORE our content styling,
-      // which consumes those tokens. Load agency-theme.css, NOT weoc-ui-core.css
-      // (the core reset's body rules would break the editor content body).
-      // Use the ACTIVE palette file so Barba navigation into this page lands on
-      // the right palette (no refresh needed). Absolute URLs so they resolve
-      // correctly even after Barba navigation.
-      var contentCss = [
-        new URL('../../CSS/weoc-ui/' + agencyThemeFile(activePalette()), document.baseURI).href,
-        new URL('../../CSS/tinymce-content-tokens.css', document.baseURI).href
-      ];
-      var applyTheme = function (ed) { if (window.WUI) window.WUI.applyTinyMCETheme(ed); };
-      window.tinymce.init({
-        selector: sel,
-        height: 380,
-        license_key: 'gpl',       // self-hosted GPL build — suppresses the API-key notice
-        // Engine + skin/theme/model/icons/plugins all resolve from the vendored
-        // tinymce-8.6.0/ folder automatically (base_url derives from the script src).
-        menubar: 'edit view insert format table',
-        plugins: 'lists link table code help wordcount autolink',
-        toolbar: 'undo redo | blocks | bold italic underline | forecolor | ' +
-                 'bullist numlist | link table | blockquote | removeformat | code',
-        content_css: contentCss,   // agency stylesheet injected INTO the editor iframe
-        branding: false,
-        promotion: false,
-        // init_instance_callback is the reliable "fully ready" hook — the iframe
-        // document exists and content_css has been applied, so the theme sticks.
-        init_instance_callback: applyTheme,
-        setup: function (ed) {
-          // Re-assert on content reloads (setValue, undo to empty, etc.).
-          ed.on('SetContent', function () { applyTheme(ed); });
-        }
-      });
-    },
-    interactive: function () {
-      document.querySelectorAll('.wui-slider-input').forEach(function (input) {
-        function update() {
-          var min = parseFloat(input.min) || 0;
-          var max = parseFloat(input.max) || 100;
-          var pct = ((parseFloat(input.value) - min) / (max - min) * 100).toFixed(1) + '%';
-          input.style.setProperty('--_fill', pct);
-          var container = input.closest('.wui-slider');
-          if (container) {
-            var display = container.querySelector('.wui-slider-value');
-            if (display) display.textContent = input.value;
-          }
-        }
-        input.addEventListener('input', update);
-        update();
-      });
-    },
-    calendar: function () {
-      if (!window.WUICalendar) return;
-      // pick up any [data-wui-calendar] auto-init examples (also runs after Barba nav)
-      window.WUICalendar.init();
-      var host = document.getElementById('cal-demo');
-      if (!host) return;
-
-      // demo events anchored to the current week so the calendar always looks live
-      var now = new Date();
-      function on(dayOffset, h, m) {
-        return new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayOffset, h || 0, m || 0);
-      }
-      function dayOf(dayOffset) {
-        var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayOffset);
-        // date-only string → treated as all-day by the component
-        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-      }
-      function pad(n) { return n < 10 ? '0' + n : '' + n; }
-
-      var events = [
-        { id: 1, title: 'EOC Activation Brief', start: on(0, 9, 0), end: on(0, 10, 0),
-          variant: 'tier-3', location: 'Command Room A', status: 'Active',
-          attendees: ['Aisha Rahman', 'Samir Khan', 'EOC Duty Officer'],
-          description: 'Tier-3 standup: situation overview, resource posture, and action assignments.' },
-        { id: 2, title: 'Shelter capacity check', start: on(0, 11, 30), end: on(0, 12, 15),
-          variant: 'warning', location: 'Logistics', status: 'In progress',
-          description: 'Confirm cot and supply counts across the three reception centres.' },
-        { id: 3, title: 'Press statement review', start: on(0, 13, 0), end: on(0, 14, 0),
-          variant: 'info', location: 'PIO Desk', status: 'Pending' },
-        { id: 4, title: 'Damage assessment sweep', start: on(1, 8, 0), end: on(1, 16, 0),
-          variant: 'primary', location: 'Sector 4', status: 'Scheduled',
-          attendees: ['Field Team Bravo'], description: 'Full-day structural assessment of the eastern grid.' },
-        { id: 5, title: 'Stand-down review', start: on(2, 15, 0), end: on(2, 16, 0),
-          variant: 'success', location: 'Command Room A', status: 'Tentative' },
-        { id: 6, title: 'Emergency Operations Centre — staffed', start: dayOf(0),
-          allDay: true, variant: 'tier-3', status: 'Active',
-          description: 'Continuous staffing while the activation is in effect.' },
-        { id: 7, title: 'Public holiday', start: dayOf(3), allDay: true, variant: 'secondary' },
-        { id: 8, title: 'After-action workshop', start: on(4, 10, 0), end: on(4, 12, 30),
-          variant: 'tier-1', location: 'Training Room', status: 'Scheduled', done: false,
-          attendees: ['All section chiefs'], description: 'Capture lessons and corrective actions.' },
-        { id: 9, title: 'Supply convoy ETA', start: on(-1, 14, 0), end: on(-1, 14, 30),
-          variant: 'tier-2', location: 'Gate 2', status: 'Completed', done: true },
-        { id: 10, title: 'Overlap demo · briefing', start: on(0, 9, 30), end: on(0, 10, 30),
-          variant: 'danger', location: 'Command Room A', status: 'Active' }
-      ];
-
-      var cal = window.WUICalendar.create(host, {
-        view: 'week',
-        events: events,
-        actions: [
-          { key: 'open',     label: 'Open record', icon: 'open_in_new', variant: 'primary' },
-          { key: 'complete', label: 'Mark done',   icon: 'check_circle', variant: 'success' },
-          { key: 'delete',   label: 'Delete',      icon: 'delete',      variant: 'danger' }
-        ]
-      });
-
-      // live readout of emitted events
-      var out = document.getElementById('cal-event-log');
-      if (out && !host._logHooked) {
-        host._logHooked = true;
-        function log(msg) { out.textContent = msg; out.classList.remove('is-empty'); }
-        host.addEventListener('wui:cal:eventclick', function (e) { log('eventclick → ' + e.detail.event.title); });
-        host.addEventListener('wui:cal:slotclick', function (e) {
-          log('slotclick → ' + e.detail.date.toLocaleString() + (e.detail.allDay ? ' (all-day)' : ''));
-        });
-        host.addEventListener('wui:cal:action', function (e) {
-          log('action "' + e.detail.action + '" → ' + e.detail.event.title);
-          if (e.detail.action === 'complete' && cal) cal.updateEvent(e.detail.event.id, { done: true, status: 'Completed', variant: 'success' });
-          if (e.detail.action === 'delete' && cal) cal.removeEvent(e.detail.event.id);
-        });
-        host.addEventListener('wui:cal:viewchange', function (e) { log('viewchange → ' + e.detail.view); });
-        host.addEventListener('wui:cal:navigate', function (e) { log('navigate → ' + cal.getDate().toDateString()); });
-      }
-
-      // external "view" buttons demo (drive the calendar from outside its toolbar)
-      var extBtns = document.querySelectorAll('[data-cal-ext-view]');
-      for (var i = 0; i < extBtns.length; i++) {
-        if (extBtns[i]._wired) continue;
-        extBtns[i]._wired = true;
-        extBtns[i].addEventListener('click', function () { if (cal) cal.setView(this.getAttribute('data-cal-ext-view')); });
-      }
-    },
-    charts: function () {
-      if (!window.WUI || !window.WUI.chart) return;
-
-      var now = Math.floor(Date.now() / 1000);
-
-      /* ── Line chart demo ─────────────────────────────────────────────────── */
-      var lineEl = document.getElementById('demo-line-chart');
-      var lineChart = null;
-      if (lineEl) {
-        var lineTimes = [], lineA = [], lineB = [];
-        for (var i = 0; i < 24; i++) {
-          lineTimes.push(now - (23 - i) * 3600);
-          lineA.push(Math.round(60 + Math.random() * 30));
-          lineB.push(Math.round(40 + Math.random() * 40));
-        }
-        lineChart = window.WUI.chart(lineEl, {
-          type: 'line',
-          series: [
-            { label: 'Resources Available', color: 'primary' },
-            { label: 'Resources Deployed',  color: 'warning' }
-          ],
-          data:   [lineTimes, lineA, lineB],
-          height: 220,
-          cursor: true,
-          legend: true
-        });
-        var lineUpdateBtn = document.getElementById('demo-line-update');
-        if (lineUpdateBtn && lineChart) {
-          lineUpdateBtn.addEventListener('click', function () {
-            var newA = [], newB = [];
-            for (var j = 0; j < 24; j++) {
-              newA.push(Math.round(50 + Math.random() * 40));
-              newB.push(Math.round(30 + Math.random() * 50));
-            }
-            lineChart.update([lineTimes, newA, newB]);
-          });
-        }
-      }
-
-      /* ── Area chart demo ─────────────────────────────────────────────────── */
-      var areaEl = document.getElementById('demo-area-chart');
-      if (areaEl) {
-        var areaTimes = [], areaA = [], areaB = [];
-        for (var k = 0; k < 24; k++) {
-          areaTimes.push(now - (23 - k) * 3600);
-          areaA.push(Math.round(20 + Math.random() * 60));
-          areaB.push(Math.round(10 + Math.random() * 30));
-        }
-        window.WUI.chart(areaEl, {
-          type: 'area',
-          series: [
-            { label: 'Incident Reports', color: 'danger' },
-            { label: 'Resolved',         color: 'success' }
-          ],
-          data:   [areaTimes, areaA, areaB],
-          height: 220,
-          cursor: true,
-          legend: true
-        });
-      }
-
-      /* ── Bar chart demo ──────────────────────────────────────────────────── */
-      var barEl = document.getElementById('demo-bar-chart');
-      if (barEl) {
-        var barTimes = [], barA = [], barB = [];
-        for (var b = 0; b < 12; b++) {
-          barTimes.push(now - (11 - b) * 3600);
-          barA.push(Math.round(5  + Math.random() * 20));
-          barB.push(Math.round(3  + Math.random() * 18));
-        }
-        window.WUI.chart(barEl, {
-          type: 'bar',
-          series: [
-            { label: 'Incidents Opened', color: 'danger' },
-            { label: 'Incidents Closed', color: 'success' }
-          ],
-          data:   [barTimes, barA, barB],
-          height: 220,
-          cursor: true,
-          legend: true
-        });
-      }
-
-      /* ── Stepped chart demo ──────────────────────────────────────────────── */
-      var steppedEl = document.getElementById('demo-stepped-chart');
-      if (steppedEl) {
-        var stepTimes = [], stepVals = [];
-        var level = 2;
-        for (var s = 0; s < 14; s++) {
-          stepTimes.push(now - (13 - s) * 3600);
-          if (s > 0 && Math.random() > 0.65) {
-            level = Math.min(4, Math.max(1, level + (Math.random() > 0.5 ? 1 : -1)));
-          }
-          stepVals.push(level);
-        }
-        window.WUI.chart(steppedEl, {
-          type: 'stepped',
-          series: [
-            { label: 'Activation Level', color: 'warning' }
-          ],
-          data:   [stepTimes, stepVals],
-          height: 180,
-          cursor: true,
-          legend: false
-        });
-      }
-
-      /* ── Pie chart demo ──────────────────────────────────────────────────── */
-      var pieEl = document.getElementById('demo-pie-chart');
-      if (pieEl && window.WUI.pie) {
-        window.WUI.pie(pieEl, {
-          height: 240,
-          data: [
-            { label: 'Active',    value: 42, color: 'danger' },
-            { label: 'Standby',   value: 28, color: 'warning' },
-            { label: 'Released',  value: 30, color: 'success' }
-          ]
-        });
-      }
-
-      /* ── Donut chart demo ────────────────────────────────────────────────── */
-      var donutEl = document.getElementById('demo-donut-chart');
-      if (donutEl && window.WUI.donut) {
-        window.WUI.donut(donutEl, {
-          height: 240,
-          data: [
-            { label: 'Personnel',  value: 65, color: 'primary' },
-            { label: 'Equipment',  value: 48, color: 'warning' },
-            { label: 'Facilities', value: 22, color: 'success' }
-          ],
-          center: { label: '135', sub: 'Resources' }
-        });
-      }
-
-      /* ── Gauge chart demo ────────────────────────────────────────────────── */
-      var gaugeEl = document.getElementById('demo-gauge-chart');
-      if (gaugeEl && window.WUI.gauge) {
-        window.WUI.gauge(gaugeEl, {
-          value: 62,
-          status: 'Elevated'
-        });
-      }
-
-      /* ── Bar-row chart demo ──────────────────────────────────────────────── */
-      var barRowEl = document.getElementById('demo-barrow-chart');
-      if (barRowEl && window.WUI.barRow) {
-        window.WUI.barRow(barRowEl, {
-          rows: [
-            { label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] },
-            { label: 'Row 2', value: 40, segments: [{ pct: 40, color: 'warning' }] }
-          ]
-        });
-      }
-
-      /* ── Neon glow demos (opts.neon) ───────────────────────────────────────
-       * Same data-shape as the plain examples above — the only difference is
-       * the opts.neon flag on each call. */
-      var neonLineEl = document.getElementById('demo-neon-line-chart');
-      if (neonLineEl) {
-        var neonTimes = [], neonIncidents = [];
-        for (var n = 0; n < 24; n++) {
-          neonTimes.push(now - (23 - n) * 3600);
-          neonIncidents.push(Math.round(4 + Math.random() * 10));
-        }
-        window.WUI.chart(neonLineEl, {
-          type:   'line',
-          neon:   'danger',
-          series: [{ label: 'Active Incidents', color: 'danger' }],
-          data:   [neonTimes, neonIncidents],
-          height: 200,
-          cursor: true,
-          legend: true
-        });
-      }
-
-      var neonPieEl = document.getElementById('demo-neon-pie-chart');
-      if (neonPieEl && window.WUI.pie) {
-        window.WUI.pie(neonPieEl, {
-          height: 240,
-          neon:   true,
-          data: [
-            { label: 'Personnel',  value: 65, color: 'primary' },
-            { label: 'Equipment',  value: 48, color: 'warning' },
-            { label: 'Facilities', value: 22, color: 'success' }
-          ]
-        });
-      }
-
-      var neonDonutEl = document.getElementById('demo-neon-donut-chart');
-      if (neonDonutEl && window.WUI.donut) {
-        window.WUI.donut(neonDonutEl, {
-          height: 240,
-          neon:   true,
-          data: [
-            { label: 'Personnel',  value: 65, color: 'primary' },
-            { label: 'Equipment',  value: 48, color: 'warning' },
-            { label: 'Facilities', value: 22, color: 'success' }
-          ],
-          center: { label: '135', sub: 'Resources' }
-        });
-      }
-
-      var neonGaugeEl = document.getElementById('demo-neon-gauge-chart');
-      if (neonGaugeEl && window.WUI.gauge) {
-        window.WUI.gauge(neonGaugeEl, {
-          value:  82,
-          status: 'Critical',
-          neon:   'warning'
-        });
-      }
-
-      var neonBarRowEl = document.getElementById('demo-neon-barrow-chart');
-      if (neonBarRowEl && window.WUI.barRow) {
-        window.WUI.barRow(neonBarRowEl, {
-          neon: 'success',
-          rows: [
-            { label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] },
-            { label: 'Row 2', value: 40, segments: [{ pct: 40, color: 'warning' }] }
-          ]
-        });
-      }
-    },
-    lists: function () {
-      if (!window.EOCLists || !window.TomSelect) return;
-
-      // ── Flat list demo — Priority ─────────────────────────────────────────
-      var flatSel = document.getElementById('demo-list-flat');
-      var flatOut = document.getElementById('demo-list-flat-out');
-      var flatChips = document.getElementById('demo-list-flat-chips');
-      if (flatSel) {
-        EOCLists.populate(flatSel, 'Priority');
-        var flatTs = new TomSelect(flatSel, {
-          plugins: ['clear_button'],
-          placeholder: '— Select priority —',
-          allowEmptyOption: true
-        });
-        var PRIORITY_VARIANTS = { Critical: 'danger', High: 'warning', Medium: 'primary', Low: 'success' };
-        flatTs.on('change', function (val) {
-          if (flatOut) {
-            var v = PRIORITY_VARIANTS[val] || '';
-            flatOut.className = val ? 'wui-badge ' + v : 'wui-badge bordered secondary';
-            flatOut.textContent = val || 'None';
-          }
-        });
-        // Render all items as badge chips below the select
-        if (flatChips) {
-          EOCLists.get('Priority').forEach(function (item) {
-            var chip = document.createElement('span');
-            chip.className = 'wui-badge ' + (PRIORITY_VARIANTS[item.value] || 'secondary');
-            chip.textContent = item.text;
-            chip.style.cursor = 'pointer';
-            chip.addEventListener('click', function () { flatTs.setValue(item.value); });
-            flatChips.appendChild(chip);
-          });
-        }
-      }
-
-      // ── Cascading demo — Resource Category → Sub-category ────────────────
-      var catSel = document.getElementById('demo-list-cat');
-      var subSel = document.getElementById('demo-list-sub');
-      var cascadeOut = document.getElementById('demo-list-cascade-out');
-      if (catSel && subSel) {
-        EOCLists.populate(catSel, 'Resource Category');
-        var catTs = new TomSelect(catSel, {
-          plugins: ['clear_button'],
-          placeholder: '— Select category —',
-          allowEmptyOption: true
-        });
-        var subTs = new TomSelect(subSel, {
-          plugins: ['clear_button'],
-          placeholder: '— Select category first —',
-          allowEmptyOption: true
-        });
-        subTs.disable();
-
-        function updateCascadeOut(cat, sub) {
-          if (!cascadeOut) return;
-          cascadeOut.innerHTML = '';
-          if (cat) {
-            var c = document.createElement('span');
-            c.className = 'wui-badge primary';
-            c.textContent = cat;
-            cascadeOut.appendChild(c);
-          }
-          if (cat && sub) {
-            var arr = document.createElement('span');
-            arr.className = 'material-symbols-outlined';
-            arr.style.fontSize = '18px';
-            arr.style.color = 'var(--color-text-secondary)';
-            arr.textContent = 'arrow_forward';
-            cascadeOut.appendChild(arr);
-            var s = document.createElement('span');
-            s.className = 'wui-badge info';
-            s.textContent = sub;
-            cascadeOut.appendChild(s);
-          }
-        }
-
-        catTs.on('change', function (val) {
-          subTs.clear(true);
-          subTs.clearOptions();
-          if (val) {
-            EOCLists.getChildren('Resource Category', val).forEach(function (item) {
-              subTs.addOption({ value: item.value, text: item.text });
-            });
-            subTs.enable();
-            subTs.refreshOptions(false);
-            updateCascadeOut(val, null);
-          } else {
-            subTs.disable();
-            updateCascadeOut(null, null);
-          }
-        });
-        subTs.on('change', function (val) {
-          updateCascadeOut(catTs.getValue(), val);
-        });
-      }
-
-      // ── Registry grid — all built-in lists ───────────────────────────────
-      var grid = document.getElementById('demo-list-registry-grid');
-      if (grid) {
-        EOCLists.list().forEach(function (name) {
-          var items = EOCLists.get(name);
-          var isTree = EOCLists.hasChildren(name);
-
-          var card = document.createElement('div');
-          card.className = 'wui-card';
-          card.style.cssText = 'min-width:220px;flex:1 1 220px;max-width:320px';
-
-          var hdr = document.createElement('div');
-          hdr.className = 'wui-card-hdr';
-          hdr.innerHTML =
-            '<div class="wui-card-hdr-left">' +
-              '<span class="wui-card-label" style="font-size:var(--font-sm)">' + name + '</span>' +
-            '</div>' +
-            '<div class="wui-card-hdr-right">' +
-              '<span class="wui-badge ' + (isTree ? 'info' : 'secondary') + ' bordered" style="font-size:11px">' +
-                (isTree ? 'tree' : 'flat') +
-              '</span>' +
-            '</div>';
-
-          var body = document.createElement('div');
-          body.className = 'wui-card-body';
-          body.style.cssText = 'padding-top:0;display:flex;flex-direction:column;gap:4px';
-
-          items.slice(0, 5).forEach(function (item) {
-            var row = document.createElement('div');
-            row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:var(--space-2)';
-            row.innerHTML =
-              '<span style="font-size:var(--font-sm);color:var(--color-text-primary)">' + item.text + '</span>' +
-              '<code style="font-size:11px;color:var(--color-text-secondary)">' + item.value + '</code>';
-            body.appendChild(row);
-            if (isTree) {
-              var children = EOCLists.getChildren(name, item.value);
-              if (children.length) {
-                var sub = document.createElement('div');
-                sub.style.cssText = 'padding-left:var(--space-3);display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px';
-                children.slice(0, 3).forEach(function (c) {
-                  var chip = document.createElement('span');
-                  chip.style.cssText = 'font-size:10px;padding:1px 6px;background:var(--color-60);border-radius:var(--radius-full);color:var(--color-text-secondary)';
-                  chip.textContent = c.text;
-                  sub.appendChild(chip);
-                });
-                if (children.length > 3) {
-                  var more = document.createElement('span');
-                  more.style.cssText = 'font-size:10px;color:var(--color-text-secondary)';
-                  more.textContent = '+' + (children.length - 3) + ' more';
-                  sub.appendChild(more);
-                }
-                body.appendChild(sub);
-              }
-            }
-          });
-
-          if (items.length > 5) {
-            var more = document.createElement('div');
-            more.style.cssText = 'font-size:var(--font-xs);color:var(--color-text-secondary);padding-top:var(--space-1)';
-            more.textContent = '+ ' + (items.length - 5) + ' more items';
-            body.appendChild(more);
-          }
-
-          card.appendChild(hdr);
-          card.appendChild(body);
-          grid.appendChild(card);
-        });
-      }
-    },
-    motion: function () {
-      if (!window.WUIAnim) return;
-      var A = window.WUIAnim;
-
-      // ── ring() demo ──────────────────────────────────────────────────────
-      var ring1 = document.getElementById('demo-ring-1');
-      var ringPlay = document.getElementById('ring-play');
-      var ringReset = document.getElementById('ring-reset');
-      if (ring1 && ringPlay) {
-        ringPlay.addEventListener('click', function () { A.ring(ring1, 75); });
-      }
-      if (ring1 && ringReset) {
-        ringReset.addEventListener('click', function () { A.ring(ring1, 0, { duration: 0.5 }); });
-      }
-
-      // ── sectionEntrance() demo ───────────────────────────────────────────
-      var sectionContainer = document.getElementById('demo-section-container');
-      var sectionPlay = document.getElementById('section-play');
-      function resetSectionRings() {
-        if (!sectionContainer) return;
-        sectionContainer.querySelectorAll('.wui-progress-ring-fill').forEach(function (fill) {
-          fill.style.strokeDashoffset = '326.73';
-        });
-        sectionContainer.querySelectorAll('.wui-progress-ring-pct').forEach(function (el) {
-          el.textContent = '0%';
-        });
-      }
-      if (sectionContainer && sectionPlay) {
-        resetSectionRings();
-        sectionPlay.addEventListener('click', function () {
-          resetSectionRings();
-          setTimeout(function () { A.sectionEntrance(sectionContainer); }, 50);
-        });
-      }
-
-      // ── completion() demo ────────────────────────────────────────────────
-      var ringCompletion = document.getElementById('demo-ring-completion');
-      var completionPlay = document.getElementById('completion-play');
-      var completionReset = document.getElementById('completion-reset');
-      if (ringCompletion && completionPlay) {
-        completionPlay.addEventListener('click', function () { A.completion(ringCompletion); });
-      }
-      if (ringCompletion && completionReset) {
-        completionReset.addEventListener('click', function () {
-          A.ring(ringCompletion, 50, { duration: 0.5 });
-        });
-      }
-
-      // ── counter() demo ───────────────────────────────────────────────────
-      var ctr1 = document.getElementById('demo-counter-1');
-      var ctr2 = document.getElementById('demo-counter-2');
-      var ctr3 = document.getElementById('demo-counter-3');
-      var ctrPlay = document.getElementById('counter-play');
-      function resetCounters() {
-        if (ctr1) ctr1.textContent = '0';
-        if (ctr2) ctr2.textContent = '0';
-        if (ctr3) ctr3.textContent = '0%';
-      }
-      if (ctrPlay) {
-        ctrPlay.addEventListener('click', function () {
-          resetCounters();
-          if (ctr1) A.counter(ctr1, 0, 142, { duration: 0.9 });
-          if (ctr2) A.counter(ctr2, 0, 117, { duration: 0.9 });
-          if (ctr3) A.counter(ctr3, 0, 83, { duration: 0.9, suffix: '%' });
-        });
-      }
-
-      // ── bar() demo ───────────────────────────────────────────────────────
-      var bar = document.getElementById('demo-bar');
-      function wireBar(id, pct) {
-        var btn = document.getElementById(id);
-        if (btn && bar) btn.addEventListener('click', function () { A.bar(bar, pct); });
-      }
-      wireBar('bar-play-40', 40);
-      wireBar('bar-play-75', 75);
-      wireBar('bar-play-100', 100);
-      var barReset = document.getElementById('bar-reset');
-      if (barReset && bar) {
-        barReset.addEventListener('click', function () { A.bar(bar, 0, { duration: 0.4 }); });
-      }
-    },
-    views: function () {
-      // interactive zone demos mount here via DocShell.mount()
-    }
-  };
 
   /* ── wui-demo: single-source live example + code ──────────────────────────
      The .wui-demo-preview holds the LIVE markup (the source of truth). We read
@@ -1337,10 +678,9 @@
     for (var i = 0; i < els.length; i++) highlightEl(els[i]);
   }
 
-  function runPageInit(ns) {
+  function runPageInit() {
     renderDemos(document);
     bindDemoCopy();
-    if (PAGE_INIT[ns]) { try { PAGE_INIT[ns](); } catch (e) {} }
     highlightStatic(document);
   }
 
@@ -1354,9 +694,10 @@
     });
   }
 
-  /* First-load entrance — stagger the hero + sections. One-shot; Barba
-     navigations use the page-fade transition instead. gsap.from so nothing
-     gets stuck hidden if gsap somehow fails. */
+  /* First-load entrance — stagger the hero + sections. One-shot; subsequent
+     htmx-boosted navigations use the GSAP curtain wipe instead (coverIn/
+     revealOut below). gsap.from so nothing gets stuck hidden if gsap
+     somehow fails. */
   function entranceAnimate() {
     if (reduceMotion || !window.gsap) return;
     window.gsap.from('.docs-hero, .docs-section', {
@@ -1364,9 +705,11 @@
     });
   }
 
-  /* ── Barba — DOC-SITE ONLY ────────────────────────────────────────────────
-     Static sidebar + header (outside the wrapper's container); only
-     #docs-main swaps, with a barba.js-style fade (out then in). NOTE: this is
+  /* ── GSAP curtain wipe — DOC-SITE ONLY ────────────────────────────────────
+     Static sidebar + header (outside #docs-main); only #docs-main swaps.
+     The wipe is driven off htmx's own swap lifecycle hooks (coverIn from
+     htmx:beforeSwap, revealOut from applySwappedPage after afterSwap/
+     popstate) — see the "htmx swap lifecycle" section below. NOTE: this is
      for the documentation site only — NOT a WebEOC pattern. */
   /* The cover panel — a single brand-colored curtain that wipes across the
      content pane. Lives on <body> (persistent), positioned over whatever
@@ -1406,82 +749,192 @@
     return window.gsap.to(el, { scaleX: 0, duration: 0.55, ease: 'power3.inOut', delay: 0.08 });
   }
 
-  /* ── Router (Barba-free) ──────────────────────────────────────────────────
-     Alpine owns page state; navigation is a minimal fetch+swap SPA that keeps
-     the GSAP curtain. Only #docs-main's inner swaps; chrome re-renders per nav.
-     DOC-SITE ONLY — not a WebEOC pattern. */
-  var routerBound = false;
-  var navigating = false;
-
+  /* ── htmx swap lifecycle ──────────────────────────────────────────────────
+     htmx owns navigation (hx-boost on #docs-split and #docs-hdr, set in
+     DocShell.init).
+     We hang chrome re-render + runPageInit + the GSAP curtain off htmx's own
+     documented swap/settle delay window instead of overriding htmx's
+     internal swap/history handling (that interaction is undocumented and
+     was deliberately avoided — see plan Task 2 header note). */
+  /* The URL-argument twin of getRoot(): works out the link root for the page
+     being swapped IN (which is not location.pathname yet at afterSwap time).
+     MUST stay in sync with getRoot() — it tests for the same two forms of the
+     home page, docs/index.html and the trailing-slash URL Cloudflare serves it
+     at. It previously tested for `weoc-ui-docs.html`, a filename that no
+     longer exists (the home page was renamed to index.html), so it ALWAYS
+     returned '../'. Every SPA navigation to the home page therefore
+     re-rendered the chrome one level too deep, turning every sidebar href into
+     ../docs/<page>.html — a 404 from /docs/ — until a manual reload. */
   function rootForPath(path) {
-    return /weoc-ui-docs\.html$/.test((path || '').replace(/\\/g, '/')) ? './' : '../';
+    var clean = String(path || '').replace(/\\/g, '/').split('#')[0].split('?')[0];
+    return /(?:^|\/)index\.html$/.test(clean) || /\/$/.test(clean) ? './' : '../';
   }
   function nsForUrl(url) {
     var clean = (url || '').split('#')[0].split('?')[0];
     var file = clean.split('/').pop();
-    if (/weoc-ui-docs\.html$/.test(clean) || file === '') return 'home';
+    // Same stale-rename note as rootForPath above. Unlike rootForPath this one
+    // was never user-visible: 'index.html' is not any NAV item's `file` (the
+    // home item carries file: null), so the home page still fell through to
+    // the 'home' return at the bottom.
+    if (/(?:^|\/)index\.html$/.test(clean) || file === '') return 'home';
     for (var i = 0; i < NAV.length; i++)
       for (var j = 0; j < NAV[i].items.length; j++)
         if (NAV[i].items[j].file && NAV[i].items[j].file === file) return NAV[i].items[j].key;
     return 'home';
   }
 
-  function swapContent(html, ns, hash) {
-    var main = document.getElementById('docs-main');
-    if (!main) return;
-    var doc = new DOMParser().parseFromString(html, 'text/html');
-    var incoming = doc.getElementById('docs-main');
-    main.innerHTML = incoming ? incoming.innerHTML : html;
-    renderChrome(ns, rootForPath(location.pathname));
-    runPageInit(ns);
-    if (hash) {
-      var t = main.querySelector(hash);
-      if (t) { t.scrollIntoView(); } else { main.scrollTop = 0; }
-    } else {
-      main.scrollTop = 0;
-    }
+  /* ── Navigation race guard ────────────────────────────────────────────────
+     htmx's own boost fetch (beforeRequest/beforeSwap/afterSwap) and the
+     hand-rolled popstate fetch below are two independent async engines that
+     both write to #docs-main/chrome, with no coordination between them.
+     Rapid repeated Back presses, or a Back press immediately followed by a
+     different sidebar click, can let an earlier-triggered fetch resolve
+     AFTER a later one and clobber the DOM with stale content. latestNav is
+     a monotonic token: each engine bumps it and captures its own value at
+     the moment its navigation STARTS (request dispatch / popstate fired),
+     then refuses to apply its result if a newer navigation has since
+     started. Bumping at start time (not at response-arrival time) is what
+     makes the ordering correspond to when each navigation was actually
+     triggered — see the htmx:beforeRequest listener below for why this
+     matters. */
+  var latestNav = 0;
+
+  /* Apply an already-fetched page's content: renderChrome (which ends with
+     its own WUI.i18n.apply) + runPageInit + the GSAP reveal. Shared by both
+     the htmx:afterSwap listener
+     (which already has the swapped-in DOM from evt.detail) and the popstate
+     listener (which does its own separate fetch) — only the fetching differs
+     between the two call sites, everything after "we know ns/root and the
+     new content is already in #docs-main" lives here once. */
+  function applySwappedPage(ns, root) {
+    renderChrome(ns, root); // already ends with its own WUI.i18n.apply(document)
+    runPageInit();
+    revealOut(document.getElementById('docs-main'));
   }
 
-  function navigate(url, opts) {
-    opts = opts || {};
-    var main = document.getElementById('docs-main');
-    if (!main || navigating) { if (!main) location.href = url; return; }
-    navigating = true;
-    var a = document.createElement('a'); a.href = url;
-    var abs = a.href, hash = a.hash || '';
-    var ns = nsForUrl(abs);
-    Promise.resolve(coverIn(main))
-      .then(function () { return fetch(abs, { credentials: 'same-origin' }); })
-      .then(function (r) { return r.text(); })
-      .then(function (html) {
-        if (opts.push !== false) history.pushState({ url: abs }, '', abs);
-        swapContent(html, ns, hash);
-        return revealOut(document.getElementById('docs-main'));
-      })
-      .catch(function () { location.href = url; })
-      .then(function () { navigating = false; });
-  }
+  var htmxNavBound = false;
+  function bindHtmxNav() {
+    if (htmxNavBound) return;
+    htmxNavBound = true;
 
-  function isInternalDocLink(a) {
-    if (!a || a.target === '_blank' || a.hasAttribute('download')) return false;
-    var href = a.getAttribute('href') || '';
-    if (!href || href.charAt(0) === '#' || /^(https?:|mailto:|tel:)/i.test(href)) return false;
-    return /(weoc-ui-docs\.html)($|[?#])|\/docs\/[a-z0-9-]+\.html($|[?#])/i.test(a.href);
-  }
-
-  function bindRouter() {
-    if (routerBound) return;
-    routerBound = true;
-    history.replaceState({ url: location.href }, '', location.href);
-    document.addEventListener('click', function (e) {
-      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
-      var a = e.target.closest('a');
-      if (!isInternalDocLink(a)) return;
-      e.preventDefault();
-      navigate(a.href);
+    document.body.addEventListener('htmx:beforeRequest', function (evt) {
+      if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
+      // Bump + tag the token HERE, at request-dispatch time (htmx:beforeRequest
+      // fires right before the XHR is sent — evt.detail.xhr already exists,
+      // confirmed against docs/vendor/htmx/htmx.min.js: the same `T` object
+      // that carries `xhr` is what beforeRequest's evt.detail is), not in
+      // htmx:beforeSwap. beforeSwap only fires AFTER the response has already
+      // arrived, right before the DOM swap — bumping there timestamps the
+      // token to response-ARRIVAL order, not click order. That let a slow
+      // boosted click's token look newer than an intervening Back navigation
+      // that was actually triggered after the click: the click's late
+      // response would bump latestNav again when it finally arrived and win
+      // the race, silently overwriting the already-applied, actually-newer
+      // popstate content. Stashing on the xhr object (not a plain outer var)
+      // is still required for the same reason as before: htmx's own
+      // swap+settle delay (500ms + 630ms, see hx-swap above) leaves a real
+      // async gap during which another navigation can bump latestNav again
+      // before this transaction's beforeSwap/afterSwap read their token back.
+      var myNav = ++latestNav;
+      if (evt.detail.xhr) evt.detail.xhr.__navToken = myNav;
     });
+
+    document.body.addEventListener('htmx:beforeSwap', function (evt) {
+      if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
+      // Staleness MUST be checked here, not in htmx:afterSwap: by the time
+      // afterSwap fires, htmx has already unconditionally written the
+      // response into #docs-main's innerHTML — a check there is too late to
+      // stop the bad write, it can only skip our own chrome/PAGE_INIT re-run
+      // afterward, leaving #docs-main's visible content stale while the
+      // sidebar/title/URL correctly show the newer page. beforeSwap is
+      // htmx's own documented cancellation point: setting
+      // evt.detail.shouldSwap = false stops htmx performing the swap at all
+      // (confirmed by tracing docs/vendor/htmx/htmx.min.js: the swap-and-
+      // history-update call, which also fires htmx:afterSwap internally,
+      // lives entirely inside `if (m.shouldSwap) { ... }` in the response
+      // handler — setting it false skips the DOM write, the history push,
+      // AND afterSwap for this transaction).
+      var myNav = (evt.detail.xhr && evt.detail.xhr.__navToken) || 0;
+      if (myNav !== latestNav) {
+        // A newer navigation has started since this request began. Cancel
+        // htmx's swap outright and bail before covering — there is nothing
+        // to animate a curtain over since this content will never be
+        // written to the DOM. (Covering here unconditionally, even for a
+        // transaction later found to be stale, was the cause of the GSAP
+        // curtain getting stuck: revealOut() only runs from
+        // applySwappedPage(), which the stale branch never reaches.)
+        evt.detail.shouldSwap = false;
+        return;
+      }
+      coverIn(document.getElementById('docs-main'));
+    });
+
+    document.body.addEventListener('htmx:afterSwap', function (evt) {
+      if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
+      // Defensive backstop only: htmx:beforeSwap above already cancels the
+      // swap (shouldSwap = false) for a stale transaction, and tracing
+      // htmx.min.js confirmed afterSwap never even fires in that case (it's
+      // dispatched from inside the same `if (m.shouldSwap)` block as the
+      // swap itself). This check is therefore dead code for the stale-token
+      // case today; kept as a harmless second guard in case htmx's internals
+      // ever change, or in case shouldSwap gets reset by some other
+      // htmx:beforeSwap listener between here and there.
+      var myNav = (evt.detail.xhr && evt.detail.xhr.__navToken) || 0;
+      var url = (evt.detail.xhr && evt.detail.xhr.responseURL) || location.href;
+      var ns = nsForUrl(url);
+      var root = rootForPath(url);
+      if (myNav !== latestNav) return; // a newer nav started; drop this stale one
+      applySwappedPage(ns, root);
+    });
+
+    // Live-verification finding (see plan Task 2 Step 5): htmx vendors its own
+    // window.onpopstate wiring inside a top-level "ready" block that only
+    // fires correctly when htmx.min.js is a STATIC <script> parsed by the
+    // HTML parser. Loaded the way every other library here is loaded — via
+    // loadScript() appending a <script> element after the page has already
+    // settled — that block silently never runs (confirmed empirically: 0
+    // console errors, htmx:load never fires, window.onpopstate stays null),
+    // so htmx's own history-cache restore never engages and the Back/Forward
+    // buttons would otherwise change the URL while leaving stale content on
+    // screen. This handler does NOT touch history.pushState/replaceState —
+    // the browser has already moved the URL natively by the time 'popstate'
+    // fires — it only re-fetches and re-renders #docs-main to match, so it
+    // can't fight or duplicate htmx's own (boost-driven, forward-navigation)
+    // history entries.
+    //
+    // coverIn() is fired-and-forgotten rather than awaited (same as the
+    // htmx:beforeSwap handler above) and raced against a fixed timeout: a
+    // GSAP tween's returned thenable only resolves on its next rAF-driven
+    // tick, which browsers pause for a backgrounded/hidden document, so
+    // awaiting it unconditionally could hang this handler forever.
     window.addEventListener('popstate', function () {
-      navigate(location.href, { push: false });
+      var main = document.getElementById('docs-main');
+      if (!main) return;
+      // Bump + capture immediately (re-entrancy guard, see comment block
+      // above): rapid repeat Back presses, or a Back press immediately
+      // followed by a different sidebar click, must not let this fetch's
+      // eventual resolution overwrite whatever navigation started later.
+      var myNav = ++latestNav;
+      var url = location.href;
+      coverIn(main);
+      var curtainSettled = new Promise(function (resolve) { setTimeout(resolve, 500); });
+      curtainSettled
+        .then(function () { return fetch(url, { credentials: 'same-origin' }); })
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          if (myNav !== latestNav) return; // a newer navigation has since started; drop this stale one
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var incoming = doc.getElementById('docs-main');
+          main.innerHTML = incoming ? incoming.innerHTML : html;
+          // This handler doesn't go through htmx's swap machinery (it's a
+          // manual fetch+innerHTML for popstate), so it doesn't get
+          // htmxSwapSpec()'s scroll:top modifier for free -- reset explicitly.
+          main.scrollTop = 0;
+          var ns = nsForUrl(url);
+          var root = rootForPath(url);
+          applySwappedPage(ns, root);
+        })
+        .catch(function () { location.reload(); });
     });
   }
 
@@ -1506,15 +959,47 @@
     if (!panel) return;
     var res = searchMatches(q);
     if (!res.length) { panel.innerHTML = q ? '<div class="docs-search-empty">No matches</div>' : ''; panel.classList.toggle('is-open', !!q); return; }
+    // Explicit hx-get/hx-target/hx-select/hx-swap on each hit (mirroring
+    // #docs-hdr's own hx-boost config) rather than relying on the anchors
+    // inheriting them from the boosted #docs-hdr ancestor.
+    //
+    // Root cause (confirmed by controlled A/B testing, and NOT the
+    // htmx.process()/inheritance quirk an earlier version of this comment
+    // claimed): clicking a hit runs closeSearch(), which wipes the results
+    // panel via `panel.innerHTML = ''` and so removes the clicked anchor
+    // from the DOM immediately. htmx resolves hx-select and hx-swap at
+    // RESPONSE time, by walking the triggering element's ancestors — by
+    // which point this anchor is detached and has no #docs-hdr ancestor to
+    // inherit from, so htmx falls back to its defaults (swap the entire
+    // fetched document body, innerHTML) and injects a whole nested page,
+    // duplicate #docs-main included. hx-target, by contrast, is resolved
+    // early at request-dispatch time, which is why targeting kept working
+    // while selecting/swapping did not. Putting the attributes on the anchor
+    // itself makes the values available without any ancestor walk.
+    //
+    // (A cheaper alternative a future maintainer may prefer: defer
+    // closeSearch()'s DOM removal until after the request has dispatched —
+    // e.g. clear the panel from htmx:beforeRequest or a setTimeout(0) —
+    // which keeps the anchor attached through response processing and lets
+    // plain inheritance work. Not done here to avoid re-litigating a fix
+    // that is already verified.)
     var root = getRoot(), html = '';
+    var swapSpec = htmxSwapSpec();
     for (var i = 0; i < res.length; i++) {
       var href = getHref(res[i].item, root);
-      html += '<a class="docs-search-hit" href="' + href + '" data-search-hit>' +
+      html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
+        ' hx-get="' + href + '" hx-push-url="true" hx-target="#docs-main"' +
+        ' hx-select="#docs-main &gt; *" hx-swap="' + swapSpec + '">' +
         '<span class="docs-search-hit-label">' + res[i].item.label + '</span>' +
         '<span class="docs-search-hit-group">' + res[i].group + '</span></a>';
     }
     panel.innerHTML = html;
     panel.classList.add('is-open');
+    // This vendored htmx build has no MutationObserver auto-processing new
+    // nodes (grepped htmx.min.js to confirm), so these freshly-injected
+    // anchors still need one process() call to wire up their (now explicit,
+    // self-contained) hx-get click binding.
+    if (window.htmx) window.htmx.process(panel);
   }
   function bindSearch() {
     if (searchBound) return;
@@ -1527,7 +1012,7 @@
       if (!input) return;
       if (e.key === 'Enter' && document.activeElement === input) {
         var first = document.querySelector('#docs-search-results [data-search-hit]');
-        if (first) { e.preventDefault(); navigate(first.href); closeSearch(); }
+        if (first) { e.preventDefault(); first.click(); closeSearch(); }
       } else if (e.key === 'Escape') { closeSearch(); input.blur(); }
       else if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); input.focus(); }
     });
@@ -1549,12 +1034,19 @@
     store: function () {
       return window.Alpine ? window.Alpine.store('docs') : null;
     },
+    // Exposed so page-level Alpine components (e.g. tinymce.html) can reach
+    // these without duplicating them locally -- both are private to this
+    // file's own closure otherwise.
+    agencyThemeFile: agencyThemeFile,
+    activePalette: activePalette,
     init: function (activeKey) {
       var root = getRoot();
       var shared = root + '../';
-      var container = document.getElementById('docs-main');
-      var ns = activeKey ||
-        (container && container.getAttribute('data-barba-namespace')) || 'home';
+      // Every page passes its key explicitly (verified: all 29 docs/docs/*.html
+      // plus docs/index.html call DocShell.init('<key>')). The old
+      // data-barba-namespace fallback was dropped in c6624ff along with the
+      // attribute itself; 'home' is the only fallback left.
+      var ns = activeKey || 'home';
 
       // Inject a dedicated link so loadTheme() has a swappable target.
       // weoc-ui-core.css @imports agency-theme internally (resolved at parse time,
@@ -1572,13 +1064,66 @@
       renderChrome(ns, root);
       hookThemeReadout();
       hookThemeSwatches();
-      bindRouter();
+      var splitEl = document.getElementById('docs-split');
+      var hdrEl = document.getElementById('docs-hdr');
+      // #docs-split (sidebar/content) and #docs-hdr (header/search) are
+      // SIBLINGS in the page markup, not nested — hx-boost only boosts
+      // descendants of the element carrying it, so both containers need the
+      // same attributes set independently, or links inside the header
+      // (search results, brand link) silently fall back to full page loads.
+      //
+      // hx-select="#docs-main > *" (the CHILDREN of the incoming page's
+      // #docs-main) + hx-swap="innerHTML". Both halves of that pairing are
+      // load-bearing; the two obvious alternatives are each broken:
+      //   - hx-select="#docs-main" + innerHTML puts the fetched #docs-main
+      //     INSIDE the local #docs-main, producing a duplicate id.
+      //   - hx-select="#docs-main" + outerHTML avoids the duplicate id but
+      //     DETACHES the local #docs-main on every swap, which breaks all
+      //     navigation coordination: htmx resolves a request's swap target
+      //     at dispatch time and holds it across the whole swap/settle delay
+      //     window below (500ms + 630ms). If navigation B is dispatched
+      //     while navigation A's window is still open, A's outerHTML swap
+      //     detaches the very node B is targeting, so B's
+      //     htmx:beforeSwap/afterSwap fire on a detached node and never
+      //     bubble to document.body — where the latestNav token guard and
+      //     applySwappedPage() (chrome re-render + i18n + page init +
+      //     revealOut) are bound. B then "half-navigates": htmx's own
+      //     title/history update lands, but the visible content, the sidebar
+      //     active state, and the chrome's link roots (recomputed per URL
+      //     depth by renderChrome) all stay stale — which can leave every
+      //     sidebar/brand link 404ing.
+      // Selecting the children instead gets both properties at once: no
+      // duplicate id (the wrapper element itself is never inserted) and no
+      // detachment (an innerHTML swap replaces the target's CONTENTS, so
+      // the target node stays live in the document the whole time and its
+      // swap events keep bubbling to document.body). hx-select with a
+      // "#docs-main > *" selector collects ALL matching top-level children
+      // (hero + sections, plus a leading <style> on pages like views.html),
+      // not just the first.
+      var swapSpec = htmxSwapSpec();
+      var boostTargets = [splitEl, hdrEl];
+      boostTargets.forEach(function (el) {
+        if (!el) return;
+        el.setAttribute('hx-boost', 'true');
+        el.setAttribute('hx-target', '#docs-main');
+        el.setAttribute('hx-select', '#docs-main > *');
+        el.setAttribute('hx-swap', swapSpec);
+        if (window.htmx) window.htmx.process(el);
+      });
       bindSearch();
+      bindHtmxNav();
       ensureI18nStore(root);
 
-      ensureGlobalAssets(root).then(function () {
+      window.DocShell.ready = ensureGlobalAssets(root).then(function () {
+        // htmx loads lazily as one of ensureGlobalAssets' jobs, so the
+        // htmx.process() calls above (at attribute-set time) almost always
+        // no-op — window.htmx isn't defined yet. Re-process now that the
+        // load is guaranteed complete, so hx-boost's click binding actually
+        // attaches instead of silently falling back to full page
+        // navigations (which never fire htmx:beforeSwap/afterSwap).
+        if (window.htmx) boostTargets.forEach(function (el) { if (el) window.htmx.process(el); });
         entranceAnimate();
-        runPageInit(ns);
+        runPageInit();
       });
     }
   };

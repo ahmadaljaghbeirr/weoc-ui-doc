@@ -14,10 +14,39 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="interactive">
-      <div class="docs-page">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="interactivePage()">
+        <script>
+        (function () {
+          function registerInteractivePage() {
+            Alpine.data('interactivePage', function () {
+              return {
+                init: function () {
+                  document.querySelectorAll('.wui-slider-input').forEach(function (input) {
+                    function update() {
+                      var min = parseFloat(input.min) || 0;
+                      var max = parseFloat(input.max) || 100;
+                      var pct = ((parseFloat(input.value) - min) / (max - min) * 100).toFixed(1) + '%';
+                      input.style.setProperty('--_fill', pct);
+                      var container = input.closest('.wui-slider');
+                      if (container) {
+                        var display = container.querySelector('.wui-slider-value');
+                        if (display) display.textContent = input.value;
+                      }
+                    }
+                    input.addEventListener('input', update);
+                    update();
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerInteractivePage();
+          else document.addEventListener('alpine:init', registerInteractivePage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_interactive_1">Data Display</div>

@@ -16,10 +16,105 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="motion">
-      <div class="docs-page">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="motionPage()">
+        <script>
+        (function () {
+          function registerMotionPage() {
+            Alpine.data('motionPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    if (!window.WUIAnim) return;
+                    var A = window.WUIAnim;
+
+                    // ── ring() demo ──────────────────────────────────────────────────────
+                    var ring1 = document.getElementById('demo-ring-1');
+                    var ringPlay = document.getElementById('ring-play');
+                    var ringReset = document.getElementById('ring-reset');
+                    if (ring1 && ringPlay) {
+                      ringPlay.addEventListener('click', function () { A.ring(ring1, 75); });
+                    }
+                    if (ring1 && ringReset) {
+                      ringReset.addEventListener('click', function () { A.ring(ring1, 0, { duration: 0.5 }); });
+                    }
+
+                    // ── sectionEntrance() demo ───────────────────────────────────────────
+                    var sectionContainer = document.getElementById('demo-section-container');
+                    var sectionPlay = document.getElementById('section-play');
+                    function resetSectionRings() {
+                      if (!sectionContainer) return;
+                      sectionContainer.querySelectorAll('.wui-progress-ring-fill').forEach(function (fill) {
+                        fill.style.strokeDashoffset = '326.73';
+                      });
+                      sectionContainer.querySelectorAll('.wui-progress-ring-pct').forEach(function (el) {
+                        el.textContent = '0%';
+                      });
+                    }
+                    if (sectionContainer && sectionPlay) {
+                      resetSectionRings();
+                      sectionPlay.addEventListener('click', function () {
+                        resetSectionRings();
+                        setTimeout(function () { A.sectionEntrance(sectionContainer); }, 50);
+                      });
+                    }
+
+                    // ── completion() demo ────────────────────────────────────────────────
+                    var ringCompletion = document.getElementById('demo-ring-completion');
+                    var completionPlay = document.getElementById('completion-play');
+                    var completionReset = document.getElementById('completion-reset');
+                    if (ringCompletion && completionPlay) {
+                      completionPlay.addEventListener('click', function () { A.completion(ringCompletion); });
+                    }
+                    if (ringCompletion && completionReset) {
+                      completionReset.addEventListener('click', function () {
+                        A.ring(ringCompletion, 50, { duration: 0.5 });
+                      });
+                    }
+
+                    // ── counter() demo ───────────────────────────────────────────────────
+                    var ctr1 = document.getElementById('demo-counter-1');
+                    var ctr2 = document.getElementById('demo-counter-2');
+                    var ctr3 = document.getElementById('demo-counter-3');
+                    var ctrPlay = document.getElementById('counter-play');
+                    function resetCounters() {
+                      if (ctr1) ctr1.textContent = '0';
+                      if (ctr2) ctr2.textContent = '0';
+                      if (ctr3) ctr3.textContent = '0%';
+                    }
+                    if (ctrPlay) {
+                      ctrPlay.addEventListener('click', function () {
+                        resetCounters();
+                        if (ctr1) A.counter(ctr1, 0, 142, { duration: 0.9 });
+                        if (ctr2) A.counter(ctr2, 0, 117, { duration: 0.9 });
+                        if (ctr3) A.counter(ctr3, 0, 83, { duration: 0.9, suffix: '%' });
+                      });
+                    }
+
+                    // ── bar() demo ───────────────────────────────────────────────────────
+                    var bar = document.getElementById('demo-bar');
+                    function wireBar(id, pct) {
+                      var btn = document.getElementById(id);
+                      if (btn && bar) btn.addEventListener('click', function () { A.bar(bar, pct); });
+                    }
+                    wireBar('bar-play-40', 40);
+                    wireBar('bar-play-75', 75);
+                    wireBar('bar-play-100', 100);
+                    var barReset = document.getElementById('bar-reset');
+                    if (barReset && bar) {
+                      barReset.addEventListener('click', function () { A.bar(bar, 0, { duration: 0.4 }); });
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerMotionPage();
+          else document.addEventListener('alpine:init', registerMotionPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_motion_1">Recipes</div>

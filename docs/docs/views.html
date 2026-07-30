@@ -14,12 +14,12 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="views">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
       <style>
         /* ── Zone diagram helpers — scoped to this page ───────────── */
-        /* Lives inside the Barba container so Barba carries it on navigation */
+        /* Lives inside #docs-main, so it's replaced along with the rest of the page on every htmx-boosted navigation */
         .vz-board { display:flex;flex-direction:column;border:1.5px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;background:var(--color-bg);font-family:var(--font-mono);font-size:var(--text-2xs);font-weight:600;gap:2px;padding:2px }
         .vz-row { display:flex;gap:2px }
         .vz-zone { padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);display:flex;flex-direction:column;gap:2px }
@@ -41,7 +41,25 @@
         .vz-variant-label { display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3) }
         .vz-variant-label .wui-badge { font-size:var(--text-xs) }
       </style>
-      <div class="docs-page">
+      <div class="docs-page" x-data="viewsPage()">
+        <script>
+        (function () {
+          function registerViewsPage() {
+            Alpine.data('viewsPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    // Stub: this page is static reference markup only — no
+                    // interactive zone demos to mount yet.
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerViewsPage();
+          else document.addEventListener('alpine:init', registerViewsPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_views_1">Patterns</div>
