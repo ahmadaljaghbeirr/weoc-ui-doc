@@ -58,7 +58,7 @@
             <span class="material-symbols-outlined">info</span>
             <div class="wui-callout-body">
               <div class="wui-callout-title" data-wui-i18n="docs_dates_6">Re-init after SPA navigation</div>
-              <span data-wui-i18n-html="docs_dates_7">These demos are initialized by <code>PAGE_INIT.dates</code> in <code>docs-shell.js</code> (which calls <code>FlatpickrFactory.init()</code>), so they re-bind after every Barba/SPA swap. The classes <code>flat-date</code> / <code>flat-time</code> / <code>flat-range-start</code> / <code>flat-range-end</code> are cosmetic only; binding is driven entirely by <code>data-fp-preset</code>.</span>
+              <span data-wui-i18n-html="docs_dates_7">These demos are initialized by an <code>Alpine.data('datesPage', ...)</code> component defined inside this page (which calls <code>FlatpickrFactory.init()</code>), so they re-bind on every navigation to this page. The classes <code>flat-date</code> / <code>flat-time</code> / <code>flat-range-start</code> / <code>flat-range-end</code> are cosmetic only; binding is driven entirely by <code>data-fp-preset</code>.</span>
             </div>
           </div>
         </div>
