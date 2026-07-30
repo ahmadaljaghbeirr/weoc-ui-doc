@@ -926,6 +926,10 @@
           var doc = new DOMParser().parseFromString(html, 'text/html');
           var incoming = doc.getElementById('docs-main');
           main.innerHTML = incoming ? incoming.innerHTML : html;
+          // This handler doesn't go through htmx's swap machinery (it's a
+          // manual fetch+innerHTML for popstate), so it doesn't get
+          // htmxSwapSpec()'s scroll:top modifier for free -- reset explicitly.
+          main.scrollTop = 0;
           var ns = nsForUrl(url);
           var root = rootForPath(url);
           applySwappedPage(ns, root);
