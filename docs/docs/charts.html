@@ -64,7 +64,243 @@
   <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="charts">
-      <div class="docs-page">
+      <div class="docs-page" x-data="chartsPage()" x-init="init()">
+        <script>
+        (function () {
+          function registerChartsPage() {
+            Alpine.data('chartsPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    if (!window.WUI || !window.WUI.chart) return;
+
+                    var now = Math.floor(Date.now() / 1000);
+
+                    /* ── Line chart demo ─────────────────────────────────────────────────── */
+                    var lineEl = document.getElementById('demo-line-chart');
+                    var lineChart = null;
+                    if (lineEl) {
+                      var lineTimes = [], lineA = [], lineB = [];
+                      for (var i = 0; i < 24; i++) {
+                        lineTimes.push(now - (23 - i) * 3600);
+                        lineA.push(Math.round(60 + Math.random() * 30));
+                        lineB.push(Math.round(40 + Math.random() * 40));
+                      }
+                      lineChart = window.WUI.chart(lineEl, {
+                        type: 'line',
+                        series: [
+                          { label: 'Resources Available', color: 'primary' },
+                          { label: 'Resources Deployed',  color: 'warning' }
+                        ],
+                        data:   [lineTimes, lineA, lineB],
+                        height: 220,
+                        cursor: true,
+                        legend: true
+                      });
+                      var lineUpdateBtn = document.getElementById('demo-line-update');
+                      if (lineUpdateBtn && lineChart) {
+                        lineUpdateBtn.addEventListener('click', function () {
+                          var newA = [], newB = [];
+                          for (var j = 0; j < 24; j++) {
+                            newA.push(Math.round(50 + Math.random() * 40));
+                            newB.push(Math.round(30 + Math.random() * 50));
+                          }
+                          lineChart.update([lineTimes, newA, newB]);
+                        });
+                      }
+                    }
+
+                    /* ── Area chart demo ─────────────────────────────────────────────────── */
+                    var areaEl = document.getElementById('demo-area-chart');
+                    if (areaEl) {
+                      var areaTimes = [], areaA = [], areaB = [];
+                      for (var k = 0; k < 24; k++) {
+                        areaTimes.push(now - (23 - k) * 3600);
+                        areaA.push(Math.round(20 + Math.random() * 60));
+                        areaB.push(Math.round(10 + Math.random() * 30));
+                      }
+                      window.WUI.chart(areaEl, {
+                        type: 'area',
+                        series: [
+                          { label: 'Incident Reports', color: 'danger' },
+                          { label: 'Resolved',         color: 'success' }
+                        ],
+                        data:   [areaTimes, areaA, areaB],
+                        height: 220,
+                        cursor: true,
+                        legend: true
+                      });
+                    }
+
+                    /* ── Bar chart demo ──────────────────────────────────────────────────── */
+                    var barEl = document.getElementById('demo-bar-chart');
+                    if (barEl) {
+                      var barTimes = [], barA = [], barB = [];
+                      for (var b = 0; b < 12; b++) {
+                        barTimes.push(now - (11 - b) * 3600);
+                        barA.push(Math.round(5  + Math.random() * 20));
+                        barB.push(Math.round(3  + Math.random() * 18));
+                      }
+                      window.WUI.chart(barEl, {
+                        type: 'bar',
+                        series: [
+                          { label: 'Incidents Opened', color: 'danger' },
+                          { label: 'Incidents Closed', color: 'success' }
+                        ],
+                        data:   [barTimes, barA, barB],
+                        height: 220,
+                        cursor: true,
+                        legend: true
+                      });
+                    }
+
+                    /* ── Stepped chart demo ──────────────────────────────────────────────── */
+                    var steppedEl = document.getElementById('demo-stepped-chart');
+                    if (steppedEl) {
+                      var stepTimes = [], stepVals = [];
+                      var level = 2;
+                      for (var s = 0; s < 14; s++) {
+                        stepTimes.push(now - (13 - s) * 3600);
+                        if (s > 0 && Math.random() > 0.65) {
+                          level = Math.min(4, Math.max(1, level + (Math.random() > 0.5 ? 1 : -1)));
+                        }
+                        stepVals.push(level);
+                      }
+                      window.WUI.chart(steppedEl, {
+                        type: 'stepped',
+                        series: [
+                          { label: 'Activation Level', color: 'warning' }
+                        ],
+                        data:   [stepTimes, stepVals],
+                        height: 180,
+                        cursor: true,
+                        legend: false
+                      });
+                    }
+
+                    /* ── Pie chart demo ──────────────────────────────────────────────────── */
+                    var pieEl = document.getElementById('demo-pie-chart');
+                    if (pieEl && window.WUI.pie) {
+                      window.WUI.pie(pieEl, {
+                        height: 240,
+                        data: [
+                          { label: 'Active',    value: 42, color: 'danger' },
+                          { label: 'Standby',   value: 28, color: 'warning' },
+                          { label: 'Released',  value: 30, color: 'success' }
+                        ]
+                      });
+                    }
+
+                    /* ── Donut chart demo ────────────────────────────────────────────────── */
+                    var donutEl = document.getElementById('demo-donut-chart');
+                    if (donutEl && window.WUI.donut) {
+                      window.WUI.donut(donutEl, {
+                        height: 240,
+                        data: [
+                          { label: 'Personnel',  value: 65, color: 'primary' },
+                          { label: 'Equipment',  value: 48, color: 'warning' },
+                          { label: 'Facilities', value: 22, color: 'success' }
+                        ],
+                        center: { label: '135', sub: 'Resources' }
+                      });
+                    }
+
+                    /* ── Gauge chart demo ────────────────────────────────────────────────── */
+                    var gaugeEl = document.getElementById('demo-gauge-chart');
+                    if (gaugeEl && window.WUI.gauge) {
+                      window.WUI.gauge(gaugeEl, {
+                        value: 62,
+                        status: 'Elevated'
+                      });
+                    }
+
+                    /* ── Bar-row chart demo ──────────────────────────────────────────────── */
+                    var barRowEl = document.getElementById('demo-barrow-chart');
+                    if (barRowEl && window.WUI.barRow) {
+                      window.WUI.barRow(barRowEl, {
+                        rows: [
+                          { label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] },
+                          { label: 'Row 2', value: 40, segments: [{ pct: 40, color: 'warning' }] }
+                        ]
+                      });
+                    }
+
+                    /* ── Neon glow demos (opts.neon) ───────────────────────────────────────
+                     * Same data-shape as the plain examples above — the only difference is
+                     * the opts.neon flag on each call. */
+                    var neonLineEl = document.getElementById('demo-neon-line-chart');
+                    if (neonLineEl) {
+                      var neonTimes = [], neonIncidents = [];
+                      for (var n = 0; n < 24; n++) {
+                        neonTimes.push(now - (23 - n) * 3600);
+                        neonIncidents.push(Math.round(4 + Math.random() * 10));
+                      }
+                      window.WUI.chart(neonLineEl, {
+                        type:   'line',
+                        neon:   'danger',
+                        series: [{ label: 'Active Incidents', color: 'danger' }],
+                        data:   [neonTimes, neonIncidents],
+                        height: 200,
+                        cursor: true,
+                        legend: true
+                      });
+                    }
+
+                    var neonPieEl = document.getElementById('demo-neon-pie-chart');
+                    if (neonPieEl && window.WUI.pie) {
+                      window.WUI.pie(neonPieEl, {
+                        height: 240,
+                        neon:   true,
+                        data: [
+                          { label: 'Personnel',  value: 65, color: 'primary' },
+                          { label: 'Equipment',  value: 48, color: 'warning' },
+                          { label: 'Facilities', value: 22, color: 'success' }
+                        ]
+                      });
+                    }
+
+                    var neonDonutEl = document.getElementById('demo-neon-donut-chart');
+                    if (neonDonutEl && window.WUI.donut) {
+                      window.WUI.donut(neonDonutEl, {
+                        height: 240,
+                        neon:   true,
+                        data: [
+                          { label: 'Personnel',  value: 65, color: 'primary' },
+                          { label: 'Equipment',  value: 48, color: 'warning' },
+                          { label: 'Facilities', value: 22, color: 'success' }
+                        ],
+                        center: { label: '135', sub: 'Resources' }
+                      });
+                    }
+
+                    var neonGaugeEl = document.getElementById('demo-neon-gauge-chart');
+                    if (neonGaugeEl && window.WUI.gauge) {
+                      window.WUI.gauge(neonGaugeEl, {
+                        value:  82,
+                        status: 'Critical',
+                        neon:   'warning'
+                      });
+                    }
+
+                    var neonBarRowEl = document.getElementById('demo-neon-barrow-chart');
+                    if (neonBarRowEl && window.WUI.barRow) {
+                      window.WUI.barRow(neonBarRowEl, {
+                        neon: 'success',
+                        rows: [
+                          { label: 'Row 1', value: 70, segments: [{ pct: 70, color: 'success' }] },
+                          { label: 'Row 2', value: 40, segments: [{ pct: 40, color: 'warning' }] }
+                        ]
+                      });
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerChartsPage();
+          else document.addEventListener('alpine:init', registerChartsPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_charts_1">Reference</div>
