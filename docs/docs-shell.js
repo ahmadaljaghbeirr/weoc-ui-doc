@@ -328,8 +328,8 @@
   }
 
   /* ── On-demand global assets ──────────────────────────────────────────────
-     htmx's hx-select only pulls #docs-main out of the response — <head> is
-     never touched by a swap — so anything a page needs must be present
+     htmx's hx-select only pulls #docs-main's children out of the response —
+     <head> is never touched by a swap — so anything a page needs must be present
      site-wide. Inject the add-on CSS (tables/maps/forms) + the shared JS
      libraries once. Guarded so direct loads that already link them don't
      double-load. */
@@ -379,7 +379,8 @@
     });
     // TomSelect + Flatpickr styles — needed on the Forms page but loaded here
     // site-wide because an htmx-boosted swap never re-processes incoming
-    // <head> link tags (hx-select only pulls #docs-main out of the response).
+    // <head> link tags (hx-select only pulls #docs-main's children out of
+    // the response).
     ['tom-select.min.css', 'tom-select-agency.css',
      'flatpickr.min.css', 'flatpickr-agency.css',
      'tinymce-theme.css'].forEach(function (f) {
@@ -457,8 +458,10 @@
           // ── Page-scoped reactive state ──────────────────────────────
           // runPageInit() writes into page.* for x-data blocks on that page.
           // Alpine destroys element-bound scopes automatically when the htmx
-          // swap (outerHTML) removes the old #docs-main container — no
-          // manual cleanup needed.
+          // swap replaces #docs-main's children with the incoming page's —
+          // no manual cleanup needed. (#docs-main itself never carries
+          // x-data, verified across all pages, so nothing survives the swap
+          // that shouldn't.)
           page: {}
         });
         // NOTE: no window.Alpine.start() call here — Alpine's own vendored
@@ -742,13 +745,27 @@
      documented swap/settle delay window instead of overriding htmx's
      internal swap/history handling (that interaction is undocumented and
      was deliberately avoided — see plan Task 2 header note). */
+  /* The URL-argument twin of getRoot(): works out the link root for the page
+     being swapped IN (which is not location.pathname yet at afterSwap time).
+     MUST stay in sync with getRoot() — it tests for the same two forms of the
+     home page, docs/index.html and the trailing-slash URL Cloudflare serves it
+     at. It previously tested for `weoc-ui-docs.html`, a filename that no
+     longer exists (the home page was renamed to index.html), so it ALWAYS
+     returned '../'. Every SPA navigation to the home page therefore
+     re-rendered the chrome one level too deep, turning every sidebar href into
+     ../docs/<page>.html — a 404 from /docs/ — until a manual reload. */
   function rootForPath(path) {
-    return /weoc-ui-docs\.html$/.test((path || '').replace(/\\/g, '/')) ? './' : '../';
+    var clean = String(path || '').replace(/\\/g, '/').split('#')[0].split('?')[0];
+    return /(?:^|\/)index\.html$/.test(clean) || /\/$/.test(clean) ? './' : '../';
   }
   function nsForUrl(url) {
     var clean = (url || '').split('#')[0].split('?')[0];
     var file = clean.split('/').pop();
-    if (/weoc-ui-docs\.html$/.test(clean) || file === '') return 'home';
+    // Same stale-rename note as rootForPath above. Unlike rootForPath this one
+    // was never user-visible: 'index.html' is not any NAV item's `file` (the
+    // home item carries file: null), so the home page still fell through to
+    // the 'home' return at the bottom.
+    if (/(?:^|\/)index\.html$/.test(clean) || file === '') return 'home';
     for (var i = 0; i < NAV.length; i++)
       for (var j = 0; j < NAV[i].items.length; j++)
         if (NAV[i].items[j].file && NAV[i].items[j].file === file) return NAV[i].items[j].key;
@@ -928,24 +945,36 @@
     var res = searchMatches(q);
     if (!res.length) { panel.innerHTML = q ? '<div class="docs-search-empty">No matches</div>' : ''; panel.classList.toggle('is-open', !!q); return; }
     // Explicit hx-get/hx-target/hx-select/hx-swap on each hit (mirroring
-    // #docs-hdr's own hx-boost config) rather than relying on inherited
-    // hx-boost + a later htmx.process() re-walk: live-verified that
-    // re-processing #docs-hdr (or just this panel) AFTER its first process()
-    // pass — needed since these anchors don't exist yet at that first pass —
-    // does NOT correctly inherit hx-select/hx-swap for the newly-discovered
-    // anchors; it falls back to a default swap of the ENTIRE fetched
-    // document's body into the old #docs-main (confirmed via inspecting the
-    // resulting DOM: the stale target's innerHTML started with the whole
-    // fetched <div id="docs-hdr">... page again), producing a duplicate
-    // #docs-main instead of a clean outerHTML replace. Explicit attributes
-    // on the anchor itself sidestep that re-processing/inheritance quirk.
+    // #docs-hdr's own hx-boost config) rather than relying on the anchors
+    // inheriting them from the boosted #docs-hdr ancestor.
+    //
+    // Root cause (confirmed by controlled A/B testing, and NOT the
+    // htmx.process()/inheritance quirk an earlier version of this comment
+    // claimed): clicking a hit runs closeSearch(), which wipes the results
+    // panel via `panel.innerHTML = ''` and so removes the clicked anchor
+    // from the DOM immediately. htmx resolves hx-select and hx-swap at
+    // RESPONSE time, by walking the triggering element's ancestors — by
+    // which point this anchor is detached and has no #docs-hdr ancestor to
+    // inherit from, so htmx falls back to its defaults (swap the entire
+    // fetched document body, innerHTML) and injects a whole nested page,
+    // duplicate #docs-main included. hx-target, by contrast, is resolved
+    // early at request-dispatch time, which is why targeting kept working
+    // while selecting/swapping did not. Putting the attributes on the anchor
+    // itself makes the values available without any ancestor walk.
+    //
+    // (A cheaper alternative a future maintainer may prefer: defer
+    // closeSearch()'s DOM removal until after the request has dispatched —
+    // e.g. clear the panel from htmx:beforeRequest or a setTimeout(0) —
+    // which keeps the anchor attached through response processing and lets
+    // plain inheritance work. Not done here to avoid re-litigating a fix
+    // that is already verified.)
     var root = getRoot(), html = '';
-    var swapSpec = 'outerHTML ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
+    var swapSpec = 'innerHTML ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
     for (var i = 0; i < res.length; i++) {
       var href = getHref(res[i].item, root);
       html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
         ' hx-get="' + href + '" hx-push-url="true" hx-target="#docs-main"' +
-        ' hx-select="#docs-main" hx-swap="' + swapSpec + '">' +
+        ' hx-select="#docs-main &gt; *" hx-swap="' + swapSpec + '">' +
         '<span class="docs-search-hit-label">' + res[i].item.label + '</span>' +
         '<span class="docs-search-hit-group">' + res[i].group + '</span></a>';
     }
@@ -998,9 +1027,11 @@
     init: function (activeKey) {
       var root = getRoot();
       var shared = root + '../';
-      var container = document.getElementById('docs-main');
-      var ns = activeKey ||
-        (container && container.getAttribute('data-barba-namespace')) || 'home';
+      // Every page passes its key explicitly (verified: all 29 docs/docs/*.html
+      // plus docs/index.html call DocShell.init('<key>')). The old
+      // data-barba-namespace fallback was dropped in c6624ff along with the
+      // attribute itself; 'home' is the only fallback left.
+      var ns = activeKey || 'home';
 
       // Inject a dedicated link so loadTheme() has a swappable target.
       // weoc-ui-core.css @imports agency-theme internally (resolved at parse time,
@@ -1026,23 +1057,41 @@
       // same attributes set independently, or links inside the header
       // (search results, brand link) silently fall back to full page loads.
       //
-      // hx-select="#docs-main" + hx-swap="outerHTML" (not innerHTML): htmx's
-      // hx-select extracts the MATCHED element itself into the swap
-      // fragment. Pairing that with an innerHTML swap would place the
-      // fetched #docs-main INSIDE the target #docs-main (same id), producing
-      // a nested duplicate id in the DOM. outerHTML replaces the target
-      // element with the fetched one instead, so there's exactly one
-      // #docs-main afterward. evt.detail.target in the htmx:beforeSwap/
-      // afterSwap handlers below is still the (now-detached) old #docs-main
-      // node at fire time, so the existing token-guard + coverIn/revealOut
-      // logic is unaffected by this swap-style change.
-      var swapSpec = 'outerHTML ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
+      // hx-select="#docs-main > *" (the CHILDREN of the incoming page's
+      // #docs-main) + hx-swap="innerHTML". Both halves of that pairing are
+      // load-bearing; the two obvious alternatives are each broken:
+      //   - hx-select="#docs-main" + innerHTML puts the fetched #docs-main
+      //     INSIDE the local #docs-main, producing a duplicate id.
+      //   - hx-select="#docs-main" + outerHTML avoids the duplicate id but
+      //     DETACHES the local #docs-main on every swap, which breaks all
+      //     navigation coordination: htmx resolves a request's swap target
+      //     at dispatch time and holds it across the whole swap/settle delay
+      //     window below (500ms + 630ms). If navigation B is dispatched
+      //     while navigation A's window is still open, A's outerHTML swap
+      //     detaches the very node B is targeting, so B's
+      //     htmx:beforeSwap/afterSwap fire on a detached node and never
+      //     bubble to document.body — where the latestNav token guard and
+      //     applySwappedPage() (chrome re-render + i18n + page init +
+      //     revealOut) are bound. B then "half-navigates": htmx's own
+      //     title/history update lands, but the visible content, the sidebar
+      //     active state, and the chrome's link roots (recomputed per URL
+      //     depth by renderChrome) all stay stale — which can leave every
+      //     sidebar/brand link 404ing.
+      // Selecting the children instead gets both properties at once: no
+      // duplicate id (the wrapper element itself is never inserted) and no
+      // detachment (an innerHTML swap replaces the target's CONTENTS, so
+      // the target node stays live in the document the whole time and its
+      // swap events keep bubbling to document.body). hx-select with a
+      // "#docs-main > *" selector collects ALL matching top-level children
+      // (hero + sections, plus a leading <style> on pages like views.html),
+      // not just the first.
+      var swapSpec = 'innerHTML ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
       var boostTargets = [splitEl, hdrEl];
       boostTargets.forEach(function (el) {
         if (!el) return;
         el.setAttribute('hx-boost', 'true');
         el.setAttribute('hx-target', '#docs-main');
-        el.setAttribute('hx-select', '#docs-main');
+        el.setAttribute('hx-select', '#docs-main > *');
         el.setAttribute('hx-swap', swapSpec);
         if (window.htmx) window.htmx.process(el);
       });
