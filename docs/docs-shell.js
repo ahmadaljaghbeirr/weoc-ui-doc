@@ -312,6 +312,10 @@
     if (hdr) hdr.innerHTML = renderHeader(root);
     var sb = document.getElementById('docs-sidebar');
     if (sb) sb.innerHTML = renderSidebar(ns, root);
+    if (window.htmx) {
+      if (hdr) window.htmx.process(hdr);
+      if (sb) window.htmx.process(sb);
+    }
     var label = labelFor(ns);
     document.title = (label && ns !== 'home') ? 'weoc-ui — ' + label : 'weoc-ui — Component Library';
     if (window.Alpine && window._docsStoreReady) {
@@ -1407,13 +1411,12 @@
     return window.gsap.to(el, { scaleX: 0, duration: 0.55, ease: 'power3.inOut', delay: 0.08 });
   }
 
-  /* ── Router (Barba-free) ──────────────────────────────────────────────────
-     Alpine owns page state; navigation is a minimal fetch+swap SPA that keeps
-     the GSAP curtain. Only #docs-main's inner swaps; chrome re-renders per nav.
-     DOC-SITE ONLY — not a WebEOC pattern. */
-  var routerBound = false;
-  var navigating = false;
-
+  /* ── htmx swap lifecycle (Barba- and hand-rolled-router-free) ────────────
+     htmx owns navigation (hx-boost on #docs-split, set in DocShell.init).
+     We hang chrome re-render + PAGE_INIT + the GSAP curtain off htmx's own
+     documented swap/settle delay window instead of overriding htmx's
+     internal swap/history handling (that interaction is undocumented and
+     was deliberately avoided — see plan Task 2 header note). */
   function rootForPath(path) {
     return /weoc-ui-docs\.html$/.test((path || '').replace(/\\/g, '/')) ? './' : '../';
   }
@@ -1427,62 +1430,68 @@
     return 'home';
   }
 
-  function swapContent(html, ns, hash) {
-    var main = document.getElementById('docs-main');
-    if (!main) return;
-    var doc = new DOMParser().parseFromString(html, 'text/html');
-    var incoming = doc.getElementById('docs-main');
-    main.innerHTML = incoming ? incoming.innerHTML : html;
-    renderChrome(ns, rootForPath(location.pathname));
-    runPageInit(ns);
-    if (hash) {
-      var t = main.querySelector(hash);
-      if (t) { t.scrollIntoView(); } else { main.scrollTop = 0; }
-    } else {
-      main.scrollTop = 0;
-    }
-  }
+  var htmxNavBound = false;
+  function bindHtmxNav() {
+    if (htmxNavBound) return;
+    htmxNavBound = true;
 
-  function navigate(url, opts) {
-    opts = opts || {};
-    var main = document.getElementById('docs-main');
-    if (!main || navigating) { if (!main) location.href = url; return; }
-    navigating = true;
-    var a = document.createElement('a'); a.href = url;
-    var abs = a.href, hash = a.hash || '';
-    var ns = nsForUrl(abs);
-    Promise.resolve(coverIn(main))
-      .then(function () { return fetch(abs, { credentials: 'same-origin' }); })
-      .then(function (r) { return r.text(); })
-      .then(function (html) {
-        if (opts.push !== false) history.pushState({ url: abs }, '', abs);
-        swapContent(html, ns, hash);
-        return revealOut(document.getElementById('docs-main'));
-      })
-      .catch(function () { location.href = url; })
-      .then(function () { navigating = false; });
-  }
-
-  function isInternalDocLink(a) {
-    if (!a || a.target === '_blank' || a.hasAttribute('download')) return false;
-    var href = a.getAttribute('href') || '';
-    if (!href || href.charAt(0) === '#' || /^(https?:|mailto:|tel:)/i.test(href)) return false;
-    return /(weoc-ui-docs\.html)($|[?#])|\/docs\/[a-z0-9-]+\.html($|[?#])/i.test(a.href);
-  }
-
-  function bindRouter() {
-    if (routerBound) return;
-    routerBound = true;
-    history.replaceState({ url: location.href }, '', location.href);
-    document.addEventListener('click', function (e) {
-      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
-      var a = e.target.closest('a');
-      if (!isInternalDocLink(a)) return;
-      e.preventDefault();
-      navigate(a.href);
+    document.body.addEventListener('htmx:beforeSwap', function (evt) {
+      if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
+      coverIn(document.getElementById('docs-main'));
     });
+
+    document.body.addEventListener('htmx:afterSwap', function (evt) {
+      if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
+      var url = (evt.detail.xhr && evt.detail.xhr.responseURL) || location.href;
+      var ns = nsForUrl(url);
+      var root = rootForPath(url);
+      renderChrome(ns, root);
+      if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
+      runPageInit(ns);
+      revealOut(document.getElementById('docs-main'));
+    });
+
+    // Live-verification finding (see plan Task 2 Step 5): htmx vendors its own
+    // window.onpopstate wiring inside a top-level "ready" block that only
+    // fires correctly when htmx.min.js is a STATIC <script> parsed by the
+    // HTML parser. Loaded the way every other library here is loaded — via
+    // loadScript() appending a <script> element after the page has already
+    // settled — that block silently never runs (confirmed empirically: 0
+    // console errors, htmx:load never fires, window.onpopstate stays null),
+    // so htmx's own history-cache restore never engages and the Back/Forward
+    // buttons would otherwise change the URL while leaving stale content on
+    // screen. This handler does NOT touch history.pushState/replaceState —
+    // the browser has already moved the URL natively by the time 'popstate'
+    // fires — it only re-fetches and re-renders #docs-main to match, so it
+    // can't fight or duplicate htmx's own (boost-driven, forward-navigation)
+    // history entries.
+    //
+    // coverIn() is fired-and-forgotten rather than awaited (same as the
+    // htmx:beforeSwap handler above) and raced against a fixed timeout: a
+    // GSAP tween's returned thenable only resolves on its next rAF-driven
+    // tick, which browsers pause for a backgrounded/hidden document, so
+    // awaiting it unconditionally could hang this handler forever.
     window.addEventListener('popstate', function () {
-      navigate(location.href, { push: false });
+      var main = document.getElementById('docs-main');
+      if (!main) return;
+      var url = location.href;
+      coverIn(main);
+      var curtainSettled = new Promise(function (resolve) { setTimeout(resolve, 500); });
+      curtainSettled
+        .then(function () { return fetch(url, { credentials: 'same-origin' }); })
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var incoming = doc.getElementById('docs-main');
+          main.innerHTML = incoming ? incoming.innerHTML : html;
+          var ns = nsForUrl(url);
+          var root = rootForPath(url);
+          renderChrome(ns, root);
+          if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
+          runPageInit(ns);
+          return revealOut(document.getElementById('docs-main'));
+        })
+        .catch(function () { location.reload(); });
     });
   }
 
@@ -1528,7 +1537,7 @@
       if (!input) return;
       if (e.key === 'Enter' && document.activeElement === input) {
         var first = document.querySelector('#docs-search-results [data-search-hit]');
-        if (first) { e.preventDefault(); navigate(first.href); closeSearch(); }
+        if (first) { e.preventDefault(); first.click(); closeSearch(); }
       } else if (e.key === 'Escape') { closeSearch(); input.blur(); }
       else if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); input.focus(); }
     });
@@ -1578,12 +1587,21 @@
         splitEl.setAttribute('hx-boost', 'true');
         splitEl.setAttribute('hx-target', '#docs-main');
         splitEl.setAttribute('hx-select', '#docs-main');
+        splitEl.setAttribute('hx-swap', 'innerHTML swap:500ms settle:630ms');
         if (window.htmx) window.htmx.process(splitEl);
       }
       bindSearch();
+      bindHtmxNav();
       ensureI18nStore(root);
 
-      ensureGlobalAssets(root).then(function () {
+      window.DocShell.ready = ensureGlobalAssets(root).then(function () {
+        // htmx loads lazily as one of ensureGlobalAssets' jobs, so the
+        // htmx.process(splitEl) call above (at attribute-set time) almost
+        // always no-ops — window.htmx isn't defined yet. Re-process now that
+        // the load is guaranteed complete, so hx-boost's click binding
+        // actually attaches instead of silently falling back to full
+        // page navigations (which never fire htmx:beforeSwap/afterSwap).
+        if (window.htmx && splitEl) window.htmx.process(splitEl);
         entranceAnimate();
         runPageInit(ns);
       });
