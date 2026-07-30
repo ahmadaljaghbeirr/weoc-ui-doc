@@ -118,6 +118,17 @@
   ];
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Shared htmx hx-swap spec for every #docs-main navigation (boosted
+  // clicks on #docs-split/#docs-hdr, and each individually-attributed
+  // search-hit anchor). scroll:top resets #docs-main's own scrollTop on
+  // every swap -- since the swap is innerHTML (the target node persists,
+  // never a fresh element), scroll position would otherwise carry over
+  // from whatever page the user was previously scrolled to.
+  function htmxSwapSpec() {
+    return 'innerHTML scroll:top ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
+  }
+
   var themeHooked = false;
   var swatchHooked = false;
   var swatchStylesInjected = false;
@@ -969,7 +980,7 @@
     // plain inheritance work. Not done here to avoid re-litigating a fix
     // that is already verified.)
     var root = getRoot(), html = '';
-    var swapSpec = 'innerHTML ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
+    var swapSpec = htmxSwapSpec();
     for (var i = 0; i < res.length; i++) {
       var href = getHref(res[i].item, root);
       html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
@@ -1085,7 +1096,7 @@
       // "#docs-main > *" selector collects ALL matching top-level children
       // (hero + sections, plus a leading <style> on pages like views.html),
       // not just the first.
-      var swapSpec = 'innerHTML ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
+      var swapSpec = htmxSwapSpec();
       var boostTargets = [splitEl, hdrEl];
       boostTargets.forEach(function (el) {
         if (!el) return;
