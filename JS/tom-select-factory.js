@@ -50,6 +50,12 @@
  *   data-parent="ParentFieldName" or parent="ParentFieldName" on the child.
  *   When WebEOC replaces child options on parent change, the instance resyncs automatically.
  *
+ * Dropdown placement:
+ *   Every factory-built select auto-flips its dropdown above the control when
+ *   there isn't room below (e.g. a field near the bottom of a dialog) — no
+ *   markup needed, always on. Adds .ts-dropdown-flip-top to .ts-dropdown when
+ *   flipped, for any CSS that wants to react (e.g. shadow direction).
+ *
  * Multi-select edit-mode repopulation:
  *   WebEOC does not restore multi-select values natively. Handle at the page level:
  *     repopulateMultiSelect('FieldName', `<value-of select="//@FieldName"/>`);
@@ -418,27 +424,99 @@ const TomSelectFactory = (function () {
     const parentEl = document.querySelector(`[name="${parentAttr}"]`);
     if (!parentEl) return;
 
+    // Rebuild manually from only the currently visible native options.
+    // We cannot use ts.sync() here: WebEOC's parent cascade hides stale options
+    // with style.display='none' rather than removing them from the DOM, so sync()
+    // reads ALL native options — including the hidden ones from the previous
+    // parent value — and they end up visible in the TomSelect dropdown.
+    const rebuild = () => {
+      ts.clear(true);
+      ts.clearOptions();
+      Array.from(el.options).forEach(function (opt) {
+        if (opt.style.display === 'none') return;
+        ts.addOption({ value: opt.value, text: opt.text });
+      });
+      ts.refreshOptions(false);
+    };
+
     const handler = () => {
-      // Wait for WebEOC to finish updating the native select before rebuilding.
-      // We cannot use ts.sync() here: WebEOC's parent cascade hides stale options
-      // with style.display='none' rather than removing them from the DOM, so sync()
-      // reads ALL native options — including the hidden ones from the previous
-      // parent value — and they end up visible in the TomSelect dropdown.
-      // Instead, rebuild manually from only the currently visible native options.
-      setTimeout(() => {
-        ts.clear(true);
-        ts.clearOptions();
-        Array.from(el.options).forEach(function (opt) {
-          if (opt.style.display === 'none') return;
-          ts.addOption({ value: opt.value, text: opt.text });
-        });
-        ts.refreshOptions(false);
-      }, 50);
+      // A fixed setTimeout used to guess how long WebEOC's AJAX swap of the
+      // child's native <option> list takes — fine when the swap was fast,
+      // silently rebuilt from a half-updated (or not-yet-started) list when
+      // it wasn't. That's a race, not a bug tied to any one board: intermittent
+      // by nature, worse under load/slower lists, same symptom on every
+      // dependent-select pair using this factory. Watch the actual DOM
+      // instead of guessing a duration: rebuild once WebEOC's mutations to
+      // the child settle (80ms of quiet), with a hard ceiling so a swap that
+      // produces zero visible mutations (parent value with no children at
+      // all) still resolves instead of never rebuilding.
+      let settleTimer = null;
+      let ceilingTimer = null;
+      const observer = new MutationObserver(() => {
+        clearTimeout(settleTimer);
+        settleTimer = setTimeout(finish, 80);
+      });
+      const finish = () => {
+        clearTimeout(settleTimer);
+        clearTimeout(ceilingTimer);
+        observer.disconnect();
+        rebuild();
+      };
+      observer.observe(el, { attributes: true, attributeFilter: ['style'], childList: true, subtree: true });
+      settleTimer = setTimeout(finish, 80);
+      ceilingTimer = setTimeout(finish, 600);
     };
 
     parentEl.addEventListener('change', handler);
     el.__tsParentEl = parentEl;
     el.__tsParentHandler = handler;
+  }
+
+  // ── Dropdown auto-flip (viewport-aware placement) ──────────────────────────
+  //
+  // Vendor's positionDropdown() (tom-select.complete.min.js) unconditionally
+  // pins the dropdown to control.bottom — no viewport check, no flip. For a
+  // field near the bottom of a dialog/modal (dropdownParent:'body' teleports
+  // the dropdown OUT of the dialog's own overflow, so it doesn't get clipped,
+  // but it still opens downward past the dialog edge into whatever's behind
+  // it). Recompute placement ourselves after every open, and again after
+  // vendor's own scroll/resize reposition, flipping above the control when
+  // there's more room up than down and down doesn't fit.
+
+  function flipDropdownIfNeeded(ts) {
+    const dropdown = ts.dropdown;
+    const control = ts.control;
+    if (!dropdown || !control) return;
+
+    const rect = control.getBoundingClientRect();
+    const dropdownHeight = dropdown.offsetHeight;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    if (dropdownHeight > spaceBelow && spaceAbove > spaceBelow) {
+      dropdown.style.top = (rect.top + window.scrollY - dropdownHeight) + 'px';
+      dropdown.classList.add('ts-dropdown-flip-top');
+    } else {
+      dropdown.classList.remove('ts-dropdown-flip-top');
+    }
+  }
+
+  function wireDropdownFlip(el, ts) {
+    // requestAnimationFrame: right at "dropdown_open" the option list hasn't
+    // painted yet, so dropdown.offsetHeight can still read 0/stale.
+    ts.on('dropdown_open', () => {
+      requestAnimationFrame(() => flipDropdownIfNeeded(ts));
+    });
+
+    // Vendor listens on window scroll/resize while open and always
+    // re-pins downward (see positionDropdown() above) — these listeners are
+    // attached AFTER `new TomSelect()` construction (tryInit), so on the same
+    // event they always fire after vendor's, letting us override its result
+    // rather than race it. Capture phase on scroll: ancestor containers
+    // (a scrollable dialog body) fire scroll without it bubbling to window.
+    const reflow = () => { if (ts.isOpen) flipDropdownIfNeeded(ts); };
+    window.addEventListener('scroll', reflow, true);
+    window.addEventListener('resize', reflow);
   }
 
   // ── Dropdown slots (plug-and-apply custom dropdown content) ────────────────
@@ -538,6 +616,7 @@ const TomSelectFactory = (function () {
     elementByKey.set(key, el);
     clearIfNoExplicitSelection(el, ts);
     wireDependentSelect(el, ts);
+    wireDropdownFlip(el, ts);
     mountDropdownSlots(ts, el);
   }
 
