@@ -41,7 +41,25 @@
         .vz-variant-label { display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3) }
         .vz-variant-label .wui-badge { font-size:var(--text-xs) }
       </style>
-      <div class="docs-page">
+      <div class="docs-page" x-data="viewsPage()" x-init="init()">
+        <script>
+        (function () {
+          function registerViewsPage() {
+            Alpine.data('viewsPage', function () {
+              return {
+                init: function () {
+                  var self = this;
+                  window.DocShell.ready.then(function () {
+                    // interactive zone demos mount here via DocShell.mount()
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerViewsPage();
+          else document.addEventListener('alpine:init', registerViewsPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_views_1">Patterns</div>
