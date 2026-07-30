@@ -1430,6 +1430,30 @@
     return 'home';
   }
 
+  /* ── Navigation race guard ────────────────────────────────────────────────
+     htmx's own boost fetch (beforeSwap/afterSwap) and the hand-rolled
+     popstate fetch below are two independent async engines that both write
+     to #docs-main/chrome, with no coordination between them. Rapid repeated
+     Back presses, or a Back press immediately followed by a different
+     sidebar click, can let an earlier-triggered fetch resolve AFTER a later
+     one and clobber the DOM with stale content. latestNav is a monotonic
+     token: each listener bumps it and captures its own value up front, then
+     refuses to apply its result if a newer navigation has since started. */
+  var latestNav = 0;
+
+  /* Apply an already-fetched page's content: renderChrome + i18n re-apply +
+     PAGE_INIT + the GSAP reveal. Shared by both the htmx:afterSwap listener
+     (which already has the swapped-in DOM from evt.detail) and the popstate
+     listener (which does its own separate fetch) — only the fetching differs
+     between the two call sites, everything after "we know ns/root and the
+     new content is already in #docs-main" lives here once. */
+  function applySwappedPage(ns, root) {
+    renderChrome(ns, root);
+    if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
+    runPageInit(ns);
+    revealOut(document.getElementById('docs-main'));
+  }
+
   var htmxNavBound = false;
   function bindHtmxNav() {
     if (htmxNavBound) return;
@@ -1437,18 +1461,27 @@
 
     document.body.addEventListener('htmx:beforeSwap', function (evt) {
       if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
+      // Stash the token on the xhr object (shared between this beforeSwap
+      // event and the later afterSwap event for the SAME request) rather
+      // than a plain outer variable — htmx's own swap+settle delay
+      // (500ms + 630ms, see hx-swap above) leaves a real async gap between
+      // beforeSwap and afterSwap, during which another navigation (a
+      // popstate, or a second overlapping boost request) could bump
+      // latestNav; a shared outer var would get clobbered by that second
+      // beforeSwap before this transaction's afterSwap ever reads it.
+      var myNav = ++latestNav;
+      if (evt.detail.xhr) evt.detail.xhr.__navToken = myNav;
       coverIn(document.getElementById('docs-main'));
     });
 
     document.body.addEventListener('htmx:afterSwap', function (evt) {
       if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
+      var myNav = (evt.detail.xhr && evt.detail.xhr.__navToken) || 0;
       var url = (evt.detail.xhr && evt.detail.xhr.responseURL) || location.href;
       var ns = nsForUrl(url);
       var root = rootForPath(url);
-      renderChrome(ns, root);
-      if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
-      runPageInit(ns);
-      revealOut(document.getElementById('docs-main'));
+      if (myNav !== latestNav) return; // a newer nav started; drop this stale one
+      applySwappedPage(ns, root);
     });
 
     // Live-verification finding (see plan Task 2 Step 5): htmx vendors its own
@@ -1474,6 +1507,11 @@
     window.addEventListener('popstate', function () {
       var main = document.getElementById('docs-main');
       if (!main) return;
+      // Bump + capture immediately (re-entrancy guard, see comment block
+      // above): rapid repeat Back presses, or a Back press immediately
+      // followed by a different sidebar click, must not let this fetch's
+      // eventual resolution overwrite whatever navigation started later.
+      var myNav = ++latestNav;
       var url = location.href;
       coverIn(main);
       var curtainSettled = new Promise(function (resolve) { setTimeout(resolve, 500); });
@@ -1481,15 +1519,13 @@
         .then(function () { return fetch(url, { credentials: 'same-origin' }); })
         .then(function (r) { return r.text(); })
         .then(function (html) {
+          if (myNav !== latestNav) return; // a newer navigation has since started; drop this stale one
           var doc = new DOMParser().parseFromString(html, 'text/html');
           var incoming = doc.getElementById('docs-main');
           main.innerHTML = incoming ? incoming.innerHTML : html;
           var ns = nsForUrl(url);
           var root = rootForPath(url);
-          renderChrome(ns, root);
-          if (window.WUI && window.WUI.i18n) window.WUI.i18n.apply(document);
-          runPageInit(ns);
-          return revealOut(document.getElementById('docs-main'));
+          applySwappedPage(ns, root);
         })
         .catch(function () { location.reload(); });
     });
