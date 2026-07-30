@@ -1431,14 +1431,19 @@
   }
 
   /* ── Navigation race guard ────────────────────────────────────────────────
-     htmx's own boost fetch (beforeSwap/afterSwap) and the hand-rolled
-     popstate fetch below are two independent async engines that both write
-     to #docs-main/chrome, with no coordination between them. Rapid repeated
-     Back presses, or a Back press immediately followed by a different
-     sidebar click, can let an earlier-triggered fetch resolve AFTER a later
-     one and clobber the DOM with stale content. latestNav is a monotonic
-     token: each listener bumps it and captures its own value up front, then
-     refuses to apply its result if a newer navigation has since started. */
+     htmx's own boost fetch (beforeRequest/beforeSwap/afterSwap) and the
+     hand-rolled popstate fetch below are two independent async engines that
+     both write to #docs-main/chrome, with no coordination between them.
+     Rapid repeated Back presses, or a Back press immediately followed by a
+     different sidebar click, can let an earlier-triggered fetch resolve
+     AFTER a later one and clobber the DOM with stale content. latestNav is
+     a monotonic token: each engine bumps it and captures its own value at
+     the moment its navigation STARTS (request dispatch / popstate fired),
+     then refuses to apply its result if a newer navigation has since
+     started. Bumping at start time (not at response-arrival time) is what
+     makes the ordering correspond to when each navigation was actually
+     triggered — see the htmx:beforeRequest listener below for why this
+     matters. */
   var latestNav = 0;
 
   /* Apply an already-fetched page's content: renderChrome + i18n re-apply +
@@ -1459,18 +1464,30 @@
     if (htmxNavBound) return;
     htmxNavBound = true;
 
-    document.body.addEventListener('htmx:beforeSwap', function (evt) {
+    document.body.addEventListener('htmx:beforeRequest', function (evt) {
       if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
-      // Stash the token on the xhr object (shared between this beforeSwap
-      // event and the later afterSwap event for the SAME request) rather
-      // than a plain outer variable — htmx's own swap+settle delay
-      // (500ms + 630ms, see hx-swap above) leaves a real async gap between
-      // beforeSwap and afterSwap, during which another navigation (a
-      // popstate, or a second overlapping boost request) could bump
-      // latestNav; a shared outer var would get clobbered by that second
-      // beforeSwap before this transaction's afterSwap ever reads it.
+      // Bump + tag the token HERE, at request-dispatch time (htmx:beforeRequest
+      // fires right before the XHR is sent — evt.detail.xhr already exists,
+      // confirmed against docs/vendor/htmx/htmx.min.js: the same `T` object
+      // that carries `xhr` is what beforeRequest's evt.detail is), not in
+      // htmx:beforeSwap. beforeSwap only fires AFTER the response has already
+      // arrived, right before the DOM swap — bumping there timestamps the
+      // token to response-ARRIVAL order, not click order. That let a slow
+      // boosted click's token look newer than an intervening Back navigation
+      // that was actually triggered after the click: the click's late
+      // response would bump latestNav again when it finally arrived and win
+      // the race, silently overwriting the already-applied, actually-newer
+      // popstate content. Stashing on the xhr object (not a plain outer var)
+      // is still required for the same reason as before: htmx's own
+      // swap+settle delay (500ms + 630ms, see hx-swap above) leaves a real
+      // async gap during which another navigation can bump latestNav again
+      // before this transaction's beforeSwap/afterSwap read their token back.
       var myNav = ++latestNav;
       if (evt.detail.xhr) evt.detail.xhr.__navToken = myNav;
+    });
+
+    document.body.addEventListener('htmx:beforeSwap', function (evt) {
+      if (!evt.detail || !evt.detail.target || evt.detail.target.id !== 'docs-main') return;
       coverIn(document.getElementById('docs-main'));
     });
 
