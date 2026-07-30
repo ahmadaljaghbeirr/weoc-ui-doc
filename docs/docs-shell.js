@@ -400,6 +400,7 @@
     if (!window.uPlot)       jobs.push(loadScript(shared + 'JS/uPlot.iife.min.js'));
     if (!window.EOCLists)    jobs.push(loadScript(shared + 'JS/eoc-lists.js'));
     if (!window.Alpine)      jobs.push(loadScript(root + 'vendor/alpine/cdn.min.js'));
+    if (!window.htmx)        jobs.push(loadScript(root + 'vendor/htmx/htmx.min.js'));
     ensureCSS(shared + 'CSS/uPlot.min.css');
     // Factory wrappers + weoc-anim must load AFTER their respective libraries.
     return Promise.all(jobs).then(function () {
@@ -1572,7 +1573,13 @@
       renderChrome(ns, root);
       hookThemeReadout();
       hookThemeSwatches();
-      bindRouter();
+      var splitEl = document.getElementById('docs-split');
+      if (splitEl) {
+        splitEl.setAttribute('hx-boost', 'true');
+        splitEl.setAttribute('hx-target', '#docs-main');
+        splitEl.setAttribute('hx-select', '#docs-main');
+        if (window.htmx) window.htmx.process(splitEl);
+      }
       bindSearch();
       ensureI18nStore(root);
 
