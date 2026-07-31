@@ -233,7 +233,7 @@
 
         <!-- ── Load order ────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_6"><span class="material-symbols-outlined">bolt</span>Load Order</div>
+          <div class="docs-section-title" id="load-order" data-wui-i18n-html="docs_lists_6"><span class="material-symbols-outlined">bolt</span>Load Order</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_7">
             Include <code>eoc-lists.js</code> in the board's <code>&lt;head&gt;</code> before any script
             that references <code>EOCLists</code>.
@@ -253,7 +253,7 @@
 
         <!-- ── API ───────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_8"><span class="material-symbols-outlined">code</span>API — <code>window.EOCLists</code></div>
+          <div class="docs-section-title" id="api-window-eoclists" data-wui-i18n-html="docs_lists_8"><span class="material-symbols-outlined">code</span>API — <code>window.EOCLists</code></div>
 
           <table class="docs-api-table">
             <thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead>
@@ -302,7 +302,7 @@
 
         <!-- ── Defining lists ────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_9"><span class="material-symbols-outlined">data_object</span>Defining Lists</div>
+          <div class="docs-section-title" id="defining-lists" data-wui-i18n-html="docs_lists_9"><span class="material-symbols-outlined">data_object</span>Defining Lists</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_10">
             All lists live in <code>eoc-lists.js</code>. Two formats — flat and tree.
             Add new lists to the file; boards pick them up automatically on next deploy.
@@ -352,7 +352,7 @@ EOCLists.register('My Board Status', [
 
         <!-- ── Demo: Flat list ───────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_11"><span class="material-symbols-outlined">format_list_bulleted</span>Demo — Flat List</div>
+          <div class="docs-section-title" id="demo-flat-list" data-wui-i18n-html="docs_lists_11"><span class="material-symbols-outlined">format_list_bulleted</span>Demo — Flat List</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_12">
             <code>EOCLists.populate()</code> fills a native <code>&lt;select&gt;</code>. Pass it to TomSelect.
             The Priority list ships in <code>eoc-lists.js</code> — no WebEOC list needed.
@@ -392,7 +392,7 @@ ts.on('change', function (val) {
 
         <!-- ── Demo: Cascading ───────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_13"><span class="material-symbols-outlined">account_tree</span>Demo — Cascading (Sub-List)</div>
+          <div class="docs-section-title" id="demo-cascading-sub-list" data-wui-i18n-html="docs_lists_13"><span class="material-symbols-outlined">account_tree</span>Demo — Cascading (Sub-List)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_14">
             Tree lists define parent items and a <code>children</code> map.
             When the parent changes, call <code>EOCLists.getChildren()</code> to reload the child TomSelect.
@@ -441,7 +441,7 @@ catTs.on('change', function (val) {
 
         <!-- ── Board integration ─────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_15"><span class="material-symbols-outlined">integration_instructions</span>Board Integration Pattern</div>
+          <div class="docs-section-title" id="board-integration-pattern" data-wui-i18n-html="docs_lists_15"><span class="material-symbols-outlined">integration_instructions</span>Board Integration Pattern</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_16">
             In a WebEOC board's <code>initialize()</code>, populate registry-backed selects
             <strong>before</strong> <code>TomSelectFactory.init()</code>.
@@ -489,7 +489,7 @@ catTs.on('change', function (val) {
 
         <!-- ── Registry reference ─────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_18"><span class="material-symbols-outlined">inventory_2</span>Built-in Lists</div>
+          <div class="docs-section-title" id="built-in-lists" data-wui-i18n-html="docs_lists_18"><span class="material-symbols-outlined">inventory_2</span>Built-in Lists</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_19">
             All lists defined in <code>eoc-lists.js</code> as shipped.
             Add new lists to the file for any domain; use <code>EOCLists.register()</code> for board-specific

@@ -36,7 +36,7 @@
 
         <!-- ══════════════════════════ wui-table-standard ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_6"><span class="material-symbols-outlined">table_rows</span>wui-table-standard</div>
+          <div class="docs-section-title" id="wui-table-standard" data-wui-i18n-html="docs_tables_6"><span class="material-symbols-outlined">table_rows</span>wui-table-standard</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_7">Flat, bordered table with fixed column layout (<code>table-layout: fixed</code>) and a sticky header. Wrap in <code>wui-table-wrap</code> for horizontal scroll and container queries. Compose column widths on the <code>&lt;th&gt;</code>, cell utilities and row-state classes on the <code>&lt;tr&gt;</code>/<code>&lt;td&gt;</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tables_8">Base table — wrapper, header, actions column</div>
@@ -218,7 +218,7 @@
 
         <!-- ══════════════════════════ wui-table-cards ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_13"><span class="material-symbols-outlined">view_agenda</span>wui-table-cards</div>
+          <div class="docs-section-title" id="wui-table-cards" data-wui-i18n-html="docs_tables_13"><span class="material-symbols-outlined">view_agenda</span>wui-table-cards</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_14">Card-row variant: each <code>&lt;tr&gt;</code> reads as a spaced, rounded card floating on the page backdrop. Same column-width, cell-utility, and row-state classes as standard. Row surface defaults to <code>--color-30</code>; add <code>color-60</code> for the darker neutral (mirrors the <code>wui-plane</code> API). An empty last <code>&lt;th&gt;</code> is auto-treated as an actions column; a <code>wui-cell-center</code> last column gets its own sizing.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tables_15">Default surface — color-30</div>
@@ -355,7 +355,7 @@
 
         <!-- ══════════════════════════ wui-table-log ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_21"><span class="material-symbols-outlined">receipt_long</span>wui-table-log</div>
+          <div class="docs-section-title" id="wui-table-log" data-wui-i18n-html="docs_tables_21"><span class="material-symbols-outlined">receipt_long</span>wui-table-log</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_22">Dense, operator-grade incident list with click-to-expand rows. Each record is a <strong>pair</strong>: a data row <code>wui-log-row</code> (carrying <code>data-wui-row="true"</code>) followed by a <code>wui-log-detail-row</code>. The detail reveals when the data row has <code>is-open</code>. Zebra striping is automatic. Child cells use the short <code>wui-log-*</code> prefix: <code>wui-log-expand</code>, <code>wui-log-elapsed</code>, <code>wui-log-title-row</code>/<code>-title</code>/<code>-id</code>, <code>wui-log-class</code>, <code>wui-log-acks</code>, and inside the detail <code>wui-log-detail</code>/<code>-desc</code>/<code>-meta</code>/<code>-actions</code>. The color accent goes on the data row only; the detail inherits via the adjacent-sibling rule. Add <code>is-closed</code> to mute a resolved record.</p>
           <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
             <div class="wui-demo-preview">
@@ -489,7 +489,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Column widths ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_25"><span class="material-symbols-outlined">view_column</span>Column widths</div>
+          <div class="docs-section-title" id="column-widths" data-wui-i18n-html="docs_tables_25"><span class="material-symbols-outlined">view_column</span>Column widths</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_26">Put a width class on the <code>&lt;th&gt;</code>; under <code>table-layout: fixed</code> the matching <code>&lt;td&gt;</code> inherits it. Fixed px: <code>wui-col-sm</code> (80px) · <code>wui-col-index</code> (150px) · <code>wui-col-md</code> (180px). Proportional: <code>wui-col-primary</code> (40%) · <code>wui-col-secondary</code> (25%). <code>wui-col-actions</code> (80px, centered) for the icon-button column.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -564,7 +564,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Cell utilities ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_29"><span class="material-symbols-outlined">grid_on</span>Cell utilities</div>
+          <div class="docs-section-title" id="cell-utilities" data-wui-i18n-html="docs_tables_29"><span class="material-symbols-outlined">grid_on</span>Cell utilities</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_30">Attach to a <code>&lt;td&gt;</code> (or <code>&lt;th&gt;</code>) on any variant. <code>wui-cell-num</code> right-aligns tabular numerals · <code>wui-cell-center</code> centers · <code>wui-cell-muted</code> is smaller secondary text · <code>wui-cell-truncate</code> single-line ellipsis (wrap the text in a <code>&lt;span&gt;</code>) · <code>wui-cell-chips</code> is a flex-wrap row for multiple badges.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -622,7 +622,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Row color accents ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_31"><span class="material-symbols-outlined">label</span>Row color accents</div>
+          <div class="docs-section-title" id="row-color-accents" data-wui-i18n-html="docs_tables_31"><span class="material-symbols-outlined">label</span>Row color accents</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_32">A left-border accent: add one color class to any <code>&lt;tr&gt;</code>. On <code>wui-table-standard</code> and <code>wui-table-cards</code> it draws a 3px left border (cards also inherit the color into the hover borders via <code>--_row-accent</code>). On <code>wui-table-log</code> the same class drives <code>--_tier</code>, so the 4px border and the elapsed-time text color both update. Colors: <code>is-primary</code> · <code>is-success</code> · <code>is-info</code> · <code>is-warning</code> · <code>is-danger</code> · <code>is-secondary</code>.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -696,7 +696,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Row action buttons ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_34"><span class="material-symbols-outlined">more_horiz</span>Row action buttons</div>
+          <div class="docs-section-title" id="row-action-buttons" data-wui-i18n-html="docs_tables_34"><span class="material-symbols-outlined">more_horiz</span>Row action buttons</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_35">Wrap a set of icon buttons in <code>wui-table-actions</code> (centered flex group). Each button is a <code>wui-table-action-btn</code>; a color class tints it and its hover fill. Add <code>disabled</code> (or <code>is-disabled</code>) to block a single action. Drop the group into a <code>wui-col-actions</code> cell.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -722,7 +722,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Density ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_36"><span class="material-symbols-outlined">density_medium</span>Density</div>
+          <div class="docs-section-title" id="density" data-wui-i18n-html="docs_tables_36"><span class="material-symbols-outlined">density_medium</span>Density</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_37">Tune vertical rhythm on the <code>&lt;table&gt;</code>: <code>is-compact</code> tightens padding (and the card row gap), <code>is-comfortable</code> loosens it. Base density (no class) sits between. Both modifiers work on <code>wui-table-standard</code> and <code>wui-table-cards</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tables_38">Standard — compact vs base vs comfortable</div>
