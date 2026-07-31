@@ -7,6 +7,7 @@
   <script src="../../JS/weoc-ui.js"></script>
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables.css">
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables-responsive.css">
   <link rel="stylesheet" href="../docs-style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -788,10 +789,121 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
           </div>
         </div>
 
+        <!-- ══════════════════════════ Responsive column hiding ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_tables_40"><span class="material-symbols-outlined">view_week</span>Responsive column hiding</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tables_41">Mark a <code>&lt;th&gt;</code>/<code>&lt;td&gt;</code> pair <code>data-wui-hide-below="sm|md|lg|xl"</code> and the column hides once the table's own <code>wui-table-wrap</code> shrinks past that breakpoint &mdash; a real container query against the table's rendered width, not the browser viewport. That is the whole point: a details panel or split view squeezing the table triggers the hide even when the window itself never resizes, which a <code>@media</code> query cannot see. Same <code>sm/md/lg/xl</code> scale as <code>wui-col-sm</code>/<code>wui-col-md</code> and the grid system (576/768/992/1200) &mdash; no new vocabulary. Zero JS: each cell hides itself off its own attribute, nothing pairs the header to its column. Requires loading <code>weoc-tables-responsive.css</code> after <code>weoc-tables.css</code>. Standard table (<code>wui-table-standard</code>) only &mdash; <code>wui-table-cards</code> already has its own narrow-width behavior.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tables_42">Live example &mdash; resize the wrapper, not the window</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tables_43">Two columns below are marked <code>data-wui-hide-below</code>: <code>Created By</code> hides under the <code>md</code> breakpoint (768px), <code>Created At</code> hides under <code>sm</code> (576px). Drag the handle in the demo box's bottom-right corner, or use the width presets, to see each threshold cross independently of the browser window.</p>
+
+          <div style="display:flex; flex-wrap:wrap; gap:var(--space-2); margin-bottom:var(--space-3);" role="group" data-wui-i18n-attr="aria-label:docs_tables_44">
+            <button type="button" class="wui-btn wui-btn-sm outline primary is-active" data-hide-demo-width="900" data-wui-i18n="docs_tables_45">Wide (900px)</button>
+            <button type="button" class="wui-btn wui-btn-sm outline primary" data-hide-demo-width="700" data-wui-i18n="docs_tables_46">md breakpoint (700px)</button>
+            <button type="button" class="wui-btn wui-btn-sm outline primary" data-hide-demo-width="500" data-wui-i18n="docs_tables_47">sm breakpoint (500px)</button>
+          </div>
+
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div id="tables-hide-demo" style="resize:horizontal; overflow:auto; min-width:320px; max-width:100%; width:900px; border:1px dashed var(--color-border); border-radius:var(--border-radius); padding:var(--space-3);">
+                <div class="wui-table-wrap">
+                  <table class="wui-table-standard">
+                    <thead>
+                      <tr>
+                        <th class="wui-col-index">#</th>
+                        <th class="wui-col-primary">Facility</th>
+                        <th class="wui-col-md">Status</th>
+                        <th class="wui-col-md">Location</th>
+                        <th class="wui-col-md" data-wui-hide-below="md">Created By</th>
+                        <th class="wui-col-md" data-wui-hide-below="sm">Created At</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="wui-cell-num">26-004</td>
+                        <td>Central Warehouse</td>
+                        <td><span class="wui-badge success">Operational</span></td>
+                        <td>Bldg 4, Zone C</td>
+                        <td data-wui-hide-below="md">J. Rivera</td>
+                        <td data-wui-hide-below="sm">07/28/2026 14:02</td>
+                      </tr>
+                      <tr>
+                        <td class="wui-cell-num">26-011</td>
+                        <td>North Depot</td>
+                        <td><span class="wui-badge warning">Limited</span></td>
+                        <td>Bldg 1, Zone A</td>
+                        <td data-wui-hide-below="md">A. Chen</td>
+                        <td data-wui-hide-below="sm">07/29/2026 09:14</td>
+                      </tr>
+                      <tr>
+                        <td class="wui-cell-num">26-017</td>
+                        <td>Med Supply Cache</td>
+                        <td><span class="wui-badge danger">Closed</span></td>
+                        <td>Bldg 9, Zone F</td>
+                        <td data-wui-hide-below="md">S. Malik</td>
+                        <td data-wui-hide-below="sm">07/30/2026 22:47</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+&lt;div class="wui-table-wrap"&gt;
+  &lt;table class="wui-table-standard"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th class="wui-col-index"&gt;#&lt;/th&gt;
+        &lt;th class="wui-col-primary"&gt;Facility&lt;/th&gt;
+        &lt;th class="wui-col-md"&gt;Status&lt;/th&gt;
+        &lt;th class="wui-col-md"&gt;Location&lt;/th&gt;
+        &lt;th class="wui-col-md" data-wui-hide-below="md"&gt;Created By&lt;/th&gt;
+        &lt;th class="wui-col-md" data-wui-hide-below="sm"&gt;Created At&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td class="wui-cell-num"&gt;26-004&lt;/td&gt;
+        &lt;td&gt;Central Warehouse&lt;/td&gt;
+        &lt;td&gt;&lt;span class="wui-badge success"&gt;Operational&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;Bldg 4, Zone C&lt;/td&gt;
+        &lt;td data-wui-hide-below="md"&gt;J. Rivera&lt;/td&gt;
+        &lt;td data-wui-hide-below="sm"&gt;07/28/2026 14:02&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;!-- …more rows… --&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+            </template>
+          </div>
+
+          <div class="wui-callout info">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_tables_48">Opt-in module &mdash; load weoc-tables-responsive.css after weoc-tables.css</div>
+              <span data-wui-i18n-html="docs_tables_49">The hide hook ships in its own file. Add <code>&lt;link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables-responsive.css"&gt;</code> <em>after</em> <code>weoc-tables.css</code> on any table view. It reuses the <code>container-type: inline-size</code> context <code>weoc-tables.css</code> already establishes on <code>wui-table-wrap</code> &mdash; no extra markup beyond the wrapper you already use.</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('tables');</script>
+  <script>
+    (function () {
+      var box = document.getElementById('tables-hide-demo');
+      var btns = document.querySelectorAll('[data-hide-demo-width]');
+      if (!box || !btns.length) return;
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener('click', function (e) {
+          var btn = e.currentTarget;
+          box.style.width = btn.getAttribute('data-hide-demo-width') + 'px';
+          for (var j = 0; j < btns.length; j++) btns[j].classList.toggle('is-active', btns[j] === btn);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
