@@ -73,7 +73,8 @@
         { key: 'containers', label: 'Cards & Containers', file: 'containers.html', kw: 'card paper plane panel embed collapsible accordion person info-grid datalist' },
         { key: 'interactive', label: 'Badges & Chips', file: 'interactive.html', kw: 'badge chip pill label tag' },
         { key: 'indicators', label: 'Indicators', file: 'indicators.html', kw: 'avatar status-dot indicator icon-bubble themeicon level elapsed' },
-        { key: 'tables', label: 'Tables', file: 'tables.html', kw: 'table standard cards log row column sticky sortable' }
+        { key: 'tables', label: 'Tables', file: 'tables.html', kw: 'table standard cards log row column sticky sortable' },
+        { key: 'heatmap', label: 'Heatmap', file: 'heatmap.html', kw: 'heatmap risk matrix grid cell severity tooltip' }
       ]
     },
     {
@@ -105,7 +106,8 @@
       group: 'Patterns',
       items: [
         { key: 'views', label: 'Board Views', file: 'views.html', kw: 'display input details remove board view scaffold zone' },
-        { key: 'maps', label: 'Maps', file: 'maps.html', kw: 'map esri basemap point popover controls location' }
+        { key: 'maps', label: 'Maps', file: 'maps.html', kw: 'map esri basemap point popover controls location' },
+        { key: 'kanban', label: 'Kanban', file: 'kanban.html', kw: 'kanban board task drag drop column card accent' }
       ]
     },
     {
@@ -395,7 +397,7 @@
     // the response).
     ['tom-select.min.css', 'tom-select-agency.css',
      'flatpickr.min.css', 'flatpickr-agency.css',
-     'tinymce-theme.css'].forEach(function (f) {
+     'tinymce-theme.css', 'sweetalert2.min.css'].forEach(function (f) {
       ensureCSS(shared + 'CSS/' + f);
     });
     // Prism syntax-highlight theme (token-driven, follows light/dark). Docs-only.
@@ -421,6 +423,7 @@
     if (!window.flatpickr)   jobs.push(loadScript(shared + 'JS/flatpickr.min.js'));
     if (!window.uPlot)       jobs.push(loadScript(shared + 'JS/uPlot.iife.min.js'));
     if (!window.EOCLists)    jobs.push(loadScript(shared + 'JS/eoc-lists.js'));
+    if (!window.Swal)        jobs.push(loadScript(shared + 'JS/sweetalert2.all.min.js'));
     if (!window.Alpine) {
       // The vendored CDN build (docs/vendor/alpine/cdn.js, confirmed by direct
       // source read) ends with `window.Alpine = src_default; queueMicrotask(()
@@ -489,6 +492,9 @@
       if (!window.FlatpickrFactory)  jobs2.push(loadScript(shared + 'JS/flatpickr-factory.js'));
       if (!window.WUIAnim)           jobs2.push(loadScript(shared + 'JS/weoc-anim.js'));
       if (!window.WUI || !window.WUI.chart) jobs2.push(loadScript(shared + 'JS/wui-charts.js'));
+      if (!window.WUI || !window.WUI.heatmap) jobs2.push(loadScript(shared + 'JS/wui-heatmap.js'));
+      if (!window.WUI || !window.WUI.kanban) jobs2.push(loadScript(shared + 'JS/wui-kanban.js'));
+      if (!window.WUI || !window.WUI.alert) jobs2.push(loadScript(shared + 'JS/wui-alert.js'));
       return Promise.all(jobs2);
     });
   }

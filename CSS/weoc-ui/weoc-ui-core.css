@@ -33,6 +33,9 @@
     19. weoc-calendar   wui-calendar (month/week/day/agenda views, accent event card, event popup) — JS engine: weoc-calendar.js
     20. weoc-loader     body/element busy overlay, WUI.busy/WUI.buttonBusy, data-wui-loading — JS engine: interaction/loader.js
     21. weoc-charts     wui-chart-neon-* opt-in glow filter for WUI.chart()'s uPlot canvas — JS engine: JS/wui-charts.js
+    22. weoc-heatmap    wui-heatmap risk-grid (rows x cols, CSS grid) for WUI.heatmap() — JS engine: JS/wui-heatmap.js
+    23. weoc-kanban     wui-kanban drag-and-drop board for WUI.kanban() — JS engine: JS/wui-kanban.js
+    24. sweetalert2-weoc-theme  full theme override for vendored SweetAlert2, backs WUI.alert()/WUI.confirm() — JS engine: JS/wui-alert.js (vendored: JS/sweetalert2.all.min.js, CSS/sweetalert2.min.css)
    ============================================= */
 
 @import url("agency-theme.css");
@@ -60,3 +63,7 @@
 @import url("weoc-calendar.css");
 @import url("weoc-i18n.css");
 @import url("weoc-charts.css");
+@import url("weoc-tables-responsive.css");
+@import url("weoc-heatmap.css");
+@import url("weoc-kanban.css");
+@import url("../sweetalert2-weoc-theme.css");
