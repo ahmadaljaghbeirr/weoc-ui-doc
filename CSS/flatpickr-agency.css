@@ -133,6 +133,7 @@
   justify-content: center;
   gap: var(--space-1);
   color: var(--fp-month-color);
+  padding: var(--space-2);
 }
 
 .flatpickr-current-month span.cur-month,
@@ -168,6 +169,7 @@
 .flatpickr-current-month input.cur-year:hover,
 .flatpickr-current-month input.cur-year:focus {
   background: var(--fp-num-input-hover-bg);
+  border-radius: var(--radius-sm);
   outline: none;
 }
 
@@ -193,6 +195,7 @@
 
 .numInputWrapper:hover {
   background: var(--fp-num-input-hover-bg);
+  border-radius: var(--radius-sm);
 }
 
 /* Vendor's spin-arrow box (year / hour / minute / second) hardcodes a
@@ -359,9 +362,18 @@ span.flatpickr-weekday {
 }
 
 /* --- Time picker --- */
+/* .flatpickr-calendar clips to var(--radius-lg), but any hover/select
+   highlight on an hour/minute/second field that touches this row's own
+   edges (it's the calendar's last child) still painted past that curve
+   with its own square corners, since a child's background isn't clipped
+   by an ancestor's border-radius unless that ancestor also sets
+   overflow:hidden. Rounding+clipping here, once, replaces chasing
+   border-radius on every individual hover/focus/selection state inside. */
 .flatpickr-calendar.hasTime .flatpickr-time {
   border-top: 1px solid var(--fp-time-border);
   background: var(--fp-calendar-bg);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  overflow: hidden;
 }
 
 .flatpickr-time input,
@@ -384,6 +396,7 @@ span.flatpickr-weekday {
 .flatpickr-time input:focus,
 .flatpickr-time .flatpickr-am-pm:focus {
   background: var(--fp-time-hover-bg);
+  border-radius: var(--radius-sm);
 }
 
 /* Vendor kills outline on these entirely (`outline:0;border:0`) — keyboard
@@ -391,6 +404,7 @@ span.flatpickr-weekday {
 .flatpickr-time input:focus,
 .flatpickr-time .flatpickr-am-pm:focus {
   box-shadow: var(--fp-focus-ring);
+  border-radius: var(--radius-sm);
 }
 
 /* --- Input field --- */
