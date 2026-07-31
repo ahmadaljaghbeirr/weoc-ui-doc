@@ -22,12 +22,12 @@
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_feedback_1">Feedback</div>
           <div class="docs-hero-title" data-wui-i18n="docs_feedback_2">Feedback</div>
-          <div class="docs-hero-sub" data-wui-i18n-html="docs_feedback_3">Components that tell the user what is happening: contextual notices <code>wui-callout</code>, page-level <code>wui-banner</code>, transient <code>wui-toast</code> and <code>wui-snackbar</code> (driven by <code>WUI.toast</code> / <code>WUI.snackbar</code>), the pulsing <code>wui-alarm</code>, shimmer placeholders <code>wui-skeleton</code>, empty placeholders <code>wui-empty-state</code>, and the <code>.spin</code> loader. Every variant, size, and state is shown below with its exact markup.</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_feedback_3">Components that tell the user what is happening: contextual notices <code>wui-callout</code>, page-level <code>wui-banner</code>, transient <code>wui-toast</code> and <code>wui-snackbar</code> (driven by <code>WUI.toast</code> / <code>WUI.snackbar</code>), the pulsing <code>wui-alarm</code>, shimmer placeholders <code>wui-skeleton</code>, and empty placeholders <code>wui-empty-state</code>. Every variant, size, and state is shown below with its exact markup. For busy overlays and loading states, see the <a href="loader.html">Loader</a> page.</div>
         </div>
 
         <!-- ══════════════════════════ wui-callout ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_4"><span class="material-symbols-outlined">campaign</span>wui-callout</div>
+          <div class="docs-section-title" id="wui-callout" data-wui-i18n-html="docs_feedback_4"><span class="material-symbols-outlined">campaign</span>wui-callout</div>
           <p class="docs-desc" data-wui-i18n-html="docs_feedback_5">Inline contextual notice for form panels and content regions (4-sided, unlike the page-level banner). Required structure: <code>.wui-callout</code> &gt; a direct-child <code>span.material-symbols-outlined</code> icon + <code>.wui-callout-body</code> containing an optional <code>.wui-callout-title</code> followed by body text (prose, lists, and links are all supported). Add one color class: <code>primary</code>, <code>secondary</code>, <code>success</code>, <code>warning</code>, <code>danger</code>, or <code>info</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_feedback_6">All 6 colors — required structure</div>
@@ -118,7 +118,7 @@
 
         <!-- ══════════════════════════ wui-banner ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_9"><span class="material-symbols-outlined">campaign</span>wui-banner</div>
+          <div class="docs-section-title" id="wui-banner" data-wui-i18n-html="docs_feedback_9"><span class="material-symbols-outlined">campaign</span>wui-banner</div>
           <p class="docs-desc" data-wui-i18n-html="docs_feedback_10">Page-level inline alert, sibling to <code>wui-callout</code>. Structure: <code>wui-banner</code> → leading <code>material-symbols-outlined</code> icon + <code>wui-banner-body</code> (<code>wui-banner-text</code> headline, optional <code>wui-banner-sub</code> secondary line). One of six colour variants; icon + text inherit the accent.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_feedback_11">All 6 color variants (text + sub structure)</div>
@@ -191,7 +191,7 @@
 
         <!-- ══════════════════════════ wui-toast ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_13"><span class="material-symbols-outlined">notifications</span>wui-toast</div>
+          <div class="docs-section-title" id="wui-toast" data-wui-i18n-html="docs_feedback_13"><span class="material-symbols-outlined">notifications</span>wui-toast</div>
           <p class="docs-desc" data-wui-i18n-html="docs_feedback_14">Transient corner notification, created imperatively from JavaScript — there is no static markup to author. Call <code>WUI.toast(message, opts)</code>; the library builds the DOM, animates it in, auto-dismisses after <code>opts.duration</code> ms (default 4000; <code>0</code> = sticky), and tears it down after the exit transition. Returns a handle <code>{ el, dismiss }</code>. Auto-dismiss pauses while the pointer is over the toast. Each demo button below runs the exact call shown in its Markup box.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_feedback_15">Severity variants</div>
@@ -254,7 +254,7 @@
 
         <!-- ══════════════════════════ wui-snackbar ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_21"><span class="material-symbols-outlined">bottom_navigation</span>wui-snackbar</div>
+          <div class="docs-section-title" id="wui-snackbar" data-wui-i18n-html="docs_feedback_21"><span class="material-symbols-outlined">bottom_navigation</span>wui-snackbar</div>
           <p class="docs-desc" data-wui-i18n-html="docs_feedback_22">A bottom-center, single-at-a-time notification with an optional inline action — the Material-style sibling of the toast. <code>WUI.snackbar(message, opts)</code> is a preset over the same engine: position is always bottom-center, a new snackbar replaces the open one, the surface is the inverted neutral skin, and the default duration is 6000 ms. Same <code>opts</code> as toast (<code>variant</code>, <code>title</code>, <code>duration</code>, <code>dismissible</code>, <code>action</code>).</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_feedback_23">Default</div>
@@ -285,7 +285,7 @@
 
         <!-- ══════════════════════════ wui-alarm ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_27"><span class="material-symbols-outlined">notifications_active</span>wui-alarm</div>
+          <div class="docs-section-title" id="wui-alarm" data-wui-i18n-html="docs_feedback_27"><span class="material-symbols-outlined">notifications_active</span>wui-alarm</div>
           <p class="docs-desc" data-wui-i18n-html="docs_feedback_28">A danger-colored icon button for active system alerts. It sits dimmed (<code>opacity: 0.48</code>) until you add <code>active</code>, which brightens it, adds a glow ring, pulses the icon core, and emits an animated sonar ripple. Size modifiers: <code>sm</code>, base (md), <code>lg</code>, <code>xl</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_feedback_29">Base (idle) vs. active</div>
@@ -329,7 +329,7 @@
 
         <!-- ══════════════════════════ wui-skeleton ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_32"><span class="material-symbols-outlined">view_agenda</span>wui-skeleton</div>
+          <div class="docs-section-title" id="wui-skeleton" data-wui-i18n-html="docs_feedback_32"><span class="material-symbols-outlined">view_agenda</span>wui-skeleton</div>
           <p class="docs-desc" data-wui-i18n-html="docs_feedback_33">Shimmer placeholder for loading states. Swap any content element 1-for-1 (same wrapper, same size, text removed). Compose one <em>shape</em> (default block, or <code>pill</code>/<code>circle</code>/<code>inline</code>), one <em>height</em> (<code>h-2xs</code>…<code>h-2xl</code> mirroring the text scale, or the UI presets <code>h-btn</code>/<code>h-input</code>/<code>h-icon</code>/<code>h-fab</code>/<code>h-tab</code>/<code>h-avatar</code>/<code>h-avatar-lg</code>), and a <em>width</em> (<code>w-full</code>/<code>w-3-4</code>/<code>w-2-3</code>/<code>w-1-2</code>/<code>w-1-3</code>/<code>w-1-4</code>, or an inline width).</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_feedback_34">Shapes — block / pill / circle / inline</div>
@@ -421,7 +421,7 @@
 
         <!-- ══════════════════════════ wui-empty-state ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_39"><span class="material-symbols-outlined">inbox</span>wui-empty-state</div>
+          <div class="docs-section-title" id="wui-empty-state" data-wui-i18n-html="docs_feedback_39"><span class="material-symbols-outlined">inbox</span>wui-empty-state</div>
           <p class="docs-desc" data-wui-i18n-html="docs_feedback_40">Centered column placeholder for a list, panel, or section with no items: an icon plus a <code>.wui-empty-label</code>. Modifiers: <code>compact</code> (tighter, for small widget bodies) and <code>dashed</code> (bordered, holds layout space in structured columns). Add a <code>.wui-empty-sub</code> for a secondary hint line. For an inline text-only row, use <code>.wui-empty-section</code> (no icon).</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_feedback_41">Base</div>
@@ -463,22 +463,6 @@
             <div class="wui-demo-preview">
               <!-- .wui-empty-section (no icon) -->
               <div class="wui-empty-section">No classifications defined yet.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ══════════════════════════ Loader (.spin) ══════════════════════════ -->
-        <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_feedback_45"><span class="material-symbols-outlined">progress_activity</span>Loader</div>
-          <p class="docs-desc" data-wui-i18n-html="docs_feedback_46">For a live spinner, add the utility class <code>.spin</code> (from weoc-utilities.css, loaded via the core barrel) to any icon. It applies a continuous 1s linear rotation. Pair it with a Material Symbol such as <code>progress_activity</code>.</p>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_feedback_47">Spinner</div>
-          <div class="wui-demo center" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- Standalone spinning icon -->
-              <span class="material-symbols-outlined spin">progress_activity</span>
-              <!-- Inside a loading button -->
-              <button class="wui-btn primary" disabled><span class="material-symbols-outlined spin">progress_activity</span>Loading…</button>
             </div>
           </div>
         </div>

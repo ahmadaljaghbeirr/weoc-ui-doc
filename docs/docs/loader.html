@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Loader</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="loader">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_loader_1">Feedback</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_loader_2">Loader</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_loader_3">A reusable busy overlay for blocking a full page or a single element while work happens, plus a matching inline state for buttons: <code>WUI.busy(on [, targetEl])</code>, <code>WUI.buttonBusy(btn, on)</code>, and the declarative <code>data-wui-loading</code> attribute. Every mode is shown below, live.</div>
+        </div>
+
+        <div class="wui-callout info">
+          <span class="material-symbols-outlined">info</span>
+          <div class="wui-callout-body">
+            <div class="wui-callout-title" data-wui-i18n="docs_loader_4">Two files, one component</div>
+            <span data-wui-i18n-html="docs_loader_5">The overlay markup, the busy/button logic, and the localizable "Please wait" label ship in the main bundle (<code>weoc-ui.js</code> / <code>interaction/loader.js</code>). The animated energy→TAQA artwork is a separate, optional companion script (<code>weoc-loader.js</code>, namespace <code>window.WUILoader</code>) that loads GSAP itself. This documentation site does not load that companion, so every demo below renders the plain CSS fallback spinner — in an app that does load it, the branded SVG swaps in automatically with no markup change.</span>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ WUI.busy() — full page ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="wui-busy-full-page-overlay" data-wui-i18n-html="docs_loader_6"><span class="material-symbols-outlined">fullscreen</span>WUI.busy() — full-page overlay</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_loader_7">Call <code>WUI.busy(true)</code> with no target to cover the whole viewport: a fixed, blurred backdrop plus the busy figure and "Please wait" label, and the page scroll is locked for the duration. <code>WUI.busy(false)</code> tears it down and restores scroll. Idempotent — calling it again while already open is a no-op.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_loader_8">Show / hide</div>
+          <div class="wui-demo center" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <button class="wui-btn primary" id="loader-fullpage-btn"><span class="material-symbols-outlined">fullscreen</span>Show full-page busy (2.5s)</button>
+            </div>
+            <template class="wui-demo-js">
+var btn = document.getElementById('loader-fullpage-btn');
+btn.addEventListener('click', function () {
+  WUI.busy(true);                    // no target = full page, locks scroll
+  setTimeout(function () { WUI.busy(false); }, 2500);
+});
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ WUI.busy(el) — scoped ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="wui-busy-el-element-scoped-overlay" data-wui-i18n-html="docs_loader_9"><span class="material-symbols-outlined">crop_free</span>WUI.busy(el) — element-scoped overlay</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_loader_10">Pass a target element as the second argument to scope the overlay to that element instead of the full page: it is absolutely positioned to cover the target (a positioning context is set automatically if the target is statically positioned) and does not lock page scroll. Tracked per target, so a page can have several busy regions open at once.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_loader_11">Scoped over a panel</div>
+          <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <div id="loader-panel-demo" style="position:relative;width:100%;max-width:320px;min-height:120px;display:flex;align-items:center;justify-content:center;border:1px solid var(--color-border);border-radius:var(--border-radius);font-size:var(--text-sm);color:var(--color-text-secondary)">Panel content</div>
+              <button class="wui-btn outline primary" id="loader-panel-btn">Busy this panel (2.5s)</button>
+            </div>
+            <template class="wui-demo-js">
+var panel = document.getElementById('loader-panel-demo');
+var btn = document.getElementById('loader-panel-btn');
+btn.addEventListener('click', function () {
+  WUI.busy(true, panel);
+  setTimeout(function () { WUI.busy(false, panel); }, 2500);
+});
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ WUI.buttonBusy() ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="wui-buttonbusy-btn-on" data-wui-i18n-html="docs_loader_12"><span class="material-symbols-outlined">smart_button</span>WUI.buttonBusy(btn, on)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_loader_13">A lighter surface for a single action button: no overlay, just the button itself. It disables the button, adds <code>.is-busy</code> (which hides the label and renders an inline spinner via CSS), and sets <code>aria-busy</code>. Turning it off restores whatever <code>disabled</code> state the button had before — a button that was already disabled stays disabled.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_loader_14">Toggle a single button</div>
+          <div class="wui-demo center" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <button class="wui-btn primary" id="loader-btnbusy-btn">Save</button>
+            </div>
+            <template class="wui-demo-js">
+var btn = document.getElementById('loader-btnbusy-btn');
+btn.addEventListener('click', function () {
+  WUI.buttonBusy(btn, true);
+  setTimeout(function () { WUI.buttonBusy(btn, false); }, 1500);
+});
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ data-wui-loading ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="data-wui-loading-declarative" data-wui-i18n-html="docs_loader_15"><span class="material-symbols-outlined">bolt</span>data-wui-loading — declarative</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_loader_16">No JavaScript required for the common case. Add <code>data-wui-loading</code> to a <code>&lt;form&gt;</code> and its submit shows a busy overlay; add it to a standalone <code>&lt;button&gt;</code> and its click sets that button busy. Neither handler auto-hides the state — in a real form that is fine (the page navigates or reloads); a script-driven flow calls <code>WUI.busy(false, …)</code> / <code>WUI.buttonBusy(btn, false)</code> once the response comes back.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_loader_17">On a form (submit)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_loader_18">The attribute value scopes the overlay: empty = full page, <code>self</code> = the form itself (shown here), or a CSS selector for another element on the page.</p>
+          <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <form id="loader-form-demo" data-wui-loading="self" style="position:relative;width:100%;max-width:320px">
+                <div class="field-row full">
+                  <div class="field-item">
+                    <label class="field-label">Report title</label>
+                    <input type="text" class="form-control" placeholder="Situation update">
+                  </div>
+                </div>
+                <button type="submit" class="wui-btn primary" style="margin-top:var(--space-3)">Submit</button>
+              </form>
+            </div>
+            <template class="wui-demo-js">
+// The data-wui-loading="self" attribute alone shows the busy overlay on
+// submit — no JS needed for that part. This demo only prevents the actual
+// page navigation and clears the overlay after a beat so it can be replayed.
+var form = document.getElementById('loader-form-demo');
+form.addEventListener('submit', function (e) {
+  e.preventDefault();
+  setTimeout(function () { WUI.busy(false, form); }, 2000);
+});
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_loader_19">On a standalone button (click)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_loader_20">A non-submit <code>button[data-wui-loading]</code> (or <code>[role="button"]</code>) sets itself busy on click, equivalent to calling <code>WUI.buttonBusy(this, true)</code>. Submit buttons inside a <code>data-wui-loading</code> form are already covered by the form handler above, so this path is for standalone triggers (load-more, refresh, etc).</p>
+          <div class="wui-demo center" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <button class="wui-btn outline primary" id="loader-declarative-btn" data-wui-loading>Load more</button>
+            </div>
+            <template class="wui-demo-js">
+// data-wui-loading alone sets the button busy on click. This demo only
+// reverts it after a beat so it can be replayed.
+var btn = document.getElementById('loader-declarative-btn');
+btn.addEventListener('click', function () {
+  setTimeout(function () { WUI.buttonBusy(btn, false); }, 1500);
+});
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Localization ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="localization" data-wui-i18n-html="docs_loader_21"><span class="material-symbols-outlined">translate</span>Localization</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_loader_22">The overlay label text lives in its own <code>&lt;span data-wui-i18n="LoaderPleaseWait"&gt;</code>, so <code>WUI.i18n.apply</code> can re-localize an already-open overlay without touching the animated trailing dots next to it. Register the <code>LoaderPleaseWait</code> key with your own EN/AR strings the same way as any other <code>WUI.i18n</code> key.</p>
+        </div>
+
+        <!-- ══════════════════════════ .spin utility ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="spin-icon-utility" data-wui-i18n-html="docs_loader_23"><span class="material-symbols-outlined">progress_activity</span>.spin — icon utility</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_loader_24">For a bare spinning icon with no overlay or button state, add the utility class <code>.spin</code> (from weoc-utilities.css, loaded via the core barrel) to any icon. It applies a continuous 1s linear rotation. Pair it with a Material Symbol such as <code>progress_activity</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_loader_25">Spinner</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Standalone spinning icon -->
+              <span class="material-symbols-outlined spin">progress_activity</span>
+              <!-- Inside a loading button -->
+              <button class="wui-btn primary" disabled><span class="material-symbols-outlined spin">progress_activity</span>Loading…</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('loader');</script>
+</body>
+</html>
