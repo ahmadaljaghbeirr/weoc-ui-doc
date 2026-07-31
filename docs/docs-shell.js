@@ -359,7 +359,8 @@
   // Per-page translation files (chrome + several pages live in docs-i18n.js;
   // the rest are one file each under i18n/ to keep them maintainable).
   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
-    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes'];
+    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
+    'kanban', 'heatmap'];
   function ensureI18nStore(root) {
     if (i18nStoreLoaded) return Promise.resolve();
     i18nStoreLoaded = true;
