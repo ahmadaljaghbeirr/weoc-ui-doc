@@ -24,7 +24,7 @@
     {
       group: 'Layout',
       items: [
-        { key: 'layout', label: 'Layout & Shell', file: 'layout.html', kw: 'appshell page-shell split splitter scroll-area toolbar tab widget dashboard fill-area body-shell' },
+        { key: 'layout', label: 'Layout & Shell', file: 'layout.html', kw: 'appshell page-shell split splitter scroll-area toolbar tab widget dashboard fill-area body-shell board views display input details remove scaffold zone' },
         { key: 'grid', label: 'Grid', file: 'grid.html', kw: 'grid row col group stack simplegrid bento dashboard' },
         { key: 'flex', label: 'Flex', file: 'flex.html', kw: 'flex flexbox gap space justify align wrap direction inline-flex' },
         { key: 'container', label: 'Containers', file: 'container.html', kw: 'container fluid gutter centered max-width bootstrap' }
@@ -109,7 +109,6 @@
     {
       group: 'Patterns',
       items: [
-        { key: 'views', label: 'Board Views', file: 'views.html', kw: 'display input details remove board view scaffold zone' },
         { key: 'maps', label: 'Maps', file: 'maps.html', kw: 'map esri basemap point popover controls location' },
         { key: 'kanban', label: 'Kanban', file: 'kanban.html', kw: 'kanban board task drag drop column card accent' }
       ]
@@ -375,7 +374,7 @@
   // Per-page translation files (chrome + several pages live in docs-i18n.js;
   // the rest are one file each under i18n/ to keep them maintainable).
   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
-    'feedback', 'js-api', 'views', 'grid', 'flex', 'container', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
+    'feedback', 'js-api', 'grid', 'flex', 'container', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
     'kanban', 'heatmap', 'navigation', 'tabs', 'icons', 'avatars'];
   function ensureI18nStore(root) {
     if (i18nStoreLoaded) return Promise.resolve();

@@ -75,7 +75,6 @@
     { lang: 'en', id: 'docs_nav_calendar', value: 'Calendar' }, { lang: 'ar', id: 'docs_nav_calendar', value: 'التقويم' },
     { lang: 'en', id: 'docs_nav_typography', value: 'Typography' }, { lang: 'ar', id: 'docs_nav_typography', value: 'الطباعة' },
     { lang: 'en', id: 'docs_nav_tinymce', value: 'Rich Text' }, { lang: 'ar', id: 'docs_nav_tinymce', value: 'النص المنسّق' },
-    { lang: 'en', id: 'docs_nav_views', value: 'Board Views' }, { lang: 'ar', id: 'docs_nav_views', value: 'عروض اللوحات' },
     { lang: 'en', id: 'docs_nav_maps', value: 'Maps' }, { lang: 'ar', id: 'docs_nav_maps', value: 'الخرائط' },
 
     /* ── header ── */
