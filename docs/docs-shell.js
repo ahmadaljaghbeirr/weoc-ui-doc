@@ -938,74 +938,116 @@
     });
   }
 
-  /* ── Search (over NAV labels + keywords) ──────────────────────────────────*/
+  /* ── Search (section-level, bilingual, MiniSearch-backed) ──────────────────
+     Index is lazy-loaded on first focus of #docs-search (not on page load,
+     to avoid blocking initial render) and cached for the session -- rebuilt
+     from scratch on a fresh hard load, reused across every SPA navigation
+     since docs-shell.js itself never reloads. */
   var searchBound = false;
-  function searchMatches(q) {
-    q = (q || '').trim().toLowerCase();
-    if (!q) return [];
-    var terms = q.split(/\s+/), out = [];
-    for (var i = 0; i < NAV.length; i++)
-      for (var j = 0; j < NAV[i].items.length; j++) {
-        var it = NAV[i].items[j];
-        var hay = (it.label + ' ' + NAV[i].group + ' ' + (it.kw || '')).toLowerCase();
-        var ok = true;
-        for (var t = 0; t < terms.length; t++) if (hay.indexOf(terms[t]) === -1) { ok = false; break; }
-        if (ok) out.push({ group: NAV[i].group, item: it });
+  var searchIndexPromise = null;
+
+  function loadSearchIndex(root) {
+    if (searchIndexPromise) return searchIndexPromise;
+    searchIndexPromise = Promise.all([
+      fetch(root + 'search-index.json').then(function (r) {
+        if (!r.ok) throw new Error('search-index.json ' + r.status);
+        return r.json();
+      }),
+      loadScript(root + 'vendor/minisearch/minisearch.min.js').then(function () { return window.MiniSearch; })
+    ]).then(function (results) {
+      var docs = results[0], MiniSearch = results[1];
+      var mini = new MiniSearch({
+        idField: 'id',
+        fields: ['textEn', 'textAr'],
+        storeFields: ['kind', 'page', 'pageTitle', 'group', 'sectionId', 'textEn', 'textAr']
+      });
+      mini.addAll(docs);
+      return mini;
+    }).catch(function (err) {
+      var input = document.getElementById('docs-search');
+      if (input) {
+        input.disabled = true;
+        input.placeholder = 'Search unavailable';
+        input.classList.add('docs-search-input-disabled');
       }
-    return out.slice(0, 12);
+      searchIndexPromise = null; // allow a retry on the next focus (e.g. after a flaky network blip)
+      throw err;
+    });
+    return searchIndexPromise;
   }
-  function renderSearchResults(q) {
+
+  function highlightSnippet(text, terms) {
+    if (!text) return '';
+    var snippet = text.length > 140 ? text.slice(0, 140) + '…' : text;
+    terms.forEach(function (term) {
+      if (!term) return;
+      var re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+      snippet = snippet.replace(re, '<mark>$1</mark>');
+    });
+    return snippet;
+  }
+
+  function renderSearchResults(q, root) {
     var panel = document.getElementById('docs-search-results');
     if (!panel) return;
-    var res = searchMatches(q);
-    if (!res.length) { panel.innerHTML = q ? '<div class="docs-search-empty">No matches</div>' : ''; panel.classList.toggle('is-open', !!q); return; }
-    // Explicit hx-get/hx-target/hx-select/hx-swap on each hit (mirroring
-    // #docs-hdr's own hx-boost config) rather than relying on the anchors
-    // inheriting them from the boosted #docs-hdr ancestor.
-    //
-    // Root cause (confirmed by controlled A/B testing, and NOT the
-    // htmx.process()/inheritance quirk an earlier version of this comment
-    // claimed): clicking a hit runs closeSearch(), which wipes the results
-    // panel via `panel.innerHTML = ''` and so removes the clicked anchor
-    // from the DOM immediately. htmx resolves hx-select and hx-swap at
-    // RESPONSE time, by walking the triggering element's ancestors — by
-    // which point this anchor is detached and has no #docs-hdr ancestor to
-    // inherit from, so htmx falls back to its defaults (swap the entire
-    // fetched document body, innerHTML) and injects a whole nested page,
-    // duplicate #docs-main included. hx-target, by contrast, is resolved
-    // early at request-dispatch time, which is why targeting kept working
-    // while selecting/swapping did not. Putting the attributes on the anchor
-    // itself makes the values available without any ancestor walk.
-    //
-    // (A cheaper alternative a future maintainer may prefer: defer
-    // closeSearch()'s DOM removal until after the request has dispatched —
-    // e.g. clear the panel from htmx:beforeRequest or a setTimeout(0) —
-    // which keeps the anchor attached through response processing and lets
-    // plain inheritance work. Not done here to avoid re-litigating a fix
-    // that is already verified.)
-    var root = getRoot(), html = '';
-    var swapSpec = htmxSwapSpec();
-    for (var i = 0; i < res.length; i++) {
-      var href = getHref(res[i].item, root);
-      html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
-        ' hx-get="' + href + '" hx-push-url="true" hx-target="#docs-main"' +
-        ' hx-select="#docs-main &gt; *" hx-swap="' + swapSpec + '">' +
-        '<span class="docs-search-hit-label">' + res[i].item.label + '</span>' +
-        '<span class="docs-search-hit-group">' + res[i].group + '</span></a>';
-    }
-    panel.innerHTML = html;
-    panel.classList.add('is-open');
-    // This vendored htmx build has no MutationObserver auto-processing new
-    // nodes (grepped htmx.min.js to confirm), so these freshly-injected
-    // anchors still need one process() call to wire up their (now explicit,
-    // self-contained) hx-get click binding.
-    if (window.htmx) window.htmx.process(panel);
+    q = (q || '').trim();
+    if (!q) { panel.innerHTML = ''; panel.classList.remove('is-open'); return; }
+
+    loadSearchIndex(root).then(function (mini) {
+      var lang = (window.WUI && window.WUI.i18n) ? window.WUI.i18n.getLang() : 'en';
+      var field = lang === 'ar' ? 'textAr' : 'textEn';
+      var results = mini.search(q, { fields: [field], prefix: true, fuzzy: 0.2 }).slice(0, 20);
+
+      if (!results.length) {
+        panel.innerHTML = '<div class="docs-search-empty">No matches</div>';
+        panel.classList.add('is-open');
+        return;
+      }
+
+      var byPage = {};
+      var order = [];
+      results.forEach(function (r) {
+        if (!byPage[r.page]) { byPage[r.page] = []; order.push(r.page); }
+        byPage[r.page].push(r);
+      });
+
+      var terms = q.split(/\s+/);
+      var swapSpec = htmxSwapSpec();
+      var html = '';
+      order.forEach(function (page) {
+        var hits = byPage[page];
+        html += '<div class="docs-search-group"><div class="docs-search-group-title">' + hits[0].pageTitle + '</div>';
+        hits.forEach(function (hit) {
+          var href = root + 'docs/' + hit.page + (hit.kind === 'section' ? '#' + hit.sectionId : '');
+          var snippet = hit.kind === 'section' ? highlightSnippet(hit[field] || hit.textEn, terms) : '';
+          html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
+            ' hx-get="' + href + '" hx-push-url="true" hx-target="#docs-main"' +
+            ' hx-select="#docs-main &gt; *" hx-swap="' + swapSpec + '">' +
+            '<span class="docs-search-hit-label">' + (hit.kind === 'section' ? hit.sectionId.replace(/-/g, ' ') : hit.pageTitle) + '</span>' +
+            (snippet ? '<span class="docs-search-hit-snippet">' + snippet + '</span>' : '') +
+            '</a>';
+        });
+        html += '</div>';
+      });
+      panel.innerHTML = html;
+      panel.classList.add('is-open');
+      if (window.htmx) window.htmx.process(panel);
+    }).catch(function () {
+      // loadSearchIndex() already put the input into its disabled state and
+      // logged nothing user-facing beyond that -- nothing further to do here
+      // besides not leaving an unhandled rejection.
+    });
   }
+
   function bindSearch() {
     if (searchBound) return;
     searchBound = true;
+    var root = getRoot();
+    document.addEventListener('focus', function (e) {
+      if (e.target && e.target.id === 'docs-search') loadSearchIndex(root);
+    }, true);
     document.addEventListener('input', function (e) {
-      if (e.target && e.target.id === 'docs-search') renderSearchResults(e.target.value);
+      if (e.target && e.target.id === 'docs-search') renderSearchResults(e.target.value, root);
     });
     document.addEventListener('keydown', function (e) {
       var input = document.getElementById('docs-search');
