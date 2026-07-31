@@ -83,9 +83,34 @@
 
 ---
 
-## Controller follow-up (after all three tasks report DONE)
+## Task D: SweetAlert2 vendored + themed, wrapped as WUI.alert/WUI.confirm
 
-1. Read all three reports.
-2. Apply the deferred barrel-file edits centrally in one commit: `@import` lines in `weoc-ui-core.css` for `weoc-tables-responsive.css`/`weoc-heatmap.css`/`weoc-kanban.css`, and the JS asset-loading list entries for `wui-heatmap.js`/`wui-kanban.js` (checking `docs-shell.js`'s `ensureGlobalAssets()` — table-hook Task A needs no JS entry, it's pure CSS).
-3. Live-verify all three doc pages ONE more time after the barrel wiring lands (confirming the newly-wired global CSS/JS actually loads correctly from a fresh page load, not just from each task's own isolated dev testing).
-4. Add nav entries for the two new doc pages (`heatmap.html`, `kanban.html`) to `docs-shell.js`'s `NAV` array, in a sensible existing group (Data Display for heatmap alongside Charts; a new or existing group for Kanban — Patterns, alongside Board Views, seems closest given it's a layout pattern not a chart).
+**Spec:** `docs/superpowers/specs/2026-07-31-sweetalert-design.md` (read in full — exact API, file placement, error-handling rules).
+
+**Files:**
+- Create: `JS/sweetalert2.all.min.js` (vendored, real download, verified genuine — not hand-written)
+- Create: `CSS/sweetalert2.min.css` (vendored, unmodified)
+- Create: `CSS/sweetalert2-weoc-theme.css` (the full theme override — flat under `CSS/`, NOT nested in `CSS/weoc-ui/`, per explicit user placement instruction)
+- Create: `JS/wui-alert.js` (the `WUI.alert`/`WUI.confirm` wrapper — flat in `JS/`, matching `wui-charts.js`/`wui-heatmap.js`/`wui-kanban.js`)
+- Modify: `docs/docs/kanban.html` (Task C's file, already built by the time this task starts — swap its reject-confirmation demo from native `confirm()` to `WUI.confirm(...)`)
+
+**Steps:**
+1. Download the real SweetAlert2 UMD build (`https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js` or current latest — verify the exact current version/URL, don't assume) to `JS/sweetalert2.all.min.js`. Verify genuine: `window.Swal` exists, `typeof Swal.fire === 'function'`, byte size sane (SweetAlert2's all-bundle is normally 60-80KB minified, not a tiny error-page-sized file).
+2. Download the matching `sweetalert2.min.css` to `CSS/sweetalert2.min.css`.
+3. Read the real vendored `sweetalert2.min.css` to find its actual class names (`.swal2-popup`, `.swal2-title`, etc. — don't guess, confirm against the real file), then write `CSS/sweetalert2-weoc-theme.css` overriding every color/spacing/radius/font value with real `weoc-ui` tokens (`var(--color-*)`, `var(--space-*)`, `var(--radius-*)`, `var(--font-*)` — confirm real token names against `CSS/weoc-ui/agency-theme.css`, don't invent names).
+4. Write `JS/wui-alert.js`: `WUI.alert(opts)`/`WUI.confirm(opts)` per the spec's API — internally call `Swal.fire({...opts, ...themeDefaults})`, `WUI.confirm` resolves a plain boolean (`result.isConfirmed`), not SweetAlert2's richer result object. If `window.Swal` is undefined when called, `console.warn` + fall back to native `window.alert`/`window.confirm`.
+5. Update `docs/docs/kanban.html`'s reject-confirmation demo to call `WUI.confirm(...)` instead of native `confirm()`.
+6. Do NOT edit `CSS/weoc-ui/weoc-ui-core.css` or any global asset-loading list — leave both for the controller, note the exact lines needed in your report.
+7. Serve locally, verify live in a real browser if available: `WUI.alert()`/`WUI.confirm()` render fully themed (not default SweetAlert2 look) in at least 2 different themes, confirm re-theming works correctly after a theme switch, confirm `WUI.confirm()` resolves `true`/`false` correctly, confirm the Kanban demo's reject-gate now shows the themed popup.
+8. Commit your work.
+
+**Report:** Write to `.superpowers/sweetalert-report.md` at repo root — what was built, verification results, exact barrel-file lines the controller needs to add, any deviations with reasoning.
+
+---
+
+## Controller follow-up (after all four tasks report DONE)
+
+1. Read all four reports.
+2. Apply the deferred barrel-file edits centrally in one commit: `@import` lines in `weoc-ui-core.css` for `weoc-tables-responsive.css`/`weoc-heatmap.css`/`weoc-kanban.css`/`sweetalert2-weoc-theme.css`, and the JS/CSS asset-loading list entries for `wui-heatmap.js`/`wui-kanban.js`/`wui-alert.js`/`sweetalert2.all.min.js`/`sweetalert2.min.css` (checking `docs-shell.js`'s `ensureGlobalAssets()` — table-hook Task A needs no JS entry, it's pure CSS).
+3. Live-verify all four doc pages ONE more time after the barrel wiring lands (confirming the newly-wired global CSS/JS actually loads correctly from a fresh page load, not just from each task's own isolated dev testing).
+4. Add nav entries for the new doc pages (`heatmap.html`, `kanban.html`) to `docs-shell.js`'s `NAV` array, in a sensible existing group (Data Display for heatmap alongside Charts; Patterns for Kanban, alongside Board Views, since it's a layout pattern not a chart). SweetAlert2/`WUI.alert`/`WUI.confirm` doesn't need its own dedicated doc page in this pass unless a natural home is obvious (e.g. folded into an existing "Overlays" or "Feedback" page as a new section) — decide at that time based on what exists.
