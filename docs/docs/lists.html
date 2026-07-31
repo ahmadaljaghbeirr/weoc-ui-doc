@@ -499,6 +499,203 @@ catTs.on('change', function (val) {
           <div id="demo-list-registry-grid" style="display:flex;flex-wrap:wrap;gap:var(--space-3)"></div>
         </div>
 
+        <!-- ── REST-Live API ────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_lists_20"><span class="material-symbols-outlined">cloud_sync</span>REST-Live API — <code>window.EOCListsAPI</code></div>
+          <p class="docs-desc" data-wui-i18n-html="docs_lists_21">
+            <code>EOCLists</code> above is a static, portable registry — data baked into <code>eoc-lists.js</code>
+            at deploy time, no network calls. <code>EOCListsAPI</code> is a different, independent object in the
+            same file: it talks directly to the live WebEOC Nexus REST API's <code>/lists</code> endpoints,
+            reading and writing the environment's own list catalog at runtime. Use the static registry to ship
+            list data that travels with a board package; use <code>EOCListsAPI</code> when a board needs to read
+            or seed lists that actually live in WebEOC admin. The two are unrelated — a name registered in one is
+            not visible to the other.
+          </p>
+
+          <div class="wui-callout info">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body" data-wui-i18n-html="docs_lists_22">
+              <div class="wui-callout-title">Setup — no separate login call</div>
+              The base URL is resolved once from the current page's own <code>window.location.href</code>: a
+              board view's URL is <code>&lt;scheme&gt;://&lt;host&gt;/&lt;instance&gt;/boards/...</code>, so
+              <code>EOCListsAPI</code> cuts at <code>/boards</code> to get the instance root and appends
+              <code>/api/rest.svc</code> (falls back to <code>location.origin</code> if <code>/boards</code>
+              isn't found). Requests are same-origin and cookie-authenticated using the board's own
+              already-logged-in WebEOC session — no separate REST login/token call is needed from inside a board
+              view.
+            </div>
+          </div>
+
+          <div class="wui-callout danger">
+            <span class="material-symbols-outlined">error</span>
+            <div class="wui-callout-body" data-wui-i18n-html="docs_lists_23">
+              <div class="wui-callout-title">POST /lists is not an upsert — confirmed the hard way</div>
+              <code>createList()</code> (bare <code>POST /lists</code>) is safe <strong>only</strong> to create a
+              list that does not exist yet. Calling it again on an existing list does not update it — it blindly
+              appends the subitems as new duplicate top-level items, and using it to add a single item to an
+              already-existing list (the shape WebEOC's own docs describe) creates a spurious unrelated
+              top-level list named after the item <em>and</em> corrupts the target list's own
+              <code>getList()</code> afterward. <code>addItem()</code>'s URL-path style is the only
+              confirmed-safe way to add to an existing list, at any depth.
+            </div>
+          </div>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Method</th><th>Returns</th><th>Status</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.getLists()</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge success bordered wui-badge-sm">Confirmed live</span></td>
+                <td><code>GET /lists</code> — every list name in the catalog.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.getList(listName)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge success bordered wui-badge-sm">Confirmed live</span></td>
+                <td><code>GET /lists/[listName]</code> — the full recursive tree: <code>{ color, name, subitems }</code>. <code>subitems</code> nests all the way down; no separate "get sub items" call needed.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.createList(listName, subitems, color?)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge success bordered wui-badge-sm">Confirmed live</span></td>
+                <td><code>POST /lists</code> — creates a brand-new list with its full initial tree in one call. Safe only when <code>listName</code> doesn't exist yet (see the gotcha above).</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.addItem(segments, color?)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge success bordered wui-badge-sm">Confirmed live</span></td>
+                <td><code>POST /lists/[seg1]/.../[newName]</code> — adds ONE item to an existing list at any depth. <code>segments[0]</code> is the list name; the new item's name is always the last segment. One call per node — no bulk-add endpoint exists for an existing list.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.editItem(segments, changes)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge warning bordered wui-badge-sm">Not verified</span></td>
+                <td>POST to the item's own path with a replacement body. WebEOC Nexus's REST API only documents GET / POST / DELETE (no PUT/PATCH), so this is modeled as a POST by convention — the request/response shape has not been tested against a live instance.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.deleteList(listName)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge warning bordered wui-badge-sm">Not verified</span></td>
+                <td><code>DELETE /lists/[listName]</code>. Destructive and untested — confirm with throwaway data before relying on it.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.deleteItem(segments)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge warning bordered wui-badge-sm">Not verified</span></td>
+                <td><code>DELETE /lists/[seg1]/.../[itemName]</code> — remove one item/sub-item at any depth. Same caveat as <code>deleteList()</code>.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.findNode(tree, segments)</span></td>
+                <td><span class="docs-api-type">Object|null</span></td>
+                <td><span class="wui-badge secondary bordered wui-badge-sm">Local helper</span></td>
+                <td>Walks an already-fetched tree (from <code>getList()</code>) down to a nested node, e.g. <code>findNode(tree, ['Hazmat', 'Chemical Spill'])</code>. No network call — pure client-side lookup.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.summarize(list)</span></td>
+                <td><span class="docs-api-type">Object</span></td>
+                <td><span class="wui-badge secondary bordered wui-badge-sm">Local helper</span></td>
+                <td>Classifies an already-fetched list: <code>{ itemCount, isTree }</code> — top-level item count, and whether any top-level item has children of its own. No network call.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.ensureList(listName, desiredNodes, onProgress?)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge info bordered wui-badge-sm">Composite</span></td>
+                <td>Create-or-diff-and-fill a whole tree in one call: creates the list if it doesn't exist yet, or recursively adds only the missing nodes if it does. Built entirely from <code>getList()</code>, <code>createList()</code> and <code>addItem()</code> — as reliable as those three, not independently tested beyond them.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.ensureNodes(listName, parentPath, existingSiblings, desiredNodes, onProgress?)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge info bordered wui-badge-sm">Composite</span></td>
+                <td>The recursive worker <code>ensureList()</code> calls internally; exposed for callers that already have both trees fetched and just want the diff-and-fill step.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Usage: read/write ────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_lists_24"><span class="material-symbols-outlined">swap_horiz</span>Usage — Reading &amp; Writing Lists</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_lists_25">
+            <code>getLists()</code>, <code>getList()</code>, <code>createList()</code> and <code>addItem()</code>
+            are the four confirmed-working entry points — everything else in <code>EOCListsAPI</code> is built on
+            top of them. All four return a <code>Promise</code>; there is no callback form.
+          </p>
+          <pre class="docs-code">// Seed the "Facility Types" list once, if this environment doesn't have it yet
+EOCListsAPI.getLists().then(function (lists) {
+  if (lists.indexOf('Facility Types') === -1) {
+    return EOCListsAPI.createList('Facility Types', [
+      { name: 'EOC',           subitems: [] },
+      { name: 'Shelter',       subitems: [] },
+      { name: 'Staging Area',  subitems: [] }
+    ]);
+  }
+});
+
+// List already exists on this environment — add ONE new top-level item.
+// Never call createList() again on an existing list (see the gotcha above).
+EOCListsAPI.addItem(['Facility Types', 'Reception Centre']).then(function () {
+  console.log('added');
+});
+
+// Add a child under an existing tree list, e.g. Incident Categories → Hazmat → Chemical Spill
+EOCListsAPI.addItem(['Incident Categories', 'Hazmat', 'Chemical Spill']);
+
+// Read a tree back and inspect it with the local (no-network) helpers
+EOCListsAPI.getList('Incident Categories').then(function (tree) {
+  var hazmat = EOCListsAPI.findNode(tree, ['Hazmat']);
+  var stats  = EOCListsAPI.summarize(tree);
+  console.log(hazmat, stats.itemCount, stats.isTree);
+});</pre>
+        </div>
+
+        <!-- ── Usage: ensureList ────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_lists_26"><span class="material-symbols-outlined">playlist_add_check</span>Usage — <code>ensureList()</code> (Seed/Deploy Helper)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_lists_27">
+            A single idempotent call for board-deploy scripts: creates the list if it's missing, or diffs against
+            what's already there and adds only the missing nodes if it exists, at any depth, one targeted call
+            per missing node. Any <code>getList()</code> failure is treated as "doesn't exist" — WebEOC's own API
+            throws the same generic error for a missing list as for a genuinely broken one, so there's no clean
+            404 to distinguish them (confirmed live).
+          </p>
+          <pre class="docs-code">EOCListsAPI.ensureList('Incident Categories', [
+  { name: 'Fire',   subitems: [] },
+  { name: 'Hazmat', subitems: [
+    { name: 'Chemical Spill', subitems: [] },
+    { name: 'Gas Leak',       subitems: [] }
+  ] }
+], function (progress) {
+  // progress: { type: 'create'|'exists'|'add', depth, listName, name }
+  console.log(progress.type, progress.name);
+});</pre>
+        </div>
+
+        <!-- ── Usage: unverified writes ─────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_lists_28"><span class="material-symbols-outlined">edit_note</span>Usage — <code>editItem()</code> / <code>deleteList()</code> / <code>deleteItem()</code> (Not Verified)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_lists_29">
+            These three exist in <code>eoc-lists.js</code> and are wired up the way the REST API is documented to
+            work, but unlike the four methods above, they were not exercised against a live WebEOC instance.
+            Read them as "present in code, shape not confirmed" rather than "working."
+          </p>
+          <div class="wui-callout warning">
+            <span class="material-symbols-outlined">warning</span>
+            <div class="wui-callout-body" data-wui-i18n-html="docs_lists_30">
+              <div class="wui-callout-title">Test with throwaway data first</div>
+              <code>deleteList()</code> and <code>deleteItem()</code> are destructive and unverified. Try them
+              against a disposable test list on a non-production environment before using them in a real board
+              workflow.
+            </div>
+          </div>
+          <pre class="docs-code">// Modeled as POST to the item's own path — shape not confirmed live
+EOCListsAPI.editItem(['Facility Types', 'Reception Centre'], { name: 'Reception Center', color: '' });
+
+// Destructive, unverified — throwaway data only
+EOCListsAPI.deleteItem(['Facility Types', 'Reception Centre']);
+EOCListsAPI.deleteList('Facility Types Test');</pre>
+        </div>
+
       </div>
     </div>
   </div>
