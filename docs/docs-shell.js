@@ -780,6 +780,19 @@
     var clean = String(path || '').replace(/\\/g, '/').split('#')[0].split('?')[0];
     return /(?:^|\/)index\.html$/.test(clean) || /\/$/.test(clean) ? './' : '../';
   }
+  /* Home-page pathname equivalence for the lastKnownPathname same-page check
+     below. /docs/ and /docs/index.html are the SAME page as far as
+     rootForPath()/getRoot() are concerned (both resolve to './') -- but a
+     literal location.pathname === lastKnownPathname comparison doesn't know
+     that, so entering via one form and later popping to/from the other form
+     was treated as a cross-page navigation (the heavier fetch+swap path)
+     when it should have been the same-page hash-only short-circuit. Strips
+     a trailing 'index.html' down to the directory it lives in so both forms
+     compare equal; every non-home path is returned unchanged. */
+  function canonicalPath(path) {
+    var clean = String(path || '').replace(/\\/g, '/');
+    return clean.replace(/(?:^|\/)index\.html$/, function (m) { return m.charAt(0) === '/' ? '/' : ''; });
+  }
   function nsForUrl(url) {
     var clean = (url || '').split('#')[0].split('?')[0];
     var file = clean.split('/').pop();
@@ -1018,7 +1031,18 @@
       // below), so comparing it to lastKnownPathname (updated only on a
       // REAL cross-page swap, in applySwappedPage) cleanly tells the two
       // cases apart.
-      if (location.pathname === lastKnownPathname) {
+      if (canonicalPath(location.pathname) === canonicalPath(lastKnownPathname)) {
+        // Bump latestNav here too, even though this branch never fetches
+        // anything. scrollToHashTarget(true) only bumps the token AFTER its
+        // own `if (!hash) return` guard (see that function) -- so popping to
+        // a HASH-LESS entry on the same pathname would otherwise bump
+        // nothing, leaving a stale in-flight cross-page navigation's token
+        // still valid and able to incorrectly win a race against this more
+        // recent Back/Forward action. Every other real navigation event in
+        // this file already bumps latestNav unconditionally at its own
+        // start (see the htmx:beforeRequest listener and this same block's
+        // fetch path below); this keeps that invariant intact here too.
+        latestNav++;
         scrollToHashTarget(true);
         return;
       }
@@ -1096,24 +1120,55 @@
     return searchIndexPromise;
   }
 
-  // Single alternation regex + single replace pass over the escaped text --
-  // NOT one .replace() call per term chained sequentially. Chaining is what
-  // the whole-branch review's Finding 2 caught: each term's .replace() ran
-  // against the PREVIOUS term's already-<mark>-wrapped output, so a later
-  // term whose letters happen to match inside "<mark>"/"</mark>" (an m/a/r/k)
-  // or inside an HTML entity like "&amp;"/"&lt;" (an a/l/t/m/p) got wrapped
-  // too, corrupting the tag itself (e.g. "grid api" -> the "a" in "mark"
-  // getting <mark>-wrapped). A single pass over the untouched escaped text,
-  // matching any term at each position, cannot re-match its own output.
+  // text here is the RAW section text (build-search-index.js's stripTags
+  // already unescaped any HTML entities out of it before it was ever written
+  // to search-index.json -- textEn/textAr on the wire are plain text, not
+  // HTML), so this function owns both the term-matching AND the escaping,
+  // and the ORDER between them matters:
+  //
+  // 1. Match terms against the raw text first (single alternation regex,
+  //    one pass -- see below for why single-pass matters).
+  // 2. Walk the match positions, escaping each matched/unmatched RUN
+  //    independently as it's emitted.
+  // 3. Only then wrap a matched run in <mark>/</mark>.
+  //
+  // Escaping the whole string up front and matching terms against the
+  // ALREADY-ESCAPED text (the previous approach) fixed one bug but left
+  // another: a term whose letters happen to appear inside text that escapes
+  // to contain them -- e.g. term "amp" against raw text containing a literal
+  // "&" (which escapes to "&amp;"), or term "lt" against raw text containing
+  // a literal "<" (which escapes to "&lt;") -- would match INSIDE the
+  // escaped entity and wrap it, corrupting it into visibly-broken text like
+  // literal "&amp;amp;". Matching against the raw text first and escaping
+  // each run afterward means a match can never land inside a
+  // not-yet-created entity, because entities don't exist yet at match time.
+  //
+  // Single alternation regex + single pass over the raw text (NOT one
+  // .replace() call per term chained sequentially) is still required on top
+  // of the above, for a separate reason (whole-branch review Finding 2):
+  // chaining ran each term's replace against the PREVIOUS term's own
+  // <mark>-wrapped output, so a later term whose letters happen to match
+  // inside "<mark>"/"</mark>" (an m/a/r/k) got wrapped too, corrupting the
+  // tag itself. A single pass matching any term at each position of the
+  // untouched original text cannot re-match output it already produced.
   function highlightSnippet(text, terms) {
     if (!text) return '';
     var truncated = text.length > 140 ? text.slice(0, 140) + '…' : text;
-    var snippet = escapeHtml(truncated);
     var escapedTerms = terms.filter(function (t) { return t; })
-      .map(function (t) { return escapeHtml(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
-    if (!escapedTerms.length) return snippet;
+      .map(function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+    if (!escapedTerms.length) return escapeHtml(truncated);
     var re = new RegExp('(' + escapedTerms.join('|') + ')', 'ig');
-    return snippet.replace(re, '<mark>$1</mark>');
+    var out = '';
+    var lastIndex = 0;
+    var m;
+    while ((m = re.exec(truncated))) {
+      out += escapeHtml(truncated.slice(lastIndex, m.index));
+      out += '<mark>' + escapeHtml(m[0]) + '</mark>';
+      lastIndex = m.index + m[0].length;
+      if (m[0].length === 0) re.lastIndex++; // defensive: no real term produces a zero-length match
+    }
+    out += escapeHtml(truncated.slice(lastIndex));
+    return out;
   }
 
   function renderSearchResults(q, root) {

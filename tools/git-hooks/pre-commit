@@ -1,8 +1,11 @@
 #!/bin/sh
 # tools/git-hooks/pre-commit
 # Regenerates docs/search-index.json whenever a staged change touches
-# docs/docs/*.html, docs/index.html (the home page), or docs/i18n/*.js, and
-# re-stages the index plus exactly the files the indexer itself reported
+# docs/docs/*.html, docs/index.html (the home page), docs/i18n/*.js, or
+# docs/docs-shell.js itself (its NAV array drives one nav doc per entry --
+# see build-search-index.js's buildIndex -- so editing NAV without also
+# touching a docs/docs/*.html file would otherwise leave the index stale),
+# and re-stages the index plus exactly the files the indexer itself reported
 # patching with new section ids -- read from its `PATCHED:<path>` stdout
 # lines (see tools/build-search-index.js main()), NOT from the originally
 # -staged file list. Re-staging the staged-file list instead of the
@@ -21,7 +24,7 @@
 
 set -e
 
-CHANGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^docs/docs/.*\.html$|^docs/index\.html$|^docs/i18n/.*\.js$' || true)
+CHANGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^docs/docs/.*\.html$|^docs/index\.html$|^docs/i18n/.*\.js$|^docs/docs-shell\.js$' || true)
 
 if [ -z "$CHANGED" ]; then
   exit 0
@@ -32,7 +35,19 @@ fi
 # because once the indexer has run, its own patch and any pre-existing
 # unstaged edit are both just "unstaged changes" in the same file -- there
 # is no way to tell them apart after the fact.
-PRE_UNSTAGED=$(git diff --name-only -- docs/docs docs/index.html 2>/dev/null || true)
+#
+# `git diff --name-only` separates entries with NEWLINES, but the `case
+# " $PRE_UNSTAGED " in *" $f "*)` match below needs each path bounded by
+# SPACES to work -- the wrapping quotes only supply that boundary for a
+# SINGLE entry. Piped through `tr '\n' ' '` this becomes a space-separated
+# list, so the same case-pattern match works regardless of how many files
+# have unstaged edits. Re-review caught this: the original (unpiped)
+# version passed every test that happened to exercise only one unstaged
+# file, but with 2+ files every path is newline-bounded on at least one
+# side and the case pattern never matches -- silently reproducing the
+# original hazard (git add sweeping in unrelated unstaged edits) this
+# guard exists to prevent.
+PRE_UNSTAGED=$(git diff --name-only -- docs/docs docs/index.html 2>/dev/null | tr '\n' ' ' || true)
 
 echo "pre-commit: docs/i18n or docs/docs changed, regenerating search index..."
 
@@ -70,7 +85,16 @@ if [ -n "$PATCHED" ]; then
         exit 1
         ;;
       *)
-        git add "$f"
+        # || exit 1 here exits the subshell this while-loop runs in (it's
+        # the right side of a pipe), not the outer script -- but that's
+        # enough: the subshell's nonzero exit makes the pipeline itself
+        # fail, which the `|| { CONFLICT=1; }` below catches, and the
+        # outer `if [ "$CONFLICT" -eq 1 ]` then aborts the commit. Without
+        # this, a failed `git add` here (e.g. a permissions or lock issue)
+        # was silently swallowed: `set -e` doesn't propagate out of a
+        # compound command whose exit status is itself being tested by a
+        # trailing `||`, so the loop would just continue past the failure.
+        git add "$f" || exit 1
         ;;
     esac
   done || { CONFLICT=1; }

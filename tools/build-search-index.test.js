@@ -1,6 +1,6 @@
 // tools/build-search-index.test.js
 const test = require('node:test');
-const { before } = require('node:test');
+const { before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const fs = require('node:fs');
@@ -41,6 +41,15 @@ const PRISTINE_WIDGETS_HTML = `<!DOCTYPE html>
 </html>
 `;
 before(() => { fs.writeFileSync(FIXTURE_PAGE, PRISTINE_WIDGETS_HTML, 'utf8'); });
+// Same reasoning as the finally-blocks below (re-review's minor finding): the
+// "buildIndex emits..." test runs the real buildIndex against this committed
+// fixtures dir, which patches widgets.html back onto disk as a real side
+// effect -- so without this, every run of this suite left the tracked
+// fixture dirtied (confirmed via `git status` before/after). Restoring the
+// pristine content once after the whole suite (rather than after just that
+// one test) keeps the later idempotency-relevant tests unaffected while
+// still leaving the working tree clean when the suite finishes.
+after(() => { fs.writeFileSync(FIXTURE_PAGE, PRISTINE_WIDGETS_HTML, 'utf8'); });
 
 test('extractNav reads the NAV array literal without executing the rest of the file', () => {
   const nav = extractNav(FIXTURE_SHELL);

@@ -20,7 +20,7 @@ Run it manually with:
 npm run build:search-index
 ```
 
-**One-time per clone:** enable the pre-commit hook that keeps the index from going stale — it regenerates `docs/search-index.json` automatically whenever a commit touches `docs/docs/*.html`, `docs/index.html`, or `docs/i18n/*.js`, and aborts the commit if it finds an unresolved i18n reference.
+**One-time per clone:** enable the pre-commit hook that keeps the index from going stale — it regenerates `docs/search-index.json` automatically whenever a commit touches `docs/docs/*.html`, `docs/index.html`, `docs/i18n/*.js`, or `docs/docs-shell.js` (its `NAV` array drives the search index's nav docs, so a NAV-only edit still needs to trigger a rebuild), and aborts the commit if it finds an unresolved i18n reference.
 
 ```
 npm run hooks:install
