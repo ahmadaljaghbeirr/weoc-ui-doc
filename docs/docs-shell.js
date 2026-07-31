@@ -1112,22 +1112,39 @@
       } else if (e.key === 'Escape') { closeSearch(); input.blur(); }
       else if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); input.focus(); }
     });
+    // CAPTURE phase, and deliberately separate from the bubble-phase listener
+    // below: a search hit for the CURRENT page must be intercepted before
+    // htmx's own hx-get click handling on that anchor (bound directly on the
+    // element by htmx.process(), a normal bubble-phase listener) ever runs.
+    // Originally this same-page short-circuit lived in the bubble-phase
+    // listener below and called e.preventDefault() there -- confirmed live,
+    // via network-request tracing, that this was too late: capture goes
+    // top-down and reaches document (a bubble-phase listener) only AFTER
+    // the event has already passed through the target's own listeners, so
+    // htmx had already fired its own GET for the current page by the time
+    // that preventDefault() ran. That produced a redundant fetch AND a
+    // second, htmx-driven applySwappedPage()/scrollToHashTarget() cycle
+    // racing the direct one below. Registering here instead -- with
+    // e.stopPropagation() -- runs before the event ever reaches the anchor,
+    // so htmx's listener on it never fires at all for this click.
     document.addEventListener('click', function (e) {
       var hit = e.target.closest('[data-search-hit]');
-      if (hit) {
-        var hitPage = hit.getAttribute('href').split('#')[0].split('/').pop();
-        var currentPage = location.pathname.split('/').pop() || 'index.html';
-        closeSearch();
-        if (hitPage === currentPage) {
-          // Same page: htmx never fires (no navigation happens), so scroll
-          // has to be driven directly instead of waiting on applySwappedPage.
-          e.preventDefault();
-          history.pushState(null, '', hit.getAttribute('href'));
-          scrollToHashTarget(true);
-        }
-        // Cross-page: let the anchor's own hx-get proceed normally --
-        // applySwappedPage's scrollToHashTarget() call handles it post-swap.
-      } else if (!e.target.closest('.docs-search')) { closeSearch(); }
+      if (!hit) return;
+      var hitPage = hit.getAttribute('href').split('#')[0].split('/').pop();
+      var currentPage = location.pathname.split('/').pop() || 'index.html';
+      if (hitPage !== currentPage) return; // cross-page: let it reach htmx normally
+      e.preventDefault();
+      e.stopPropagation();
+      closeSearch();
+      history.pushState(null, '', hit.getAttribute('href'));
+      scrollToHashTarget(true);
+    }, true);
+    document.addEventListener('click', function (e) {
+      // Same-page hits are already fully handled (and stopped) by the
+      // capture-phase listener above; this only ever sees cross-page hits
+      // and plain "click outside" cases.
+      if (e.target.closest('[data-search-hit]')) { closeSearch(); }
+      else if (!e.target.closest('.docs-search')) { closeSearch(); }
     });
   }
   function closeSearch() {
