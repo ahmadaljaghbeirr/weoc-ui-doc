@@ -1,0 +1,32 @@
+#!/bin/sh
+# tools/git-hooks/pre-commit
+# Regenerates docs/search-index.json whenever a staged change touches
+# docs/docs/*.html or docs/i18n/*.js, and re-stages anything the indexer
+# wrote (the index itself, plus any HTML files it patched with new section
+# ids). Aborts the commit if the indexer finds an unresolved i18n reference
+# -- see tools/build-search-index.js's own exit-1 path.
+
+set -e
+
+CHANGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^docs/docs/.*\.html$|^docs/i18n/.*\.js$' || true)
+
+if [ -z "$CHANGED" ]; then
+  exit 0
+fi
+
+echo "pre-commit: docs/i18n or docs/docs changed, regenerating search index..."
+if ! node tools/build-search-index.js; then
+  echo "pre-commit: aborting commit -- fix the unresolved i18n reference(s) above."
+  exit 1
+fi
+
+git add docs/search-index.json
+for f in $CHANGED; do
+  case "$f" in
+    docs/docs/*.html)
+      git add "$f"
+      ;;
+  esac
+done
+
+exit 0

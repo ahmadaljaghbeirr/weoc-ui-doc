@@ -1,0 +1,8 @@
+{
+  "name": "weoc-ui-doc-tools",
+  "private": true,
+  "description": "Build-time tooling for the weoc-ui-doc static site. The site itself has no build step -- this only covers the search index generator.",
+  "scripts": {
+    "build:search-index": "node tools/build-search-index.js"
+  }
+}
