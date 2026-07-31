@@ -27,7 +27,7 @@
 
         <!-- ══════════════════════════ wui-hdr-wrap ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_navigation_4"><span class="material-symbols-outlined">web_asset</span>wui-hdr-wrap</div>
+          <div class="docs-section-title" id="wui-hdr-wrap" data-wui-i18n-html="docs_navigation_4"><span class="material-symbols-outlined">web_asset</span>wui-hdr-wrap</div>
           <p class="docs-desc" data-wui-i18n-html="docs_navigation_5">Sticky board header. Structure: <code>wui-hdr-wrap</code> → <code>wui-hdr-inner</code> → <code>wui-hdr-top</code> (the row holding <code>wui-hdr-left</code> = icon + title block, and <code>wui-hdr-right</code> = actions/status). An optional <code>wui-hdr-tabs-wrap</code> sits below <code>wui-hdr-top</code> inside the same inner. The <code>.centered</code> variant turns <code>wui-hdr-inner</code> into a max-width (1100px) card.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_navigation_6">Realistic EOC board header — icon, title block, stats, actions</div>
@@ -105,7 +105,7 @@
 
         <!-- ══════════════════════════ wui-hdr-tabs ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_navigation_10"><span class="material-symbols-outlined">tab</span>wui-hdr-tabs</div>
+          <div class="docs-section-title" id="wui-hdr-tabs" data-wui-i18n-html="docs_navigation_10"><span class="material-symbols-outlined">tab</span>wui-hdr-tabs</div>
           <p class="docs-desc" data-wui-i18n-html="docs_navigation_11">Tab strip that lives inside <code>wui-hdr-tabs-wrap</code> (below <code>wui-hdr-top</code>). <code>wui-hdr-tabs</code> is a horizontal <code>overflow-x</code> scroller with the scrollbar hidden; each <code>wui-hdr-tab</code> is uppercase and gains an accent bottom-border when <code>.active</code> (and lifts to primary text on hover). The wrap paints fade-out edges via <code>::before</code>/<code>::after</code>, revealed by adding <code>.has-left</code> / <code>.has-right</code> when the strip is scrolled.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_navigation_12">Static tab bar — active + hover states</div>
@@ -210,7 +210,7 @@ syncFades();
 
         <!-- ══════════════════════════ wui-link ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_navigation_15"><span class="material-symbols-outlined">link</span>wui-link</div>
+          <div class="docs-section-title" id="wui-link" data-wui-i18n-html="docs_navigation_15"><span class="material-symbols-outlined">link</span>wui-link</div>
           <p class="docs-desc" data-wui-i18n-html="docs_navigation_16">Inline text link that looks and behaves like an <code>&lt;a&gt;</code>. Works on both <code>&lt;a&gt;</code> and <code>&lt;button&gt;</code> (button chrome is reset). It flows inline with surrounding text; colour comes from a modifier. Underline appears on hover by default.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_navigation_17">Base + all color variants</div>
@@ -278,7 +278,7 @@ syncFades();
 
         <!-- ══════════════════════════ wui-band-wrap ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_navigation_22"><span class="material-symbols-outlined">view_agenda</span>wui-band-wrap</div>
+          <div class="docs-section-title" id="wui-band-wrap" data-wui-i18n-html="docs_navigation_22"><span class="material-symbols-outlined">view_agenda</span>wui-band-wrap</div>
           <p class="docs-desc" data-wui-i18n-html="docs_navigation_23">Horizontal status strip for EOC counts and KPIs. Structure: <code>wui-band-wrap</code> → one or more <code>wui-band-row</code> → <code>wui-band-seg</code> segments (each a <code>wui-band-label</code> + <code>wui-band-value</code>), separated by <code>wui-band-divider</code>, with <code>wui-band-spacer</code> pushing a trailing <code>wui-band-actions</code> slot to the end. Stacked segments use <code>wui-band-seg-stack</code> (label over value). Add <code>.stripe.{color}</code> for a diagonal-striped left edge + colored bottom border.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_navigation_24">Basic band — segments, dividers, spacer, actions</div>

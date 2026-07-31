@@ -27,7 +27,7 @@
 
         <!-- ══════════════════════════ How it works ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_dates_4"><span class="material-symbols-outlined">bolt</span>How the factory binds</div>
+          <div class="docs-section-title" id="how-the-factory-binds" data-wui-i18n-html="docs_dates_4"><span class="material-symbols-outlined">bolt</span>How the factory binds</div>
           <p class="docs-desc" data-wui-i18n-html="docs_dates_5">The factory exposes the global <code>window.FlatpickrFactory</code> with <code>init(scope)</code>, <code>PRESETS</code>, and <code>FMT</code>. On load it calls <code>FlatpickrFactory.init()</code>, which runs <code>querySelectorAll('[data-fp-preset]')</code> over the scope and initializes every matching input (already-initialized inputs carry <code>_flatpickr</code> and are skipped). Every input dispatches a bubbling <code>fp:change</code> CustomEvent (<code>e.detail.dateStr</code>) on selection.</p>
 
           <div class="wui-callout info" style="margin-top:var(--space-4)">
@@ -41,7 +41,7 @@
 
         <!-- ══════════════════════════ Date only ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_dates_8"><span class="material-symbols-outlined">calendar_today</span>Date only</div>
+          <div class="docs-section-title" id="date-only" data-wui-i18n-html="docs_dates_8"><span class="material-symbols-outlined">calendar_today</span>Date only</div>
           <p class="docs-desc" data-wui-i18n-html="docs_dates_9">Calendar picker, no time. <code>date</code> renders ISO <code>Y-m-d</code>; <code>date-dmy</code> renders <code>d/m/Y</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_dates_10">date / date-dmy</div>
@@ -63,7 +63,7 @@ FlatpickrFactory.init();
 
         <!-- ══════════════════════════ Time only ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_dates_11"><span class="material-symbols-outlined">schedule</span>Time only</div>
+          <div class="docs-section-title" id="time-only" data-wui-i18n-html="docs_dates_11"><span class="material-symbols-outlined">schedule</span>Time only</div>
           <p class="docs-desc" data-wui-i18n-html="docs_dates_12"><code>noCalendar</code> presets — the time spinner with no date. <code>time</code> is 24hr (<code>H:i</code>); <code>time-12</code> is 12hr with AM/PM (<code>h:i K</code>).</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_dates_13">time / time-12</div>
@@ -85,7 +85,7 @@ FlatpickrFactory.init();
 
         <!-- ══════════════════════════ Date + time ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_dates_14"><span class="material-symbols-outlined">event</span>Date + time</div>
+          <div class="docs-section-title" id="date-time" data-wui-i18n-html="docs_dates_14"><span class="material-symbols-outlined">event</span>Date + time</div>
           <p class="docs-desc" data-wui-i18n-html="docs_dates_15"><code>enableTime</code> presets combining calendar and clock. Format and 12/24hr vary per preset; <code>datetime-seconds</code> adds a seconds spinner.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_dates_16">datetime / datetime-dmy / datetime-12 / datetime-seconds</div>
@@ -112,7 +112,7 @@ FlatpickrFactory.init();
 
         <!-- ══════════════════════════ Future / Past bounded ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_dates_17"><span class="material-symbols-outlined">history_toggle_off</span>Future-only &amp; past-only</div>
+          <div class="docs-section-title" id="future-only-past-only" data-wui-i18n-html="docs_dates_17"><span class="material-symbols-outlined">history_toggle_off</span>Future-only &amp; past-only</div>
           <p class="docs-desc" data-wui-i18n-html="docs_dates_18">Bounded presets that clamp the selectable range against <em>now</em>. The min/max is refreshed in an <code>onOpen</code> hook so the boundary stays accurate across a long-lived page. <code>past-datetime</code> also adds 12hr time + seconds.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_dates_19">future-date / past-date</div>
@@ -148,7 +148,7 @@ FlatpickrFactory.init();
 
         <!-- ══════════════════════════ Date range (paired) ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_dates_21"><span class="material-symbols-outlined">date_range</span>Date range (paired)</div>
+          <div class="docs-section-title" id="date-range-paired" data-wui-i18n-html="docs_dates_21"><span class="material-symbols-outlined">date_range</span>Date range (paired)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_dates_22">Two inputs that constrain each other: both share a <code>data-fp-range-group</code>, with <code>data-fp-range-role="start"</code> on one and <code>"end"</code> on the other. The start's selection becomes the end's minimum and vice-versa. Wrap the pair in <code>wui-date-range-wrap</code> for the tight flex row.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_dates_23">range-start + range-end</div>
@@ -176,7 +176,7 @@ FlatpickrFactory.init();  // pairs resolve by shared range-group
 
         <!-- ══════════════════════════ Inline (no popup) ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_dates_24"><span class="material-symbols-outlined">calendar_month</span>Inline calendar</div>
+          <div class="docs-section-title" id="inline-calendar" data-wui-i18n-html="docs_dates_24"><span class="material-symbols-outlined">calendar_month</span>Inline calendar</div>
           <p class="docs-desc" data-wui-i18n-html="docs_dates_25"><code>data-fp-inline="true"</code> embeds the calendar permanently in place instead of opening a popup. Works with any preset; useful for date panels and dashboard filter widgets.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_dates_26">date · inline</div>
@@ -195,7 +195,7 @@ FlatpickrFactory.init();
 
         <!-- ══════════════════════════ Overrides ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_dates_27"><span class="material-symbols-outlined">tune</span>Per-input overrides</div>
+          <div class="docs-section-title" id="per-input-overrides" data-wui-i18n-html="docs_dates_27"><span class="material-symbols-outlined">tune</span>Per-input overrides</div>
           <p class="docs-desc" data-wui-i18n-html="docs_dates_28">Any preset can be tuned inline with <code>data-fp-*</code> overrides: <code>data-fp-format</code> (a <code>Y-m-d</code> string or an alias like <code>dmy-hi</code>), <code>data-fp-min-date</code> / <code>data-fp-max-date</code>, <code>data-fp-enable-time</code>, <code>data-fp-24hr</code>, <code>data-fp-seconds</code>, <code>data-fp-allow-input</code>, <code>data-fp-week-numbers</code>, <code>data-fp-mode</code> (<code>single</code>/<code>multiple</code>/<code>range</code>), <code>data-fp-position</code>, <code>data-fp-default-date</code>, and <code>data-fp-on-change</code> (name of a global handler).</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_dates_29">Override examples</div>
@@ -222,7 +222,7 @@ FlatpickrFactory.init();
 
         <!-- ══════════════════════════ Readonly display ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_dates_30"><span class="material-symbols-outlined">lock</span>Readonly display</div>
+          <div class="docs-section-title" id="readonly-display" data-wui-i18n-html="docs_dates_30"><span class="material-symbols-outlined">lock</span>Readonly display</div>
           <p class="docs-desc" data-wui-i18n-html="docs_dates_31">Flatpickr always sets <code>[readonly]</code> internally. For a true display-only field, add <code>.is-readonly</code> to the input and disable opening with <code>fp.set('clickOpens', false)</code>. The dashed border and muted surface match the form-control readonly language.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_dates_32">Editable vs readonly</div>

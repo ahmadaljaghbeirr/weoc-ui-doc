@@ -22,8 +22,8 @@
     { lang:'en', id:'docs_home_18', value:'<span class="material-symbols-outlined">dashboard</span>Layout' }, { lang:'ar', id:'docs_home_18', value:'<span class="material-symbols-outlined">dashboard</span>التخطيط' },
     { lang:'en', id:'docs_home_19', value:'Layout & Shell' }, { lang:'ar', id:'docs_home_19', value:'التخطيط والهيكل' },
     { lang:'en', id:'docs_home_20', value:'Split, toolbar, field row, bento grid, scroll area.' }, { lang:'ar', id:'docs_home_20', value:'التقسيم، وشريط الأدوات، وصف الحقول، وشبكة البنتو، ومنطقة التمرير.' },
-    { lang:'en', id:'docs_home_21', value:'Grid &amp; Flex' }, { lang:'ar', id:'docs_home_21', value:'الشبكة والمرونة' },
-    { lang:'en', id:'docs_home_22', value:'Container, 12-col rows, flex + gap utilities (Bootstrap-aligned).' }, { lang:'ar', id:'docs_home_22', value:'الحاوية، وصفوف من 12 عموداً، وأدوات المرونة والفجوات (متوافقة مع Bootstrap).' },
+    { lang:'en', id:'docs_home_21', value:'Grid' }, { lang:'ar', id:'docs_home_21', value:'الشبكة' },
+    { lang:'en', id:'docs_home_22', value:'12-col rows, CSS grid helpers, and the bento dashboard grid.' }, { lang:'ar', id:'docs_home_22', value:'صفوف من 12 عموداً، وأدوات شبكة CSS، وشبكة لوحة المعلومات bento.' },
     { lang:'en', id:'docs_home_23', value:'<span class="material-symbols-outlined">edit_note</span>Inputs' }, { lang:'ar', id:'docs_home_23', value:'<span class="material-symbols-outlined">edit_note</span>حقول الإدخال' },
     { lang:'en', id:'docs_home_24', value:'Text Inputs & Fields' }, { lang:'ar', id:'docs_home_24', value:'حقول الإدخال النصّية والحقول' },
     { lang:'en', id:'docs_home_25', value:'Fieldsets, field rows, labelled controls, sticky form footer.' }, { lang:'ar', id:'docs_home_25', value:'مجموعات الحقول، وصفوف الحقول، والعناصر المعنونة، وتذييل النموذج الثابت.' },
@@ -81,6 +81,10 @@
     { lang:'en', id:'docs_home_77', value:'Dark mode is resolved from <code>localStorage</code> synchronously when the JS parses. Toggle persists across page loads. On WebEOC Nexus, <code>WUI.nativeTheme</code> is <code>true</code> and theme-toggle buttons are hidden automatically.' }, { lang:'ar', id:'docs_home_77', value:'يُحدَّد الوضع الداكن من <code>localStorage</code> بشكل متزامن عند تحليل JS. ويبقى التبديل ثابتاً عبر عمليات تحميل الصفحة. وعلى WebEOC Nexus تكون قيمة <code>WUI.nativeTheme</code> هي <code>true</code>، وتُخفى أزرار تبديل السمة تلقائياً.' },
     { lang:'en', id:'docs_home_78', value:'<span class="material-symbols-outlined">gavel</span>WebEOC XML Constraint' }, { lang:'ar', id:'docs_home_78', value:'<span class="material-symbols-outlined">gavel</span>قيد XML في WebEOC' },
     { lang:'en', id:'docs_home_79', value:'Boolean data-wui-* attributes must use ="true" or =""' }, { lang:'ar', id:'docs_home_79', value:'يجب أن تستخدم سمات data-wui-* المنطقية الصيغة ="true" أو =""' },
-    { lang:'en', id:'docs_home_80', value:'WebEOC\'s XML parser rejects bare boolean attributes. Always use the value form.' }, { lang:'ar', id:'docs_home_80', value:'يرفض محلّل XML في WebEOC السمات المنطقية المجرّدة. استخدم دائماً صيغة القيمة.' }
+    { lang:'en', id:'docs_home_80', value:'WebEOC\'s XML parser rejects bare boolean attributes. Always use the value form.' }, { lang:'ar', id:'docs_home_80', value:'يرفض محلّل XML في WebEOC السمات المنطقية المجرّدة. استخدم دائماً صيغة القيمة.' },
+    { lang:'en', id:'docs_home_81', value:'Flex' }, { lang:'ar', id:'docs_home_81', value:'المرونة' },
+    { lang:'en', id:'docs_home_82', value:'Flexbox direction, wrap, justify, align, sizing, and gap utilities.' }, { lang:'ar', id:'docs_home_82', value:'أدوات flexbox: الاتجاه، والالتفاف، والتوزيع، والمحاذاة، والتحجيم، والفجوة.' },
+    { lang:'en', id:'docs_home_83', value:'Containers' }, { lang:'ar', id:'docs_home_83', value:'الحاويات' },
+    { lang:'en', id:'docs_home_84', value:'Centered wui-container and full-width wui-container-fluid.' }, { lang:'ar', id:'docs_home_84', value:'wui-container المركزية و wui-container-fluid كاملة العرض.' }
   ]);
 })();

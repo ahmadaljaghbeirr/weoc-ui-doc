@@ -38,7 +38,7 @@
 
         <!-- ── Live editor ──────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tinymce_6"><span class="material-symbols-outlined">edit_note</span>Live editor</div>
+          <div class="docs-section-title" id="live-editor" data-wui-i18n-html="docs_tinymce_6"><span class="material-symbols-outlined">edit_note</span>Live editor</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tinymce_7">A fully themed editor. Toggle light/dark from the header, top-right — the toolbar, menus, and the typed content all switch together. Try the <code>Format</code> menu, tables, lists, and the <code>&lt;/&gt;</code> source view; every surface is agency-tokened. The <strong>JavaScript</strong> box below the editor is the board-side init that drives it (load order plus the <code>tinymce.init</code> theme bridge) — shown for reference, not re-run here.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -90,7 +90,7 @@ tinymce.init({
 
         <!-- ── Setup ────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tinymce_8"><span class="material-symbols-outlined">link</span>Load order</div>
+          <div class="docs-section-title" id="load-order" data-wui-i18n-html="docs_tinymce_8"><span class="material-symbols-outlined">link</span>Load order</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tinymce_9">Load TinyMCE, then the chrome skin on the page. Pass the content stylesheet through <code>content_css</code> so it lands inside the editor iframe.</p>
           <pre class="docs-code">&lt;!-- 1 · agency tokens must already be on the page (weoc-ui-core.css @imports agency-theme.css) --&gt;
 &lt;link rel="stylesheet" href="CSS/weoc-ui/weoc-ui-core.css"&gt;
@@ -107,7 +107,7 @@ tinymce.init({
 
         <!-- ── Init ─────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tinymce_10"><span class="material-symbols-outlined">terminal</span>Initialise + theme bridge</div>
+          <div class="docs-section-title" id="initialise-theme-bridge" data-wui-i18n-html="docs_tinymce_10"><span class="material-symbols-outlined">terminal</span>Initialise + theme bridge</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tinymce_11">One line in <code>init_instance_callback</code> syncs the iframe to the current theme once the editor is fully ready. Live toggles are handled for you: <code>WUI.setTheme</code> fires <code>wui:themechange</code>, and weoc-ui.js re-themes every open editor. The <strong>Live editor</strong> section above shows this exact init as its JavaScript box.</p>
           <div class="docs-subsection-title" data-wui-i18n="docs_tinymce_12">Theme API (weoc-ui.js)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tinymce_13"><code>WUI.applyTinyMCETheme(editor)</code> sets the current theme on one editor's iframe. <code>WUI.syncTinyMCETheme()</code> re-syncs every live editor (this is what runs on <code>wui:themechange</code>). If TinyMCE is present before weoc-ui.js binds, editors are auto-synced on init and you can drop the <code>setup</code> line entirely.</p>
@@ -115,7 +115,7 @@ tinymce.init({
 
         <!-- ── Why two files ────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tinymce_14"><span class="material-symbols-outlined">dark_mode</span>How the sync works</div>
+          <div class="docs-section-title" id="how-the-sync-works" data-wui-i18n-html="docs_tinymce_14"><span class="material-symbols-outlined">dark_mode</span>How the sync works</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tinymce_15">The editor content is an <code>&lt;iframe&gt;</code>, a separate document that does not inherit the page's <code>data-theme</code>. So <code>content_css</code> loads <code>agency-theme.css</code> into the iframe (the real tokens, Cairo, and the <code>[data-theme="dark"]</code> block) with <code>tinymce-content-tokens.css</code> on top consuming them, and weoc-ui.js writes <code>data-theme</code> onto the iframe's own <code>&lt;html&gt;</code>. Flip the page theme and both documents move together. Load <code>agency-theme.css</code> here, not <code>weoc-ui-core.css</code> — the core reset's <code>body</code> rules would break the editor's content body.</p>
           <div class="wui-callout secondary">
             <span class="material-symbols-outlined">folder</span>
