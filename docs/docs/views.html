@@ -42,6 +42,29 @@
         .vz-variant-label .wui-badge { font-size:var(--text-xs) }
       </style>
       <div class="docs-page" x-data="viewsPage()">
+        <!-- ═══════════════ Per-page TOC (pilot) ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_views_59">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_views_59">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_views_59">
+            <a href="#display-views" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_views_4"><span class="material-symbols-outlined">list_alt</span>Display Views</a>
+            <a href="#input-views" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_views_23"><span class="material-symbols-outlined">edit_note</span>Input Views</a>
+            <a href="#details-views" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_views_40"><span class="material-symbols-outlined">info</span>Details Views</a>
+            <a href="#remove-views" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_views_56"><span class="material-symbols-outlined">delete</span>Remove Views</a>
+          </nav>
+        </div>
+
         <script>
         (function () {
           function registerViewsPage() {

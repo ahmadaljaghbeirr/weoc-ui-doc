@@ -18,6 +18,37 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC (pilot) ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_containers_64">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_containers_64">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_containers_64">
+            <a href="#wui-card" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_4"><span class="material-symbols-outlined">dashboard</span>wui-card</a>
+            <a href="#wui-plane" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_32"><span class="material-symbols-outlined">crop_square</span>wui-plane</a>
+            <a href="#wui-panel" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_36"><span class="material-symbols-outlined">dock_to_right</span>wui-panel</a>
+            <a href="#wui-embed" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_40"><span class="material-symbols-outlined">open_in_browser</span>wui-embed</a>
+            <a href="#wui-person" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_42"><span class="material-symbols-outlined">person</span>wui-person</a>
+            <a href="#wui-person-card" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_44"><span class="material-symbols-outlined">badge</span>wui-person-card</a>
+            <a href="#wui-info-grid" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_46"><span class="material-symbols-outlined">table_rows</span>wui-info-grid</a>
+            <a href="#wui-widget" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_50"><span class="material-symbols-outlined">widgets</span>wui-widget</a>
+            <a href="#wui-update-entry" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_52"><span class="material-symbols-outlined">history</span>wui-update-entry</a>
+            <a href="#wui-collapsible" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_54"><span class="material-symbols-outlined">expand_more</span>wui-collapsible</a>
+            <a href="#wui-section-collapse" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_56"><span class="material-symbols-outlined">horizontal_rule</span>wui-section-collapse</a>
+            <a href="#wui-collapse-panel" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_58"><span class="material-symbols-outlined">web_asset</span>wui-collapse-panel</a>
+          </nav>
+        </div>
+
   <style>
     /* ── TRIAL: no-desc spacing candidates (page-local until one is chosen). ──
        Base .no-desc (in weoc-containers.css) only caps the name column; these
