@@ -18,8 +18,7 @@
     {
       group: 'Theming',
       items: [
-        { key: 'tokens', label: 'Design Tokens', file: 'tokens.html', kw: 'tokens color spacing radius shadow theme palette dark light' },
-        { key: 'tier-colors', label: 'Tier Colors', file: 'tier-colors.html', kw: 'tier activation 1 2 3 4 emergency accent' }
+        { key: 'tokens', label: 'Design Tokens', file: 'tokens.html', kw: 'tokens color spacing radius shadow theme palette dark light tier activation 1 2 3 4 emergency accent badge chip status-dot icon-bubble callout banner card lvl' }
       ]
     },
     {
