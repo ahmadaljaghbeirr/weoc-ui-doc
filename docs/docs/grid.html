@@ -27,7 +27,7 @@
 
         <!-- ══════════════════════════ Container ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_grid_4"><span class="material-symbols-outlined">width</span>wui-container</div>
+          <div class="docs-section-title" id="wui-container" data-wui-i18n-html="docs_grid_4"><span class="material-symbols-outlined">width</span>wui-container</div>
           <p class="docs-desc" data-wui-i18n-html="docs_grid_5">Centered, responsive content column with side gutters (<code>padding-inline: var(--space-4)</code>). <code>wui-container</code> steps through Bootstrap max-widths (540 / 720 / 960 / 1140px); <code>wui-container-fluid</code> is always full width with the same gutters. The dashed frame below marks the container edges.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_grid_6">wui-container (stepped max-width)</div>
@@ -55,7 +55,7 @@
 
         <!-- ══════════════════════════ Row / Col ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_grid_8"><span class="material-symbols-outlined">table_rows</span>wui-row / wui-col</div>
+          <div class="docs-section-title" id="wui-row-wui-col" data-wui-i18n-html="docs_grid_8"><span class="material-symbols-outlined">table_rows</span>wui-row / wui-col</div>
           <p class="docs-desc" data-wui-i18n-html="docs_grid_9">A 12-column grid: <code>wui-row</code> is the track, <code>wui-col-1</code> … <code>wui-col-12</code> set the span. <code>wui-col-auto</code> shrinks to content, <code>wui-col-full</code> spans the whole row. Gap presets (<code>g-*</code> / <code>gx-*</code> / <code>gy-*</code>), vertical alignment (<code>align-*</code>), offsets (<code>wui-offset-*</code>), and a full set of responsive breakpoint variants (<code>-sm</code> / <code>-md</code> / <code>-lg</code> / <code>-xl</code>) are all supported.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_grid_10">Even splits — 6+6, 4+4+4, 3×4</div>
@@ -465,7 +465,7 @@
 
         <!-- ══════════════════════════ CSS Grid utilities ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_grid_18"><span class="material-symbols-outlined">grid_view</span>wui-grid</div>
+          <div class="docs-section-title" id="wui-grid" data-wui-i18n-html="docs_grid_18"><span class="material-symbols-outlined">grid_view</span>wui-grid</div>
           <p class="docs-desc" data-wui-i18n-html="docs_grid_19">Quick fixed-column CSS grids without span bookkeeping. <code>wui-grid</code> + <code>wui-grid-1</code> … <code>wui-grid-6</code> for a fixed count, or <code>wui-grid-auto</code> / <code>wui-grid-fit</code> for responsive wrapping driven by <code>--wui-col-min</code>. Children span with <code>wui-span-2</code> … <code>wui-span-6</code> / <code>wui-span-full</code> and <code>wui-row-span-2</code> … <code>wui-row-span-4</code>, align with <code>align-*</code>, and pack tight with <code>wui-grid-dense</code>. Explicit placement uses <code>wui-col-start-*</code> / <code>wui-row-start-*</code>; <code>wui-grid-rows-*</code> fixes the row count; <code>wui-grid-fill-h</code> and <code>wui-min-h-0</code> handle full-height layouts.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_grid_20">Fixed columns — wui-grid-1 … wui-grid-6</div>
@@ -764,7 +764,7 @@
 
         <!-- ══════════════════════════ Flex utilities ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_grid_30"><span class="material-symbols-outlined">view_column</span>wui-flex</div>
+          <div class="docs-section-title" id="wui-flex" data-wui-i18n-html="docs_grid_30"><span class="material-symbols-outlined">view_column</span>wui-flex</div>
           <p class="docs-desc" data-wui-i18n-html="docs_grid_31">Tailwind-style flexbox utilities. Turn a container into a flex row with <code>wui-flex</code> (or inline with <code>wui-inline-flex</code>), set <code>wui-flex-row/col</code> (+ <code>-reverse</code>) and <code>wui-flex-wrap/nowrap</code>, distribute with <code>wui-justify-*</code>, cross-align with <code>wui-items-*</code>, override a single child with <code>wui-self-*</code>, and size children with <code>wui-flex-1/auto/none/grow/shrink-0</code> plus <code>wui-min-w-0</code> and the width/height shortcuts <code>wui-w-*</code> / <code>wui-h-*</code>. Display helpers <code>wui-d-none/block/inline/inline-block</code> round it out.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_grid_32">Display — wui-d-none / block / inline / inline-block</div>
@@ -1114,7 +1114,7 @@
 
         <!-- ══════════════════════════ Gap utilities ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_grid_41"><span class="material-symbols-outlined">space_bar</span>wui-gap</div>
+          <div class="docs-section-title" id="wui-gap" data-wui-i18n-html="docs_grid_41"><span class="material-symbols-outlined">space_bar</span>wui-gap</div>
           <p class="docs-desc" data-wui-i18n-html="docs_grid_42">Spacing utilities that work on any <code>wui-flex</code> or <code>wui-grid</code> container. <code>wui-gap-0/xs/sm/1…6/8</code> sets both axes; <code>wui-gap-x-*</code> sets column-gap only; <code>wui-gap-y-*</code> sets row-gap only. The scale maps to the <code>--space-*</code> tokens.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_grid_43">Uniform gap — wui-gap-0 … wui-gap-8</div>
@@ -1260,7 +1260,7 @@
 
         <!-- ══════════════════════════ Bento ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_grid_46"><span class="material-symbols-outlined">dashboard</span>wui-bento</div>
+          <div class="docs-section-title" id="wui-bento" data-wui-i18n-html="docs_grid_46"><span class="material-symbols-outlined">dashboard</span>wui-bento</div>
           <p class="docs-desc" data-wui-i18n-html="docs_grid_47">A configurable dashboard grid set entirely with classes. <code>wui-bento</code> + <code>cols-1 … cols-8</code> sets the column count; tiles are placed with <code>wui-w-{cols}x{rows}</code> (from <code>1x1</code> to <code>12x12</code>). Gap reuses <code>wui-gap-*</code>. A tile can be the component itself, or a transparent <code>wui-bento-tile</code> wrapper that stretches whatever it holds. <code>cell-sm/md/lg</code> tune the flow auto-row height; <code>is-page</code> + <code>rows-*</code> switch to a fixed, non-scrolling single-screen layout where rows share the height.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_grid_48">Basic bento — cols-4 with mixed tile sizes</div>

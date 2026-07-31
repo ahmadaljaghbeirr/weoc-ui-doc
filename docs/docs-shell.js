@@ -121,6 +121,16 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Single source of truth for htmx's settle delay (ms), shared by
+  // htmxSwapSpec() below (the swap spec actually applied to boosted nav)
+  // and scrollToHashTarget()'s deferred-scroll timeout (which has to wait
+  // out that same settle window before it's safe to scroll -- see the
+  // comment above scrollToHashTarget for why). Keeping this as one
+  // constant instead of two independent literals means a future change to
+  // the settle timing can't silently desync the two and reintroduce the
+  // scroll-lands-then-resets race scrollToHashTarget's defer exists to fix.
+  var HTMX_SETTLE_MS = 630;
+
   // Shared htmx hx-swap spec for every #docs-main navigation (boosted
   // clicks on #docs-split/#docs-hdr, and each individually-attributed
   // search-hit anchor). scroll:top resets #docs-main's own scrollTop on
@@ -128,7 +138,7 @@
   // never a fresh element), scroll position would otherwise carry over
   // from whatever page the user was previously scrolled to.
   function htmxSwapSpec() {
-    return 'innerHTML scroll:top ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
+    return 'innerHTML scroll:top ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:' + HTMX_SETTLE_MS + 'ms');
   }
 
   var themeHooked = false;
@@ -511,8 +521,9 @@
      data-wui-demo-run also executes the JS, so JS demos are single-source too.
      2+ boxes render as tabs (Markup / CSS / JavaScript). Idempotent. */
   function escapeHtml(s) {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
   }
   function dedent(s) {
     var lines = s.replace(/\t/g, '  ').replace(/^\n+/, '').replace(/\s+$/, '').split('\n');
@@ -776,6 +787,19 @@
     var clean = String(path || '').replace(/\\/g, '/').split('#')[0].split('?')[0];
     return /(?:^|\/)index\.html$/.test(clean) || /\/$/.test(clean) ? './' : '../';
   }
+  /* Home-page pathname equivalence for the lastKnownPathname same-page check
+     below. /docs/ and /docs/index.html are the SAME page as far as
+     rootForPath()/getRoot() are concerned (both resolve to './') -- but a
+     literal location.pathname === lastKnownPathname comparison doesn't know
+     that, so entering via one form and later popping to/from the other form
+     was treated as a cross-page navigation (the heavier fetch+swap path)
+     when it should have been the same-page hash-only short-circuit. Strips
+     a trailing 'index.html' down to the directory it lives in so both forms
+     compare equal; every non-home path is returned unchanged. */
+  function canonicalPath(path) {
+    var clean = String(path || '').replace(/\\/g, '/');
+    return clean.replace(/(?:^|\/)index\.html$/, function (m) { return m.charAt(0) === '/' ? '/' : ''; });
+  }
   function nsForUrl(url) {
     var clean = (url || '').split('#')[0].split('?')[0];
     var file = clean.split('/').pop();
@@ -806,17 +830,100 @@
      matters. */
   var latestNav = 0;
 
+  /* Tracks the pathname of whatever page is actually loaded in #docs-main
+     right now — updated only when a REAL cross-page swap completes (see
+     applySwappedPage below), never on a same-page hash-only pushState (the
+     search-hit capture-phase click handler and the popstate handler's own
+     short-circuit both change only location.hash, not location.pathname).
+     Read by the popstate listener to tell "Back/Forward past a same-page
+     hash change" apart from "Back/Forward to an actually different page" —
+     see the comment there for why that distinction matters. Initialized at
+     script-parse time to whatever page is loaded right now; docs-shell.js
+     is loaded once and persists across every SPA navigation afterward (same
+     assumption bindSearch()'s getRoot()-per-call comment already relies
+     on), so this stays correct without a DOMContentLoaded/init hook. */
+  var lastKnownPathname = location.pathname;
+
   /* Apply an already-fetched page's content: renderChrome (which ends with
      its own WUI.i18n.apply) + runPageInit + the GSAP reveal. Shared by both
      the htmx:afterSwap listener
      (which already has the swapped-in DOM from evt.detail) and the popstate
      listener (which does its own separate fetch) — only the fetching differs
      between the two call sites, everything after "we know ns/root and the
-     new content is already in #docs-main" lives here once. */
+     new content is already in #docs-main" lives here once. This is also the
+     one shared point after which a cross-page swap has actually completed,
+     so it's where lastKnownPathname gets updated for the popstate
+     same-page-hash-only check above. */
   function applySwappedPage(ns, root) {
+    lastKnownPathname = location.pathname;
     renderChrome(ns, root); // already ends with its own WUI.i18n.apply(document)
     runPageInit();
     revealOut(document.getElementById('docs-main'));
+    scrollToHashTarget();
+  }
+
+  /* Deep-search hits (and any future in-page anchor link) carry a
+     #sectionId. On a normal page-to-page nav this scroll already happened
+     for free via the browser's native hash-jump on load -- but SPA swaps
+     never trigger that (the URL's hash was already set by pushState before
+     the new content existed), so it has to be done explicitly here, once
+     the swapped content is actually in the DOM.
+
+     immediate=true (used by the same-page branch of the search click
+     handler below, which never goes through htmx at all -- no swap
+     happens) scrolls synchronously.
+
+     immediate=false/omitted (used by applySwappedPage, i.e. every
+     cross-page hit) DEFERS the scroll. This is required, not just
+     defensive: htmxSwapSpec() puts "scroll:top" on every boosted swap, and
+     htmx applies that reset during ITS OWN settle phase, which -- traced
+     in docs/vendor/htmx/htmx.min.js -- runs via
+     setTimeout(settleFn, settleDelay) scheduled right after htmx:afterSwap
+     fires (htmx:afterSwap itself fires synchronously, which is where
+     applySwappedPage/this function runs). Confirmed live: scrolling
+     synchronously in afterSwap gets silently stomped back to scrollTop=0
+     ~630ms later when htmx's own settle callback runs. Deferring past that
+     window (settleDelay + buffer) lets our scroll win instead. The
+     popstate call site has no htmx settle phase to race -- the same defer
+     is just a harmless extra wait there, not a correctness requirement.
+
+     The latestNav re-check inside the deferred branch guards a gap this
+     defer newly opens: applySwappedPage's callers already confirm
+     myNav === latestNav before calling it, but that guarantee is only
+     good for the synchronous instant it's checked. Across a ~680ms
+     deferred window a second navigation (e.g. another search-result click)
+     can start and finish before this timer fires; without the re-check,
+     this timer would blindly scroll/flash a target that may belong to
+     content the newer navigation already replaced. */
+  function scrollToHashTarget(immediate) {
+    var hash = location.hash ? location.hash.slice(1) : '';
+    if (!hash) return;
+    var run = function () {
+      var target = document.getElementById(hash);
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.classList.add('docs-search-target-flash');
+      setTimeout(function () { target.classList.remove('docs-search-target-flash'); }, 1300);
+    };
+    if (immediate) {
+      // Bump latestNav even though this synchronous path never reads the
+      // token back itself: an EARLIER cross-page nav may still have a
+      // deferred scroll pending in the setTimeout below (it waits out the
+      // full htmx settle window). Without this bump, that stale timer's
+      // myNav === latestNav check would still pass once it fires, and it
+      // would yank the page back to ITS target after this same-page click
+      // already scrolled to the one the user actually just clicked --
+      // reusing the same monotonic-token guard the cross-page-vs-cross-page
+      // race already relies on, rather than a second parallel mechanism.
+      latestNav++;
+      run();
+      return;
+    }
+    var myNav = latestNav;
+    setTimeout(function () {
+      if (myNav !== latestNav) return; // a newer navigation started during the defer window; drop this stale scroll
+      run();
+    }, (reduceMotion ? 0 : HTMX_SETTLE_MS) + 50);
   }
 
   var htmxNavBound = false;
@@ -917,6 +1024,35 @@
     window.addEventListener('popstate', function () {
       var main = document.getElementById('docs-main');
       if (!main) return;
+      // Whole-branch review Finding 6: a same-page search hit only ever
+      // does history.pushState(null, '', href) to change the hash (see the
+      // capture-phase click handler in bindSearch() below — it never
+      // touches pathname). Without this check, pressing Back afterward hit
+      // this listener's full fetch+innerHTML-swap+applySwappedPage path
+      // (GSAP curtain, runPageInit(), chart/TinyMCE/map re-init) for what
+      // should be nothing more than a scroll-position change back to
+      // wherever the hash previously pointed — a heavy, visibly janky
+      // operation for a same-page hash change, and one #docs-main's content
+      // never actually needed. location.pathname has already been updated
+      // natively by the browser by the time 'popstate' fires (see the note
+      // below), so comparing it to lastKnownPathname (updated only on a
+      // REAL cross-page swap, in applySwappedPage) cleanly tells the two
+      // cases apart.
+      if (canonicalPath(location.pathname) === canonicalPath(lastKnownPathname)) {
+        // Bump latestNav here too, even though this branch never fetches
+        // anything. scrollToHashTarget(true) only bumps the token AFTER its
+        // own `if (!hash) return` guard (see that function) -- so popping to
+        // a HASH-LESS entry on the same pathname would otherwise bump
+        // nothing, leaving a stale in-flight cross-page navigation's token
+        // still valid and able to incorrectly win a race against this more
+        // recent Back/Forward action. Every other real navigation event in
+        // this file already bumps latestNav unconditionally at its own
+        // start (see the htmx:beforeRequest listener and this same block's
+        // fetch path below); this keeps that invariant intact here too.
+        latestNav++;
+        scrollToHashTarget(true);
+        return;
+      }
       // Bump + capture immediately (re-entrancy guard, see comment block
       // above): rapid repeat Back presses, or a Back press immediately
       // followed by a different sidebar click, must not let this fetch's
@@ -945,74 +1081,191 @@
     });
   }
 
-  /* ── Search (over NAV labels + keywords) ──────────────────────────────────*/
+  /* ── Search (section-level, bilingual, MiniSearch-backed) ──────────────────
+     Index is lazy-loaded on first focus of #docs-search (not on page load,
+     to avoid blocking initial render) and cached for the session -- rebuilt
+     from scratch on a fresh hard load, reused across every SPA navigation
+     since docs-shell.js itself never reloads. */
   var searchBound = false;
-  function searchMatches(q) {
-    q = (q || '').trim().toLowerCase();
-    if (!q) return [];
-    var terms = q.split(/\s+/), out = [];
-    for (var i = 0; i < NAV.length; i++)
-      for (var j = 0; j < NAV[i].items.length; j++) {
-        var it = NAV[i].items[j];
-        var hay = (it.label + ' ' + NAV[i].group + ' ' + (it.kw || '')).toLowerCase();
-        var ok = true;
-        for (var t = 0; t < terms.length; t++) if (hay.indexOf(terms[t]) === -1) { ok = false; break; }
-        if (ok) out.push({ group: NAV[i].group, item: it });
+  var searchIndexPromise = null;
+
+  function loadSearchIndex(root) {
+    if (searchIndexPromise) return searchIndexPromise;
+    searchIndexPromise = Promise.all([
+      fetch(root + 'search-index.json').then(function (r) {
+        if (!r.ok) throw new Error('search-index.json ' + r.status);
+        return r.json();
+      }),
+      loadScript(root + 'vendor/minisearch/minisearch.min.js').then(function () { return window.MiniSearch; })
+    ]).then(function (results) {
+      var docs = results[0], MiniSearch = results[1];
+      var mini = new MiniSearch({
+        idField: 'id',
+        fields: ['textEn', 'textAr'],
+        // titleEn/titleAr must be listed here too, not just textEn/textAr --
+        // MiniSearch only returns fields named in storeFields on a hit;
+        // omitting them (as this list originally did) means hit.titleEn/
+        // hit.titleAr are always undefined at render time regardless of
+        // what's actually in search-index.json, silently falling through to
+        // renderSearchResults()' de-slugified-sectionId fallback for every
+        // single result -- exactly the Finding 7 bug, caught live testing
+        // this fix rather than by reading the diff alone.
+        storeFields: ['kind', 'page', 'pageTitle', 'group', 'sectionId', 'titleEn', 'titleAr', 'textEn', 'textAr']
+      });
+      mini.addAll(docs);
+      return mini;
+    }).catch(function (err) {
+      var input = document.getElementById('docs-search');
+      if (input) {
+        input.disabled = true;
+        input.placeholder = 'Search unavailable';
+        input.classList.add('docs-search-input-disabled');
       }
-    return out.slice(0, 12);
+      searchIndexPromise = null; // allow a retry on the next focus (e.g. after a flaky network blip)
+      throw err;
+    });
+    return searchIndexPromise;
   }
-  function renderSearchResults(q) {
+
+  // text here is the RAW section text (build-search-index.js's stripTags
+  // already unescaped any HTML entities out of it before it was ever written
+  // to search-index.json -- textEn/textAr on the wire are plain text, not
+  // HTML), so this function owns both the term-matching AND the escaping,
+  // and the ORDER between them matters:
+  //
+  // 1. Match terms against the raw text first (single alternation regex,
+  //    one pass -- see below for why single-pass matters).
+  // 2. Walk the match positions, escaping each matched/unmatched RUN
+  //    independently as it's emitted.
+  // 3. Only then wrap a matched run in <mark>/</mark>.
+  //
+  // Escaping the whole string up front and matching terms against the
+  // ALREADY-ESCAPED text (the previous approach) fixed one bug but left
+  // another: a term whose letters happen to appear inside text that escapes
+  // to contain them -- e.g. term "amp" against raw text containing a literal
+  // "&" (which escapes to "&amp;"), or term "lt" against raw text containing
+  // a literal "<" (which escapes to "&lt;") -- would match INSIDE the
+  // escaped entity and wrap it, corrupting it into visibly-broken text like
+  // literal "&amp;amp;". Matching against the raw text first and escaping
+  // each run afterward means a match can never land inside a
+  // not-yet-created entity, because entities don't exist yet at match time.
+  //
+  // Single alternation regex + single pass over the raw text (NOT one
+  // .replace() call per term chained sequentially) is still required on top
+  // of the above, for a separate reason (whole-branch review Finding 2):
+  // chaining ran each term's replace against the PREVIOUS term's own
+  // <mark>-wrapped output, so a later term whose letters happen to match
+  // inside "<mark>"/"</mark>" (an m/a/r/k) got wrapped too, corrupting the
+  // tag itself. A single pass matching any term at each position of the
+  // untouched original text cannot re-match output it already produced.
+  function highlightSnippet(text, terms) {
+    if (!text) return '';
+    var truncated = text.length > 140 ? text.slice(0, 140) + '…' : text;
+    var escapedTerms = terms.filter(function (t) { return t; })
+      .map(function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+    if (!escapedTerms.length) return escapeHtml(truncated);
+    var re = new RegExp('(' + escapedTerms.join('|') + ')', 'ig');
+    var out = '';
+    var lastIndex = 0;
+    var m;
+    while ((m = re.exec(truncated))) {
+      out += escapeHtml(truncated.slice(lastIndex, m.index));
+      out += '<mark>' + escapeHtml(m[0]) + '</mark>';
+      lastIndex = m.index + m[0].length;
+      if (m[0].length === 0) re.lastIndex++; // defensive: no real term produces a zero-length match
+    }
+    out += escapeHtml(truncated.slice(lastIndex));
+    return out;
+  }
+
+  function renderSearchResults(q, root) {
     var panel = document.getElementById('docs-search-results');
     if (!panel) return;
-    var res = searchMatches(q);
-    if (!res.length) { panel.innerHTML = q ? '<div class="docs-search-empty">No matches</div>' : ''; panel.classList.toggle('is-open', !!q); return; }
-    // Explicit hx-get/hx-target/hx-select/hx-swap on each hit (mirroring
-    // #docs-hdr's own hx-boost config) rather than relying on the anchors
-    // inheriting them from the boosted #docs-hdr ancestor.
-    //
-    // Root cause (confirmed by controlled A/B testing, and NOT the
-    // htmx.process()/inheritance quirk an earlier version of this comment
-    // claimed): clicking a hit runs closeSearch(), which wipes the results
-    // panel via `panel.innerHTML = ''` and so removes the clicked anchor
-    // from the DOM immediately. htmx resolves hx-select and hx-swap at
-    // RESPONSE time, by walking the triggering element's ancestors — by
-    // which point this anchor is detached and has no #docs-hdr ancestor to
-    // inherit from, so htmx falls back to its defaults (swap the entire
-    // fetched document body, innerHTML) and injects a whole nested page,
-    // duplicate #docs-main included. hx-target, by contrast, is resolved
-    // early at request-dispatch time, which is why targeting kept working
-    // while selecting/swapping did not. Putting the attributes on the anchor
-    // itself makes the values available without any ancestor walk.
-    //
-    // (A cheaper alternative a future maintainer may prefer: defer
-    // closeSearch()'s DOM removal until after the request has dispatched —
-    // e.g. clear the panel from htmx:beforeRequest or a setTimeout(0) —
-    // which keeps the anchor attached through response processing and lets
-    // plain inheritance work. Not done here to avoid re-litigating a fix
-    // that is already verified.)
-    var root = getRoot(), html = '';
-    var swapSpec = htmxSwapSpec();
-    for (var i = 0; i < res.length; i++) {
-      var href = getHref(res[i].item, root);
-      html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
-        ' hx-get="' + href + '" hx-push-url="true" hx-target="#docs-main"' +
-        ' hx-select="#docs-main &gt; *" hx-swap="' + swapSpec + '">' +
-        '<span class="docs-search-hit-label">' + res[i].item.label + '</span>' +
-        '<span class="docs-search-hit-group">' + res[i].group + '</span></a>';
-    }
-    panel.innerHTML = html;
-    panel.classList.add('is-open');
-    // This vendored htmx build has no MutationObserver auto-processing new
-    // nodes (grepped htmx.min.js to confirm), so these freshly-injected
-    // anchors still need one process() call to wire up their (now explicit,
-    // self-contained) hx-get click binding.
-    if (window.htmx) window.htmx.process(panel);
+    q = (q || '').trim();
+    if (!q) { panel.innerHTML = ''; panel.classList.remove('is-open'); return; }
+
+    loadSearchIndex(root).then(function (mini) {
+      var lang = (window.WUI && window.WUI.i18n) ? window.WUI.i18n.getLang() : 'en';
+      var field = lang === 'ar' ? 'textAr' : 'textEn';
+      var results = mini.search(q, { fields: [field], prefix: true, fuzzy: 0.2 }).slice(0, 20);
+
+      if (!results.length) {
+        panel.innerHTML = '<div class="docs-search-empty">No matches</div>';
+        panel.classList.add('is-open');
+        return;
+      }
+
+      var byPage = {};
+      var order = [];
+      results.forEach(function (r) {
+        if (!byPage[r.page]) { byPage[r.page] = []; order.push(r.page); }
+        byPage[r.page].push(r);
+      });
+
+      var titleField = lang === 'ar' ? 'titleAr' : 'titleEn';
+      var terms = q.split(/\s+/);
+      var swapSpec = htmxSwapSpec();
+      var html = '';
+      order.forEach(function (page) {
+        var hits = byPage[page];
+        // page === 'index.html' is the home page (the one NAV item with
+        // file:null -- see getHref() above, and build-search-index.js's own
+        // navByFile keying, which the indexer treats the exact same way).
+        // Every OTHER page's href is root + 'docs/' + page; the home page's
+        // href is root itself, with no 'docs/<file>' segment, since
+        // docs/index.html IS the docs-site root.
+        var isHome = page === 'index.html';
+        html += '<div class="docs-search-group"><div class="docs-search-group-title">' + escapeHtml(hits[0].pageTitle) + '</div>';
+        hits.forEach(function (hit) {
+          var href = (isHome ? root : root + 'docs/' + hit.page) + (hit.kind === 'section' ? '#' + hit.sectionId : '');
+          var snippet = hit.kind === 'section' ? highlightSnippet(hit[field] || hit.textEn, terms) : '';
+          // Real section title (from the indexer's titleEn/titleAr, resolved
+          // the same way textEn/textAr are), not the de-slugified sectionId
+          // ("css js minimalism declarative first" instead of "CSS/JS
+          // minimalism — declarative first") -- and language-aware, so AR
+          // mode doesn't leak English slug text into results. Falls back to
+          // the EN title, then the slug, only if a title was never captured.
+          var label = hit.kind === 'section'
+            ? (hit[titleField] || hit.titleEn || hit.sectionId.replace(/-/g, ' '))
+            : hit.pageTitle;
+          html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
+            ' hx-get="' + href + '" hx-push-url="true" hx-target="#docs-main"' +
+            ' hx-select="#docs-main &gt; *" hx-swap="' + swapSpec + '">' +
+            '<span class="docs-search-hit-label">' + escapeHtml(label) + '</span>' +
+            (snippet ? '<span class="docs-search-hit-snippet">' + snippet + '</span>' : '') +
+            '</a>';
+        });
+        html += '</div>';
+      });
+      panel.innerHTML = html;
+      panel.classList.add('is-open');
+      if (window.htmx) window.htmx.process(panel);
+    }).catch(function () {
+      // loadSearchIndex() already put the input into its disabled state and
+      // logged nothing user-facing beyond that -- nothing further to do here
+      // besides not leaving an unhandled rejection.
+    });
   }
+
   function bindSearch() {
     if (searchBound) return;
     searchBound = true;
+    // getRoot() is called fresh inside each handler below, NOT cached in a
+    // closure var here -- bindSearch() itself only ever runs once per true
+    // page load (guarded by searchBound above), but docs-shell.js persists
+    // across every SPA navigation afterward, and index.html (depth 0) vs.
+    // every docs/docs/*.html page (depth 1) need different root prefixes.
+    // A closured root computed once at bind time goes stale the moment the
+    // user SPA-navigates across that depth boundary -- confirmed live: it
+    // silently produces an extra/missing 'docs/' segment in every search
+    // hit's href thereafter (404s the first click after such a nav), even
+    // though renderChrome() elsewhere already gets this right by taking a
+    // freshly-computed root per navigation.
+    document.addEventListener('focus', function (e) {
+      if (e.target && e.target.id === 'docs-search') loadSearchIndex(getRoot()).catch(function () {});
+    }, true);
     document.addEventListener('input', function (e) {
-      if (e.target && e.target.id === 'docs-search') renderSearchResults(e.target.value);
+      if (e.target && e.target.id === 'docs-search') renderSearchResults(e.target.value, getRoot());
     });
     document.addEventListener('keydown', function (e) {
       var input = document.getElementById('docs-search');
@@ -1023,7 +1276,45 @@
       } else if (e.key === 'Escape') { closeSearch(); input.blur(); }
       else if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); input.focus(); }
     });
+    // CAPTURE phase, and deliberately separate from the bubble-phase listener
+    // below: a search hit for the CURRENT page must be intercepted before
+    // htmx's own hx-get click handling on that anchor (bound directly on the
+    // element by htmx.process(), a normal bubble-phase listener) ever runs.
+    // Originally this same-page short-circuit lived in the bubble-phase
+    // listener below and called e.preventDefault() there -- confirmed live,
+    // via network-request tracing, that this was too late: capture goes
+    // top-down and reaches document (a bubble-phase listener) only AFTER
+    // the event has already passed through the target's own listeners, so
+    // htmx had already fired its own GET for the current page by the time
+    // that preventDefault() ran. That produced a redundant fetch AND a
+    // second, htmx-driven applySwappedPage()/scrollToHashTarget() cycle
+    // racing the direct one below. Registering here instead -- with
+    // e.stopPropagation() -- runs before the event ever reaches the anchor,
+    // so htmx's listener on it never fires at all for this click.
     document.addEventListener('click', function (e) {
+      var hit = e.target.closest('[data-search-hit]');
+      if (!hit) return;
+      // A home-page href (root, e.g. './' or '../') has no filename segment
+      // at all -- split('/').pop() on it yields '' (the empty string after
+      // the trailing slash), not 'index.html'. Without the `|| 'index.html'`
+      // fallback on BOTH sides, a same-page hit on the home page's own
+      // sections would never match here (hitPage '' !== currentPage
+      // 'index.html', which already had this same fallback) and would fall
+      // through to htmx's normal cross-page handling for what should be an
+      // instant scroll.
+      var hitPage = hit.getAttribute('href').split('#')[0].split('/').pop() || 'index.html';
+      var currentPage = location.pathname.split('/').pop() || 'index.html';
+      if (hitPage !== currentPage) return; // cross-page: let it reach htmx normally
+      e.preventDefault();
+      e.stopPropagation();
+      closeSearch();
+      history.pushState(null, '', hit.getAttribute('href'));
+      scrollToHashTarget(true);
+    }, true);
+    document.addEventListener('click', function (e) {
+      // Same-page hits are already fully handled (and stopped) by the
+      // capture-phase listener above; this only ever sees cross-page hits
+      // and plain "click outside" cases.
       if (e.target.closest('[data-search-hit]')) { closeSearch(); }
       else if (!e.target.closest('.docs-search')) { closeSearch(); }
     });

@@ -132,7 +132,7 @@
 
         <!-- ── Live interactive demo ─────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_calendar_6"><span class="material-symbols-outlined">calendar_month</span>Live calendar</div>
+          <div class="docs-section-title" id="live-calendar" data-wui-i18n-html="docs_calendar_6"><span class="material-symbols-outlined">calendar_month</span>Live calendar</div>
           <p class="docs-desc" data-wui-i18n-html="docs_calendar_7">Switch views with the toolbar segments, page with the arrows, click an event card to open its popup, click an empty slot or day cell to fire <code>wui:cal:slotclick</code>. Marking an event <em>done</em> or deleting it from the popup mutates the calendar live. This host is instantiated for you by the docs shell; the JavaScript box below is the exact snippet a board would write.</p>
 
           <div class="wui-demo stacked" data-wui-demo>
@@ -186,7 +186,7 @@ cal.on('action', function (e) {
 
         <!-- ── Views ─────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_calendar_11"><span class="material-symbols-outlined">grid_view</span>The four views</div>
+          <div class="docs-section-title" id="the-four-views" data-wui-i18n-html="docs_calendar_11"><span class="material-symbols-outlined">grid_view</span>The four views</div>
           <p class="docs-desc" data-wui-i18n-html="docs_calendar_12">One instance, four layouts. The toolbar switcher (<code>.wui-cal-seg</code>) is rendered automatically; restrict or reorder it with the <code>views</code> option.</p>
           <div class="wui-info-grid">
             <div class="wui-info-item"><div class="wui-info-label">month</div><div class="wui-info-value">6-week grid, event chips per day, <code>+N more</code> rolls into Day view</div></div>
@@ -206,7 +206,7 @@ WUICalendar.create('#cal', { views: ['week', 'day'], view: 'week' });
 
         <!-- ── Accent variants ───────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_calendar_13"><span class="material-symbols-outlined">palette</span>Accent variants</div>
+          <div class="docs-section-title" id="accent-variants" data-wui-i18n-html="docs_calendar_13"><span class="material-symbols-outlined">palette</span>Accent variants</div>
           <p class="docs-desc" data-wui-i18n-html="docs_calendar_14">Each event carries one <code>variant</code> that sets its accent rail + tint. Six semantic colors plus the four activation tiers. These are static <code>.wui-cal-event</code> cards (the compact form used in month cells):</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -235,7 +235,7 @@ WUICalendar.create('#cal', { views: ['week', 'day'], view: 'week' });
 
         <!-- ── Event model ───────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_calendar_15"><span class="material-symbols-outlined">data_object</span>Event model</div>
+          <div class="docs-section-title" id="event-model" data-wui-i18n-html="docs_calendar_15"><span class="material-symbols-outlined">data_object</span>Event model</div>
           <p class="docs-desc" data-wui-i18n-html="docs_calendar_16"><code>start</code>/<code>end</code> accept a <code>Date</code>, an epoch number, or a string (<code>YYYY-MM-DD</code> = all-day, <code>YYYY-MM-DDTHH:mm</code> = local time). A bare date with no time is treated as all-day automatically.</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -264,7 +264,7 @@ WUICalendar.create('#cal', { views: ['week', 'day'], view: 'week' });
 
         <!-- ── Popup ─────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_calendar_17"><span class="material-symbols-outlined">open_in_new</span>Event popup</div>
+          <div class="docs-section-title" id="event-popup" data-wui-i18n-html="docs_calendar_17"><span class="material-symbols-outlined">open_in_new</span>Event popup</div>
           <p class="docs-desc" data-wui-i18n-html="docs_calendar_18">Clicking any event card opens a popup built into a <code>.wui-modal</code>: an accent header band (icon + title + when), detail rows (status badge, location, custom <code>meta</code>, attendee chips), the description, and a footer of action buttons. Configure the footer globally with the <code>actions</code> option or per event with <code>event.actions</code>. Each click emits <code>wui:cal:action</code> with <code>{ action, event }</code> and closes the popup (set <code>keepOpen: true</code> to keep it open).</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -297,7 +297,7 @@ cal.openEvent(42);
 
         <!-- ── Auto-init ─────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_calendar_21"><span class="material-symbols-outlined">bolt</span>Declarative auto-init</div>
+          <div class="docs-section-title" id="declarative-auto-init" data-wui-i18n-html="docs_calendar_21"><span class="material-symbols-outlined">bolt</span>Declarative auto-init</div>
           <p class="docs-desc" data-wui-i18n-html="docs_calendar_22">Drop <code>data-wui-calendar</code> on an element and the engine instantiates it on load (and via <code>WUICalendar.init()</code> after any SPA navigation to this page). Seed events inline with a <code>data-events</code> JSON array — ideal for WebEOC views that already render their records to JSON.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -317,7 +317,7 @@ cal.openEvent(42);
 
         <!-- ── JS API ────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_calendar_23"><span class="material-symbols-outlined">code</span>JS API</div>
+          <div class="docs-section-title" id="js-api" data-wui-i18n-html="docs_calendar_23"><span class="material-symbols-outlined">code</span>JS API</div>
           <div class="docs-subsection-title" data-wui-i18n="docs_calendar_24">Factory</div>
           <table class="docs-table">
             <thead><tr><th>Call</th><th>Returns</th></tr></thead>
@@ -379,7 +379,7 @@ cal.openEvent(42);
 
         <!-- ── Sizing ────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_calendar_28"><span class="material-symbols-outlined">aspect_ratio</span>Sizing &amp; layout</div>
+          <div class="docs-section-title" id="sizing-layout" data-wui-i18n-html="docs_calendar_28"><span class="material-symbols-outlined">aspect_ratio</span>Sizing &amp; layout</div>
           <p class="docs-desc" data-wui-i18n-html="docs_calendar_29"><code>.wui-calendar</code> is <code>height: 100%</code> and flex-column: the toolbar is fixed and the active view scrolls inside. Give it a sized parent (an explicit height, a <code>wui-split-main</code>, or a <code>wui-fill-area</code>). Per-instance knobs are exposed as CSS custom properties:</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">

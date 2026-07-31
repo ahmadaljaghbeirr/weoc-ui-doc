@@ -27,7 +27,7 @@
 
         <!-- ══════════════════════════ wui-checkbox ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_cards_4"><span class="material-symbols-outlined">check_box</span>wui-checkbox</div>
+          <div class="docs-section-title" id="wui-checkbox" data-wui-i18n-html="docs_cards_4"><span class="material-symbols-outlined">check_box</span>wui-checkbox</div>
           <p class="docs-desc" data-wui-i18n-html="docs_cards_5">A <code>&lt;label class="wui-checkbox"&gt;</code> wrapping a real <code>&lt;input type="checkbox"&gt;</code> (visually hidden but kept focusable), a <code>wui-control-box</code> (the drawn tick box), and a <code>wui-control-label</code>. Compose a <em>size</em> (<code>sm</code> / base / <code>lg</code>) and a <em>color</em> accent (<code>primary</code> default, or <code>secondary</code> / <code>info</code> / <code>success</code> / <code>warning</code> / <code>danger</code>). Selection is pure CSS via <code>:checked</code> — no script needed.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_cards_6">Anatomy — box + label</div>
@@ -195,7 +195,7 @@
 
         <!-- ══════════════════════════ wui-radio ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_cards_12"><span class="material-symbols-outlined">radio_button_checked</span>wui-radio</div>
+          <div class="docs-section-title" id="wui-radio" data-wui-i18n-html="docs_cards_12"><span class="material-symbols-outlined">radio_button_checked</span>wui-radio</div>
           <p class="docs-desc" data-wui-i18n-html="docs_cards_13">Single-choice sibling of <code>wui-checkbox</code>. Same anatomy (<code>wui-control-box</code> renders a round dot instead of a tick) and the same axes: sizes <code>sm</code> / base / <code>lg</code>, the color accents, disabled states, and the <code>wui-check-group</code> wrapper. Give each <code>&lt;input type="radio"&gt;</code> in a set the same <code>name</code> so only one can be selected. Pure CSS — no script.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_cards_14">Anatomy — box + label</div>
@@ -358,7 +358,7 @@
 
         <!-- ══════════════════════════ wui-card-group / wui-card-option ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_cards_20"><span class="material-symbols-outlined">grid_view</span>wui-card-group / wui-card-option</div>
+          <div class="docs-section-title" id="wui-card-group-wui-card-option" data-wui-i18n-html="docs_cards_20"><span class="material-symbols-outlined">grid_view</span>wui-card-group / wui-card-option</div>
           <p class="docs-desc" data-wui-i18n-html="docs_cards_21">A card-based option group. In the default <em>input mode</em>, each <code>&lt;label class="wui-card-option"&gt;</code> wraps a hidden <code>&lt;input type="radio"&gt;</code> (or <code>checkbox</code>) followed by a <code>wui-card-content</code> face holding an icon and a <code>wui-card-label</code>. Hover and <code>:checked</code> both light the card up in its accent color, so selection works with no JavaScript. Sizes on the group: <code>wui-card-group-sm</code> / base / <code>wui-card-group-lg</code> / <code>wui-card-group-xl</code>. Add <code>is-row</code> to lay each card out horizontally. In <em>display mode</em> (<code>is-display</code> on the group) there are no inputs and pointer events are suppressed; the chosen card carries <code>is-active</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_cards_22">Input mode — radio (single choice, base size)</div>
@@ -629,7 +629,7 @@
 
         <!-- ══════════════════════════ wui-switch ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_cards_31"><span class="material-symbols-outlined">toggle_on</span>wui-switch</div>
+          <div class="docs-section-title" id="wui-switch" data-wui-i18n-html="docs_cards_31"><span class="material-symbols-outlined">toggle_on</span>wui-switch</div>
           <p class="docs-desc" data-wui-i18n-html="docs_cards_32">An iOS-style toggle built on a hidden checkbox. A <code>&lt;label class="wui-switch"&gt;</code> wraps the <code>&lt;input type="checkbox"&gt;</code>, a <code>wui-switch-track</code> (the pill) containing a <code>wui-switch-thumb</code>, and an optional <code>wui-switch-label</code>. Checking the input slides the thumb right and fills the track with the accent color. Sizes: <code>sm</code> / base / <code>lg</code>. Colors: <code>primary</code> default, or <code>secondary</code> / <code>info</code> / <code>success</code> / <code>warning</code> / <code>danger</code>. Pure CSS via <code>:checked</code> — no script.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_cards_33">Anatomy — off / on</div>
@@ -749,7 +749,7 @@
 
         <!-- ══════════════════════════ wui-slider ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_cards_37"><span class="material-symbols-outlined">tune</span>wui-slider</div>
+          <div class="docs-section-title" id="wui-slider" data-wui-i18n-html="docs_cards_37"><span class="material-symbols-outlined">tune</span>wui-slider</div>
           <p class="docs-desc" data-wui-i18n-html="docs_cards_38">A styled <code>&lt;input type="range"&gt;</code> inside a <code>wui-slider</code> wrapper, with an optional <code>wui-slider-info</code> row (<code>wui-slider-label</code> + <code>wui-slider-value</code>). The filled portion of the track is a gradient that reads a <code>--_fill</code> percentage custom property; JS sets it on <code>input</code> so the fill and the readout stay in sync. Firefox also fills natively via <code>::-moz-range-progress</code>. Sizes: <code>sm</code> / base / <code>lg</code>. Colors: <code>primary</code> default, or <code>secondary</code> / <code>info</code> / <code>success</code> / <code>warning</code> / <code>danger</code>. Add <code>stepped</code> plus a <code>wui-slider-ticks</code> row for discrete steps.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_cards_39">Dynamic — base (live JS fill)</div>

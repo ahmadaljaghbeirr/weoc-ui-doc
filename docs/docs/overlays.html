@@ -35,7 +35,7 @@
 
         <!-- ══════════════════════════ wui-popover ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_overlays_6"><span class="material-symbols-outlined">open_in_browser</span>wui-popover</div>
+          <div class="docs-section-title" id="wui-popover" data-wui-i18n-html="docs_overlays_6"><span class="material-symbols-outlined">open_in_browser</span>wui-popover</div>
           <p class="docs-desc" data-wui-i18n-html="docs_overlays_7">Floating contextual panel anchored to a trigger. It is <code>display:none</code> until <code>weoc-ui.js</code> adds the reveal class named by <code>data-wui-open-class="show"</code>. No backdrop, so a click anywhere outside the panel closes it. Wrap items in <code>wui-pop-actions</code>; each row is a <code>wui-pop-btn</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_overlays_8">Action menu — click to open</div>
@@ -85,7 +85,7 @@
 
         <!-- ══════════════════════════ wui-dropdown ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_overlays_11"><span class="material-symbols-outlined">arrow_drop_down_circle</span>wui-dropdown</div>
+          <div class="docs-section-title" id="wui-dropdown" data-wui-i18n-html="docs_overlays_11"><span class="material-symbols-outlined">arrow_drop_down_circle</span>wui-dropdown</div>
           <p class="docs-desc" data-wui-i18n-html="docs_overlays_12">Select-like menu that lives inside a <code>wui-dropdown-wrap</code> so trigger and menu stay grouped. Same three target attributes as the popover: <code>data-wui-open-class="show"</code>, <code>data-wui-anchor="bottom-end"</code>, and <code>data-wui-dismiss=""</code> (picking an item closes it). Rows are <code>wui-dropdown-item</code>; an optional <code>wui-dropdown-item-icon</code> leads each row. An optional <code>wui-dropdown-arrow</code> points back at the trigger.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_overlays_13">Filter menu — click to open</div>
@@ -170,7 +170,7 @@
 
         <!-- ══════════════════════════ wui-modal ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_overlays_16"><span class="material-symbols-outlined">open_in_new</span>wui-modal</div>
+          <div class="docs-section-title" id="wui-modal" data-wui-i18n-html="docs_overlays_16"><span class="material-symbols-outlined">open_in_new</span>wui-modal</div>
           <p class="docs-desc" data-wui-i18n-html="docs_overlays_17">Centered dialog that scales and fades in on open. Structure: <code>wui-modal</code> &gt; <code>wui-modal-dialog</code> &gt; <code>wui-modal-header</code> (with <code>wui-modal-title</code> + <code>wui-modal-close</code>), <code>wui-modal-body</code>, and an optional <code>wui-modal-footer</code>. Mark the <code>wui-modal</code> with <code>data-wui-backdrop="true"</code> to dim the page, lock scroll, and trap focus. Open with <code>data-wui-toggle="#id"</code>; close with any <code>data-wui-dismiss=""</code>, a backdrop click, or Esc.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_overlays_18">Default (md, 32rem) — click to open</div>
@@ -286,7 +286,7 @@
 
         <!-- ══════════════════════════ wui-drawer ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_overlays_23"><span class="material-symbols-outlined">dock_to_right</span>wui-drawer</div>
+          <div class="docs-section-title" id="wui-drawer" data-wui-i18n-html="docs_overlays_23"><span class="material-symbols-outlined">dock_to_right</span>wui-drawer</div>
           <p class="docs-desc" data-wui-i18n-html="docs_overlays_24">Side panel that slides in from an edge. The wrapper <code>wui-drawer</code> carries every axis; children stay bare. Structure: <code>wui-drawer</code> &gt; <code>wui-drawer-panel</code> &gt; <code>wui-drawer-header</code> (with <code>wui-drawer-title</code> + <code>wui-drawer-close</code>), <code>wui-drawer-body</code>, and an optional <code>wui-drawer-footer</code>. Side: default right or <code>.start</code> (left). Size: <code>.sm</code> (20rem), default md (25rem), <code>.lg</code> (32rem), <code>.xl</code> (40rem). Add <code>.has-overlay</code> plus <code>data-wui-backdrop="true"</code> to dim and block the page; without them the drawer floats and the page stays usable. Open with <code>data-wui-toggle="#id"</code>; close with <code>data-wui-dismiss=""</code>, backdrop click, or Esc.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_overlays_25">Side — right (default) and left (.start)</div>
@@ -403,7 +403,7 @@
 
         <!-- ══════════════════════════ Legacy overlays ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_overlays_29"><span class="material-symbols-outlined">history</span>Legacy overlays</div>
+          <div class="docs-section-title" id="legacy-overlays" data-wui-i18n-html="docs_overlays_29"><span class="material-symbols-outlined">history</span>Legacy overlays</div>
           <p class="docs-desc" data-wui-i18n-html="docs_overlays_30">Two older overlay families remain in <code>weoc-overlays.css</code>. Prefer <code>wui-modal</code> and <code>wui-drawer</code> for new work; these are documented for maintenance of existing boards.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_overlays_31">.modal-overlay / .modal-frame</div>
@@ -441,7 +441,7 @@
 
         <!-- ══════════════════════════ JS API ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_overlays_35"><span class="material-symbols-outlined">code</span>Overlay JS API</div>
+          <div class="docs-section-title" id="overlay-js-api" data-wui-i18n-html="docs_overlays_35"><span class="material-symbols-outlined">code</span>Overlay JS API</div>
           <p class="docs-desc" data-wui-i18n-html="docs_overlays_36">Everything above is declarative and needs no page script. For programmatic control, <code>weoc-ui.js</code> exposes the same primitives that the <code>data-wui-*</code> handlers call internally.</p>
           <div class="wui-demo center" data-wui-demo data-wui-demo-run>
             <div class="wui-demo-preview">

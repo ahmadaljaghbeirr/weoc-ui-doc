@@ -28,7 +28,7 @@
 
         <!-- ══════════════════════════ wui-progress-ring ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_progress_4"><span class="material-symbols-outlined">donut_large</span>wui-progress-ring</div>
+          <div class="docs-section-title" id="wui-progress-ring" data-wui-i18n-html="docs_progress_4"><span class="material-symbols-outlined">donut_large</span>wui-progress-ring</div>
           <p class="docs-desc" data-wui-i18n-html="docs_progress_5">SVG radial progress. <code>viewBox="0 0 120 120"</code>, <code>cx="60" cy="60" r="52"</code>, circumference <code>326.73</code> (2π × 52). The fill is drawn by <code>stroke-dashoffset</code> on <code>.wui-progress-ring-fill</code>: offset = <code>326.73 × (1 − pct/100)</code>. Set it as an inline <code>style</code> (CSS beats the SVG presentation attribute). These demos hardcode the offset; live animation is handled by <code>WUIAnim</code> and documented on the Animation page. Compose one <em>color</em> (<code>primary</code> … <code>info</code>) and an optional <em>size</em> (<code>xs</code>/<code>sm</code>/<code>md</code>/base/<code>lg</code>/<code>xl</code>).</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_progress_6">Color variants (base size, 136px)</div>
@@ -314,7 +314,7 @@
 
         <!-- ══════════════════════════ wui-progress-bar ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_progress_13"><span class="material-symbols-outlined">linear_scale</span>wui-progress-bar</div>
+          <div class="docs-section-title" id="wui-progress-bar" data-wui-i18n-html="docs_progress_13"><span class="material-symbols-outlined">linear_scale</span>wui-progress-bar</div>
           <p class="docs-desc" data-wui-i18n-html="docs_progress_14">Horizontal CSS bar. The fill is a child <code>.wui-progress-bar-fill</code> whose <code>width</code> (as a %) is the value; these demos hardcode <code>style="width:X%"</code>. An optional <code>.wui-progress-bar-info</code> row carries <code>.wui-progress-bar-label</code> and <code>.wui-progress-bar-pct</code>. Compose one <em>color</em> and an optional <em>size</em> (<code>xs</code>/<code>sm</code>/base/<code>lg</code>/<code>xl</code>).</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_progress_15">Color variants (with info row)</div>
@@ -533,7 +533,7 @@
 
         <!-- ══════════════════════════ wui-progress-legend ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_progress_22"><span class="material-symbols-outlined">legend_toggle</span>wui-progress-legend</div>
+          <div class="docs-section-title" id="wui-progress-legend" data-wui-i18n-html="docs_progress_22"><span class="material-symbols-outlined">legend_toggle</span>wui-progress-legend</div>
           <p class="docs-desc" data-wui-i18n-html="docs_progress_23">A wrapping color key used beside a segmented ring or bar. Each <code>.wui-progress-legend-item</code> holds a colored <code>.wui-progress-legend-dot</code> (same color classes as the components), a <code>.wui-progress-legend-label</code>, and an optional bold <code>.wui-progress-legend-value</code>. It stands alone — no ring or bar required.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_progress_24">All dot colors (label + value)</div>
@@ -606,7 +606,7 @@
 
         <!-- ══════════════════════════ Usage in a table ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_progress_26"><span class="material-symbols-outlined">table</span>Usage in a table</div>
+          <div class="docs-section-title" id="usage-in-a-table" data-wui-i18n-html="docs_progress_26"><span class="material-symbols-outlined">table</span>Usage in a table</div>
           <p class="docs-desc" data-wui-i18n-html="docs_progress_27">An <code>.xs</code> ring (36px, no center content) fits a standard table row, and an <code>.xs</code> bar works as a compact progress column without an info row. Fills are static, as everywhere on this page.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -690,7 +690,7 @@
 
         <!-- ══════════════════════════ Neon glow ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_progress_28"><span class="material-symbols-outlined">flare</span>Neon glow — .neon</div>
+          <div class="docs-section-title" id="neon-glow-neon" data-wui-i18n-html="docs_progress_28"><span class="material-symbols-outlined">flare</span>Neon glow — .neon</div>
           <p class="docs-desc" data-wui-i18n-html="docs_progress_29">Opt-in glow modifier for both progress components. Add <code>.neon</code> alongside a color class and the fill picks up a soft <code>filter: drop-shadow(...)</code> using that severity's <code>--color-X-glow</code> token — the same convention as <code>.wui-btn.neon-outline</code> / <code>.wui-fab.neon-outline</code> (see the Buttons page). <code>filter</code> is used instead of <code>box-shadow</code> because the visible shape is an SVG stroke / rounded fill, not a box; drop-shadow follows the rendered shape itself. Purely additive: both components render identically when <code>.neon</code> is omitted.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_progress_30">wui-progress-ring.neon</div>
@@ -836,7 +836,7 @@
 
         <!-- ══════════════════════════ weoc-progress stepper ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">linear_scale</span>weoc-progress stepper</div>
+          <div class="docs-section-title" id="weoc-progress-stepper"><span class="material-symbols-outlined">linear_scale</span>weoc-progress stepper</div>
           <p class="docs-desc"><code>.weoc-progress</code> is a responsive horizontal stepper. Use an ordered list, apply exactly one state class to each step, and add <code>aria-current="step"</code> to the current item. The connector belongs to the step before it, so omit it from the final item. Markup works without JavaScript; <code>WUIAnim.stepper()</code> progressively enhances state changes with GSAP and pulses the current indicator.</p>
 
           <div class="docs-subsection-title">Completed, current, and upcoming steps</div>

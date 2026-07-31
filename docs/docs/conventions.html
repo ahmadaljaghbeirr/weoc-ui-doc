@@ -20,32 +20,32 @@
       <div class="docs-page">
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_conventions_1"><span class="material-symbols-outlined">rule</span>No inline styles</div>
+          <div class="docs-section-title" id="no-inline-styles" data-wui-i18n-html="docs_conventions_1"><span class="material-symbols-outlined">rule</span>No inline styles</div>
           <p class="docs-desc" data-wui-i18n-html="docs_conventions_2">Never use <code>style="..."</code> attributes or <code>&lt;style&gt;</code> blocks inside a <code>.weoc</code> view. The one sanctioned exception is a CSS <strong>custom-property</strong> override — <code>style="--wui-skeleton-w: 120px"</code>, <code>style="--wui-card-min: 320px"</code>, <code>style="--wui-sidebar-width: 260px"</code> — because the component's own CSS defines what that variable controls; you're configuring a documented knob, not writing new styling. A literal <code>style="width: 120px"</code> is not.</p>
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_conventions_3"><span class="material-symbols-outlined">description</span>{viewType}.css pattern</div>
+          <div class="docs-section-title" id="viewtype-css-pattern" data-wui-i18n-html="docs_conventions_3"><span class="material-symbols-outlined">description</span>{viewType}.css pattern</div>
           <p class="docs-desc" data-wui-i18n-html="docs_conventions_4">Every view type (<code>display</code>, <code>details</code>, <code>input</code>, <code>remove</code>) gets its own <code>{viewType}.css</code> file: import the agency theme first (<code>agency-theme.css</code> normally; <code>agency-theme-obsidian.css</code> for dashboards specifically), then the weoc-ui core barrel, then any special component CSS not in the core barrel, then your overrides — in that order.</p>
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_conventions_5"><span class="material-symbols-outlined">devices</span>Device tiers</div>
+          <div class="docs-section-title" id="device-tiers" data-wui-i18n-html="docs_conventions_5"><span class="material-symbols-outlined">devices</span>Device tiers</div>
           <p class="docs-desc" data-wui-i18n-html="docs_conventions_6">weoc-ui's breakpoints are Bootstrap-compatible and mobile-first: <code>sm</code> 576px, <code>md</code> 768px, <code>lg</code> 992px, <code>xl</code> 1200px. TV/projector displays are a separate opt-in <em>scale</em> mode, not a width breakpoint — add <code>weoc-display-tv.css</code>'s link tag only on the specific view(s) that target a wall display, and set <code>data-wui-display="tv"</code> to activate it.</p>
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_conventions_7"><span class="material-symbols-outlined">extension</span>Component promotion</div>
+          <div class="docs-section-title" id="component-promotion" data-wui-i18n-html="docs_conventions_7"><span class="material-symbols-outlined">extension</span>Component promotion</div>
           <p class="docs-desc" data-wui-i18n-html="docs_conventions_8">If you build or notice a board-local widget that's generic and reusable (not board-specific business logic), flag it as a porting candidate: one line in that session's <code>current_context.md</code> — what it is, why it's generic — rather than leaving it silently board-local.</p>
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_conventions_9"><span class="material-symbols-outlined">compress</span>CSS/JS minimalism — declarative first</div>
+          <div class="docs-section-title" id="css-js-minimalism-declarative-first" data-wui-i18n-html="docs_conventions_9"><span class="material-symbols-outlined">compress</span>CSS/JS minimalism — declarative first</div>
           <p class="docs-desc" data-wui-i18n-html="docs_conventions_10">Prefer a <code>wui-*</code> class or <code>data-wui-*</code> attribute over new CSS or new JS. JS components that render HTML must themselves emit <code>wui-*</code>-classed markup, not one-off styled fragments. Board-side JS should be declarative and attribute-driven (<code>data-wui-dz-manual</code>, <code>data-wui-map</code>, <code>data-wui-sidebar-breakpoint</code>, <code>WUI.i18n.mark</code>/<code>apply</code>) — extend that pattern for new components rather than hand-writing imperative per-board wiring. Only write bespoke code when the library genuinely has no primitive for the case, and when that happens, flag it per the component-promotion rule above.</p>
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_conventions_11"><span class="material-symbols-outlined">dashboard</span>Tile chrome — header/footer border toggle</div>
+          <div class="docs-section-title" id="tile-chrome-header-footer-border-toggle" data-wui-i18n-html="docs_conventions_11"><span class="material-symbols-outlined">dashboard</span>Tile chrome — header/footer border toggle</div>
           <p class="docs-desc" data-wui-i18n-html="docs_conventions_12">Dashboard tiles use <code>.wui-tile</code> &gt; <code>.wui-tile-hdr</code> / <code>.wui-tile-body</code> / <code>.wui-tile-footer</code> (optional header and footer — a body-only tile just omits them). The footer always sits at the bottom regardless of what else is present. Add <code>.flush</code> to a header or footer independently to drop its divider border — the same modifier also works on <code>.wui-panel-hdr</code>/<code>-footer</code>, <code>.wui-collapse-panel</code>, and <code>.wui-card-footer</code>. Add <code>.is-scrollable</code> to <code>.wui-tile</code> itself to scroll the body instead of clipping it. See the <a href="kpi-recipes.html">KPI &amp; Tile Recipes</a> page for full copy-paste examples.</p>
         </div>
 
