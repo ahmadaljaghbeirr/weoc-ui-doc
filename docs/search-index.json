@@ -2508,102 +2508,6 @@
   "textAr": "wui-hdr-tabs شريط تبويبات يقع داخل wui-hdr-tabs-wrap (أسفل wui-hdr-top ). العنصر wui-hdr-tabs هو ممرِّر أفقي بخاصية overflow-x مع إخفاء شريط التمرير؛ وكل wui-hdr-tab بأحرف كبيرة ويكتسب حدًّا سفليًّا بلون التمييز عند .active (ويرتقي إلى النص الأساسي عند التمرير فوقه). تَرسم الحاوية حوافّ متلاشية عبر ::before / ::after ، تظهر بإضافة .has-left / .has-right عند تمرير الشريط. شريط تبويبات ثابت: حالتا التنشيط والتمرير فوقه تفاعلي: انقر لتبديل التبويبات واللوحات (data-wui-demo-run) مُعالِج نقر مستقل بلغة JavaScript خالصة يبدّل الصنف .active بين التبويبات ويُظهِر اللوحة المطابقة أو يُخفيها. كما يوضّح صنفَي الحافّة المتلاشية .has-left / .has-right وهما يُبدَّلان تبعًا لموضع تمرير الممرِّر."
  },
  {
-  "id": "tier-colors#wui-badge",
-  "kind": "section",
-  "page": "tier-colors.html",
-  "pageTitle": "Tier Colors",
-  "group": "Theming",
-  "sectionId": "wui-badge",
-  "titleEn": "wui-badge",
-  "titleAr": "",
-  "textEn": "wui-badge Tier variants for badges. Soft (default) uses the tier tint; add solid for a filled high-visibility pill; add animate for a pulsing live-activation badge. Owned by weoc-labels.css ; tiers added by weoc-tier-colors.css . Soft (default) — tier-1 → tier-4 Tier 1 · Standby Tier 2 · Partial Tier 3 · Full Tier 4 · MACC Solid — tier-1 → tier-4 Tier 1 · Standby Tier 2 · Partial Tier 3 · Full Tier 4 · MACC Animated (pulsing live state) — tier-1 → tier-4 Tier 1 · Live Tier 2 · Live Tier 3 · Live Tier 4 · Live",
-  "textAr": ""
- },
- {
-  "id": "tier-colors#wui-chip",
-  "kind": "section",
-  "page": "tier-colors.html",
-  "pageTitle": "Tier Colors",
-  "group": "Theming",
-  "sectionId": "wui-chip",
-  "titleEn": "wui-chip",
-  "titleAr": "",
-  "textEn": "wui-chip Tier variants for chips. Each tier drives the chip's --wui-chip-bg , --wui-chip-border , and --wui-chip-text custom properties, so the tint, border, and text color all shift together. Owned by weoc-labels.css . tier-1 → tier-4 Tier 1 · Standby Tier 2 · Partial Tier 3 · Full Tier 4 · MACC",
-  "textAr": ""
- },
- {
-  "id": "tier-colors#wui-status-dot",
-  "kind": "section",
-  "page": "tier-colors.html",
-  "pageTitle": "Tier Colors",
-  "group": "Theming",
-  "sectionId": "wui-status-dot",
-  "titleEn": "wui-status-dot",
-  "titleAr": "",
-  "textEn": "wui-status-dot Tier variants for status dots. The base tier class fills the dot with the tier color; add live for a tier-tinted pulsing ring. Owned by weoc-indicators.css . Solid — tier-1 → tier-4 Live (pulsing) — tier-1 → tier-4",
-  "textAr": ""
- },
- {
-  "id": "tier-colors#wui-icon-bubble",
-  "kind": "section",
-  "page": "tier-colors.html",
-  "pageTitle": "Tier Colors",
-  "group": "Theming",
-  "sectionId": "wui-icon-bubble",
-  "titleEn": "wui-icon-bubble",
-  "titleAr": "",
-  "textEn": "wui-icon-bubble Tier variants for icon bubbles across all three fills: soft (default tint), solid (filled), and bordered (tier-colored ring). Owned by weoc-indicators.css . Soft (default) — tier-1 → tier-4 Solid — tier-1 → tier-4 Bordered — tier-1 → tier-4",
-  "textAr": ""
- },
- {
-  "id": "tier-colors#wui-callout",
-  "kind": "section",
-  "page": "tier-colors.html",
-  "pageTitle": "Tier Colors",
-  "group": "Theming",
-  "sectionId": "wui-callout",
-  "titleEn": "wui-callout",
-  "titleAr": "",
-  "textEn": "wui-callout Tier variants for callouts. Each tier sets the tint background, border color, and the internal --_accent (icon + title color). Structure: leading icon, then a wui-callout-body with a wui-callout-title and body text. Owned by weoc-feedback.css . tier-1 → tier-4 Tier 1 — Standby Normal operations. Monitoring only, no activation required. Tier 2 — Partial Activation Selected functions activated. Duty officers on standby for escalation. Tier 3 — Full Activation EOC fully staffed. All command functions operational. Tier 4 — MACC Activated Multi-Agency Command Centre engaged. All available resources mobilized.",
-  "textAr": ""
- },
- {
-  "id": "tier-colors#wui-banner",
-  "kind": "section",
-  "page": "tier-colors.html",
-  "pageTitle": "Tier Colors",
-  "group": "Theming",
-  "sectionId": "wui-banner",
-  "titleEn": "wui-banner",
-  "titleAr": "",
-  "textEn": "wui-banner Tier variants for banners. Each tier sets the tint background, a solid tier-colored border, and the internal --_accent . Structure: a wui-banner-body holding a leading icon and the wui-banner-text (with optional wui-banner-sub ). Owned by weoc-feedback.css . tier-1 → tier-4 Tier 1 — Standby / Normal Ops Routine monitoring in effect. No activation is currently required. Tier 2 — Partial Activation Selected EOC functions have been activated. Duty officers on standby. Tier 3 — Full Activation EOC fully staffed. All command and coordination functions operational. Tier 4 — MACC Activated Multi-Agency Command Centre engaged. All available resources mobilized.",
-  "textAr": ""
- },
- {
-  "id": "tier-colors#wui-card",
-  "kind": "section",
-  "page": "tier-colors.html",
-  "pageTitle": "Tier Colors",
-  "group": "Theming",
-  "sectionId": "wui-card",
-  "titleEn": "wui-card",
-  "titleAr": "",
-  "textEn": "wui-card Tier variants for cards, on both the accent bar ( has-accent + tier-N , tints the top edge via ::before ) and the side column ( has-side with a wui-card-side + tier-N ). Owned by weoc-containers.css . Accent bar (.has-accent) — tier-1 → tier-4 Tier 1 Standby Tier 2 Partial Tier 3 Full Tier 4 MACC Side column (.has-side .wui-card-side) — tier-1 → tier-4 Tier 1 — Standby Normal operations, monitoring only. Tier 2 — Partial Selected functions activated. Tier 3 — Full EOC fully staffed and operational. Tier 4 — MACC Multi-Agency Command Centre engaged.",
-  "textAr": ""
- },
- {
-  "id": "tier-colors#wui-lvl",
-  "kind": "section",
-  "page": "tier-colors.html",
-  "pageTitle": "Tier Colors",
-  "group": "Theming",
-  "sectionId": "wui-lvl",
-  "titleEn": "wui-lvl",
-  "titleAr": "",
-  "textEn": "wui-lvl Tier variants for the level bar. The tier class colors every lit segment ( wui-lvl-seg.on ) with the tier glow, animates the current segment ( .on.current ), and tints the wui-lvl-count . Owned by weoc-indicators.css . Here each level is shown filled to match its tier number. tier-1 → tier-4 1 2 3 4",
-  "textAr": ""
- },
- {
   "id": "tinymce#live-editor",
   "kind": "section",
   "page": "tinymce.html",
@@ -2686,6 +2590,18 @@
   "titleAr": "ألوان مستويات EOC",
   "textEn": "EOC Tier Colors Events-Reporting activation tiers. Each tier follows the same 5-token pattern as semantic colors: --tier-N-color , -glow , -light , -muted , -text . Tier solids Tier 1 — Normal --tier-1-color Tier 2 — Elevated --tier-2-color Tier 3 — High --tier-3-color Tier 4 — Critical --tier-4-color Tier 4 sub-tokens (pattern applies to all tiers) Glow --tier-4-glow Light --tier-4-light Muted --tier-4-muted Text --tier-4-text",
   "textAr": "ألوان مستويات EOC مستويات تفعيل تقارير الأحداث. يتبع كل مستوى نمط الرموز الخمسة ذاته المستخدم في الألوان الدلالية: --tier-N-color و -glow و -light و -muted و -text . ألوان المستويات الصلبة الرموز الفرعية للمستوى 4 (ينطبق النمط على جميع المستويات)"
+ },
+ {
+  "id": "tokens#tier-color-variants",
+  "kind": "section",
+  "page": "tokens.html",
+  "pageTitle": "Design Tokens",
+  "group": "Theming",
+  "sectionId": "tier-color-variants",
+  "titleEn": "Tier Color Variants",
+  "titleAr": "أنماط ألوان المستويات",
+  "textEn": "Tier Color Variants Agency activation-tier variants ( tier-1 … tier-4 ) layered onto components owned elsewhere: wui-badge , wui-chip , wui-status-dot , wui-icon-bubble , wui-callout , wui-banner , wui-card , and wui-lvl . Tier 1 = standby (green), Tier 2 = partial (amber), Tier 3 = full (red-orange), Tier 4 = MACC (critical red). Add the tier class alongside the component's own classes. wui-badge Tier variants for badges. Soft (default) uses the tier tint; add solid for a filled high-visibility pill; add animate for a pulsing live-activation badge. Owned by weoc-labels.css ; tiers added by weoc-tier-colors.css . Soft (default) — tier-1 → tier-4 Tier 1 · Standby Tier 2 · Partial Tier 3 · Full Tier 4 · MACC Solid — tier-1 → tier-4 Tier 1 · Standby Tier 2 · Partial Tier 3 · Full Tier 4 · MACC Animated (pulsing live state) — tier-1 → tier-4 Tier 1 · Live Tier 2 · Live Tier 3 · Live Tier 4 · Live wui-chip Tier variants for chips. Each tier drives the chip's --wui-chip-bg , --wui-chip-border , and --wui-chip-text custom properties, so the tint, border, and text color all shift together. Owned by weoc-labels.css . tier-1 → tier-4 Tier 1 · Standby Tier 2 · Partial Tier 3 · Full Tier 4 · MACC wui-status-dot Tier variants for status dots. The base tier class fills the dot with the tier color; add live for a tier-tinted pulsing ring. Owned by weoc-indicators.css . Solid — tier-1 → tier-4 Live (pulsing) — tier-1 → tier-4 wui-icon-bubble Tier variants for icon bubbles across all three fills: soft (default tint), solid (filled), and bordered (tier-colored ring). Owned by weoc-indicators.css . Soft (default) — tier-1 → tier-4 Solid — tier-1 → tier-4 Bordered — tier-1 → tier-4 wui-callout Tier variants for callouts. Each tier sets the tint background, border color, and the internal --_accent (icon + title color). Structure: leading icon, then a wui-callout-body with a wui-callout-title and body text. Owned by weoc-feedback.css . tier-1 → tier-4 Tier 1 — Standby Normal operations. Monitoring only, no activation required. Tier 2 — Partial Activation Selected functions activated. Duty officers on standby for escalation. Tier 3 — Full Activation EOC fully staffed. All command functions operational. Tier 4 — MACC Activated Multi-Agency Command Centre engaged. All available resources mobilized. wui-banner Tier variants for banners. Each tier sets the tint background, a solid tier-colored border, and the internal --_accent . Structure: a wui-banner-body holding a leading icon and the wui-banner-text (with optional wui-banner-sub ). Owned by weoc-feedback.css . tier-1 → tier-4 Tier 1 — Standby / Normal Ops Routine monitoring in effect. No activation is currently required. Tier 2 — Partial Activation Selected EOC functions have been activated. Duty officers on standby. Tier 3 — Full Activation EOC fully staffed. All command and coordination functions operational. Tier 4 — MACC Activated Multi-Agency Command Centre engaged. All available resources mobilized. wui-card Tier variants for cards, on both the accent bar ( has-accent + tier-N , tints the top edge via ::before ) and the side column ( has-side with a wui-card-side + tier-N ). Owned by weoc-containers.css . Accent bar (.has-accent) — tier-1 → tier-4 Tier 1 Standby Tier 2 Partial Tier 3 Full Tier 4 MACC Side column (.has-side .wui-card-side) — tier-1 → tier-4 Tier 1 — Standby Normal operations, monitoring only. Tier 2 — Partial Selected functions activated. Tier 3 — Full EOC fully staffed and operational. Tier 4 — MACC Multi-Agency Command Centre engaged. wui-lvl Tier variants for the level bar. The tier class colors every lit segment ( wui-lvl-seg.on ) with the tier glow, animates the current segment ( .on.current ), and tints the wui-lvl-count . Owned by weoc-indicators.css . Here each level is shown filled to match its tier number. tier-1 → tier-4 1 2 3 4",
+  "textAr": "أنماط ألوان المستويات أنماط مستويات تفعيل الجهة ( tier-1 … tier-4 ) تُضاف فوق مكونات مملوكة في مواضع أخرى: wui-badge و wui-chip و wui-status-dot و wui-icon-bubble و wui-callout و wui-banner و wui-card و wui-lvl . Tier 1 = الاستعداد (أخضر)، Tier 2 = جزئي (كهرماني)، Tier 3 = كامل (أحمر برتقالي)، Tier 4 = MACC (أحمر حرج). أضف صنف المستوى إلى جانب أصناف المكون نفسه. wui-badge أنماط المستويات للشارات. النمط الناعم (الافتراضي) يستخدم لون المستوى؛ أضف solid للحصول على شارة ممتلئة عالية الظهور؛ أضف animate للحصول على شارة تفعيل حية نابضة. مملوكة من weoc-labels.css ؛ وتُضاف المستويات عبر weoc-tier-colors.css . ناعم (افتراضي): tier-1 ← tier-4 ممتلئ: tier-1 ← tier-4 متحرك (حالة حية نابضة): tier-1 ← tier-4 wui-chip أنماط المستويات للرقاقات. كل مستوى يتحكم في الخصائص المخصصة للرقاقة --wui-chip-bg و --wui-chip-border و --wui-chip-text ، بحيث يتغير اللون والحد ولون النص معًا. مملوكة من weoc-labels.css . tier-1 ← tier-4 wui-status-dot أنماط المستويات لنقاط الحالة. صنف المستوى الأساسي يملأ النقطة بلون المستوى؛ أضف live للحصول على حلقة نابضة بلون المستوى. مملوكة من weoc-indicators.css . ممتلئ: tier-1 ← tier-4 حي (نابض): tier-1 ← tier-4 wui-icon-bubble أنماط المستويات لفقاعات الأيقونات عبر جميع التعبئات الثلاث: ناعم (لون افتراضي) و solid (ممتلئ) و bordered (حلقة بلون المستوى). مملوكة من weoc-indicators.css . ناعم (افتراضي): tier-1 ← tier-4 ممتلئ: tier-1 ← tier-4 محاط بحد: tier-1 ← tier-4 wui-callout أنماط المستويات للتنبيهات. كل مستوى يحدد خلفية اللون ولون الحد واللون المميز الداخلي --_accent (لون الأيقونة والعنوان). البنية: أيقونة في المقدمة، ثم wui-callout-body يحتوي على wui-callout-title ونص المتن. مملوكة من weoc-feedback.css . tier-1 ← tier-4 wui-banner أنماط المستويات للأشرطة. كل مستوى يحدد خلفية اللون وحدًا ممتلئًا بلون المستوى واللون المميز الداخلي --_accent . البنية: wui-banner-body يحتوي على أيقونة في المقدمة و wui-banner-text (مع wui-banner-sub اختياري). مملوكة من weoc-feedback.css . tier-1 ← tier-4 wui-card أنماط المستويات للبطاقات، على كل من شريط اللون المميز ( has-accent + tier-N ، يلوّن الحافة العلوية عبر ::before ) والعمود الجانبي ( has-side مع wui-card-side + tier-N ). مملوكة من weoc-containers.css . شريط اللون المميز (.has-accent): tier-1 ← tier-4 العمود الجانبي (.has-side .wui-card-side): tier-1 ← tier-4 wui-lvl أنماط المستويات لشريط المستوى. صنف المستوى يلوّن كل مقطع مضاء ( wui-lvl-seg.on ) بتوهج المستوى، ويحرّك المقطع الحالي ( .on.current )، ويلوّن wui-lvl-count . مملوكة من weoc-indicators.css . هنا يُعرض كل مستوى ممتلئًا بما يطابق رقم مستواه. tier-1 ← tier-4"
  },
  {
   "id": "tokens#surface-widget-tokens",
@@ -3158,16 +3074,7 @@
   "page": "tokens.html",
   "pageTitle": "Design Tokens",
   "group": "Theming",
-  "textEn": "Design Tokens tokens color spacing radius shadow theme palette dark light",
-  "textAr": ""
- },
- {
-  "id": "nav#tier-colors",
-  "kind": "nav",
-  "page": "tier-colors.html",
-  "pageTitle": "Tier Colors",
-  "group": "Theming",
-  "textEn": "Tier Colors tier activation 1 2 3 4 emergency accent",
+  "textEn": "Design Tokens tokens color spacing radius shadow theme palette dark light tier activation 1 2 3 4 emergency accent badge chip status-dot icon-bubble callout banner card lvl",
   "textAr": ""
  },
  {
