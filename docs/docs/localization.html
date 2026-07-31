@@ -26,7 +26,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_4"><span class="material-symbols-outlined">translate</span>Live language toggle</div>
+          <div class="docs-section-title" id="live-language-toggle" data-wui-i18n-html="docs_localization_4"><span class="material-symbols-outlined">translate</span>Live language toggle</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_5">Use the translate button in the header, or the button below. Nothing reloads. The idempotent <code>WUI.i18n.apply()</code> pass re-resolves every marked node from its stable key.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -36,7 +36,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_7"><span class="material-symbols-outlined">label</span>Static markers</div>
+          <div class="docs-section-title" id="static-markers" data-wui-i18n-html="docs_localization_7"><span class="material-symbols-outlined">label</span>Static markers</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_8"><code>data-wui-i18n="Key"</code> labels resolve on load and re-resolve on every toggle.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -48,7 +48,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_9"><span class="material-symbols-outlined">code</span>JS-generated content</div>
+          <div class="docs-section-title" id="js-generated-content" data-wui-i18n-html="docs_localization_9"><span class="material-symbols-outlined">code</span>JS-generated content</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_10">These list items are built in JavaScript with <code>WUI.i18n.mark(el, id)</code>. Because each node carries its key, they flip on toggle just like static markup, fixing the "frozen until refresh" bug.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview"><ul id="demo-js-list"></ul></div>
@@ -56,7 +56,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_11"><span class="material-symbols-outlined">content_copy</span>Cloned template</div>
+          <div class="docs-section-title" id="cloned-template" data-wui-i18n-html="docs_localization_11"><span class="material-symbols-outlined">content_copy</span>Cloned template</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_12">This card is cloned from a <code>&lt;template&gt;</code> after load, then localized with <code>WUI.i18n.apply(node)</code>. It re-localizes on toggle, fixing the "template resources never resolve" bug.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -69,7 +69,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_13"><span class="material-symbols-outlined">api</span>API</div>
+          <div class="docs-section-title" id="api" data-wui-i18n-html="docs_localization_13"><span class="material-symbols-outlined">api</span>API</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_14">All methods hang off the global <code>WUI.i18n</code>.</p>
           <table class="wui-table">
             <thead><tr><th>Member</th><th>Purpose</th></tr></thead>

@@ -25,7 +25,7 @@
     {
       group: 'Layout',
       items: [
-        { key: 'layout', label: 'Layout & Shell', file: 'layout.html', kw: 'appshell page-shell split splitter scroll-area toolbar tab widget dashboard fill-area body-shell' },
+        { key: 'layout', label: 'Layout & Shell', file: 'layout.html', kw: 'appshell page-shell split splitter scroll-area toolbar tab widget dashboard fill-area body-shell board views display input details remove scaffold zone' },
         { key: 'grid', label: 'Grid & Flex', file: 'grid.html', kw: 'grid flex container row col group stack simplegrid gap space bento' }
       ]
     },
@@ -104,7 +104,6 @@
     {
       group: 'Patterns',
       items: [
-        { key: 'views', label: 'Board Views', file: 'views.html', kw: 'display input details remove board view scaffold zone' },
         { key: 'maps', label: 'Maps', file: 'maps.html', kw: 'map esri basemap point popover controls location' }
       ]
     },
@@ -342,7 +341,7 @@
   // Per-page translation files (chrome + several pages live in docs-i18n.js;
   // the rest are one file each under i18n/ to keep them maintainable).
   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
-    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes'];
+    'feedback', 'js-api', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes'];
   function ensureI18nStore(root) {
     if (i18nStoreLoaded) return Promise.resolve();
     i18nStoreLoaded = true;
@@ -1145,9 +1144,6 @@
       if (barReset && bar) {
         barReset.addEventListener('click', function () { A.bar(bar, 0, { duration: 0.4 }); });
       }
-    },
-    views: function () {
-      // interactive zone demos mount here via DocShell.mount()
     }
   };
 

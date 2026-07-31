@@ -132,7 +132,7 @@
              DASHBOARD OVERVIEW — click a tile for its recipe
              ══════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">dashboard_customize</span>Dashboard Overview</div>
+          <div class="docs-section-title" id="dashboard-overview"><span class="material-symbols-outlined">dashboard_customize</span>Dashboard Overview</div>
           <p class="docs-desc">Tile-for-tile layout of the real Operation Home Page board (<code>HomePage/out/board.web</code>), same <code>wui-w-{cols}x{rows}</code> spans. Click any solid tile to jump to its recipe below. Dashed tiles (Map, Live Activity Feed, Tasks Overview) are board-specific layout, not weoc-ui component recipes — not covered on this page.</p>
 
           <div class="dash-overview">
@@ -164,7 +164,7 @@
              1) THE TILE SHELL
              ══════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kpi_6"><span class="material-symbols-outlined">dashboard</span>1. The Tile Shell (<code>wui-tile</code>)</div>
+          <div class="docs-section-title" id="1-the-tile-shell-wui-tile" data-wui-i18n-html="docs_kpi_6"><span class="material-symbols-outlined">dashboard</span>1. The Tile Shell (<code>wui-tile</code>)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kpi_7">Every recipe below drops into the <code>.wui-tile-body</code> of this shell. Header and footer are both optional — omit either div for a body-only tile. See <a href="conventions.html">Conventions</a> for the <code>.flush</code> border toggle and <code>.is-scrollable</code>.</p>
 
           <div class="wui-demo" data-wui-demo>
@@ -215,7 +215,7 @@
              2) KPI NUMBER
              ══════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kpi_9"><span class="material-symbols-outlined">tag</span>2. KPI Number</div>
+          <div class="docs-section-title" id="2-kpi-number" data-wui-i18n-html="docs_kpi_9"><span class="material-symbols-outlined">tag</span>2. KPI Number</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kpi_10">Pure CSS/DOM — no JS. Use for any single count or metric. Color the value with a status token when the number itself is good/bad/neutral news.</p>
 
           <div class="wui-demo" data-wui-demo>
@@ -374,7 +374,7 @@ $(document).ready(function () {
              3) GAUGE — real board recipe (Operation Home Page)
              ══════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kpi_12"><span class="material-symbols-outlined">speed</span>3. Gauge</div>
+          <div class="docs-section-title" id="3-gauge" data-wui-i18n-html="docs_kpi_12"><span class="material-symbols-outlined">speed</span>3. Gauge</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kpi_13">Semi-circle threshold gauge. Auto-resizes and redraws crisply on any container change (bento tile resize, sidebar collapse, theme toggle) — no board-side wiring needed.</p>
 
           <details class="wui-demo recipe-card" id="recipe-gauge">
@@ -466,7 +466,7 @@ function drawEventClosureGauge() {
              4) DONUT — real board recipe (Operation Home Page)
              ══════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kpi_15"><span class="material-symbols-outlined">donut_large</span>4. Donut / Pie (category split)</div>
+          <div class="docs-section-title" id="4-donut-pie-category-split" data-wui-i18n-html="docs_kpi_15"><span class="material-symbols-outlined">donut_large</span>4. Donut / Pie (category split)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kpi_16">Raw Canvas 2D, no dependency. Use for a categorical breakdown (events by classification, resources by type). <code>WUI.pie()</code> is the same call with <code>cutout</code> omitted.</p>
 
           <details class="wui-demo recipe-card" id="recipe-donut">
@@ -589,7 +589,7 @@ function drawClassificationDonut() {
              5) BAR-ROW / STACKED PROGRESS
              ══════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kpi_18"><span class="material-symbols-outlined">bar_chart</span>5. Bar-Row (stacked/segmented progress)</div>
+          <div class="docs-section-title" id="5-bar-row-stacked-segmented-progress" data-wui-i18n-html="docs_kpi_18"><span class="material-symbols-outlined">bar_chart</span>5. Bar-Row (stacked/segmented progress)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kpi_19">Pure CSS/DOM, no canvas — already reflows for free with its container, including a built-in density reduction inside narrow bento tiles. Use for available/assigned/unavailable-style stacked breakdowns, one row per group.</p>
 
           <div class="wui-demo" data-wui-demo data-wui-demo-run>
@@ -824,7 +824,7 @@ function initEmergencyLevelWidget() {
              6) SPARKLINE / LINE CHART — real board recipe (Operation Home Page)
              ══════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kpi_21"><span class="material-symbols-outlined">show_chart</span>6. Sparkline / Line Chart</div>
+          <div class="docs-section-title" id="6-sparkline-line-chart" data-wui-i18n-html="docs_kpi_21"><span class="material-symbols-outlined">show_chart</span>6. Sparkline / Line Chart</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kpi_22">uPlot-backed time series. Use a short <code>height</code> (40-60px) for an inline sparkline inside a KPI-number tile, or a taller one as its own tile. <code>data[0]</code> must be real ascending Unix-<strong>second</strong> timestamps — small sequential integers render nothing.</p>
 
           <details class="wui-demo recipe-card" id="recipe-chart">
@@ -954,7 +954,7 @@ function drawEventTimelineChart() {
              7) PROGRESS RING
              ══════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kpi_24"><span class="material-symbols-outlined">donut_small</span>7. Progress Ring</div>
+          <div class="docs-section-title" id="7-progress-ring" data-wui-i18n-html="docs_kpi_24"><span class="material-symbols-outlined">donut_small</span>7. Progress Ring</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kpi_25">CSS-only, no JS. Fluid by default — scales with its container. Use for a single completion/readiness percentage where a gauge's threshold zones aren't needed.</p>
 
           <div class="wui-demo center" data-wui-demo>
@@ -992,7 +992,7 @@ function drawEventTimelineChart() {
              8) QUICK ACTION GRID — real board recipe (Operation Home Page)
              ══════════════════════════════════════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title"><span class="material-symbols-outlined">grid_view</span>8. Quick Action Grid</div>
+          <div class="docs-section-title" id="8-quick-action-grid"><span class="material-symbols-outlined">grid_view</span>8. Quick Action Grid</div>
           <p class="docs-desc">Pure CSS/DOM buttons, one delegated click handler. Use for a row of shortcut actions (add record, notify, jump to module) inside a tile.</p>
 
           <details class="wui-demo recipe-card" id="recipe-quick-actions">

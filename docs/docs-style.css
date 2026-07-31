@@ -454,9 +454,9 @@
 
 /* code region */
 .wui-demo-code-group { border-top: 1px solid var(--color-border); }
-/* preview-less demo (code-only, e.g. views.html reference skeletons): the code
-   group is the first child, so drop its top border to avoid doubling the demo's
-   own border. */
+/* preview-less demo (code-only, e.g. the Board Views reference skeletons on
+   layout.html): the code group is the first child, so drop its top border to
+   avoid doubling the demo's own border. */
 .wui-demo > .wui-demo-code-group:first-child { border-top: 0; }
 
 .wui-demo-codebar {

@@ -27,7 +27,7 @@
 
         <!-- ══════════════════════════ Brand Palette ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_4"><span class="material-symbols-outlined">palette</span>Brand Palette</div>
+          <div class="docs-section-title" id="brand-palette" data-wui-i18n-html="docs_tokens_4"><span class="material-symbols-outlined">palette</span>Brand Palette</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_5">The surface and accent triad plus text/border tokens. <code>--color-10</code> is the primary accent; <code>--color-30</code>/<code>--color-60</code> are the surface and background. Each carries <code>-light</code>/<code>-muted</code>/<code>-glow</code> sub-tokens for tints and focus rings.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_6">Surface &amp; accent</div>
@@ -81,7 +81,7 @@
 
         <!-- ══════════════════════════ Semantic Colors ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_11"><span class="material-symbols-outlined">category</span>Semantic Colors</div>
+          <div class="docs-section-title" id="semantic-colors" data-wui-i18n-html="docs_tokens_11"><span class="material-symbols-outlined">category</span>Semantic Colors</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_12">Six intent colors, each with a solid value plus <code>-glow</code>, <code>-light</code>, <code>-muted</code>, and <code>-text</code> sub-tokens. All values re-resolve automatically in dark mode.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_13">Solid values</div>
@@ -120,7 +120,7 @@
 
         <!-- ══════════════════════════ EOC Tier Colors ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_16"><span class="material-symbols-outlined">shield</span>EOC Tier Colors</div>
+          <div class="docs-section-title" id="eoc-tier-colors" data-wui-i18n-html="docs_tokens_16"><span class="material-symbols-outlined">shield</span>EOC Tier Colors</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_17">Events-Reporting activation tiers. Each tier follows the same 5-token pattern as semantic colors: <code>--tier-N-color</code>, <code>-glow</code>, <code>-light</code>, <code>-muted</code>, <code>-text</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_18">Tier solids</div>
@@ -154,7 +154,7 @@
 
         <!-- ══════════════════════════ Surface & Widget Tokens ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_20"><span class="material-symbols-outlined">dashboard</span>Surface &amp; Widget Tokens</div>
+          <div class="docs-section-title" id="surface-widget-tokens" data-wui-i18n-html="docs_tokens_20"><span class="material-symbols-outlined">dashboard</span>Surface &amp; Widget Tokens</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_21">Semantic surface aliases used by page chrome, widgets and edit-mode banners. They resolve to the brand palette so a single retheme cascades everywhere.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_22">Surfaces</div>
@@ -182,7 +182,7 @@
 
         <!-- ══════════════════════════ Spacing Scale ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_24"><span class="material-symbols-outlined">space_bar</span>Spacing Scale</div>
+          <div class="docs-section-title" id="spacing-scale" data-wui-i18n-html="docs_tokens_24"><span class="material-symbols-outlined">space_bar</span>Spacing Scale</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_25">Numeric steps <code>--space-0</code> to <code>--space-12</code> span 0 to 8rem. Bar width equals the token value so the ramp is literal.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_26">Numeric scale (--space-0 … --space-12)</div>
@@ -240,7 +240,7 @@
 
         <!-- ══════════════════════════ Typography ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_28"><span class="material-symbols-outlined">text_fields</span>Typography</div>
+          <div class="docs-section-title" id="typography" data-wui-i18n-html="docs_tokens_28"><span class="material-symbols-outlined">text_fields</span>Typography</div>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_29">Font families (--font-*)</div>
           <div class="wui-demo stacked" data-wui-demo>
@@ -362,7 +362,7 @@
 
         <!-- ══════════════════════════ Border Radius ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_36"><span class="material-symbols-outlined">rounded_corner</span>Border Radius</div>
+          <div class="docs-section-title" id="border-radius" data-wui-i18n-html="docs_tokens_36"><span class="material-symbols-outlined">rounded_corner</span>Border Radius</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_37"><code>--border-radius</code> (0.5rem) is the base corner; <code>--radius-md</code> aliases it. Change <code>--border-radius</code> to retheme every standard corner at once.</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -390,7 +390,7 @@
 
         <!-- ══════════════════════════ Border Thickness ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_38"><span class="material-symbols-outlined">line_weight</span>Border Thickness</div>
+          <div class="docs-section-title" id="border-thickness" data-wui-i18n-html="docs_tokens_38"><span class="material-symbols-outlined">line_weight</span>Border Thickness</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_39">Border-width tokens in rem — use instead of raw <code>px</code> on borders, outlines and scrollbar widths. Each bar's height is the token value.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -414,7 +414,7 @@
 
         <!-- ══════════════════════════ Shadow Scale ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_40"><span class="material-symbols-outlined">layers</span>Shadow Scale</div>
+          <div class="docs-section-title" id="shadow-scale" data-wui-i18n-html="docs_tokens_40"><span class="material-symbols-outlined">layers</span>Shadow Scale</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_41">Shadow tokens resolve to stronger values in dark mode automatically, so components need no manual <code>[data-theme="dark"]</code> overrides.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -436,7 +436,7 @@
 
         <!-- ══════════════════════════ Interaction Tokens ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_42"><span class="material-symbols-outlined">touch_app</span>Interaction Tokens</div>
+          <div class="docs-section-title" id="interaction-tokens" data-wui-i18n-html="docs_tokens_42"><span class="material-symbols-outlined">touch_app</span>Interaction Tokens</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_43">Overlay and hover surfaces used across interactive components. <code>--color-hover</code> is a translucent wash layered over any surface; <code>--color-overlay</code> is the modal/drawer backdrop; <code>--color-switch-thumb</code> fills toggle knobs.</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -452,7 +452,7 @@
 
         <!-- ══════════════════════════ Scrollbar Tokens ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_44"><span class="material-symbols-outlined">unfold_more</span>Scrollbar Tokens</div>
+          <div class="docs-section-title" id="scrollbar-tokens" data-wui-i18n-html="docs_tokens_44"><span class="material-symbols-outlined">unfold_more</span>Scrollbar Tokens</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_45">One source of truth for every overflow surface. <code>--scrollbar-size</code> is the track width (4px, aliasing <code>--border-md</code>); thumb colours reference theme tokens so they follow light/dark automatically. The box below applies them directly.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -473,7 +473,7 @@
 
         <!-- ══════════════════════════ Bootstrap Overrides ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_48"><span class="material-symbols-outlined">swap_horiz</span>Bootstrap Overrides</div>
+          <div class="docs-section-title" id="bootstrap-overrides" data-wui-i18n-html="docs_tokens_48"><span class="material-symbols-outlined">swap_horiz</span>Bootstrap Overrides</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_49">The theme remaps Bootstrap and Tom Select variables onto agency tokens so legacy WebEOC chrome inherits the palette. These are pass-through aliases, not new values.</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
