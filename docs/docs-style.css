@@ -649,6 +649,12 @@
 .docs-search-hit-snippet mark { background: var(--color-10-light); color: var(--color-10); border-radius: 2px; padding: 0 2px; }
 .docs-search-input-disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Deep-search result navigation: brief highlight flash on the section the
+   user just jumped to (cross-page nav via applySwappedPage, or a same-page
+   scroll from the click handler in bindSearch()). */
+@keyframes docsSearchFlash { 0%, 100% { box-shadow: none; } 50% { box-shadow: 0 0 0 2px var(--color-10); } }
+.docs-search-target-flash { animation: docsSearchFlash 0.6s ease 2; }
+
 /* ─── Responsive ─────────────────────────────────────────────────*/
 @media (max-width: 900px) {
   .docs-page {

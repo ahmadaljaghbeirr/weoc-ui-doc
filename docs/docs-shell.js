@@ -811,6 +811,58 @@
     renderChrome(ns, root); // already ends with its own WUI.i18n.apply(document)
     runPageInit();
     revealOut(document.getElementById('docs-main'));
+    scrollToHashTarget();
+  }
+
+  /* Deep-search hits (and any future in-page anchor link) carry a
+     #sectionId. On a normal page-to-page nav this scroll already happened
+     for free via the browser's native hash-jump on load -- but SPA swaps
+     never trigger that (the URL's hash was already set by pushState before
+     the new content existed), so it has to be done explicitly here, once
+     the swapped content is actually in the DOM.
+
+     immediate=true (used by the same-page branch of the search click
+     handler below, which never goes through htmx at all -- no swap
+     happens) scrolls synchronously.
+
+     immediate=false/omitted (used by applySwappedPage, i.e. every
+     cross-page hit) DEFERS the scroll. This is required, not just
+     defensive: htmxSwapSpec() puts "scroll:top" on every boosted swap, and
+     htmx applies that reset during ITS OWN settle phase, which -- traced
+     in docs/vendor/htmx/htmx.min.js -- runs via
+     setTimeout(settleFn, settleDelay) scheduled right after htmx:afterSwap
+     fires (htmx:afterSwap itself fires synchronously, which is where
+     applySwappedPage/this function runs). Confirmed live: scrolling
+     synchronously in afterSwap gets silently stomped back to scrollTop=0
+     ~630ms later when htmx's own settle callback runs. Deferring past that
+     window (settleDelay + buffer) lets our scroll win instead. The
+     popstate call site has no htmx settle phase to race -- the same defer
+     is just a harmless extra wait there, not a correctness requirement.
+
+     The latestNav re-check inside the deferred branch guards a gap this
+     defer newly opens: applySwappedPage's callers already confirm
+     myNav === latestNav before calling it, but that guarantee is only
+     good for the synchronous instant it's checked. Across a ~680ms
+     deferred window a second navigation (e.g. another search-result click)
+     can start and finish before this timer fires; without the re-check,
+     this timer would blindly scroll/flash a target that may belong to
+     content the newer navigation already replaced. */
+  function scrollToHashTarget(immediate) {
+    var hash = location.hash ? location.hash.slice(1) : '';
+    if (!hash) return;
+    var run = function () {
+      var target = document.getElementById(hash);
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.classList.add('docs-search-target-flash');
+      setTimeout(function () { target.classList.remove('docs-search-target-flash'); }, 1300);
+    };
+    if (immediate) { run(); return; }
+    var myNav = latestNav;
+    setTimeout(function () {
+      if (myNav !== latestNav) return; // a newer navigation started during the defer window; drop this stale scroll
+      run();
+    }, (reduceMotion ? 0 : 630) + 50);
   }
 
   var htmxNavBound = false;
@@ -1061,8 +1113,21 @@
       else if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); input.focus(); }
     });
     document.addEventListener('click', function (e) {
-      if (e.target.closest('[data-search-hit]')) { closeSearch(); }
-      else if (!e.target.closest('.docs-search')) { closeSearch(); }
+      var hit = e.target.closest('[data-search-hit]');
+      if (hit) {
+        var hitPage = hit.getAttribute('href').split('#')[0].split('/').pop();
+        var currentPage = location.pathname.split('/').pop() || 'index.html';
+        closeSearch();
+        if (hitPage === currentPage) {
+          // Same page: htmx never fires (no navigation happens), so scroll
+          // has to be driven directly instead of waiting on applySwappedPage.
+          e.preventDefault();
+          history.pushState(null, '', hit.getAttribute('href'));
+          scrollToHashTarget(true);
+        }
+        // Cross-page: let the anchor's own hx-get proceed normally --
+        // applySwappedPage's scrollToHashTarget() call handles it post-swap.
+      } else if (!e.target.closest('.docs-search')) { closeSearch(); }
     });
   }
   function closeSearch() {
