@@ -119,6 +119,16 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Single source of truth for htmx's settle delay (ms), shared by
+  // htmxSwapSpec() below (the swap spec actually applied to boosted nav)
+  // and scrollToHashTarget()'s deferred-scroll timeout (which has to wait
+  // out that same settle window before it's safe to scroll -- see the
+  // comment above scrollToHashTarget for why). Keeping this as one
+  // constant instead of two independent literals means a future change to
+  // the settle timing can't silently desync the two and reintroduce the
+  // scroll-lands-then-resets race scrollToHashTarget's defer exists to fix.
+  var HTMX_SETTLE_MS = 630;
+
   // Shared htmx hx-swap spec for every #docs-main navigation (boosted
   // clicks on #docs-split/#docs-hdr, and each individually-attributed
   // search-hit anchor). scroll:top resets #docs-main's own scrollTop on
@@ -126,7 +136,7 @@
   // never a fresh element), scroll position would otherwise carry over
   // from whatever page the user was previously scrolled to.
   function htmxSwapSpec() {
-    return 'innerHTML scroll:top ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:630ms');
+    return 'innerHTML scroll:top ' + (reduceMotion ? 'swap:0ms settle:0ms' : 'swap:500ms settle:' + HTMX_SETTLE_MS + 'ms');
   }
 
   var themeHooked = false;
@@ -857,12 +867,25 @@
       target.classList.add('docs-search-target-flash');
       setTimeout(function () { target.classList.remove('docs-search-target-flash'); }, 1300);
     };
-    if (immediate) { run(); return; }
+    if (immediate) {
+      // Bump latestNav even though this synchronous path never reads the
+      // token back itself: an EARLIER cross-page nav may still have a
+      // deferred scroll pending in the setTimeout below (it waits out the
+      // full htmx settle window). Without this bump, that stale timer's
+      // myNav === latestNav check would still pass once it fires, and it
+      // would yank the page back to ITS target after this same-page click
+      // already scrolled to the one the user actually just clicked --
+      // reusing the same monotonic-token guard the cross-page-vs-cross-page
+      // race already relies on, rather than a second parallel mechanism.
+      latestNav++;
+      run();
+      return;
+    }
     var myNav = latestNav;
     setTimeout(function () {
       if (myNav !== latestNav) return; // a newer navigation started during the defer window; drop this stale scroll
       run();
-    }, (reduceMotion ? 0 : 630) + 50);
+    }, (reduceMotion ? 0 : HTMX_SETTLE_MS) + 50);
   }
 
   var htmxNavBound = false;
