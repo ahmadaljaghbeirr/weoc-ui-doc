@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Browse Components</title>
+  <!-- 1. JS first — applies theme before paint -->
+  <script src="../../JS/weoc-ui.js"></script>
+  <!-- 2. This page's i18n, loaded directly (NOT via docs-shell.js's I18N_PAGES
+       list — 'browse' is deliberately absent from that array so this page
+       needs zero docs-shell.js edits; see docs/i18n/browse.js header comment
+       and docs/superpowers/specs/2026-07-31-browse-components-showcase-design.md).
+       WUI.i18n is defined synchronously at the top of weoc-ui.js, so it's
+       already available here. -->
+  <script src="../i18n/browse.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+  <!-- uPlot engine (for the live Charts/Gauge/Donut tiles) — also loaded
+       globally by docs-shell.js's ensureGlobalAssets(), but linked directly
+       here too (same convention as charts.html) so the page is fully
+       functional on a direct/standalone load. -->
+  <script src="../../JS/uPlot.iife.min.js"></script>
+  <link rel="stylesheet" href="../../CSS/uPlot.min.css">
+  <script src="../../JS/wui-charts.js"></script>
+  <!-- weoc-kanban.css / weoc-heatmap.css are NOT yet in weoc-ui-core.css's
+       @import barrel (same "not yet wired centrally" situation documented on
+       kanban.html / heatmap.html) — linked directly here, same as those
+       pages. wui-kanban.js / wui-heatmap.js ARE already global jobs in
+       docs-shell.js's ensureGlobalAssets(), but linked directly too, again
+       matching kanban.html/heatmap.html's own standalone-load convention. -->
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-kanban.css">
+  <script src="../../JS/wui-kanban.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-heatmap.css">
+  <script src="../../JS/wui-heatmap.js"></script>
+  <!-- weoc-tables.css is a global asset already (ensureGlobalAssets), linked
+       directly too so the static Tables tile renders on direct load. -->
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables.css">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="browsePage()">
+  <style>
+    /* ══════════════════════════════════════════════════════════════════
+       Browse Components showcase — a curated .wui-bento (weoc-grid.css)
+       tour of the library's most visually impressive components. Every
+       tile below is a real <a href> to that component's own doc page (real
+       navigation, no click handler needed, works with middle-click) — see
+       docs/superpowers/specs/2026-07-31-browse-components-showcase-design.md.
+       Page-local CSS only (same convention as kpi-recipes.html's
+       .dash-tile / .recipe-card and charts.html's .demo-chart-wrap): no new
+       grid mechanics, just visual dressing on top of .wui-bento-tile.
+       ══════════════════════════════════════════════════════════════════ */
+    .browse-bento { margin-top: var(--space-2); }
+
+    /* .wui-bento-tile is `display:grid` with no visual styling of its own
+       (a transparent placement wrapper) — .browse-tile below overrides that
+       to a column flex so a label + preview can stack inside one tile. */
+    .browse-tile {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--color-30);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--color-text-primary);
+      min-width: 0;
+      overflow: hidden;
+      transition: border-color .15s, transform .15s, background .15s;
+    }
+    /* Hover convention reused verbatim from kpi-recipes.html's
+       `button.dash-tile:hover` — border highlight + tint + lift. */
+    .browse-tile:hover, .browse-tile:focus-visible {
+      border-color: var(--color-10);
+      background: var(--color-10-light);
+      transform: translateY(-2px);
+    }
+    .browse-tile-label {
+      display: flex; align-items: center; gap: var(--space-2);
+      font-size: var(--text-sm); font-weight: var(--font-semibold);
+      color: var(--color-text-primary); flex: 0 0 auto;
+    }
+    .browse-tile-label .material-symbols-outlined { font-size: 18px; color: var(--color-10); }
+    .browse-tile-preview {
+      flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .browse-tile-preview > * { min-width: 0; max-width: 100%; }
+    .browse-tile-preview-wrap { flex-wrap: wrap; gap: var(--space-2); }
+    /* Interactive live tiles (Kanban, Calendar, Date Picker) need their
+       internal clicks (drag a card, open an event popup, open the date
+       picker) to NOT also fire the wrapping <a>'s navigation. Guarded via
+       JS (stopPropagation on click, not preventDefault) below — middle-click
+       / ctrl-click to open the tile's doc page in a new tab is untouched
+       (that's a native 'auxclick', never 'click'). */
+    .browse-tile-preview-interactive { width: 100%; cursor: default; }
+
+    /* Hero tile — page's own title/subtitle, not a component demo, so it's a
+       plain (non-link) tile. */
+    .browse-tile-hero {
+      justify-content: center;
+      background: var(--color-30);
+      background-image: radial-gradient(ellipse 120% 100% at 15% 0%, color-mix(in srgb, var(--color-10-glow) 22%, transparent) 0%, transparent 65%);
+      border-color: var(--color-border);
+    }
+    .browse-tile-hero-title { font-size: var(--text-2xl); font-weight: var(--font-extrabold); line-height: 1.2; color: var(--color-text-primary); }
+    .browse-tile-hero-sub { font-size: var(--text-sm); color: var(--color-text-secondary); max-width: 46ch; margin-top: var(--space-2); }
+
+    /* Live-component hosts — modest fixed heights so 1x1/2x2 tiles stay in
+       proportion (each engine reads its own container width at creation). */
+    .browse-chart-host   { width: 100%; height: 150px; }
+    .browse-kanban-host  { width: 100%; height: 230px; overflow: auto; }
+    .browse-heatmap-host { width: 100%; }
+    .browse-calendar-host{ width: 100%; height: 250px; overflow: hidden; }
+    .browse-gauge-host, .browse-donut-host { width: 100%; }
+    .browse-mini-card { width: 100%; }
+    #browse-fp-demo { width: 100%; text-align: center; }
+  </style>
+        <script>
+        (function () {
+          function registerBrowsePage() {
+            Alpine.data('browsePage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    if (!window.WUI) return;
+                    var rand = function (min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; };
+
+                    /* ── Charts — small live area chart, neon glow for extra "wow". ── */
+                    var chartEl = document.getElementById('browse-chart-demo');
+                    if (chartEl && window.WUI.chart) {
+                      var now = Math.floor(Date.now() / 1000);
+                      var times = [], incidents = [], resolved = [];
+                      for (var i = 0; i < 24; i++) {
+                        times.push(now - (23 - i) * 3600);
+                        incidents.push(rand(8, 28));
+                        resolved.push(rand(4, 22));
+                      }
+                      window.WUI.chart(chartEl, {
+                        type: 'area',
+                        height: 150,
+                        cursor: true,
+                        legend: false,
+                        neon: 'primary',
+                        series: [
+                          { label: 'Incidents', color: 'danger' },
+                          { label: 'Resolved',  color: 'success' }
+                        ],
+                        data: [times, incidents, resolved]
+                      });
+                    }
+
+                    /* ── Gauge ── */
+                    var gaugeEl = document.getElementById('browse-gauge-demo');
+                    if (gaugeEl && window.WUI.gauge) {
+                      window.WUI.gauge(gaugeEl, { value: rand(60, 88), status: 'On Track', height: 96 });
+                    }
+
+                    /* ── Donut ── */
+                    var donutEl = document.getElementById('browse-donut-demo');
+                    if (donutEl && window.WUI.donut) {
+                      window.WUI.donut(donutEl, {
+                        height: 96,
+                        legend: false,
+                        data: [
+                          { label: 'Personnel',  value: 65, color: 'primary' },
+                          { label: 'Equipment',  value: 40, color: 'warning' },
+                          { label: 'Facilities', value: 20, color: 'success' }
+                        ],
+                        center: { label: '125', sub: 'Resources' }
+                      });
+                    }
+
+                    /* ── Kanban — small 3-column mini-board, real drag-and-drop. ── */
+                    var kanbanEl = document.getElementById('browse-kanban-demo');
+                    if (kanbanEl && window.WUI.kanban) {
+                      window.WUI.kanban(kanbanEl, {
+                        columns: [
+                          { key: 'todo',  label: 'To Do' },
+                          { key: 'doing', label: 'Doing' },
+                          { key: 'done',  label: 'Done' }
+                        ],
+                        cards: [
+                          { id: 'bk-1', columnKey: 'todo',  title: 'Verify shelter supply counts',   accent: 'warning', meta: { assignee: 'Ahmad N.' } },
+                          { id: 'bk-2', columnKey: 'todo',  title: 'Update road closure map',         meta: { assignee: 'Sara H.' } },
+                          { id: 'bk-3', columnKey: 'doing', title: 'Deploy portable generators',      accent: 'primary', meta: { assignee: 'Omar K.' } },
+                          { id: 'bk-4', columnKey: 'done',  title: 'Confirm evacuation routes',       accent: 'success', meta: { assignee: 'Layla M.' } }
+                        ]
+                      });
+                    }
+
+                    /* ── Heatmap — small 4x4 risk-style grid. ── */
+                    var heatmapEl = document.getElementById('browse-heatmap-demo');
+                    if (heatmapEl && window.WUI.heatmap) {
+                      var cells = [];
+                      for (var r = 0; r < 4; r++) {
+                        for (var c = 0; c < 4; c++) {
+                          var v = Math.min(0.95, Math.max(0.05, (r * 4 + c + 1) / 16 + (Math.random() * 0.16 - 0.08)));
+                          cells.push({ row: r, col: c, value: v });
+                        }
+                      }
+                      window.WUI.heatmap(heatmapEl, {
+                        type: 'matrix',
+                        rows: 4,
+                        cols: 4,
+                        rowLabels: ['Rare', 'Unlikely', 'Possible', 'Likely'],
+                        colLabels: ['Minor', 'Moderate', 'Major', 'Severe'],
+                        cells: cells
+                      });
+                    }
+
+                    /* ── Calendar — month view, a few sample events anchored to today. ── */
+                    var calEl = document.getElementById('browse-calendar-demo');
+                    if (calEl && window.WUICalendar) {
+                      var today = new Date();
+                      function on(dayOffset, h, m) {
+                        return new Date(today.getFullYear(), today.getMonth(), today.getDate() + dayOffset, h || 0, m || 0);
+                      }
+                      window.WUICalendar.create(calEl, {
+                        view: 'month',
+                        events: [
+                          { id: 1, title: 'EOC Activation Brief',   start: on(0, 9, 0),  end: on(0, 10, 0), variant: 'tier-3', status: 'Active' },
+                          { id: 2, title: 'Shelter capacity check', start: on(2, 11, 0), end: on(2, 12, 0), variant: 'warning', status: 'Scheduled' },
+                          { id: 3, title: 'Stand-down review',      start: on(5, 15, 0), end: on(5, 16, 0), variant: 'success', status: 'Tentative' }
+                        ]
+                      });
+                    }
+
+                    /* ── Date picker (Flatpickr) ── */
+                    if (window.FlatpickrFactory) window.FlatpickrFactory.init();
+
+                    /* ── Whole-tile-clickable, EXCEPT for the genuinely interactive
+                       live tiles (Kanban drag, Calendar event/toolbar clicks, the
+                       date-picker input) — a click inside those must not also
+                       navigate away via the wrapping <a>. preventDefault() is the
+                       load-bearing part: the browser's "follow this link" default
+                       action fires whenever a click's path passes through an <a>
+                       unless preventDefault() was called by SOME listener in that
+                       path — stopPropagation() alone does NOT cancel it (confirmed
+                       live: with stopPropagation()-only, clicking the calendar's
+                       own "next month" button still navigated to calendar.html).
+                       stopPropagation() is kept alongside it to also keep the click
+                       from reaching other ancestor-level listeners (e.g. the docs
+                       shell's global search-close handler). This listener is bound
+                       on the BUBBLE phase, after the sub-widget's own click
+                       handling (drag, popup open, calendar navigate) has already
+                       run in the target phase, so that behavior is untouched.
+                       Native middle-click/ctrl-click (an 'auxclick', never a
+                       'click') to open the tile's page in a new tab is completely
+                       unaffected either way. ── */
+                    document.querySelectorAll('.browse-tile-preview-interactive').forEach(function (el) {
+                      if (el._browseGuardBound) return;
+                      el._browseGuardBound = true;
+                      el.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); });
+                    });
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerBrowsePage();
+          else document.addEventListener('alpine:init', registerBrowsePage);
+        })();
+        </script>
+
+        <!-- docs-section here is not for its title/desc styling (unused on this
+             page) — it just gives docs-shell.js's entranceAnimate() a real
+             gsap.from('.docs-hero, .docs-section', ...) target so the whole
+             bento gets the same staggered fade-up entrance every other docs
+             page gets, instead of a harmless-but-noisy "GSAP target ... not
+             found" console warning. -->
+        <div class="docs-section wui-bento cols-4 wui-gap-3 browse-bento">
+
+          <!-- ── Hero — page title/subtitle, not a component demo ── -->
+          <div class="wui-bento-tile wui-w-4x2 browse-tile browse-tile-hero">
+            <div class="browse-tile-hero-title" data-wui-i18n="docs_browse_1">weoc-ui — see it in action</div>
+            <div class="browse-tile-hero-sub" data-wui-i18n="docs_browse_2">A curated tour of the library's most visual components. Click any tile to open its full documentation.</div>
+          </div>
+
+          <!-- ── Charts — live WUI.chart() ── -->
+          <a class="wui-bento-tile wui-w-2x2 browse-tile" href="charts.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_3"><span class="material-symbols-outlined">show_chart</span>Charts</div>
+            <div class="browse-tile-preview"><div id="browse-chart-demo" class="browse-chart-host"></div></div>
+          </a>
+
+          <!-- ── Kanban — live WUI.kanban(), real drag-and-drop ── -->
+          <a class="wui-bento-tile wui-w-2x2 browse-tile" href="kanban.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_4"><span class="material-symbols-outlined">view_kanban</span>Kanban</div>
+            <div class="browse-tile-preview browse-tile-preview-interactive"><div id="browse-kanban-demo" class="browse-kanban-host"></div></div>
+          </a>
+
+          <!-- ── Heatmap — live WUI.heatmap() ── -->
+          <a class="wui-bento-tile wui-w-2x2 browse-tile" href="heatmap.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_5"><span class="material-symbols-outlined">grid_on</span>Heatmap</div>
+            <div class="browse-tile-preview"><div id="browse-heatmap-demo" class="browse-heatmap-host"></div></div>
+          </a>
+
+          <!-- ── Calendar — live WUICalendar ── -->
+          <a class="wui-bento-tile wui-w-2x2 browse-tile" href="calendar.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_6"><span class="material-symbols-outlined">calendar_month</span>Calendar</div>
+            <div class="browse-tile-preview browse-tile-preview-interactive"><div id="browse-calendar-demo" class="browse-calendar-host"></div></div>
+          </a>
+
+          <!-- ── Gauge — live WUI.gauge() (documented on charts.html) ── -->
+          <a class="wui-bento-tile wui-w-1x1 browse-tile" href="charts.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_7"><span class="material-symbols-outlined">speed</span>Gauge</div>
+            <div class="browse-tile-preview"><div id="browse-gauge-demo" class="browse-gauge-host"></div></div>
+          </a>
+
+          <!-- ── Donut — live WUI.donut() (documented on charts.html) ── -->
+          <a class="wui-bento-tile wui-w-1x1 browse-tile" href="charts.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_8"><span class="material-symbols-outlined">donut_large</span>Donut</div>
+            <div class="browse-tile-preview"><div id="browse-donut-demo" class="browse-donut-host"></div></div>
+          </a>
+
+          <!-- ── Progress — static wui-progress-ring (renders best at 1x1 without JS) ── -->
+          <a class="wui-bento-tile wui-w-1x1 browse-tile" href="progress.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_9"><span class="material-symbols-outlined">trending_up</span>Progress</div>
+            <div class="browse-tile-preview">
+              <!-- 75% → offset 326.73 × 0.25 = 81.68, same math as progress.html -->
+              <div class="wui-progress-ring success" style="width:88px">
+                <svg viewBox="0 0 120 120" width="88" height="88">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:81.68" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">75%</div>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- ── Date picker — live Flatpickr via FlatpickrFactory ── -->
+          <a class="wui-bento-tile wui-w-1x1 browse-tile" href="dates.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_10"><span class="material-symbols-outlined">calendar_today</span>Date Picker</div>
+            <div class="browse-tile-preview browse-tile-preview-interactive">
+              <input id="browse-fp-demo" class="flatpickr-input flat-date" data-fp-preset="date" placeholder="YYYY-MM-DD">
+            </div>
+          </a>
+
+          <!-- ── Cards & Containers — static real wui-card markup ── -->
+          <a class="wui-bento-tile wui-w-1x1 browse-tile" href="containers.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_11"><span class="material-symbols-outlined">view_agenda</span>Cards &amp; Containers</div>
+            <div class="browse-tile-preview">
+              <div class="wui-card is-compact browse-mini-card">
+                <div class="wui-card-hdr has-border">
+                  <div class="wui-card-hdr-left">
+                    <span class="material-symbols-outlined">description</span>
+                    <span class="wui-card-title-row">Incident Summary</span>
+                  </div>
+                </div>
+                <div class="wui-card-body">
+                  <span class="wui-badge danger wui-badge-sm">Critical</span>
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- ── Badges & Chips — static real markup ── -->
+          <a class="wui-bento-tile wui-w-1x1 browse-tile" href="interactive.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_12"><span class="material-symbols-outlined">sell</span>Badges &amp; Chips</div>
+            <div class="browse-tile-preview browse-tile-preview-wrap">
+              <span class="wui-badge primary">Open</span>
+              <span class="wui-badge warning">Pending</span>
+              <span class="wui-chip success"><span class="material-symbols-outlined">done</span>Verified</span>
+            </div>
+          </a>
+
+          <!-- ── Buttons — static visual recreation (span, not button — a real
+               <button> is invalid content inside an <a>; .wui-btn styling is
+               class-driven so a span looks identical) ── -->
+          <a class="wui-bento-tile wui-w-1x1 browse-tile" href="buttons.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_13"><span class="material-symbols-outlined">smart_button</span>Buttons</div>
+            <div class="browse-tile-preview browse-tile-preview-wrap">
+              <span class="wui-btn primary wui-btn-sm">Primary</span>
+              <span class="wui-btn outline secondary wui-btn-sm">Outline</span>
+              <span class="wui-btn ghost danger wui-btn-sm">Ghost</span>
+            </div>
+          </a>
+
+          <!-- ── Tables — static real wui-table-standard markup ── -->
+          <a class="wui-bento-tile wui-w-1x1 browse-tile" href="tables.html">
+            <div class="browse-tile-label" data-wui-i18n-html="docs_browse_14"><span class="material-symbols-outlined">table_rows</span>Tables</div>
+            <div class="browse-tile-preview">
+              <div class="wui-table-wrap browse-mini-card">
+                <table class="wui-table-standard">
+                  <thead>
+                    <tr><th class="wui-col-primary">Incident</th><th class="wui-col-sm">Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Power Outage — Tower B</td><td><span class="wui-badge primary wui-badge-sm">Open</span></td></tr>
+                    <tr><td>Road Closure — Sector 4</td><td><span class="wui-badge success wui-badge-sm">Closed</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </a>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('browse');</script>
+</body>
+</html>
