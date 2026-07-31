@@ -173,3 +173,67 @@ controller adds it in the follow-up pass.
   the controller after reconciling it with this plan). Worth the controller's attention: two
   unrelated in-flight efforts are now landing edits in the same file outside the coordination
   this plan set up for Tasks A/B/C.
+
+## Review fix: same-card-redrag race
+
+**Finding (Important):** `onDrop`'s revert path captured `originalParent`/`originalNext` as
+locals at drop-time (the prior closure-bug fix — untouched here), but nothing stopped the SAME
+card from being re-dragged again while an earlier `onBeforeMove` Promise for that same card was
+still pending. If a user (or a slow REST-backed `onBeforeMove`) let two drags on one card overlap,
+the FIRST drop's stale `originalParent`/`originalNext` could resolve later and yank the card back
+to its pre-first-drag position, clobbering whatever the second, more recent drag had already
+applied — a real risk given `onBeforeMove` is documented to support async REST validation.
+
+**Fix (`JS/wui-kanban.js`):** added a per-card "decision pending" guard inside `_bindDnD`'s
+closure, matching the file's existing hash-map style (`_registry`, `_ACCENT_VALUES`,
+`columnKeys`):
+
+- `var _pendingIds = {}` — card id → `true`, one instance per board (closure-scoped, not global),
+  so multiple boards on a page don't interfere and a full re-render (`update`/`addCard`/
+  `removeCard`) replacing the card's DOM node doesn't lose the guard (it's keyed by id, not node).
+- `onDragStart` now reads the card id first and checks `_pendingIds[cardId]`; if set, calls
+  `e.preventDefault()` (which cancels the native HTML5 drag per spec) and returns before touching
+  `draggedCard`/`draggedId` — the card simply refuses to start dragging.
+- `onDrop` sets `_pendingIds[movingId] = true` right before invoking `opts.onBeforeMove`, and the
+  `Promise.resolve(result).then(...)` callback's first line is `delete _pendingIds[movingId]` —
+  cleared on EITHER outcome (commit or revert), before any of the revert/commit DOM work, so the
+  card becomes re-draggable the instant its own decision settles.
+- Dragging a *different* card while one is pending is completely unaffected — `_pendingIds` is
+  keyed per id, independent of any other card's state.
+- Added a short paragraph to the file's top header doc-comment documenting this behavior
+  alongside the existing `onBeforeMove` description, and inline comments at both the guard's
+  declaration and its two touch points explaining why (cross-referencing each other).
+
+**Verification:**
+- `node --check JS/wui-kanban.js` — passed (syntax only, DOM APIs unchecked as expected).
+- **Live-verified** (not code-traced) via `claude-in-chrome`, served from `python -m http.server`
+  at repo root, against `docs/docs/kanban.html`'s actual unmodified production code — no demo
+  edits were needed. Built a throwaway third board on the live page via `WUI.kanban()` directly
+  in the browser console with a manually-resolvable `onBeforeMove` (`new Promise(function(resolve)
+  { resolveFns[n] = resolve; })`) so the race could be driven deterministically, and drove drags
+  with real `DragEvent`/`DataTransfer` objects dispatched at the actual container listeners
+  (same technique the original closure-bug verification used) — this exercises the real
+  production event handlers, not a mock:
+  - Drag 1 (card `race1`, column a→b): `dragstart` not prevented, card optimistically moved to
+    b, `onBeforeMove` call #1 fired and left pending (confirmed via call log).
+  - Drag 2, SAME card, attempted immediately while call #1 was still unresolved (b→c): `dragstart`
+    **was** prevented (`e.defaultPrevented === true`), card stayed in b, `onBeforeMove` was **not**
+    called a second time (call count stayed at 1) — the guard blocked the overlapping re-drag as
+    designed.
+  - Resolved call #1 with `false` (reject): card correctly snapped back to its original column
+    `a` (confirmed via DOM), `.wui-kanban-card-rejected` cue fired.
+  - Guard-clear check: immediately after that resolution, drag 3 (a→b) was allowed (`dragstart`
+    not prevented) and produced call #2, logged as `a->b` — this by itself proves the earlier
+    revert actually restored the card to column `a` before this drag (had the revert not
+    happened, `fromKey`/`toKey` would both have been `b` and `onDrop` would have returned early
+    per its existing `fromKey === toKey` guard, so no call #2 would exist at all).
+  - Resolved call #2 with `true` (commit): card correctly stayed in `b`.
+  - Follow-up **non-overlapping** same-card drag (b→c) after that resolution: proceeded normally,
+    `onBeforeMove` call #3 fired once, resolved `true`, card ended in `c` — confirms normal
+    sequential drags of the same card keep working fine once each prior decision has settled.
+  - **Basic regression** (no async delay, real demo board): dragged card `101` in the live
+    4-column Task Board demo from `open`→`in-progress` (counts updated 3/2 → 2/3 correctly, card
+    landed in the right column) and back again to restore demo state — unaffected by the fix.
+  - 0 console errors throughout (checked via `read_console_messages`); cleaned up the throwaway
+    test board (`handle.destroy()` + node removal) afterward, leaving the live demo page exactly
+    as it was.

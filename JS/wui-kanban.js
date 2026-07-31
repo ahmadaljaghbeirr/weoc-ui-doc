@@ -18,6 +18,14 @@
    immediately. What a consuming board does inside that hook — show its own
    modal, call a REST endpoint, just return true — is entirely up to it.
 
+   While a card's onBeforeMove decision is still in flight (e.g. an async REST
+   validation call), that SAME card cannot be re-dragged — dragstart refuses
+   it until the pending Promise settles. This stops a stale earlier decision
+   from resolving late and reverting the card to its pre-first-drag position,
+   clobbering a newer drag already applied to it in the meantime. Dragging a
+   DIFFERENT card while one is pending is unaffected — each card's decision
+   is tracked independently by id.
+
    ── Principles ───────────────────────────────────────────────────────────────
    • WUI-shaped API: WUI.kanban(el, opts) → { update, addCard, removeCard,
      destroy }, matching the wui-charts.js factory convention.
@@ -314,11 +322,30 @@
     var draggedCard     = null; /* the DOM node, so drop doesn't need a lookup */
     var draggingClassTO = null; /* pending setTimeout id from onDragStart, see onDragEnd */
 
+    /* _pendingIds: card ids with an in-flight onBeforeMove decision (id →
+     * true, cleared via delete). Keyed by id rather than DOM node so it
+     * survives the target card's node being replaced by a full re-render
+     * (update()/addCard()/removeCard()) while its decision is still pending.
+     * Without this guard, re-dragging the SAME card while an earlier drop's
+     * onBeforeMove Promise for it is still unresolved lets that earlier
+     * Promise's originalParent/originalNext (captured at ITS drop time) fire
+     * later and yank the card back to its pre-first-drag position, clobbering
+     * whatever the second, more recent drag already did. */
+    var _pendingIds = {};
+
     function onDragStart(e) {
       var cardEl = e.target && e.target.closest ? e.target.closest('.wui-kanban-card') : null;
       if (!cardEl || !container.contains(cardEl)) { return; }
+      var cardId = cardEl.getAttribute('data-card-id');
+      if (_pendingIds[cardId]) {
+        /* This card's previous drop is still awaiting its onBeforeMove
+         * decision — block the re-drag rather than let two overlapping
+         * decisions race for the same card. */
+        e.preventDefault();
+        return;
+      }
       draggedCard = cardEl;
-      draggedId   = cardEl.getAttribute('data-card-id');
+      draggedId   = cardId;
       if (e.dataTransfer) {
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', String(draggedId));
@@ -403,10 +430,16 @@
       body.appendChild(movingCard);
       _updateCounts(entry);
 
+      /* Mark this card's decision as in-flight so onDragStart refuses to let
+       * it be re-dragged until the Promise below settles — see _pendingIds
+       * above for why. */
+      _pendingIds[movingId] = true;
+
       var cb     = entry.opts.onBeforeMove;
       var result = cb ? cb(cardData, fromKey, toKey) : true;
 
       Promise.resolve(result).then(function (ok) {
+        delete _pendingIds[movingId];
         if (ok === false) {
           /* Snap back — visibly move the card node back to its original
            * column/position, and flash a rejection cue so the user sees it
