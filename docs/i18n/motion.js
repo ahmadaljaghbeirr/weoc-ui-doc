@@ -1,4 +1,5 @@
 /* weoc-ui docs i18n — motion */
+/* two-file hook re-review verification sentinel -- temporary, will be reverted */
 (function () {
   if (!window.WUI || !window.WUI.i18n) return;
   WUI.i18n.register([
