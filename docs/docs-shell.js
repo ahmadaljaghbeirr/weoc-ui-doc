@@ -26,7 +26,9 @@
       group: 'Layout',
       items: [
         { key: 'layout', label: 'Layout & Shell', file: 'layout.html', kw: 'appshell page-shell split splitter scroll-area toolbar tab widget dashboard fill-area body-shell' },
-        { key: 'grid', label: 'Grid & Flex', file: 'grid.html', kw: 'grid flex container row col group stack simplegrid gap space bento' }
+        { key: 'grid', label: 'Grid', file: 'grid.html', kw: 'grid row col group stack simplegrid bento dashboard' },
+        { key: 'flex', label: 'Flex', file: 'flex.html', kw: 'flex flexbox gap space justify align wrap direction inline-flex' },
+        { key: 'container', label: 'Containers', file: 'container.html', kw: 'container fluid gutter centered max-width bootstrap' }
       ]
     },
     {
@@ -374,7 +376,7 @@
   // Per-page translation files (chrome + several pages live in docs-i18n.js;
   // the rest are one file each under i18n/ to keep them maintainable).
   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
-    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
+    'feedback', 'js-api', 'views', 'grid', 'flex', 'container', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
     'kanban', 'heatmap', 'navigation', 'tabs', 'icons', 'avatars'];
   function ensureI18nStore(root) {
     if (i18nStoreLoaded) return Promise.resolve();

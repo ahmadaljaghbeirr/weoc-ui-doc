@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Containers</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="container">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_container_1">Layout</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_container_2">Containers</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_container_3">The centered, responsive content column: <code>wui-container</code> steps through Bootstrap-compatible max-widths, and <code>wui-container-fluid</code> stays full width with the same gutters. For the 12-column row/col and CSS-grid systems see <a href="grid.html">Grid</a>; for flexbox utilities see <a href="flex.html">Flex</a>. This page documents a different component from the unrelated <a href="containers.html">Cards &amp; Containers</a> page (wui-card / wui-plane / wui-panel / wui-embed).</div>
+        </div>
+
+        <!-- ══════════════════════════ Container ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="wui-container" data-wui-i18n-html="docs_container_4"><span class="material-symbols-outlined">width</span>wui-container</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_container_5">Centered, responsive content column with side gutters (<code>padding-inline: var(--space-4)</code>). <code>wui-container</code> steps through Bootstrap max-widths (540 / 720 / 960 / 1140px); <code>wui-container-fluid</code> is always full width with the same gutters. The dashed frame below marks the container edges.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_container_6">wui-container (stepped max-width)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Container -->
+              <div class="wui-container" style="border:1px dashed var(--color-10-muted);background:var(--color-10-light);border-radius:var(--radius-sm);padding-block:var(--space-3);text-align:center;color:var(--color-10)">wui-container (centered, max-width per breakpoint)</div>
+            </div>
+            <template class="wui-demo-markup">
+              <div class="wui-container"><!-- centered content --></div>
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_container_7">wui-container-fluid (full width)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Fluid container -->
+              <div class="wui-container-fluid" style="border:1px dashed var(--color-10-muted);background:var(--color-10-light);border-radius:var(--radius-sm);padding-block:var(--space-3);text-align:center;color:var(--color-10)">wui-container-fluid (100% width, same gutters)</div>
+            </div>
+            <template class="wui-demo-markup">
+              <div class="wui-container-fluid"><!-- full-width content --></div>
+            </template>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('container');</script>
+</body>
+</html>

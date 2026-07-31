@@ -612,6 +612,18 @@
   "textAr": ""
  },
  {
+  "id": "container#wui-container",
+  "kind": "section",
+  "page": "container.html",
+  "pageTitle": "Containers",
+  "group": "Layout",
+  "sectionId": "wui-container",
+  "titleEn": "wui-container",
+  "titleAr": "wui-container",
+  "textEn": "wui-container Centered, responsive content column with side gutters ( padding-inline: var(--space-4) ). wui-container steps through Bootstrap max-widths (540 / 720 / 960 / 1140px); wui-container-fluid is always full width with the same gutters. The dashed frame below marks the container edges. wui-container (stepped max-width) wui-container (centered, max-width per breakpoint) wui-container-fluid (full width) wui-container-fluid (100% width, same gutters)",
+  "textAr": "wui-container عمود محتوى مركزي ومتجاوب مع هوامش جانبية ( padding-inline: var(--space-4) ). تتدرّج wui-container عبر عروض Bootstrap القصوى (540 / 720 / 960 / 1140px)؛ أما wui-container-fluid فتكون دائماً بعرض كامل مع الهوامش نفسها. يحدّد الإطار المتقطّع أدناه حواف الحاوية. wui-container (عرض أقصى متدرّج) wui-container-fluid (عرض كامل)"
+ },
+ {
   "id": "containers#wui-card",
   "kind": "section",
   "page": "containers.html",
@@ -1032,6 +1044,30 @@
   "textAr": "مؤشر التحميل للحصول على دوّار حي، أضف صنف الأدوات .spin (من weoc-utilities.css، المُحمّل عبر حزمة النواة) إلى أي أيقونة. يطبّق دورانًا خطيًا مستمرًا مدته ثانية واحدة. اقرنه برمز Material مثل progress_activity . الدوّار"
  },
  {
+  "id": "flex#wui-flex",
+  "kind": "section",
+  "page": "flex.html",
+  "pageTitle": "Flex",
+  "group": "Layout",
+  "sectionId": "wui-flex",
+  "titleEn": "wui-flex",
+  "titleAr": "wui-flex",
+  "textEn": "wui-flex Tailwind-style flexbox utilities. Turn a container into a flex row with wui-flex (or inline with wui-inline-flex ), set wui-flex-row/col (+ -reverse ) and wui-flex-wrap/nowrap , distribute with wui-justify-* , cross-align with wui-items-* , override a single child with wui-self-* , and size children with wui-flex-1/auto/none/grow/shrink-0 plus wui-min-w-0 and the width/height shortcuts wui-w-* / wui-h-* . Display helpers wui-d-none/block/inline/inline-block round it out. Display — wui-d-none / block / inline / inline-block wui-d-block (full-line box) wui-d-inline-block wui-d-inline-block text wui-d-inline flows inline wui-d-none (hidden — not visible in the preview) text flows inline wui-d-none (hidden) Direction — row / row-reverse / col / col-reverse row · 1 2 3 row-reverse · 1 2 3 col · 1 2 col-reverse · 1 2 Wrap — wui-flex-wrap / wui-flex-nowrap wrap · 1 2 3 4 (wrapped) nowrap · 1 2 3 4 Justify — start / end / center / between / around / evenly start start end end center center between between around around evenly evenly Align items — start / end / center / stretch / baseline start tall center tall end tall stretch stretch baseline sm baseline lg Align self — auto / start / end / center / stretch / baseline self-start self-center self-end self-stretch self-baseline self-auto Flex child sizing — flex-1 / auto / none / grow / shrink-0 / min-w-0 flex-1 flex-1 flex-auto flex-none (rigid) flex-grow static shrink-0 wui-min-w-0 lets this long text shrink and ellipsis Width & height shortcuts — wui-w-* / wui-h-* wui-w-full (100%) wui-w-max (content width) wui-w-auto wui-h-full wui-h-auto wui-inline-flex inline: wui-inline-flex inline:",
+  "textAr": "wui-flex أدوات flexbox بأسلوب Tailwind. حوّل الحاوية إلى صف مرن بـ wui-flex (أو مضمّناً بـ wui-inline-flex )، واضبط wui-flex-row/col (+ -reverse ) و wui-flex-wrap/nowrap ، ووزّع بـ wui-justify-* ، وحاذِ عرضياً بـ wui-items-* ، وتجاوز طفلاً واحداً بـ wui-self-* ، وحدّد أحجام الأبناء بـ wui-flex-1/auto/none/grow/shrink-0 إضافة إلى wui-min-w-0 واختصارات العرض والارتفاع wui-w-* / wui-h-* . وتكمّلها أدوات العرض wui-d-none/block/inline/inline-block . العرض: wui-d-none / block / inline / inline-block الاتجاه: row / row-reverse / col / col-reverse الالتفاف: wui-flex-wrap / wui-flex-nowrap التوزيع الأفقي: start / end / center / between / around / evenly محاذاة العناصر: start / end / center / stretch / baseline محاذاة العنصر ذاتياً: auto / start / end / center / stretch / baseline تحجيم أبناء flex: flex-1 / auto / none / grow / shrink-0 / min-w-0 اختصارات العرض والارتفاع: wui-w-* / wui-h-* wui-inline-flex"
+ },
+ {
+  "id": "flex#wui-gap",
+  "kind": "section",
+  "page": "flex.html",
+  "pageTitle": "Flex",
+  "group": "Layout",
+  "sectionId": "wui-gap",
+  "titleEn": "wui-gap",
+  "titleAr": "wui-gap",
+  "textEn": "wui-gap Spacing utilities that work on any wui-flex or wui-grid container. wui-gap-0/xs/sm/1…6/8 sets both axes; wui-gap-x-* sets column-gap only; wui-gap-y-* sets row-gap only. The scale maps to the --space-* tokens. Uniform gap — wui-gap-0 … wui-gap-8 gap-0 gap-0 gap-0 gap-xs gap-xs gap-xs gap-sm gap-sm gap-sm gap-1 gap-1 gap-1 gap-2 gap-2 gap-2 gap-3 gap-3 gap-3 gap-4 gap-4 gap-4 gap-5 gap-5 gap-5 gap-6 gap-6 gap-6 gap-8 gap-8 gap-8 Axis gaps — wui-gap-x-* (columns) & wui-gap-y-* (rows) gap-x-5 gap-x-5 gap-x-5 gap-y-5 gap-y-5 gap-y-5 row 2 row 2 row 2 Full sets: wui-gap-x-0 … 5 and wui-gap-y-0 … 5 .",
+  "textAr": "wui-gap أدوات تباعد تعمل على أي حاوية wui-flex أو wui-grid . تضبط wui-gap-0/xs/sm/1…6/8 كلا المحورين؛ وتضبط wui-gap-x-* فجوة الأعمدة فقط؛ وتضبط wui-gap-y-* فجوة الصفوف فقط. ويرتبط المقياس برموز --space-* . فجوة موحّدة: wui-gap-0 … wui-gap-8 فجوات المحاور: wui-gap-x-* (الأعمدة) و wui-gap-y-* (الصفوف) المجموعات الكاملة: wui-gap-x-0 … 5 و wui-gap-y-0 … 5 ."
+ },
+ {
   "id": "forms#form-control",
   "kind": "section",
   "page": "forms.html",
@@ -1128,22 +1164,10 @@
   "textAr": "wui-ftr-wrap: تذييل النموذج شريط إجراءات ملتصق لواجهات الإدخال. يوزّع wui-ftr-wrap → wui-ftr-inner → wui-ftr-body منطقة بيانات وصفية يسارية ( wui-ftr-left / wui-ftr-meta ) ومنطقة إجراءات يمينية ( wui-ftr-right أو wui-ftr-actions ). يأخذ wui-ftr-meta مُعدِّل حالة ( primary / success / warning / danger ) يُلوِّن أيقونته، ويكون <strong> بداخله مُبرَزًا. أضِف centered إلى الغلاف للحصول على تذييل بهيئة بطاقة بعرض أقصى، أو actions-only إلى الجسم عند عدم وجود منطقة بيانات وصفية لتبقى الأزرار محاذاة لليمين. التذييل الافتراضي: ألوان حالة البيانات الوصفية مُعدِّلات البيانات الوصفية: primary / warning / danger موسّط: تذييل بهيئة بطاقة إجراءات فقط: جسم actions-only (بلا بيانات وصفية)"
  },
  {
-  "id": "grid#wui-container",
-  "kind": "section",
-  "page": "grid.html",
-  "pageTitle": "Grid & Flex",
-  "group": "Layout",
-  "sectionId": "wui-container",
-  "titleEn": "wui-container",
-  "titleAr": "wui-container",
-  "textEn": "wui-container Centered, responsive content column with side gutters ( padding-inline: var(--space-4) ). wui-container steps through Bootstrap max-widths (540 / 720 / 960 / 1140px); wui-container-fluid is always full width with the same gutters. The dashed frame below marks the container edges. wui-container (stepped max-width) wui-container (centered, max-width per breakpoint) wui-container-fluid (full width) wui-container-fluid (100% width, same gutters)",
-  "textAr": "wui-container عمود محتوى مركزي ومتجاوب مع هوامش جانبية ( padding-inline: var(--space-4) ). تتدرّج wui-container عبر عروض Bootstrap القصوى (540 / 720 / 960 / 1140px)؛ أما wui-container-fluid فتكون دائماً بعرض كامل مع الهوامش نفسها. يحدّد الإطار المتقطّع أدناه حواف الحاوية. wui-container (عرض أقصى متدرّج) wui-container-fluid (عرض كامل)"
- },
- {
   "id": "grid#wui-row-wui-col",
   "kind": "section",
   "page": "grid.html",
-  "pageTitle": "Grid & Flex",
+  "pageTitle": "Grid",
   "group": "Layout",
   "sectionId": "wui-row-wui-col",
   "titleEn": "wui-row / wui-col",
@@ -1155,7 +1179,7 @@
   "id": "grid#wui-grid",
   "kind": "section",
   "page": "grid.html",
-  "pageTitle": "Grid & Flex",
+  "pageTitle": "Grid",
   "group": "Layout",
   "sectionId": "wui-grid",
   "titleEn": "wui-grid",
@@ -1164,34 +1188,10 @@
   "textAr": "wui-grid شبكات CSS سريعة بأعمدة ثابتة دون الحاجة إلى إدارة الامتدادات. wui-grid + wui-grid-1 … wui-grid-6 لعدد ثابت، أو wui-grid-auto / wui-grid-fit للالتفاف المتجاوب المدفوع بـ --wui-col-min . تمتد العناصر الأبناء عبر wui-span-2 … wui-span-6 / wui-span-full و wui-row-span-2 … wui-row-span-4 ، وتُحاذى بـ align-* ، وتُرصّ بإحكام بـ wui-grid-dense . يستخدم التموضع الصريح wui-col-start-* / wui-row-start-* ؛ وتحدّد wui-grid-rows-* عدد الصفوف؛ وتتولى wui-grid-fill-h و wui-min-h-0 التخطيطات كاملة الارتفاع. أعمدة ثابتة: wui-grid-1 … wui-grid-6 متجاوب: wui-grid-auto (auto-fill) و wui-grid-fit (auto-fit) امتدادات الأعمدة: wui-span-2 … wui-span-6، wui-span-full امتدادات الصفوف: wui-row-span-2 … wui-row-span-4 (+ wui-grid-dense) عدد صفوف ثابت: wui-grid-rows-1 … wui-grid-rows-6 wui-grid-rows-1 ، -3 ، -4 ، -5 ، -6 تتبع النمط نفسه (من 1 إلى 6 صفوف متساوية الارتفاع). محاذاة الشبكة: align-start / center / end / stretch التموضع الصريح: wui-col-start-* / wui-row-start-* المجموعات الكاملة: wui-col-start-1 … 6 و wui-row-start-1 … 4 . شبكات كاملة الارتفاع: wui-grid-fill-h و wui-min-h-0 أدوات الفيض (overflow) wui-overflow-hidden و wui-overflow-auto و wui-overflow-y-auto (تمرير عمودي فقط، مع قصّ أفقي)، وكلها بأولوية !important ، لفرض سلوك الفيض على بلاطة أو لوحة بغض النظر عن الإعدادات الافتراضية للمكوّن."
  },
  {
-  "id": "grid#wui-flex",
-  "kind": "section",
-  "page": "grid.html",
-  "pageTitle": "Grid & Flex",
-  "group": "Layout",
-  "sectionId": "wui-flex",
-  "titleEn": "wui-flex",
-  "titleAr": "wui-flex",
-  "textEn": "wui-flex Tailwind-style flexbox utilities. Turn a container into a flex row with wui-flex (or inline with wui-inline-flex ), set wui-flex-row/col (+ -reverse ) and wui-flex-wrap/nowrap , distribute with wui-justify-* , cross-align with wui-items-* , override a single child with wui-self-* , and size children with wui-flex-1/auto/none/grow/shrink-0 plus wui-min-w-0 and the width/height shortcuts wui-w-* / wui-h-* . Display helpers wui-d-none/block/inline/inline-block round it out. Display — wui-d-none / block / inline / inline-block wui-d-block (full-line box) wui-d-inline-block wui-d-inline-block text wui-d-inline flows inline wui-d-none (hidden — not visible in the preview) text flows inline wui-d-none (hidden) Direction — row / row-reverse / col / col-reverse row · 1 2 3 row-reverse · 1 2 3 col · 1 2 col-reverse · 1 2 Wrap — wui-flex-wrap / wui-flex-nowrap wrap · 1 2 3 4 (wrapped) nowrap · 1 2 3 4 Justify — start / end / center / between / around / evenly start start end end center center between between around around evenly evenly Align items — start / end / center / stretch / baseline start tall center tall end tall stretch stretch baseline sm baseline lg Align self — auto / start / end / center / stretch / baseline self-start self-center self-end self-stretch self-baseline self-auto Flex child sizing — flex-1 / auto / none / grow / shrink-0 / min-w-0 flex-1 flex-1 flex-auto flex-none (rigid) flex-grow static shrink-0 wui-min-w-0 lets this long text shrink and ellipsis Width & height shortcuts — wui-w-* / wui-h-* wui-w-full (100%) wui-w-max (content width) wui-w-auto wui-h-full wui-h-auto wui-inline-flex inline: wui-inline-flex inline:",
-  "textAr": "wui-flex أدوات flexbox بأسلوب Tailwind. حوّل الحاوية إلى صف مرن بـ wui-flex (أو مضمّناً بـ wui-inline-flex )، واضبط wui-flex-row/col (+ -reverse ) و wui-flex-wrap/nowrap ، ووزّع بـ wui-justify-* ، وحاذِ عرضياً بـ wui-items-* ، وتجاوز طفلاً واحداً بـ wui-self-* ، وحدّد أحجام الأبناء بـ wui-flex-1/auto/none/grow/shrink-0 إضافة إلى wui-min-w-0 واختصارات العرض والارتفاع wui-w-* / wui-h-* . وتكمّلها أدوات العرض wui-d-none/block/inline/inline-block . العرض: wui-d-none / block / inline / inline-block الاتجاه: row / row-reverse / col / col-reverse الالتفاف: wui-flex-wrap / wui-flex-nowrap التوزيع الأفقي: start / end / center / between / around / evenly محاذاة العناصر: start / end / center / stretch / baseline محاذاة العنصر ذاتياً: auto / start / end / center / stretch / baseline تحجيم أبناء flex: flex-1 / auto / none / grow / shrink-0 / min-w-0 اختصارات العرض والارتفاع: wui-w-* / wui-h-* wui-inline-flex"
- },
- {
-  "id": "grid#wui-gap",
-  "kind": "section",
-  "page": "grid.html",
-  "pageTitle": "Grid & Flex",
-  "group": "Layout",
-  "sectionId": "wui-gap",
-  "titleEn": "wui-gap",
-  "titleAr": "wui-gap",
-  "textEn": "wui-gap Spacing utilities that work on any wui-flex or wui-grid container. wui-gap-0/xs/sm/1…6/8 sets both axes; wui-gap-x-* sets column-gap only; wui-gap-y-* sets row-gap only. The scale maps to the --space-* tokens. Uniform gap — wui-gap-0 … wui-gap-8 gap-0 gap-0 gap-0 gap-xs gap-xs gap-xs gap-sm gap-sm gap-sm gap-1 gap-1 gap-1 gap-2 gap-2 gap-2 gap-3 gap-3 gap-3 gap-4 gap-4 gap-4 gap-5 gap-5 gap-5 gap-6 gap-6 gap-6 gap-8 gap-8 gap-8 Axis gaps — wui-gap-x-* (columns) & wui-gap-y-* (rows) gap-x-5 gap-x-5 gap-x-5 gap-y-5 gap-y-5 gap-y-5 row 2 row 2 row 2 Full sets: wui-gap-x-0 … 5 and wui-gap-y-0 … 5 .",
-  "textAr": "wui-gap أدوات تباعد تعمل على أي حاوية wui-flex أو wui-grid . تضبط wui-gap-0/xs/sm/1…6/8 كلا المحورين؛ وتضبط wui-gap-x-* فجوة الأعمدة فقط؛ وتضبط wui-gap-y-* فجوة الصفوف فقط. ويرتبط المقياس برموز --space-* . فجوة موحّدة: wui-gap-0 … wui-gap-8 فجوات المحاور: wui-gap-x-* (الأعمدة) و wui-gap-y-* (الصفوف) المجموعات الكاملة: wui-gap-x-0 … 5 و wui-gap-y-0 … 5 ."
- },
- {
   "id": "grid#wui-bento",
   "kind": "section",
   "page": "grid.html",
-  "pageTitle": "Grid & Flex",
+  "pageTitle": "Grid",
   "group": "Layout",
   "sectionId": "wui-bento",
   "titleEn": "wui-bento",
@@ -2924,8 +2924,8 @@
   "sectionId": "layout",
   "titleEn": "Layout",
   "titleAr": "التخطيط",
-  "textEn": "Layout Layout & Shell Split, toolbar, field row, bento grid, scroll area. Grid & Flex Container, 12-col rows, flex + gap utilities (Bootstrap-aligned).",
-  "textAr": "التخطيط التخطيط والهيكل التقسيم، وشريط الأدوات، وصف الحقول، وشبكة البنتو، ومنطقة التمرير. الشبكة والمرونة الحاوية، وصفوف من 12 عموداً، وأدوات المرونة والفجوات (متوافقة مع Bootstrap)."
+  "textEn": "Layout Layout & Shell Split, toolbar, field row, bento grid, scroll area. Grid 12-col rows, CSS grid helpers, and the bento dashboard grid. Flex Flexbox direction, wrap, justify, align, sizing, and gap utilities. Containers Centered wui-container and full-width wui-container-fluid.",
+  "textAr": "التخطيط التخطيط والهيكل التقسيم، وشريط الأدوات، وصف الحقول، وشبكة البنتو، ومنطقة التمرير. الشبكة صفوف من 12 عموداً، وأدوات شبكة CSS، وشبكة لوحة المعلومات bento. المرونة أدوات flexbox: الاتجاه، والالتفاف، والتوزيع، والمحاذاة، والتحجيم، والفجوة. الحاويات wui-container المركزية و wui-container-fluid كاملة العرض."
  },
  {
   "id": "index#inputs",
@@ -3183,9 +3183,27 @@
   "id": "nav#grid",
   "kind": "nav",
   "page": "grid.html",
-  "pageTitle": "Grid & Flex",
+  "pageTitle": "Grid",
   "group": "Layout",
-  "textEn": "Grid & Flex grid flex container row col group stack simplegrid gap space bento",
+  "textEn": "Grid grid row col group stack simplegrid bento dashboard",
+  "textAr": ""
+ },
+ {
+  "id": "nav#flex",
+  "kind": "nav",
+  "page": "flex.html",
+  "pageTitle": "Flex",
+  "group": "Layout",
+  "textEn": "Flex flex flexbox gap space justify align wrap direction inline-flex",
+  "textAr": ""
+ },
+ {
+  "id": "nav#container",
+  "kind": "nav",
+  "page": "container.html",
+  "pageTitle": "Containers",
+  "group": "Layout",
+  "textEn": "Containers container fluid gutter centered max-width bootstrap",
   "textAr": ""
  },
  {

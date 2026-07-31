@@ -1,0 +1,123 @@
+diff --git a/CSS/sweetalert2-weoc-theme.css b/CSS/sweetalert2-weoc-theme.css
+index 311c550..d156ebb 100644
+--- a/CSS/sweetalert2-weoc-theme.css
++++ b/CSS/sweetalert2-weoc-theme.css
+@@ -69,22 +69,32 @@
+   --swal2-html-container-padding: var(--space-2) var(--space-5) 0 !important;
+ 
+   /* ── Actions row / buttons — matches .wui-btn.primary/.secondary
+-     (weoc-interactive.css). --swal2-action-button-hover/-active feed a
+-     color-mix() as "<color> <percentage>" (confirmed from the vendored
+-     default `black 10%`), not a standalone paint — keep that shape.
+-     The "darken toward" color is var(--color-overlay), NOT a literal
+-     `black` (zero-hardcoded-colors constraint) — it's the real weoc-ui
+-     scrim/backdrop token (weoc-overlays.css modal backdrop, weoc-loader.css
+-     busy overlay; already used below for --swal2-backdrop). Checked every
+-     agency-theme*.css variant: --color-overlay is always a dark/black-ish
+-     rgba in EVERY theme, including dark mode and every color variant
+-     (airy, sand, slate, crimson, deep, emerald, graphite, daylight,
+-     obsidian, compact) — unlike --color-text-primary, which flips to a
+-     near-white value under [data-theme="dark"] and would invert this
+-     into a LIGHTEN instead of a darken. --color-overlay carries its own
+-     alpha (~0.45-0.65 depending on theme), so the effective darken is
+-     slightly softer than an opaque `black` at the same percentage — still
+-     directionally correct and verified below via computed-style. ──── */
++     (weoc-interactive.css).
++
++     Hover/active darkening does NOT use SweetAlert2's own --swal2-action-
++     button-hover/-active + color-mix() mechanism (removed — see the
++     `.swal2-styled.swal2-confirm/-deny/-cancel:hover/:active` rules
++     below for the replacement). That mechanism structurally requires an
++     OPAQUE second color: color-mix() alpha-premultiplies, so mixing a
++     button's opaque background toward a SEMI-TRANSPARENT color produces
++     a semi-transparent computed `background-color`, which the browser
++     then alpha-composites against whatever sits behind the button (the
++     popup's --color-30 surface). A prior fix here swapped the vendor's
++     literal `black 10%` for `var(--color-overlay)` (the real weoc-ui
++     scrim/backdrop token) to satisfy the zero-hardcoded-colors rule —
++     but --color-overlay carries alpha (~0.45), and this codebase has NO
++     opaque, theme-invariant dark token to offer instead (checked
++     --color-black/--color-ink/--color-shadow/--color-90 — none exist).
++     The alpha-composited result pulled the "darkened" hover/active color
++     back TOWARD LIGHT under a light --color-30 surface — buttons got
++     visibly LIGHTER on hover in light theme, the opposite of intent.
++     Dark theme happened to look fine by coincidence (a dark backdrop
++     reinforces darkening there), which is why this only showed up as a
++     light-theme regression. `filter: brightness()` sidesteps the whole
++     class of bug: it multiplies the ALREADY-COMPOSITED on-screen pixel
++     by a scalar, so there's no second color and no alpha to premultiply
++     or composite against — brightness(0.92) unconditionally darkens
++     whatever is actually rendered, in every theme, every time. ──── */
+   --swal2-actions-margin: var(--space-5) auto 0 !important;
+   --swal2-actions-padding: 0 var(--space-5) !important;
+   --swal2-actions-justify-content: flex-end !important;
+@@ -107,10 +117,8 @@
+   --swal2-deny-button-border-radius: var(--border-radius) !important;
+   --swal2-deny-button-box-shadow: none !important;
+ 
+-  --swal2-action-button-hover: var(--color-overlay) 8% !important;
+-  --swal2-action-button-active: var(--color-overlay) 16% !important;
+   --swal2-action-button-focus-box-shadow: 0 0 0 3px var(--color-10-light) !important;
+-  --swal2-action-button-transition: background-color 0.15s ease, box-shadow 0.15s ease !important;
++  --swal2-action-button-transition: background-color 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease !important;
+ 
+   /* ── Close button ─────────────────────────────────────────────────────── */
+   --swal2-close-button-color: var(--color-text-secondary) !important;
+@@ -195,6 +203,57 @@ button.swal2-styled:focus-visible {
+   outline: none;
+ }
+ 
++/* ── Action button hover/active darkening ──────────────────────────────
++   Replaces SweetAlert2's own color-mix()-based hover/active mechanism
++   (see the long comment in the :root block above for why that mechanism
++   was abandoned — it requires an opaque second color and this codebase
++   has none). Mirrors the ONE existing place in this codebase that already
++   does "darken on hover, darker still on active" via an unconditional
++   filter instead of a paint mix: .wui-badge.is-interactive:hover/:active
++   (weoc-labels.css, brightness(0.82)/brightness(0.72)). NOTE: .wui-btn
++   itself does NOT do this — .wui-btn.primary/.danger/.success/.warning/
++   .info:hover only LIGHTEN via brightness(1.03-1.06), and .wui-btn has no
++   :active filter rule at all — so it is not actually the closest existing
++   analog for a hover-darken/active-darker-still shape; the badge pattern
++   is. brightness(0.92) / brightness(0.84) below are chosen to match this
++   file's own prior 8%/16% darken intent exactly (1 - 0.08, 1 - 0.16),
++   just expressed as a filter instead of a color-mix percentage.
++
++   Selectors mirror the vendored rule's target elements exactly (read from
++   CSS/sweetalert2.min.css: `div:where(.swal2-container) button:where(
++   .swal2-styled):where(.swal2-confirm):hover` etc.) but written as plain
++   class selectors instead of :where()-wrapped ones, so they win on
++   specificity alone ((0,3,0) beats the vendor's (0,1,2), since :where()
++   always contributes zero specificity) — no !important needed, consistent
++   with the icon-ring/close-button overrides elsewhere in this file. Each
++   rule also resets `background-color` back to the button's own base color
++   custom property, canceling the vendor's own color-mix() output for that
++   property so the two darkening mechanisms don't stack. */
++.swal2-styled.swal2-confirm:hover {
++  background-color: var(--swal2-confirm-button-background-color);
++  filter: brightness(0.92);
++}
++.swal2-styled.swal2-confirm:active {
++  background-color: var(--swal2-confirm-button-background-color);
++  filter: brightness(0.84);
++}
++.swal2-styled.swal2-deny:hover {
++  background-color: var(--swal2-deny-button-background-color);
++  filter: brightness(0.92);
++}
++.swal2-styled.swal2-deny:active {
++  background-color: var(--swal2-deny-button-background-color);
++  filter: brightness(0.84);
++}
++.swal2-styled.swal2-cancel:hover {
++  background-color: var(--swal2-cancel-button-background-color);
++  filter: brightness(0.92);
++}
++.swal2-styled.swal2-cancel:active {
++  background-color: var(--swal2-cancel-button-background-color);
++  filter: brightness(0.84);
++}
++
+ /* ── Close button ────────────────────────────────────────────────────────
+    Vendored CSS hardcodes a red hover tint (#f27474) on .swal2-close — not
+    exposed as a variable — overridden to the same neutral hover
