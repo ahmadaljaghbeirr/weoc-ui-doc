@@ -810,14 +810,32 @@
      matters. */
   var latestNav = 0;
 
+  /* Tracks the pathname of whatever page is actually loaded in #docs-main
+     right now — updated only when a REAL cross-page swap completes (see
+     applySwappedPage below), never on a same-page hash-only pushState (the
+     search-hit capture-phase click handler and the popstate handler's own
+     short-circuit both change only location.hash, not location.pathname).
+     Read by the popstate listener to tell "Back/Forward past a same-page
+     hash change" apart from "Back/Forward to an actually different page" —
+     see the comment there for why that distinction matters. Initialized at
+     script-parse time to whatever page is loaded right now; docs-shell.js
+     is loaded once and persists across every SPA navigation afterward (same
+     assumption bindSearch()'s getRoot()-per-call comment already relies
+     on), so this stays correct without a DOMContentLoaded/init hook. */
+  var lastKnownPathname = location.pathname;
+
   /* Apply an already-fetched page's content: renderChrome (which ends with
      its own WUI.i18n.apply) + runPageInit + the GSAP reveal. Shared by both
      the htmx:afterSwap listener
      (which already has the swapped-in DOM from evt.detail) and the popstate
      listener (which does its own separate fetch) — only the fetching differs
      between the two call sites, everything after "we know ns/root and the
-     new content is already in #docs-main" lives here once. */
+     new content is already in #docs-main" lives here once. This is also the
+     one shared point after which a cross-page swap has actually completed,
+     so it's where lastKnownPathname gets updated for the popstate
+     same-page-hash-only check above. */
   function applySwappedPage(ns, root) {
+    lastKnownPathname = location.pathname;
     renderChrome(ns, root); // already ends with its own WUI.i18n.apply(document)
     runPageInit();
     revealOut(document.getElementById('docs-main'));
@@ -986,6 +1004,24 @@
     window.addEventListener('popstate', function () {
       var main = document.getElementById('docs-main');
       if (!main) return;
+      // Whole-branch review Finding 6: a same-page search hit only ever
+      // does history.pushState(null, '', href) to change the hash (see the
+      // capture-phase click handler in bindSearch() below — it never
+      // touches pathname). Without this check, pressing Back afterward hit
+      // this listener's full fetch+innerHTML-swap+applySwappedPage path
+      // (GSAP curtain, runPageInit(), chart/TinyMCE/map re-init) for what
+      // should be nothing more than a scroll-position change back to
+      // wherever the hash previously pointed — a heavy, visibly janky
+      // operation for a same-page hash change, and one #docs-main's content
+      // never actually needed. location.pathname has already been updated
+      // natively by the browser by the time 'popstate' fires (see the note
+      // below), so comparing it to lastKnownPathname (updated only on a
+      // REAL cross-page swap, in applySwappedPage) cleanly tells the two
+      // cases apart.
+      if (location.pathname === lastKnownPathname) {
+        scrollToHashTarget(true);
+        return;
+      }
       // Bump + capture immediately (re-entrancy guard, see comment block
       // above): rapid repeat Back presses, or a Back press immediately
       // followed by a different sidebar click, must not let this fetch's
@@ -1035,7 +1071,15 @@
       var mini = new MiniSearch({
         idField: 'id',
         fields: ['textEn', 'textAr'],
-        storeFields: ['kind', 'page', 'pageTitle', 'group', 'sectionId', 'textEn', 'textAr']
+        // titleEn/titleAr must be listed here too, not just textEn/textAr --
+        // MiniSearch only returns fields named in storeFields on a hit;
+        // omitting them (as this list originally did) means hit.titleEn/
+        // hit.titleAr are always undefined at render time regardless of
+        // what's actually in search-index.json, silently falling through to
+        // renderSearchResults()' de-slugified-sectionId fallback for every
+        // single result -- exactly the Finding 7 bug, caught live testing
+        // this fix rather than by reading the diff alone.
+        storeFields: ['kind', 'page', 'pageTitle', 'group', 'sectionId', 'titleEn', 'titleAr', 'textEn', 'textAr']
       });
       mini.addAll(docs);
       return mini;
@@ -1052,16 +1096,24 @@
     return searchIndexPromise;
   }
 
+  // Single alternation regex + single replace pass over the escaped text --
+  // NOT one .replace() call per term chained sequentially. Chaining is what
+  // the whole-branch review's Finding 2 caught: each term's .replace() ran
+  // against the PREVIOUS term's already-<mark>-wrapped output, so a later
+  // term whose letters happen to match inside "<mark>"/"</mark>" (an m/a/r/k)
+  // or inside an HTML entity like "&amp;"/"&lt;" (an a/l/t/m/p) got wrapped
+  // too, corrupting the tag itself (e.g. "grid api" -> the "a" in "mark"
+  // getting <mark>-wrapped). A single pass over the untouched escaped text,
+  // matching any term at each position, cannot re-match its own output.
   function highlightSnippet(text, terms) {
     if (!text) return '';
     var truncated = text.length > 140 ? text.slice(0, 140) + '…' : text;
     var snippet = escapeHtml(truncated);
-    terms.forEach(function (term) {
-      if (!term) return;
-      var re = new RegExp('(' + escapeHtml(term).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
-      snippet = snippet.replace(re, '<mark>$1</mark>');
-    });
-    return snippet;
+    var escapedTerms = terms.filter(function (t) { return t; })
+      .map(function (t) { return escapeHtml(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); });
+    if (!escapedTerms.length) return snippet;
+    var re = new RegExp('(' + escapedTerms.join('|') + ')', 'ig');
+    return snippet.replace(re, '<mark>$1</mark>');
   }
 
   function renderSearchResults(q, root) {
@@ -1088,19 +1140,36 @@
         byPage[r.page].push(r);
       });
 
+      var titleField = lang === 'ar' ? 'titleAr' : 'titleEn';
       var terms = q.split(/\s+/);
       var swapSpec = htmxSwapSpec();
       var html = '';
       order.forEach(function (page) {
         var hits = byPage[page];
+        // page === 'index.html' is the home page (the one NAV item with
+        // file:null -- see getHref() above, and build-search-index.js's own
+        // navByFile keying, which the indexer treats the exact same way).
+        // Every OTHER page's href is root + 'docs/' + page; the home page's
+        // href is root itself, with no 'docs/<file>' segment, since
+        // docs/index.html IS the docs-site root.
+        var isHome = page === 'index.html';
         html += '<div class="docs-search-group"><div class="docs-search-group-title">' + escapeHtml(hits[0].pageTitle) + '</div>';
         hits.forEach(function (hit) {
-          var href = root + 'docs/' + hit.page + (hit.kind === 'section' ? '#' + hit.sectionId : '');
+          var href = (isHome ? root : root + 'docs/' + hit.page) + (hit.kind === 'section' ? '#' + hit.sectionId : '');
           var snippet = hit.kind === 'section' ? highlightSnippet(hit[field] || hit.textEn, terms) : '';
+          // Real section title (from the indexer's titleEn/titleAr, resolved
+          // the same way textEn/textAr are), not the de-slugified sectionId
+          // ("css js minimalism declarative first" instead of "CSS/JS
+          // minimalism — declarative first") -- and language-aware, so AR
+          // mode doesn't leak English slug text into results. Falls back to
+          // the EN title, then the slug, only if a title was never captured.
+          var label = hit.kind === 'section'
+            ? (hit[titleField] || hit.titleEn || hit.sectionId.replace(/-/g, ' '))
+            : hit.pageTitle;
           html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
             ' hx-get="' + href + '" hx-push-url="true" hx-target="#docs-main"' +
             ' hx-select="#docs-main &gt; *" hx-swap="' + swapSpec + '">' +
-            '<span class="docs-search-hit-label">' + escapeHtml(hit.kind === 'section' ? hit.sectionId.replace(/-/g, ' ') : hit.pageTitle) + '</span>' +
+            '<span class="docs-search-hit-label">' + escapeHtml(label) + '</span>' +
             (snippet ? '<span class="docs-search-hit-snippet">' + snippet + '</span>' : '') +
             '</a>';
         });
@@ -1163,7 +1232,15 @@
     document.addEventListener('click', function (e) {
       var hit = e.target.closest('[data-search-hit]');
       if (!hit) return;
-      var hitPage = hit.getAttribute('href').split('#')[0].split('/').pop();
+      // A home-page href (root, e.g. './' or '../') has no filename segment
+      // at all -- split('/').pop() on it yields '' (the empty string after
+      // the trailing slash), not 'index.html'. Without the `|| 'index.html'`
+      // fallback on BOTH sides, a same-page hit on the home page's own
+      // sections would never match here (hitPage '' !== currentPage
+      // 'index.html', which already had this same fallback) and would fall
+      // through to htmx's normal cross-page handling for what should be an
+      // instant scroll.
+      var hitPage = hit.getAttribute('href').split('#')[0].split('/').pop() || 'index.html';
       var currentPage = location.pathname.split('/').pop() || 'index.html';
       if (hitPage !== currentPage) return; // cross-page: let it reach htmx normally
       e.preventDefault();
