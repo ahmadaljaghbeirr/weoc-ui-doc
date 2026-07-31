@@ -464,8 +464,116 @@
   "sectionId": "destroy",
   "titleEn": "destroy()",
   "titleAr": "destroy()",
-  "textEn": "destroy() Call handle.destroy() when the chart's container is removed from the DOM. This prevents the module-level theme listener from iterating over stale instances. On WebEOC boards the most common teardown moment is when a view panel is hidden or a split panel closes and the chart container is replaced by an updatesection refresh. Destroy before the refresh, recreate in the observer callback: Theme listener stays alive after destroy handle.destroy() removes the chart from the registry and tears down its uPlot instance, but the module-level wui:themechange listener on document.documentElement is never removed (other charts may still be registered). This is intentional — the listener is lightweight and no-ops when the registry is empty.",
-  "textAr": "destroy() استدعِ handle.destroy() عند إزالة حاوية المخطط من DOM. يمنع هذا مستمع السمة على مستوى الوحدة من المرور على نسخ قديمة. في لوحات WebEOC، أكثر لحظات الإزالة شيوعًا هي عند إخفاء لوحة عرض أو إغلاق لوحة مقسومة واستبدال حاوية المخطط بتحديث updatesection . أتلِف قبل التحديث، وأعِد الإنشاء في دالة استدعاء المراقب: يبقى مستمع السمة حيًّا بعد الإتلاف يزيل handle.destroy() المخطط من السجل ويفكّك نسخة uPlot الخاصة به، لكن مستمع wui:themechange على مستوى الوحدة الموجود على document.documentElement لا يُزال أبدًا (فقد تبقى مخططات أخرى مسجّلة). هذا مقصود، إذ إن المستمع خفيف ولا يفعل شيئًا عندما يكون السجل فارغًا."
+  "textEn": "destroy() Call handle.destroy() when the chart's container is removed from the DOM. This prevents the module-level theme listener from iterating over stale instances. On WebEOC boards the most common teardown moment is when a view panel is hidden or a split panel closes and the chart container is replaced by an updatesection refresh. Destroy before the refresh, recreate in the observer callback: Theme listener stays alive after destroy handle.destroy() removes the chart from the registry and tears down its uPlot instance, but the module-level wui:themechange listener on document.documentElement is never removed (other charts may still be registered). This is intentional — the listener is lightweight and no-ops when the registry is empty. How to read a recipe Every recipe below has two parts. First, a live example with real sample data — proof it works, and something to visually compare your own result against. Second, a copy-paste template right underneath it, using {{name}} placeholders for every spot that should change per KPI. Everything outside {{...}} in the template is real, working code — copy it verbatim and only fill in the placeholders.",
+  "textAr": "destroy() استدعِ handle.destroy() عند إزالة حاوية المخطط من DOM. يمنع هذا مستمع السمة على مستوى الوحدة من المرور على نسخ قديمة. في لوحات WebEOC، أكثر لحظات الإزالة شيوعًا هي عند إخفاء لوحة عرض أو إغلاق لوحة مقسومة واستبدال حاوية المخطط بتحديث updatesection . أتلِف قبل التحديث، وأعِد الإنشاء في دالة استدعاء المراقب: يبقى مستمع السمة حيًّا بعد الإتلاف يزيل handle.destroy() المخطط من السجل ويفكّك نسخة uPlot الخاصة به، لكن مستمع wui:themechange على مستوى الوحدة الموجود على document.documentElement لا يُزال أبدًا (فقد تبقى مخططات أخرى مسجّلة). هذا مقصود، إذ إن المستمع خفيف ولا يفعل شيئًا عندما يكون السجل فارغًا. كيفية قراءة الوصفة لكل وصفة أدناه جزآن. الأول مثال حي ببيانات نموذجية حقيقية، يثبت أنها تعمل ويمنحك مرجعًا بصريًا لمقارنة نتيجتك به. والثاني قالب جاهز للنسخ واللصق أسفله مباشرة، يستخدم عناصر نائبة على شكل {{الاسم}} لكل موضع يجب تغييره حسب مؤشر الأداء. كل ما هو خارج {{...}} في القالب كود حقيقي وعامل بالفعل؛ انسخه كما هو واملأ العناصر النائبة فقط."
+ },
+ {
+  "id": "charts#dashboard-overview",
+  "kind": "section",
+  "page": "charts.html",
+  "pageTitle": "Charts",
+  "group": "Charts",
+  "sectionId": "dashboard-overview",
+  "titleEn": "Dashboard Overview",
+  "titleAr": "نظرة عامة على لوحة المعلومات",
+  "textEn": "Dashboard Overview Tile-for-tile layout of the real Operation Home Page board ( HomePage/out/board.web ), same wui-w-{cols}x{rows} spans. Click any solid tile to jump to its recipe below. Dashed tiles (Map, Live Activity Feed, Tasks Overview) are board-specific layout, not weoc-ui component recipes — not covered on this page. Total Events Active Events Closed Events Avg. Resolution Avg. Response Incident Map (see weoc-map.js migration) Events by Classification Event Closure Performance Event Timeline Events By Location Events By Emergency Level Quick Actions Live Activity Feed (board-specific, not a recipe) Tasks Overview (board-specific, not a recipe)",
+  "textAr": "نظرة عامة على لوحة المعلومات تخطيط بلاطة بلاطة لموقع لوحة الصفحة الرئيسية الحقيقية ( HomePage/out/board.web )، بنفس امتدادات wui-w-{cols}x{rows} . انقر أي بلاطة صلبة للانتقال إلى وصفتها أدناه. البلاطات المتقطعة (الخريطة، وموجز النشاط المباشر، ونظرة عامة على المهام) هي تخطيط خاص باللوحة، وليست وصفات مكوّنات weoc-ui، ولا تُغطى في هذه الصفحة."
+ },
+ {
+  "id": "charts#1-the-tile-shell-wui-tile",
+  "kind": "section",
+  "page": "charts.html",
+  "pageTitle": "Charts",
+  "group": "Charts",
+  "sectionId": "1-the-tile-shell-wui-tile",
+  "titleEn": "1. The Tile Shell ( wui-tile )",
+  "titleAr": "١. هيكل البلاطة ( wui-tile )",
+  "textEn": "1. The Tile Shell ( wui-tile ) Every recipe below drops into the .wui-tile-body of this shell. Header and footer are both optional — omit either div for a body-only tile. See Conventions for the .flush border toggle and .is-scrollable . Overall Readiness KPI content goes here View details Copy-paste template:",
+  "textAr": "١. هيكل البلاطة ( wui-tile ) كل وصفة أدناه تُوضع داخل .wui-tile-body لهذا الهيكل. الترويسة والتذييل كلاهما اختياري؛ احذف أيًا منهما للحصول على بلاطة تحتوي على المحتوى فقط. راجع صفحة الاصطلاحات لمعرفة مفتاح الحدود .flush وخاصية .is-scrollable . قالب جاهز للنسخ واللصق:"
+ },
+ {
+  "id": "charts#2-kpi-number",
+  "kind": "section",
+  "page": "charts.html",
+  "pageTitle": "Charts",
+  "group": "Charts",
+  "sectionId": "2-kpi-number",
+  "titleEn": "2. KPI Number",
+  "titleAr": "٢. رقم مؤشر الأداء",
+  "textEn": "2. KPI Number Pure CSS/DOM — no JS. Use for any single count or metric. Color the value with a status token when the number itself is good/bad/neutral news. Active Events 4 Copy-paste template (add the .dash-kpi-value rule from the CSS snippet below once per project — it isn't shipped in the core barrel, it's a 5-line convention, not a component): With icon, trend arrow & sparkline (real board recipe — a richer variant for when the KPI needs a 7-day trend, not just a bare number): Total Events vs last 7 days Click for markup, expressions & draw function Real card, from the Operation Home Page board ( HomePage/out/board.web ), CSS from HomePage/CSS/kpi-card.css . Recreated 1:1 in weoc-ui-doc/tests/responsive/kpi-sparkline-tile.html as a standalone, verified-in-browser recipe. All 5 KPI cards on the real board (Total/Active/Closed Events, Avg. Resolution/Response Time) share this exact shape. Markup Expressions JavaScript Copy",
+  "textAr": "٢. رقم مؤشر الأداء CSS/DOM خالص، بلا JS. يُستخدم لأي عدد أو مقياس مفرد. لوّن القيمة برمز حالة عندما يحمل الرقم نفسه خبرًا جيدًا/سيئًا/محايدًا. قالب جاهز للنسخ واللصق (أضف قاعدة .dash-kpi-value من مقتطف CSS أدناه مرة واحدة لكل مشروع؛ فهي غير مشمولة في الحزمة الأساسية، بل هي اصطلاح من 5 أسطر لا مكوّن): مع أيقونة وسهم اتجاه ومخطط مصغّر (سباركلاين) (وصفة حقيقية من إحدى اللوحات؛ نسخة أكثر ثراءً لعندما يحتاج مؤشر الأداء إلى اتجاه لمدة 7 أيام، وليس مجرد رقم مجرد):"
+ },
+ {
+  "id": "charts#3-gauge",
+  "kind": "section",
+  "page": "charts.html",
+  "pageTitle": "Charts",
+  "group": "Charts",
+  "sectionId": "3-gauge",
+  "titleEn": "3. Gauge",
+  "titleAr": "٣. المقياس (Gauge)",
+  "textEn": "3. Gauge Semi-circle threshold gauge. Auto-resizes and redraws crisply on any container change (bento tile resize, sidebar collapse, theme toggle) — no board-side wiring needed. Event Closure Performance Percentage of events closed out of total reported events in the last 7 days Click for markup, expression & draw function Real card, from the Operation Home Page board ( HomePage/out/board.web ). Recreated 1:1 in weoc-ui-doc/tests/responsive/event-closure-gauge-tile.html as a standalone, verified-in-browser recipe. Markup drops into the .wui-tile-body from section 1 (no legend dock needed, WUI.gauge draws its own status chip). The WebEOC expression is the hidden-span wiring the draw function reads from. Both are real, from board.web : Markup Expression JavaScript Copy",
+  "textAr": "٣. المقياس (Gauge) مقياس نصف دائري بعتبات لونية. يُعاد رسمه تلقائيًا وبوضوح عند أي تغيّر في حاويته (تغيير حجم بلاطة، طي الشريط الجانبي، تبديل السمة) دون أي ربط يدوي من جهة اللوحة."
+ },
+ {
+  "id": "charts#4-donut-pie-category-split",
+  "kind": "section",
+  "page": "charts.html",
+  "pageTitle": "Charts",
+  "group": "Charts",
+  "sectionId": "4-donut-pie-category-split",
+  "titleEn": "4. Donut / Pie (category split)",
+  "titleAr": "٤. مخطط دائري/حلقي (توزيع الفئات)",
+  "textEn": "4. Donut / Pie (category split) Raw Canvas 2D, no dependency. Use for a categorical breakdown (events by classification, resources by type). WUI.pie() is the same call with cutout omitted. Events by Classification Distribution of reported events Click for markup, expressions & draw function Real card, from the Operation Home Page board ( HomePage/out/board.web ). Recreated 1:1 in weoc-ui-doc/tests/responsive/classification-donut-tile.html as a standalone, verified-in-browser recipe. The .wui-tile-legend dock catches WUI.donut 's own auto-generated legend, relocated there once after creation. All six category counts come from their own externalexpression , shown in full below: Markup Expressions JavaScript Copy",
+  "textAr": "٤. مخطط دائري/حلقي (توزيع الفئات) يعتمد على Canvas 2D الخام دون أي اعتمادية. يُستخدم لتوزيع فئوي (الأحداث حسب التصنيف، الموارد حسب النوع). دالة WUI.pie() هي نفس الاستدعاء بدون خيار cutout ."
+ },
+ {
+  "id": "charts#5-bar-row-stacked-segmented-progress",
+  "kind": "section",
+  "page": "charts.html",
+  "pageTitle": "Charts",
+  "group": "Charts",
+  "sectionId": "5-bar-row-stacked-segmented-progress",
+  "titleEn": "5. Bar-Row (stacked/segmented progress)",
+  "titleAr": "٥. صف الشريط (تقدّم مكدّس/مجزّأ)",
+  "textEn": "5. Bar-Row (stacked/segmented progress) Pure CSS/DOM, no canvas — already reflows for free with its container, including a built-in density reduction inside narrow bento tiles. Use for available/assigned/unavailable-style stacked breakdowns, one row per group. WUI.barRow('#demo-kpi-barrow', { rows: [ { label: 'Vehicles', value: 100, segments: [ { pct: 62, color: 'success' }, { pct: 23, color: 'warning' }, { pct: 15, color: 'danger' } ]}, { label: 'Chemicals', value: 100, segments: [ { pct: 71, color: 'success' }, { pct: 12, color: 'primary' }, { pct: 17, color: 'danger' } ]} ] }); Copy-paste template: Two real board recipes use this exact component — a static ranked list and an expression-driven segmented breakdown: Events By Location Top 5 event areas View All Events Click for markup & draw function Real card, from the Operation Home Page board. Recreated 1:1 in weoc-ui-doc/tests/responsive/events-location-tile.html . Note this one is not expression-driven &mdash; the real board hardcodes this list. Markup JavaScript Copy Events By Emergency Level Tier distribution by classification Tier 1 Tier 2 Tier 3 Tier 4 Click for markup, expressions & draw function Real card, from the Operation Home Page board. Recreated 1:1 in weoc-ui-doc/tests/responsive/emergency-level-tile.html — six classifications, each broken into 4 tier segments, colored from the shared --tier-N-glow tokens. Markup Expressions JavaScript Copy",
+  "textAr": "٥. صف الشريط (تقدّم مكدّس/مجزّأ) CSS/DOM خالص دون Canvas؛ يتكيف تلقائيًا مع حاويته، ويشمل تقليل كثافة مدمجًا داخل بلاطات bento الضيقة. يُستخدم لتوزيعات مكدّسة على نمط متاح/مُخصَّص/غير متاح، بصف واحد لكل مجموعة. قالب جاهز للنسخ واللصق:"
+ },
+ {
+  "id": "charts#6-sparkline-line-chart",
+  "kind": "section",
+  "page": "charts.html",
+  "pageTitle": "Charts",
+  "group": "Charts",
+  "sectionId": "6-sparkline-line-chart",
+  "titleEn": "6. Sparkline / Line Chart",
+  "titleAr": "٦. مخطط خطي مصغّر/مخطط خطي",
+  "textEn": "6. Sparkline / Line Chart uPlot-backed time series. Use a short height (40-60px) for an inline sparkline inside a KPI-number tile, or a taller one as its own tile. data[0] must be real ascending Unix- second timestamps — small sequential integers render nothing. Event Timeline Weekly event trend Click for markup, expression & draw function Real card, from the Operation Home Page board ( HomePage/out/board.web ). Recreated 1:1 in weoc-ui-doc/tests/responsive/event-timeline-chart-tile.html as a standalone, verified-in-browser recipe. Type is area here — line / bar / stepped use the identical shape, just a different type . Markup needs the tile body to have a real height, since WUI.chart sizes off host.offsetHeight . The expression below (full, unabbreviated SQL) is the 7-day series source: Markup Expression JavaScript Copy",
+  "textAr": "٦. مخطط خطي مصغّر/مخطط خطي سلسلة زمنية معتمدة على uPlot. استخدم ارتفاعًا قصيرًا ( height من 40 إلى 60px) لمخطط مصغّر ضمن بلاطة رقم مؤشر أداء، أو ارتفاعًا أكبر كبلاطة قائمة بذاتها. يجب أن يكون data[0] طوابع زمنية تصاعدية حقيقية بوحدة الثانية من حقبة يونكس؛ فالأعداد الصحيحة المتسلسلة الصغيرة لا تُظهر شيئًا."
+ },
+ {
+  "id": "charts#7-progress-ring",
+  "kind": "section",
+  "page": "charts.html",
+  "pageTitle": "Charts",
+  "group": "Charts",
+  "sectionId": "7-progress-ring",
+  "titleEn": "7. Progress Ring",
+  "titleAr": "٧. حلقة التقدّم",
+  "textEn": "7. Progress Ring CSS-only, no JS. Fluid by default — scales with its container. Use for a single completion/readiness percentage where a gauge's threshold zones aren't needed. 75% Readiness Copy-paste template (stroke-dashoffset formula: 326.73 &times; (1 &minus; pct/100) — e.g. 75% &rarr; 81.68): For an animated fill-in-on-load effect instead of a static value, use data-target-pct=\"{{75}}\" on the .wui-progress-ring-fill circle and call WUIAnim.ringEntrance(el) — see Motion .",
+  "textAr": "٧. حلقة التقدّم CSS فقط دون JS. مرنة الحجم افتراضيًا وتتناسب مع حاويتها. تُستخدم لنسبة إنجاز/جاهزية مفردة حين لا تكون نطاقات العتبات الخاصة بالمقياس ضرورية. قالب جاهز للنسخ واللصق (معادلة stroke-dashoffset : 326.73 &times; (1 &minus; النسبة/100) ، فمثلًا 75% &rarr; 81.68): للحصول على تأثير امتلاء متحرك عند التحميل بدلًا من قيمة ثابتة، استخدم data-target-pct=\"{{75}}\" على دائرة .wui-progress-ring-fill واستدعِ WUIAnim.ringEntrance(el) ؛ راجع صفحة الحركة (Motion) ."
+ },
+ {
+  "id": "charts#8-quick-action-grid",
+  "kind": "section",
+  "page": "charts.html",
+  "pageTitle": "Charts",
+  "group": "Charts",
+  "sectionId": "8-quick-action-grid",
+  "titleEn": "8. Quick Action Grid",
+  "titleAr": "٨. شبكة الإجراءات السريعة",
+  "textEn": "8. Quick Action Grid Pure CSS/DOM buttons, one delegated click handler. Use for a row of shortcut actions (add record, notify, jump to module) inside a tile. Quick Actions Quick actions to modules Click for markup & draw function Real card, from the Operation Home Page board. Recreated 1:1 in weoc-ui-doc/tests/responsive/quick-actions-tile.html . The real board wires data-action to a navigation lookup in its own quick-actions.js ; the handler shape below is what to copy regardless of what each action ends up doing. Markup JavaScript Copy Not seeing the visualization you need? Heatmaps, box plots, funnels, and maps-with-markers aren't weoc-ui components yet. Don't build a one-off — flag it as a porting candidate per the component-promotion convention so it gets added here for everyone.",
+  "textAr": "٨. شبكة الإجراءات السريعة أزرار CSS/DOM خالصة، بمعالج نقر واحد مفوَّض. تُستخدم لصف من إجراءات الاختصار (إضافة سجل، إشعار، الانتقال إلى وحدة) داخل بلاطة. لا تجد التصوّر البصري الذي تحتاجه؟ الخرائط الحرارية، والمخططات الصندوقية، والقمعية، والخرائط ذات العلامات ليست بعد من مكوّنات weoc-ui. لا تبنِ حلًا لمرة واحدة؛ صنّفه كمرشّح للترحيل وفق اصطلاح ترقية المكوّنات ليُضاف هنا للجميع."
  },
  {
   "id": "combobox#how-it-initializes",
@@ -836,7 +944,7 @@
   "sectionId": "tile-chrome-header-footer-border-toggle",
   "titleEn": "Tile chrome — header/footer border toggle",
   "titleAr": "هيكل البلاطة، مفتاح حدود الترويسة/التذييل",
-  "textEn": "Tile chrome — header/footer border toggle Dashboard tiles use .wui-tile > .wui-tile-hdr / .wui-tile-body / .wui-tile-footer (optional header and footer — a body-only tile just omits them). The footer always sits at the bottom regardless of what else is present. Add .flush to a header or footer independently to drop its divider border — the same modifier also works on .wui-panel-hdr / -footer , .wui-collapse-panel , and .wui-card-footer . Add .is-scrollable to .wui-tile itself to scroll the body instead of clipping it. See the KPI & Tile Recipes page for full copy-paste examples.",
+  "textEn": "Tile chrome — header/footer border toggle Dashboard tiles use .wui-tile > .wui-tile-hdr / .wui-tile-body / .wui-tile-footer (optional header and footer — a body-only tile just omits them). The footer always sits at the bottom regardless of what else is present. Add .flush to a header or footer independently to drop its divider border — the same modifier also works on .wui-panel-hdr / -footer , .wui-collapse-panel , and .wui-card-footer . Add .is-scrollable to .wui-tile itself to scroll the body instead of clipping it. See the KPI & Tile Recipes section for full copy-paste examples.",
   "textAr": "هيكل البلاطة، مفتاح حدود الترويسة/التذييل تستخدم بلاطات لوحة المعلومات .wui-tile > .wui-tile-hdr / .wui-tile-body / .wui-tile-footer (الترويسة والتذييل اختياريان؛ تكتفي البلاطة التي تحتوي على المحتوى فقط بحذفهما). يبقى التذييل دائمًا في الأسفل بصرف النظر عمّا هو موجود غيره. أضف .flush إلى الترويسة أو التذييل بشكل مستقل لإزالة خط الفاصل؛ ويعمل نفس المفتاح أيضًا على .wui-panel-hdr / -footer و .wui-collapse-panel و .wui-card-footer . أضف .is-scrollable إلى .wui-tile نفسها لتمرير المحتوى بدلًا من قصّه. راجع صفحة وصفات مؤشرات الأداء والبلاطات لأمثلة كاملة جاهزة للنسخ واللصق."
  },
  {
@@ -1558,114 +1666,6 @@
   "titleAr": "destroy()",
   "textEn": "destroy() Call handle.destroy() when the board's container is removed from the DOM (a split panel closing, an updatesection refresh replacing the whole board region on a WebEOC view, etc). It unbinds the drag-and-drop listeners bound on the container and clears its contents — the container element itself is left in place, ready for a fresh WUI.kanban() call if needed.",
   "textAr": "destroy() استدعِ handle.destroy() عند إزالة حاوية اللوحة من DOM (إغلاق لوحة مقسومة، أو تحديث updatesection يستبدل منطقة اللوحة بأكملها في عرض WebEOC، إلخ). يزيل ربط مستمعي السحب والإفلات المرتبطة بالحاوية ويمسح محتوياتها؛ يبقى عنصر الحاوية نفسه في مكانه، جاهزًا لاستدعاء جديد لـ WUI.kanban() عند الحاجة."
- },
- {
-  "id": "kpi-recipes#dashboard-overview",
-  "kind": "section",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "sectionId": "dashboard-overview",
-  "titleEn": "Dashboard Overview",
-  "titleAr": "",
-  "textEn": "Dashboard Overview Tile-for-tile layout of the real Operation Home Page board ( HomePage/out/board.web ), same wui-w-{cols}x{rows} spans. Click any solid tile to jump to its recipe below. Dashed tiles (Map, Live Activity Feed, Tasks Overview) are board-specific layout, not weoc-ui component recipes — not covered on this page. Total Events Active Events Closed Events Avg. Resolution Avg. Response Incident Map (see weoc-map.js migration) Events by Classification Event Closure Performance Event Timeline Events By Location Events By Emergency Level Quick Actions Live Activity Feed (board-specific, not a recipe) Tasks Overview (board-specific, not a recipe)",
-  "textAr": ""
- },
- {
-  "id": "kpi-recipes#1-the-tile-shell-wui-tile",
-  "kind": "section",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "sectionId": "1-the-tile-shell-wui-tile",
-  "titleEn": "1. The Tile Shell ( wui-tile )",
-  "titleAr": "١. هيكل البلاطة ( wui-tile )",
-  "textEn": "1. The Tile Shell ( wui-tile ) Every recipe below drops into the .wui-tile-body of this shell. Header and footer are both optional — omit either div for a body-only tile. See Conventions for the .flush border toggle and .is-scrollable . Overall Readiness KPI content goes here View details Copy-paste template:",
-  "textAr": "١. هيكل البلاطة ( wui-tile ) كل وصفة أدناه تُوضع داخل .wui-tile-body لهذا الهيكل. الترويسة والتذييل كلاهما اختياري؛ احذف أيًا منهما للحصول على بلاطة تحتوي على المحتوى فقط. راجع صفحة الاصطلاحات لمعرفة مفتاح الحدود .flush وخاصية .is-scrollable . قالب جاهز للنسخ واللصق:"
- },
- {
-  "id": "kpi-recipes#2-kpi-number",
-  "kind": "section",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "sectionId": "2-kpi-number",
-  "titleEn": "2. KPI Number",
-  "titleAr": "٢. رقم مؤشر الأداء",
-  "textEn": "2. KPI Number Pure CSS/DOM — no JS. Use for any single count or metric. Color the value with a status token when the number itself is good/bad/neutral news. Active Events 4 Copy-paste template (add the .dash-kpi-value rule from the CSS snippet below once per project — it isn't shipped in the core barrel, it's a 5-line convention, not a component): With icon, trend arrow & sparkline (real board recipe — a richer variant for when the KPI needs a 7-day trend, not just a bare number): Total Events vs last 7 days Click for markup, expressions & draw function Real card, from the Operation Home Page board ( HomePage/out/board.web ), CSS from HomePage/CSS/kpi-card.css . Recreated 1:1 in weoc-ui-doc/tests/responsive/kpi-sparkline-tile.html as a standalone, verified-in-browser recipe. All 5 KPI cards on the real board (Total/Active/Closed Events, Avg. Resolution/Response Time) share this exact shape. Markup Expressions JavaScript Copy",
-  "textAr": "٢. رقم مؤشر الأداء CSS/DOM خالص، بلا JS. يُستخدم لأي عدد أو مقياس مفرد. لوّن القيمة برمز حالة عندما يحمل الرقم نفسه خبرًا جيدًا/سيئًا/محايدًا. قالب جاهز للنسخ واللصق (أضف قاعدة .dash-kpi-value من مقتطف CSS أدناه مرة واحدة لكل مشروع؛ فهي غير مشمولة في الحزمة الأساسية، بل هي اصطلاح من 5 أسطر لا مكوّن): مع أيقونة وسهم اتجاه ومخطط مصغّر (سباركلاين) (وصفة حقيقية من إحدى اللوحات؛ نسخة أكثر ثراءً لعندما يحتاج مؤشر الأداء إلى اتجاه لمدة 7 أيام، وليس مجرد رقم مجرد):"
- },
- {
-  "id": "kpi-recipes#3-gauge",
-  "kind": "section",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "sectionId": "3-gauge",
-  "titleEn": "3. Gauge",
-  "titleAr": "٣. المقياس (Gauge)",
-  "textEn": "3. Gauge Semi-circle threshold gauge. Auto-resizes and redraws crisply on any container change (bento tile resize, sidebar collapse, theme toggle) — no board-side wiring needed. Event Closure Performance Percentage of events closed out of total reported events in the last 7 days Click for markup, expression & draw function Real card, from the Operation Home Page board ( HomePage/out/board.web ). Recreated 1:1 in weoc-ui-doc/tests/responsive/event-closure-gauge-tile.html as a standalone, verified-in-browser recipe. Markup drops into the .wui-tile-body from section 1 (no legend dock needed, WUI.gauge draws its own status chip). The WebEOC expression is the hidden-span wiring the draw function reads from. Both are real, from board.web : Markup Expression JavaScript Copy",
-  "textAr": "٣. المقياس (Gauge) مقياس نصف دائري بعتبات لونية. يُعاد رسمه تلقائيًا وبوضوح عند أي تغيّر في حاويته (تغيير حجم بلاطة، طي الشريط الجانبي، تبديل السمة) دون أي ربط يدوي من جهة اللوحة."
- },
- {
-  "id": "kpi-recipes#4-donut-pie-category-split",
-  "kind": "section",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "sectionId": "4-donut-pie-category-split",
-  "titleEn": "4. Donut / Pie (category split)",
-  "titleAr": "٤. مخطط دائري/حلقي (توزيع الفئات)",
-  "textEn": "4. Donut / Pie (category split) Raw Canvas 2D, no dependency. Use for a categorical breakdown (events by classification, resources by type). WUI.pie() is the same call with cutout omitted. Events by Classification Distribution of reported events Click for markup, expressions & draw function Real card, from the Operation Home Page board ( HomePage/out/board.web ). Recreated 1:1 in weoc-ui-doc/tests/responsive/classification-donut-tile.html as a standalone, verified-in-browser recipe. The .wui-tile-legend dock catches WUI.donut 's own auto-generated legend, relocated there once after creation. All six category counts come from their own externalexpression , shown in full below: Markup Expressions JavaScript Copy",
-  "textAr": "٤. مخطط دائري/حلقي (توزيع الفئات) يعتمد على Canvas 2D الخام دون أي اعتمادية. يُستخدم لتوزيع فئوي (الأحداث حسب التصنيف، الموارد حسب النوع). دالة WUI.pie() هي نفس الاستدعاء بدون خيار cutout ."
- },
- {
-  "id": "kpi-recipes#5-bar-row-stacked-segmented-progress",
-  "kind": "section",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "sectionId": "5-bar-row-stacked-segmented-progress",
-  "titleEn": "5. Bar-Row (stacked/segmented progress)",
-  "titleAr": "٥. صف الشريط (تقدّم مكدّس/مجزّأ)",
-  "textEn": "5. Bar-Row (stacked/segmented progress) Pure CSS/DOM, no canvas — already reflows for free with its container, including a built-in density reduction inside narrow bento tiles. Use for available/assigned/unavailable-style stacked breakdowns, one row per group. WUI.barRow('#demo-kpi-barrow', { rows: [ { label: 'Vehicles', value: 100, segments: [ { pct: 62, color: 'success' }, { pct: 23, color: 'warning' }, { pct: 15, color: 'danger' } ]}, { label: 'Chemicals', value: 100, segments: [ { pct: 71, color: 'success' }, { pct: 12, color: 'primary' }, { pct: 17, color: 'danger' } ]} ] }); Copy-paste template: Two real board recipes use this exact component — a static ranked list and an expression-driven segmented breakdown: Events By Location Top 5 event areas View All Events Click for markup & draw function Real card, from the Operation Home Page board. Recreated 1:1 in weoc-ui-doc/tests/responsive/events-location-tile.html . Note this one is not expression-driven &mdash; the real board hardcodes this list. Markup JavaScript Copy Events By Emergency Level Tier distribution by classification Tier 1 Tier 2 Tier 3 Tier 4 Click for markup, expressions & draw function Real card, from the Operation Home Page board. Recreated 1:1 in weoc-ui-doc/tests/responsive/emergency-level-tile.html — six classifications, each broken into 4 tier segments, colored from the shared --tier-N-glow tokens. Markup Expressions JavaScript Copy",
-  "textAr": "٥. صف الشريط (تقدّم مكدّس/مجزّأ) CSS/DOM خالص دون Canvas؛ يتكيف تلقائيًا مع حاويته، ويشمل تقليل كثافة مدمجًا داخل بلاطات bento الضيقة. يُستخدم لتوزيعات مكدّسة على نمط متاح/مُخصَّص/غير متاح، بصف واحد لكل مجموعة. قالب جاهز للنسخ واللصق:"
- },
- {
-  "id": "kpi-recipes#6-sparkline-line-chart",
-  "kind": "section",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "sectionId": "6-sparkline-line-chart",
-  "titleEn": "6. Sparkline / Line Chart",
-  "titleAr": "٦. مخطط خطي مصغّر/مخطط خطي",
-  "textEn": "6. Sparkline / Line Chart uPlot-backed time series. Use a short height (40-60px) for an inline sparkline inside a KPI-number tile, or a taller one as its own tile. data[0] must be real ascending Unix- second timestamps — small sequential integers render nothing. Event Timeline Weekly event trend Click for markup, expression & draw function Real card, from the Operation Home Page board ( HomePage/out/board.web ). Recreated 1:1 in weoc-ui-doc/tests/responsive/event-timeline-chart-tile.html as a standalone, verified-in-browser recipe. Type is area here — line / bar / stepped use the identical shape, just a different type . Markup needs the tile body to have a real height, since WUI.chart sizes off host.offsetHeight . The expression below (full, unabbreviated SQL) is the 7-day series source: Markup Expression JavaScript Copy",
-  "textAr": "٦. مخطط خطي مصغّر/مخطط خطي سلسلة زمنية معتمدة على uPlot. استخدم ارتفاعًا قصيرًا ( height من 40 إلى 60px) لمخطط مصغّر ضمن بلاطة رقم مؤشر أداء، أو ارتفاعًا أكبر كبلاطة قائمة بذاتها. يجب أن يكون data[0] طوابع زمنية تصاعدية حقيقية بوحدة الثانية من حقبة يونكس؛ فالأعداد الصحيحة المتسلسلة الصغيرة لا تُظهر شيئًا."
- },
- {
-  "id": "kpi-recipes#7-progress-ring",
-  "kind": "section",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "sectionId": "7-progress-ring",
-  "titleEn": "7. Progress Ring",
-  "titleAr": "٧. حلقة التقدّم",
-  "textEn": "7. Progress Ring CSS-only, no JS. Fluid by default — scales with its container. Use for a single completion/readiness percentage where a gauge's threshold zones aren't needed. 75% Readiness Copy-paste template (stroke-dashoffset formula: 326.73 &times; (1 &minus; pct/100) — e.g. 75% &rarr; 81.68): For an animated fill-in-on-load effect instead of a static value, use data-target-pct=\"{{75}}\" on the .wui-progress-ring-fill circle and call WUIAnim.ringEntrance(el) — see Motion .",
-  "textAr": "٧. حلقة التقدّم CSS فقط دون JS. مرنة الحجم افتراضيًا وتتناسب مع حاويتها. تُستخدم لنسبة إنجاز/جاهزية مفردة حين لا تكون نطاقات العتبات الخاصة بالمقياس ضرورية. قالب جاهز للنسخ واللصق (معادلة stroke-dashoffset : 326.73 &times; (1 &minus; النسبة/100) ، فمثلًا 75% &rarr; 81.68): للحصول على تأثير امتلاء متحرك عند التحميل بدلًا من قيمة ثابتة، استخدم data-target-pct=\"{{75}}\" على دائرة .wui-progress-ring-fill واستدعِ WUIAnim.ringEntrance(el) ؛ راجع صفحة الحركة (Motion) ."
- },
- {
-  "id": "kpi-recipes#8-quick-action-grid",
-  "kind": "section",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "sectionId": "8-quick-action-grid",
-  "titleEn": "8. Quick Action Grid",
-  "titleAr": "",
-  "textEn": "8. Quick Action Grid Pure CSS/DOM buttons, one delegated click handler. Use for a row of shortcut actions (add record, notify, jump to module) inside a tile. Quick Actions Quick actions to modules Click for markup & draw function Real card, from the Operation Home Page board. Recreated 1:1 in weoc-ui-doc/tests/responsive/quick-actions-tile.html . The real board wires data-action to a navigation lookup in its own quick-actions.js ; the handler shape below is what to copy regardless of what each action ends up doing. Markup JavaScript Copy Not seeing the visualization you need? Heatmaps, box plots, funnels, and maps-with-markers aren't weoc-ui components yet. Don't build a one-off — flag it as a porting candidate per the component-promotion convention so it gets added here for everyone.",
-  "textAr": "لا تجد التصوّر البصري الذي تحتاجه؟ الخرائط الحرارية، والمخططات الصندوقية، والقمعية، والخرائط ذات العلامات ليست بعد من مكوّنات weoc-ui. لا تبنِ حلًا لمرة واحدة؛ صنّفه كمرشّح للترحيل وفق اصطلاح ترقية المكوّنات ليُضاف هنا للجميع."
  },
  {
   "id": "layout#app-shell-wui-body-shell-wui-page-shell-wui-main-div-wui-view-body",
@@ -3408,15 +3408,6 @@
   "pageTitle": "conventions",
   "group": "Conventions",
   "textEn": "Conventions & Rules rules inline style viewtype css agency theme device tier breakpoint promotion minimal declarative",
-  "textAr": ""
- },
- {
-  "id": "nav#kpi-recipes",
-  "kind": "nav",
-  "page": "kpi-recipes.html",
-  "pageTitle": "Dashboard KPI & Tile Recipes",
-  "group": "Conventions",
-  "textEn": "KPI & Tile Recipes kpi dashboard tile recipe template placeholder gauge donut bar-row chart sparkline progress ring wui-tile",
   "textAr": ""
  }
 ]

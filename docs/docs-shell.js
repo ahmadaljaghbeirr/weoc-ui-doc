@@ -117,8 +117,7 @@
     {
       group: 'Conventions',
       items: [
-        { key: 'conventions', label: 'Conventions & Rules', file: 'conventions.html', kw: 'rules inline style viewtype css agency theme device tier breakpoint promotion minimal declarative' },
-        { key: 'kpi-recipes', label: 'KPI & Tile Recipes', file: 'kpi-recipes.html', kw: 'kpi dashboard tile recipe template placeholder gauge donut bar-row chart sparkline progress ring wui-tile' }
+        { key: 'conventions', label: 'Conventions & Rules', file: 'conventions.html', kw: 'rules inline style viewtype css agency theme device tier breakpoint promotion minimal declarative' }
       ]
     }
   ];
@@ -375,7 +374,7 @@
   // Per-page translation files (chrome + several pages live in docs-i18n.js;
   // the rest are one file each under i18n/ to keep them maintainable).
   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
-    'feedback', 'loader', 'js-api', 'grid', 'flex', 'container', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
+    'feedback', 'loader', 'js-api', 'grid', 'flex', 'container', 'forms', 'layout', 'home', 'conventions',
     'kanban', 'heatmap', 'navigation', 'tabs', 'icons', 'avatars'];
   function ensureI18nStore(root) {
     if (i18nStoreLoaded) return Promise.resolve();
