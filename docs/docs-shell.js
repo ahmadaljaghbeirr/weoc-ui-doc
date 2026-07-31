@@ -976,12 +976,19 @@
     return searchIndexPromise;
   }
 
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
   function highlightSnippet(text, terms) {
     if (!text) return '';
-    var snippet = text.length > 140 ? text.slice(0, 140) + '…' : text;
+    var truncated = text.length > 140 ? text.slice(0, 140) + '…' : text;
+    var snippet = escapeHtml(truncated);
     terms.forEach(function (term) {
       if (!term) return;
-      var re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+      var re = new RegExp('(' + escapeHtml(term).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
       snippet = snippet.replace(re, '<mark>$1</mark>');
     });
     return snippet;
@@ -1016,14 +1023,14 @@
       var html = '';
       order.forEach(function (page) {
         var hits = byPage[page];
-        html += '<div class="docs-search-group"><div class="docs-search-group-title">' + hits[0].pageTitle + '</div>';
+        html += '<div class="docs-search-group"><div class="docs-search-group-title">' + escapeHtml(hits[0].pageTitle) + '</div>';
         hits.forEach(function (hit) {
           var href = root + 'docs/' + hit.page + (hit.kind === 'section' ? '#' + hit.sectionId : '');
           var snippet = hit.kind === 'section' ? highlightSnippet(hit[field] || hit.textEn, terms) : '';
           html += '<a class="docs-search-hit" href="' + href + '" data-search-hit' +
             ' hx-get="' + href + '" hx-push-url="true" hx-target="#docs-main"' +
             ' hx-select="#docs-main &gt; *" hx-swap="' + swapSpec + '">' +
-            '<span class="docs-search-hit-label">' + (hit.kind === 'section' ? hit.sectionId.replace(/-/g, ' ') : hit.pageTitle) + '</span>' +
+            '<span class="docs-search-hit-label">' + escapeHtml(hit.kind === 'section' ? hit.sectionId.replace(/-/g, ' ') : hit.pageTitle) + '</span>' +
             (snippet ? '<span class="docs-search-hit-snippet">' + snippet + '</span>' : '') +
             '</a>';
         });
@@ -1044,7 +1051,7 @@
     searchBound = true;
     var root = getRoot();
     document.addEventListener('focus', function (e) {
-      if (e.target && e.target.id === 'docs-search') loadSearchIndex(root);
+      if (e.target && e.target.id === 'docs-search') loadSearchIndex(root).catch(function () {});
     }, true);
     document.addEventListener('input', function (e) {
       if (e.target && e.target.id === 'docs-search') renderSearchResults(e.target.value, root);
