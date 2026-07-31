@@ -22,7 +22,7 @@
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_indicators_1">Data Display</div>
           <div class="docs-hero-title" data-wui-i18n="docs_indicators_2">Indicators</div>
-          <div class="docs-hero-sub" data-wui-i18n-html="docs_indicators_3">Compact visual state indicators: the <code>wui-status-dot</code>, the semantic <code>wui-icon-bubble</code>, the segmented <code>wui-lvl</code> level bar, the identity <code>wui-avatar</code>, and the <code>wui-elapsed</code> duration display. Every variant, size, and state is shown below with its exact markup.</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_indicators_3">Compact visual state indicators: the <code>wui-status-dot</code>, the segmented <code>wui-lvl</code> level bar, and the <code>wui-elapsed</code> duration display. Every variant, size, and state is shown below with its exact markup. See also <a href="icons.html">Icon Bubbles</a> and <a href="avatars.html">Avatars</a>, split out into their own pages.</div>
         </div>
 
         <!-- ══════════════════════════ wui-status-dot ══════════════════════════ -->
@@ -87,120 +87,6 @@
               <span style="display:inline-flex;align-items:center;gap:var(--space-2)"><span class="wui-status-dot live success"></span>Operational</span>
               <!-- Dot + text, incident -->
               <span style="display:inline-flex;align-items:center;gap:var(--space-2)"><span class="wui-status-dot live danger"></span>Incident active</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ══════════════════════════ wui-icon-bubble ══════════════════════════ -->
-        <div class="docs-section">
-          <div class="docs-section-title" id="wui-icon-bubble" data-wui-i18n-html="docs_indicators_10"><span class="material-symbols-outlined">interests</span>wui-icon-bubble</div>
-          <p class="docs-desc" data-wui-i18n-html="docs_indicators_11">Semantic icon container, rounded-square by default (<code>36px</code>). Compose with one <em>size</em> (<code>sm</code> 28px / <code>md</code> 36px / <code>lg</code> 44px), an optional <em>shape</em> (<code>circle</code>), one <em>color</em>, and a <em>variant</em>: soft (default), <code>solid</code>, or <code>solid-reverse</code>, plus the opt-in <code>bordered</code> and <code>ripple</code> modifiers.</p>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_12">Soft (default) — all colors</div>
-          <div class="wui-demo center" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- Primary -->
-              <span class="wui-icon-bubble primary"><span class="material-symbols-outlined">bolt</span></span>
-              <!-- Info -->
-              <span class="wui-icon-bubble info"><span class="material-symbols-outlined">info</span></span>
-              <!-- Success -->
-              <span class="wui-icon-bubble success"><span class="material-symbols-outlined">check</span></span>
-              <!-- Warning -->
-              <span class="wui-icon-bubble warning"><span class="material-symbols-outlined">warning</span></span>
-              <!-- Danger -->
-              <span class="wui-icon-bubble danger"><span class="material-symbols-outlined">error</span></span>
-              <!-- Secondary -->
-              <span class="wui-icon-bubble secondary"><span class="material-symbols-outlined">more_horiz</span></span>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_13">Solid — all colors</div>
-          <div class="wui-demo center" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- Primary -->
-              <span class="wui-icon-bubble solid primary"><span class="material-symbols-outlined">bolt</span></span>
-              <!-- Info -->
-              <span class="wui-icon-bubble solid info"><span class="material-symbols-outlined">info</span></span>
-              <!-- Success -->
-              <span class="wui-icon-bubble solid success"><span class="material-symbols-outlined">check</span></span>
-              <!-- Warning -->
-              <span class="wui-icon-bubble solid warning"><span class="material-symbols-outlined">warning</span></span>
-              <!-- Danger -->
-              <span class="wui-icon-bubble solid danger"><span class="material-symbols-outlined">error</span></span>
-              <!-- Secondary -->
-              <span class="wui-icon-bubble solid secondary"><span class="material-symbols-outlined">more_horiz</span></span>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_14">Solid-reverse (white bubble, colored icon) — all colors</div>
-          <div class="wui-demo center" data-wui-demo style="background:var(--color-30)">
-            <div class="wui-demo-preview">
-              <!-- Primary -->
-              <span class="wui-icon-bubble solid-reverse primary"><span class="material-symbols-outlined">bolt</span></span>
-              <!-- Info -->
-              <span class="wui-icon-bubble solid-reverse info"><span class="material-symbols-outlined">info</span></span>
-              <!-- Success -->
-              <span class="wui-icon-bubble solid-reverse success"><span class="material-symbols-outlined">check</span></span>
-              <!-- Warning -->
-              <span class="wui-icon-bubble solid-reverse warning"><span class="material-symbols-outlined">warning</span></span>
-              <!-- Danger -->
-              <span class="wui-icon-bubble solid-reverse danger"><span class="material-symbols-outlined">error</span></span>
-              <!-- Secondary -->
-              <span class="wui-icon-bubble solid-reverse secondary"><span class="material-symbols-outlined">more_horiz</span></span>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_15">Sizes — sm / md / lg</div>
-          <div class="wui-demo center" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- sm -->
-              <span class="wui-icon-bubble solid primary sm"><span class="material-symbols-outlined">bolt</span></span>
-              <!-- md (default) -->
-              <span class="wui-icon-bubble solid primary md"><span class="material-symbols-outlined">bolt</span></span>
-              <!-- lg -->
-              <span class="wui-icon-bubble solid primary lg"><span class="material-symbols-outlined">bolt</span></span>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_16">Circle shape — soft, solid, solid + lg</div>
-          <div class="wui-demo center" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- Circle soft -->
-              <span class="wui-icon-bubble circle info"><span class="material-symbols-outlined">person</span></span>
-              <!-- Circle solid -->
-              <span class="wui-icon-bubble circle solid success"><span class="material-symbols-outlined">check</span></span>
-              <!-- Circle solid lg -->
-              <span class="wui-icon-bubble circle solid danger lg"><span class="material-symbols-outlined">priority_high</span></span>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_17">Bordered — all colors (add alongside any variant)</div>
-          <div class="wui-demo center" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- Primary -->
-              <span class="wui-icon-bubble bordered primary"><span class="material-symbols-outlined">bolt</span></span>
-              <!-- Info -->
-              <span class="wui-icon-bubble bordered info"><span class="material-symbols-outlined">info</span></span>
-              <!-- Success -->
-              <span class="wui-icon-bubble bordered success"><span class="material-symbols-outlined">check</span></span>
-              <!-- Warning -->
-              <span class="wui-icon-bubble bordered warning"><span class="material-symbols-outlined">warning</span></span>
-              <!-- Danger -->
-              <span class="wui-icon-bubble bordered danger"><span class="material-symbols-outlined">error</span></span>
-              <!-- Secondary -->
-              <span class="wui-icon-bubble bordered secondary"><span class="material-symbols-outlined">more_horiz</span></span>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_18">Ripple (double-ring halo, for solid on colored surfaces)</div>
-          <div class="wui-demo center" data-wui-demo style="background:var(--color-30)">
-            <div class="wui-demo-preview">
-              <!-- Ripple solid primary -->
-              <span class="wui-icon-bubble solid primary ripple"><span class="material-symbols-outlined">bolt</span></span>
-              <!-- Ripple solid circle success -->
-              <span class="wui-icon-bubble solid circle success ripple"><span class="material-symbols-outlined">check</span></span>
-              <!-- Ripple solid lg danger -->
-              <span class="wui-icon-bubble solid danger lg ripple"><span class="material-symbols-outlined">error</span></span>
             </div>
           </div>
         </div>
@@ -315,58 +201,6 @@
                 </div>
                 <span class="wui-lvl-count">3</span>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ══════════════════════════ wui-avatar ══════════════════════════ -->
-        <div class="docs-section">
-          <div class="docs-section-title" id="wui-avatar" data-wui-i18n-html="docs_indicators_24"><span class="material-symbols-outlined">account_circle</span>wui-avatar</div>
-          <p class="docs-desc" data-wui-i18n-html="docs_indicators_25">Circular identity chip for initials or an icon. Compose the base with one <em>color</em> (gradient-filled) and an optional <em>size</em> (<code>wui-avatar-sm</code>/base/<code>-lg</code>/<code>-xl</code>). Use <code>icon</code> for a tinted icon avatar instead of initials.</p>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_26">Initials — all colors</div>
-          <div class="wui-demo center" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- Primary -->
-              <span class="wui-avatar primary">AD</span>
-              <!-- Info -->
-              <span class="wui-avatar info">JR</span>
-              <!-- Success -->
-              <span class="wui-avatar success">MK</span>
-              <!-- Warning -->
-              <span class="wui-avatar warning">SL</span>
-              <!-- Danger -->
-              <span class="wui-avatar danger">TB</span>
-              <!-- Secondary -->
-              <span class="wui-avatar secondary">EO</span>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_27">Sizes — sm → xl (base has no size class)</div>
-          <div class="wui-demo center" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- sm -->
-              <span class="wui-avatar primary wui-avatar-sm">AD</span>
-              <!-- base (md) -->
-              <span class="wui-avatar primary">AD</span>
-              <!-- lg -->
-              <span class="wui-avatar primary wui-avatar-lg">AD</span>
-              <!-- xl -->
-              <span class="wui-avatar primary wui-avatar-xl">AD</span>
-            </div>
-          </div>
-
-          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_28">Icon variant — all sizes</div>
-          <div class="wui-demo center" data-wui-demo>
-            <div class="wui-demo-preview">
-              <!-- sm -->
-              <span class="wui-avatar icon wui-avatar-sm"><span class="material-symbols-outlined">person</span></span>
-              <!-- base (md) -->
-              <span class="wui-avatar icon"><span class="material-symbols-outlined">person</span></span>
-              <!-- lg -->
-              <span class="wui-avatar icon wui-avatar-lg"><span class="material-symbols-outlined">person</span></span>
-              <!-- xl -->
-              <span class="wui-avatar icon wui-avatar-xl"><span class="material-symbols-outlined">person</span></span>
             </div>
           </div>
         </div>

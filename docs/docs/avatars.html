@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Avatars</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="avatars">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_avatars_1">Data Display</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_avatars_2">Avatars</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_avatars_3">Circular identity chip: the <code>wui-avatar</code>. Every color, size, and variant is shown below with its exact markup.</div>
+        </div>
+
+        <!-- ══════════════════════════ wui-avatar ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="wui-avatar" data-wui-i18n-html="docs_avatars_4"><span class="material-symbols-outlined">account_circle</span>wui-avatar</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_avatars_5">Circular identity chip for initials or an icon. Compose the base with one <em>color</em> (gradient-filled) and an optional <em>size</em> (<code>wui-avatar-sm</code>/base/<code>-lg</code>/<code>-xl</code>). Use <code>icon</code> for a tinted icon avatar instead of initials.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_avatars_6">Initials — all colors</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-avatar primary">AD</span>
+              <!-- Info -->
+              <span class="wui-avatar info">JR</span>
+              <!-- Success -->
+              <span class="wui-avatar success">MK</span>
+              <!-- Warning -->
+              <span class="wui-avatar warning">SL</span>
+              <!-- Danger -->
+              <span class="wui-avatar danger">TB</span>
+              <!-- Secondary -->
+              <span class="wui-avatar secondary">EO</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_avatars_7">Sizes — sm → xl (base has no size class)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-avatar primary wui-avatar-sm">AD</span>
+              <!-- base (md) -->
+              <span class="wui-avatar primary">AD</span>
+              <!-- lg -->
+              <span class="wui-avatar primary wui-avatar-lg">AD</span>
+              <!-- xl -->
+              <span class="wui-avatar primary wui-avatar-xl">AD</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_avatars_8">Icon variant — all sizes</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-avatar icon wui-avatar-sm"><span class="material-symbols-outlined">person</span></span>
+              <!-- base (md) -->
+              <span class="wui-avatar icon"><span class="material-symbols-outlined">person</span></span>
+              <!-- lg -->
+              <span class="wui-avatar icon wui-avatar-lg"><span class="material-symbols-outlined">person</span></span>
+              <!-- xl -->
+              <span class="wui-avatar icon wui-avatar-xl"><span class="material-symbols-outlined">person</span></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('avatars');</script>
+</body>
+</html>

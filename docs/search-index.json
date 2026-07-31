@@ -1,5 +1,17 @@
 [
  {
+  "id": "avatars#wui-avatar",
+  "kind": "section",
+  "page": "avatars.html",
+  "pageTitle": "Avatars",
+  "group": "Data Display",
+  "sectionId": "wui-avatar",
+  "titleEn": "wui-avatar",
+  "titleAr": "wui-avatar",
+  "textEn": "wui-avatar Circular identity chip for initials or an icon. Compose the base with one color (gradient-filled) and an optional size ( wui-avatar-sm /base/ -lg / -xl ). Use icon for a tinted icon avatar instead of initials. Initials — all colors AD JR MK SL TB EO Sizes — sm → xl (base has no size class) AD AD AD AD Icon variant — all sizes",
+  "textAr": "wui-avatar شارة هوية دائرية للأحرف الأولى أو لأيقونة. ركّب الأساس مع لون واحد (مملوء بتدرّج) و حجم اختياري ( wui-avatar-sm /base/ -lg / -xl ). استخدم icon للحصول على صورة رمزية بأيقونة ملونة بدلاً من الأحرف الأولى. الأحرف الأولى: جميع الألوان الأحجام: sm إلى xl (الأساس بلا صنف حجم) متغير الأيقونة: جميع الأحجام"
+ },
+ {
   "id": "buttons#wui-btn",
   "kind": "section",
   "page": "buttons.html",
@@ -1260,6 +1272,18 @@
   "textAr": "إدراك السمة لا حاجة إلى أي كود لوحة لدعم السمة. مثل عائلة المخططات، يشترك wui-heatmap.js في حدث wui:themechange مرة واحدة عند تحميل الوحدة؛ وتعيد كل خريطة حرارية مسجَّلة قراءة --color-success / --color-warning / --color-danger وتُعاد رسمها خلال requestAnimationFrame واحد عند كل تبديل للسمة. جرّب مبدّل السمات في الترويسة أثناء النظر إلى الشبكات أعلاه."
  },
  {
+  "id": "icons#wui-icon-bubble",
+  "kind": "section",
+  "page": "icons.html",
+  "pageTitle": "Icon Bubbles",
+  "group": "Data Display",
+  "sectionId": "wui-icon-bubble",
+  "titleEn": "wui-icon-bubble",
+  "titleAr": "wui-icon-bubble",
+  "textEn": "wui-icon-bubble Semantic icon container, rounded-square by default ( 36px ). Compose with one size ( sm 28px / md 36px / lg 44px), an optional shape ( circle ), one color , and a variant : soft (default), solid , or solid-reverse , plus the opt-in bordered and ripple modifiers. Soft (default) — all colors Solid — all colors Solid-reverse (white bubble, colored icon) — all colors Sizes — sm / md / lg Circle shape — soft, solid, solid + lg Bordered — all colors (add alongside any variant) Ripple (double-ring halo, for solid on colored surfaces)",
+  "textAr": "wui-icon-bubble حاوية أيقونة دلالية، مربعة الزوايا المستديرة افتراضيًا ( 36px ). ركّبها مع حجم واحد ( sm 28px / md 36px / lg 44px)، و شكل اختياري ( circle )، و لون واحد، و نمط : soft (الافتراضي)، أو solid ، أو solid-reverse ، إضافة إلى المُعدِّلَين الاختياريين bordered و ripple . Soft (الافتراضي): جميع الألوان Solid: جميع الألوان Solid-reverse (فقاعة بيضاء، أيقونة ملونة): جميع الألوان الأحجام: sm / md / lg شكل دائري (circle): soft، solid، solid + lg Bordered: جميع الألوان (يُضاف إلى جانب أي نمط) Ripple (هالة بحلقتين، للنمط solid على الأسطح الملونة)"
+ },
+ {
   "id": "indicators#wui-status-dot",
   "kind": "section",
   "page": "indicators.html",
@@ -1272,18 +1296,6 @@
   "textAr": ""
  },
  {
-  "id": "indicators#wui-icon-bubble",
-  "kind": "section",
-  "page": "indicators.html",
-  "pageTitle": "Indicators",
-  "group": "Data Display",
-  "sectionId": "wui-icon-bubble",
-  "titleEn": "wui-icon-bubble",
-  "titleAr": "",
-  "textEn": "wui-icon-bubble Semantic icon container, rounded-square by default ( 36px ). Compose with one size ( sm 28px / md 36px / lg 44px), an optional shape ( circle ), one color , and a variant : soft (default), solid , or solid-reverse , plus the opt-in bordered and ripple modifiers. Soft (default) — all colors Solid — all colors Solid-reverse (white bubble, colored icon) — all colors Sizes — sm / md / lg Circle shape — soft, solid, solid + lg Bordered — all colors (add alongside any variant) Ripple (double-ring halo, for solid on colored surfaces)",
-  "textAr": ""
- },
- {
   "id": "indicators#wui-lvl",
   "kind": "section",
   "page": "indicators.html",
@@ -1293,18 +1305,6 @@
   "titleEn": "wui-lvl",
   "titleAr": "",
   "textEn": "wui-lvl Segmented level / severity bar. Root wui-lvl holds a wui-lvl-bar of wui-lvl-seg segments and an optional wui-lvl-count . Light a segment with on ; mark the leading lit segment with on current for an infinite pulse. Default color is warning; add a color class on the root ( danger , success , info , primary , warning , secondary ) to recolor segments, glow, and count together. wui-lvl-inner stacks a caption over the bar. Structure — bar + count (default warning) 3 Stacked inner (wui-lvl-inner) 4 Color variants (each with lit + current segment) 3 3 3 3 3 3",
-  "textAr": ""
- },
- {
-  "id": "indicators#wui-avatar",
-  "kind": "section",
-  "page": "indicators.html",
-  "pageTitle": "Indicators",
-  "group": "Data Display",
-  "sectionId": "wui-avatar",
-  "titleEn": "wui-avatar",
-  "titleAr": "",
-  "textEn": "wui-avatar Circular identity chip for initials or an icon. Compose the base with one color (gradient-filled) and an optional size ( wui-avatar-sm /base/ -lg / -xl ). Use icon for a tinted icon avatar instead of initials. Initials — all colors AD JR MK SL TB EO Sizes — sm → xl (base has no size class) AD AD AD AD Icon variant — all sizes",
   "textAr": ""
  },
  {
@@ -3293,7 +3293,25 @@
   "page": "indicators.html",
   "pageTitle": "Indicators",
   "group": "Data Display",
-  "textEn": "Indicators avatar status-dot indicator icon-bubble themeicon level elapsed",
+  "textEn": "Indicators status-dot indicator level elapsed",
+  "textAr": ""
+ },
+ {
+  "id": "nav#icons",
+  "kind": "nav",
+  "page": "icons.html",
+  "pageTitle": "Icon Bubbles",
+  "group": "Data Display",
+  "textEn": "Icon Bubbles icon-bubble icon bubble semantic themeicon",
+  "textAr": ""
+ },
+ {
+  "id": "nav#avatars",
+  "kind": "nav",
+  "page": "avatars.html",
+  "pageTitle": "Avatars",
+  "group": "Data Display",
+  "textEn": "Avatars avatar identity initials icon avatar-sm avatar-lg avatar-xl",
   "textAr": ""
  },
  {
