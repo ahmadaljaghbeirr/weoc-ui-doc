@@ -1326,6 +1326,31 @@
     if (input) input.value = '';
   }
 
+  /* Per-page "on this page" TOC (pilot: docs/superpowers/specs/2026-07-31-per-page-toc-design.md).
+     A page's own markup only needs a `[data-toc-link]` anchor (href="#sectionId") per
+     entry -- open/close of the panel itself is already fully declarative
+     (data-wui-toggle/data-wui-anchor/data-wui-dismiss, handled by weoc-ui.js). This is
+     the one bit that isn't declarative: turning that click into the same scroll+flash
+     search hits already use, without letting htmx's boost try to "navigate" to a
+     same-page hash first. Bound once, document-level, like bindSearch()/bindHtmxNav()
+     above -- docs-shell.js itself is loaded once and outlives every SPA swap, so this
+     never needs re-binding per page. */
+  var tocLinksBound = false;
+  function bindTocLinks() {
+    if (tocLinksBound) return;
+    tocLinksBound = true;
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('[data-toc-link]');
+      if (!link) return;
+      e.preventDefault();
+      history.pushState(null, '', link.getAttribute('href'));
+      scrollToHashTarget(true);
+      // The panel also carries data-wui-dismiss on each item (closes it via
+      // weoc-ui.js's own bubble-phase listener on the same click) -- nothing
+      // further to do here for that half.
+    });
+  }
+
   window.DocShell = {
     /* Access the global Alpine store. Returns the 'docs' store object,
        or null if Alpine hasn't initialised yet. */
@@ -1410,6 +1435,7 @@
       });
       bindSearch();
       bindHtmxNav();
+      bindTocLinks();
       ensureI18nStore(root);
 
       window.DocShell.ready = ensureGlobalAssets(root).then(function () {

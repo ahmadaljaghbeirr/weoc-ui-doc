@@ -663,6 +663,59 @@
 @keyframes docsSearchFlash { 0%, 100% { box-shadow: none; } 50% { box-shadow: 0 0 0 2px var(--color-10); } }
 .docs-search-target-flash { animation: docsSearchFlash 0.6s ease 2; }
 
+/* ─── Per-page "on this page" TOC ────────────────────────────────
+   Pilot: docs/superpowers/specs/2026-07-31-per-page-toc-design.md.
+   Trigger is a plain .wui-fab.wui-fab-fixed-br; panel is a plain .wui-dropdown
+   (data-wui-anchor="top-end" so it opens upward, hugging the same bottom-right
+   corner as the trigger). Entries reuse .docs-nav-item as-is -- same visual
+   language as the sidebar nav, zero new item styling needed. Only the panel
+   shell (heading row + scrollable list, for pages with 20+ sections) is new. */
+.docs-toc-panel {
+  width: 280px;
+  max-width: calc(100vw - 2 * var(--space-5));
+}
+
+.docs-toc-panel-hd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2);
+  margin-bottom: var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--color-text-secondary);
+}
+
+.docs-toc-panel-hd .material-symbols-outlined {
+  font-size: var(--text-sm);
+  color: var(--color-10);
+}
+
+.docs-toc-list {
+  max-height: min(60vh, 420px);
+  overflow-y: auto;
+  padding: 0 var(--space-1);
+}
+
+/* Entries reuse .docs-nav-item's colors/hover/active states verbatim; only
+   the layout needs a scoped override so the leading section icon (copied
+   straight from each .docs-section-title's own i18n value) sits inline with
+   the label instead of stacking under .docs-nav-item's plain `display:block`. */
+.docs-toc-list .docs-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.docs-toc-list .docs-nav-item .material-symbols-outlined {
+  font-size: var(--text-base);
+  color: var(--color-10);
+  flex-shrink: 0;
+}
+
 /* ─── Responsive ─────────────────────────────────────────────────*/
 @media (max-width: 900px) {
   .docs-page {

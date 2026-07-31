@@ -23,6 +23,46 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page" x-data="chartsPage()">
+        <!-- ═══════════════ Per-page TOC (pilot) ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_charts_84">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_charts_84">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_charts_84">
+            <a href="#overview" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_6"><span class="material-symbols-outlined">info</span>Overview</a>
+            <a href="#setup" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_9"><span class="material-symbols-outlined">code</span>Setup</a>
+            <a href="#wui-chart-el-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_13"><span class="material-symbols-outlined">data_exploration</span>WUI.chart(el, opts)</a>
+            <a href="#example-line-chart" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_19"><span class="material-symbols-outlined">show_chart</span>Example — Line Chart</a>
+            <a href="#example-area-chart" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_21"><span class="material-symbols-outlined">area_chart</span>Example — Area Chart</a>
+            <a href="#example-bar-chart" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_23"><span class="material-symbols-outlined">bar_chart</span>Example — Bar Chart</a>
+            <a href="#example-stepped-chart" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_27"><span class="material-symbols-outlined">stacked_line_chart</span>Example — Stepped Chart</a>
+            <a href="#wui-pie-el-opts-wui-donut-el-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_30"><span class="material-symbols-outlined">data_exploration</span>WUI.pie(el, opts) &amp; WUI.donut(el, opts)</a>
+            <a href="#example-pie-chart" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_35"><span class="material-symbols-outlined">pie_chart</span>Example — Pie Chart</a>
+            <a href="#example-donut-chart" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_37"><span class="material-symbols-outlined">donut_large</span>Example — Donut Chart</a>
+            <a href="#example-with-observesection" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_41"><span class="material-symbols-outlined">sync</span>Example — With observeSection</a>
+            <a href="#theme-switching" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_44"><span class="material-symbols-outlined">dark_mode</span>Theme Switching</a>
+            <a href="#data-contract" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_53"><span class="material-symbols-outlined">table_chart</span>Data Contract</a>
+            <a href="#series-colors" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_57"><span class="material-symbols-outlined">palette</span>Series Colors</a>
+            <a href="#neon-glow" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_78"><span class="material-symbols-outlined">bolt</span>Neon Glow</a>
+            <a href="#resize" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_61"><span class="material-symbols-outlined">open_in_full</span>Resize</a>
+            <a href="#wui-gauge-el-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_69"><span class="material-symbols-outlined">speed</span>WUI.gauge(el, opts)</a>
+            <a href="#example-gauge" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_73"><span class="material-symbols-outlined">speed</span>Example — Gauge</a>
+            <a href="#wui-barrow-el-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_74"><span class="material-symbols-outlined">bar_chart</span>WUI.barRow(el, opts)</a>
+            <a href="#example-bar-row" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_77"><span class="material-symbols-outlined">bar_chart</span>Example — Bar Row</a>
+            <a href="#destroy" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_charts_64"><span class="material-symbols-outlined">delete</span>destroy()</a>
+          </nav>
+        </div>
+
   <style>
     .demo-chart-wrap {
       /* Fill the flex .wui-demo-preview row. Without this the wrap collapses to

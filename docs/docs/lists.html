@@ -501,7 +501,7 @@ catTs.on('change', function (val) {
 
         <!-- ── REST-Live API ────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_20"><span class="material-symbols-outlined">cloud_sync</span>REST-Live API — <code>window.EOCListsAPI</code></div>
+          <div class="docs-section-title" id="rest-live-api-window-eoclistsapi" data-wui-i18n-html="docs_lists_20"><span class="material-symbols-outlined">cloud_sync</span>REST-Live API — <code>window.EOCListsAPI</code></div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_21">
             <code>EOCLists</code> above is a static, portable registry — data baked into <code>eoc-lists.js</code>
             at deploy time, no network calls. <code>EOCListsAPI</code> is a different, independent object in the
@@ -615,7 +615,7 @@ catTs.on('change', function (val) {
 
         <!-- ── Usage: read/write ────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_24"><span class="material-symbols-outlined">swap_horiz</span>Usage — Reading &amp; Writing Lists</div>
+          <div class="docs-section-title" id="usage-reading-writing-lists" data-wui-i18n-html="docs_lists_24"><span class="material-symbols-outlined">swap_horiz</span>Usage — Reading &amp; Writing Lists</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_25">
             <code>getLists()</code>, <code>getList()</code>, <code>createList()</code> and <code>addItem()</code>
             are the four confirmed-working entry points — everything else in <code>EOCListsAPI</code> is built on
@@ -651,7 +651,7 @@ EOCListsAPI.getList('Incident Categories').then(function (tree) {
 
         <!-- ── Usage: ensureList ────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_26"><span class="material-symbols-outlined">playlist_add_check</span>Usage — <code>ensureList()</code> (Seed/Deploy Helper)</div>
+          <div class="docs-section-title" id="usage-ensurelist-seed-deploy-helper" data-wui-i18n-html="docs_lists_26"><span class="material-symbols-outlined">playlist_add_check</span>Usage — <code>ensureList()</code> (Seed/Deploy Helper)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_27">
             A single idempotent call for board-deploy scripts: creates the list if it's missing, or diffs against
             what's already there and adds only the missing nodes if it exists, at any depth, one targeted call
@@ -673,7 +673,7 @@ EOCListsAPI.getList('Incident Categories').then(function (tree) {
 
         <!-- ── Usage: unverified writes ─────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_28"><span class="material-symbols-outlined">edit_note</span>Usage — <code>editItem()</code> / <code>deleteList()</code> / <code>deleteItem()</code> (Not Verified)</div>
+          <div class="docs-section-title" id="usage-edititem-deletelist-deleteitem-not-verified" data-wui-i18n-html="docs_lists_28"><span class="material-symbols-outlined">edit_note</span>Usage — <code>editItem()</code> / <code>deleteList()</code> / <code>deleteItem()</code> (Not Verified)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_29">
             These three exist in <code>eoc-lists.js</code> and are wired up the way the REST API is documented to
             work, but unlike the four methods above, they were not exercised against a live WebEOC instance.

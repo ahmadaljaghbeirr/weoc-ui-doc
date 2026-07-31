@@ -791,7 +791,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Responsive column hiding ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_40"><span class="material-symbols-outlined">view_week</span>Responsive column hiding</div>
+          <div class="docs-section-title" id="responsive-column-hiding" data-wui-i18n-html="docs_tables_40"><span class="material-symbols-outlined">view_week</span>Responsive column hiding</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_41">Mark a <code>&lt;th&gt;</code>/<code>&lt;td&gt;</code> pair <code>data-wui-hide-below="sm|md|lg|xl"</code> and the column hides once the table's own <code>wui-table-wrap</code> shrinks past that breakpoint &mdash; a real container query against the table's rendered width, not the browser viewport. That is the whole point: a details panel or split view squeezing the table triggers the hide even when the window itself never resizes, which a <code>@media</code> query cannot see. Same <code>sm/md/lg/xl</code> scale as <code>wui-col-sm</code>/<code>wui-col-md</code> and the grid system (576/768/992/1200) &mdash; no new vocabulary. Zero JS: each cell hides itself off its own attribute, nothing pairs the header to its column. Requires loading <code>weoc-tables-responsive.css</code> after <code>weoc-tables.css</code>. Standard table (<code>wui-table-standard</code>) only &mdash; <code>wui-table-cards</code> already has its own narrow-width behavior.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tables_42">Live example &mdash; resize the wrapper, not the window</div>
