@@ -1188,6 +1188,78 @@
   "textAr": "wui-bento شبكة لوحة معلومات قابلة للتهيئة تُضبط بالكامل عبر الأصناف. wui-bento + cols-1 … cols-8 تحدّد عدد الأعمدة؛ وتوضع البلاطات بـ wui-w-{cols}x{rows} (من 1x1 إلى 12x12 ). وتعيد الفجوة استخدام wui-gap-* . يمكن أن تكون البلاطة المكوّن نفسه، أو غلافاً شفافاً wui-bento-tile يمدّد ما يحتويه. وتضبط cell-sm/md/lg ارتفاع الصف التلقائي المتدفّق؛ بينما is-page + rows-* تبدّلان إلى تخطيط شاشة واحدة ثابت لا يتمرّر تتقاسم فيه الصفوف الارتفاع. bento أساسي: cols-4 بأحجام بلاطات متنوعة أحجام بلاطات شائعة: wui-w-1x1 … wui-w-12x12 (المصفوفة الكاملة، تعرض 8 توليفات شائعة) أعداد الأعمدة: cols-1 / 2 / 3 / 4 / 5 / 6 / 8 ارتفاع الصف التلقائي المتدفّق: cell-sm / cell-md / cell-lg شاشة واحدة: is-page + rows-* (ثابت، بلا تمرير) تملأ is-page ارتفاع العنصر الأصل ولا تتمرّر أبداً؛ وتختار rows-1 … rows-6 عدد الصفوف المتساوية الارتفاع التي تتقاسم تلك المساحة. وتتطلّب min-height:0 على امتداد سلسلة العناصر الأصل."
  },
  {
+  "id": "heatmap#overview",
+  "kind": "section",
+  "page": "heatmap.html",
+  "pageTitle": "Heatmap",
+  "group": "Data Display",
+  "sectionId": "overview",
+  "titleEn": "Overview",
+  "titleAr": "نظرة عامة",
+  "textEn": "Overview wui-heatmap.js follows the same factory-function shape as the chart family: call WUI.heatmap(el, opts) , get back a { update, resize, destroy } handle. rows and cols are fully configurable &mdash; there is no fixed 5&times;5 assumption anywhere in the component. Each cell's background color is interpolated across --color-success &rarr; --color-warning &rarr; --color-danger by that cell's value (a 0-1 float): the lower half of the range mixes success toward warning, the upper half mixes warning toward danger, so intermediate values get smooth intermediate colors rather than snapping between three fixed swatches. Because those three tokens are read live at every render (creation, update, and on every theme change), the grid re-colors correctly and automatically across every theme in the library &mdash; no board code required.",
+  "textAr": "نظرة عامة يتبع wui-heatmap.js نمط دالة المصنع نفسه المستخدم في عائلة المخططات: استدعِ WUI.heatmap(el, opts) واحصل على مقبض { update, resize, destroy } . عددا rows و cols قابلان للتهيئة بالكامل، ولا يوجد أي افتراض بشبكة ثابتة 5&times;5 في أي مكان بالمكوّن. يُشتق لون خلفية كل خلية بالمزج بين --color-success &rarr; --color-warning &rarr; --color-danger حسب قيمة value الخاصة بتلك الخلية (رقم عشري بين 0 و1): يمزج النصف الأدنى من المدى النجاح نحو التحذير، ويمزج النصف الأعلى التحذير نحو الخطر، فتحصل القيم الوسيطة على ألوان وسيطة سلسة بدلًا من القفز بين ثلاث درجات ثابتة. ولأن هذه الرموز الثلاثة تُقرأ حيًا عند كل عرض (الإنشاء والتحديث وعند كل تغيير للسمة)، تُعاد تلوين الشبكة تلقائيًا وبشكل صحيح عبر كل سمة في المكتبة، دون أي كود من جهة اللوحة."
+ },
+ {
+  "id": "heatmap#wui-heatmap-el-opts",
+  "kind": "section",
+  "page": "heatmap.html",
+  "pageTitle": "Heatmap",
+  "group": "Data Display",
+  "sectionId": "wui-heatmap-el-opts",
+  "titleEn": "WUI.heatmap(el, opts)",
+  "titleAr": "WUI.heatmap(el, opts)",
+  "textEn": "WUI.heatmap(el, opts) Create a heatmap grid inside a container element (the element itself becomes the .wui-heatmap grid root — matching WUI.barRow() 's \"plain DOM, container is the render target\" pattern rather than the canvas-based chart types). Returns an instance handle, or null if opts.type isn't implemented or the element cannot be resolved. Parameters Parameter Type Default Description el Element | string &mdash; Container element or CSS selector. This element itself becomes the rendered grid. opts.type string 'matrix' The only mode implemented in v1. 'calendar' and 'table' are reserved, validated values for future variants &mdash; passing them logs a warning and returns null rather than crashing or silently doing nothing. opts.rows number &mdash; Grid row count. Fully configurable, not fixed to any particular size. opts.cols number &mdash; Grid column count. opts.rowLabels Array<string> &mdash; Optional. One label per row, rendered in a left-hand label column. Omit to render a plain grid with no row-label column at all. opts.colLabels Array<string> &mdash; Optional. One label per column, rendered in a header row. Omit to render a plain grid with no header row. opts.cells Array<{row, col, value, label, tooltip}> [] One entry per populated cell, each addressed by its own row / col &mdash; not required to be exhaustive or in any particular order. Any (row, col) missing from this array renders as an empty cell instead of crashing. value is a 0-1 float driving the color; label is the short text shown in the cell; tooltip is optional hover/focus text (a cell with no tooltip renders with no popup). Return value &mdash; instance handle Method Description handle.update(newCells) Feed a new cells array. rows / cols /labels stay whatever they were set to at creation; re-renders in place. handle.resize() Re-renders from the current options and freshly-read tokens. The grid is fluid CSS (percentage columns), so there is no pixel-based canvas to resize &mdash; this exists for handle-shape parity with the rest of the library and as a hook after external layout changes. handle.destroy() Removes the rendered grid from the DOM and unregisters the instance from the theme listener.",
+  "textAr": "WUI.heatmap(el, opts) ينشئ شبكة خريطة حرارية داخل عنصر حاوٍ (يصبح العنصر نفسه جذر الشبكة .wui-heatmap ، بما يطابق نمط WUI.barRow() في \"DOM عادي، والحاوية هي هدف العرض\" بدلًا من أنواع المخططات القائمة على canvas). يعيد مقبض النسخة، أو null إذا كان opts.type غير مطبَّق أو تعذّر تحديد العنصر. المعامِلات القيمة المعادة: مقبض النسخة"
+ },
+ {
+  "id": "heatmap#example-mdash-5-times-5-risk-matrix",
+  "kind": "section",
+  "page": "heatmap.html",
+  "pageTitle": "Heatmap",
+  "group": "Data Display",
+  "sectionId": "example-mdash-5-times-5-risk-matrix",
+  "titleEn": "Example &mdash; 5&times;5 Risk Matrix",
+  "titleAr": "مثال: مصفوفة مخاطر 5&times;5",
+  "textEn": "Example &mdash; 5&times;5 Risk Matrix Likelihood (rows) &times; Severity (cols), the standard risk-assessment axes. Hover or tab-focus a cell to see its full scenario. Click \"Destroy\" to confirm the grid tears down cleanly. Destroy var riskCells = [ { row: 0, col: 0, value: 0.05, label: 'Low', tooltip: 'Rare x Negligible: minor printer outage in the EOC, no operational impact' }, { row: 0, col: 4, value: 0.45, label: 'Moderate', tooltip: 'Rare x Severe: catastrophic seismic event striking the EOC facility itself' }, // ...remaining 23 cells, one per (row, col) pair, same shape { row: 4, col: 4, value: 0.95, label: 'Critical', tooltip: 'Almost Certain x Severe: confirmed Category 4 hurricane on a direct landfall track' } ]; var handle = WUI.heatmap('#demo-heatmap-risk', { type: 'matrix', rows: 5, cols: 5, rowLabels: ['Rare', 'Unlikely', 'Possible', 'Likely', 'Almost Certain'], colLabels: ['Negligible', 'Minor', 'Moderate', 'Major', 'Severe'], cells: riskCells }); // Later, when the container is removed from the DOM: handle.destroy();",
+  "textAr": "مثال: مصفوفة مخاطر 5&times;5 الاحتمالية (الصفوف) × الشدة (الأعمدة)، وهما المحوران المعياريان لتقييم المخاطر. مرّر المؤشر فوق أي خلية أو ركّز عليها بمفتاح Tab لرؤية سيناريوها الكامل. انقر \"حذف\" للتأكد من أن الشبكة تُزال بشكل نظيف. حذف"
+ },
+ {
+  "id": "heatmap#example-mdash-3-times-4-shift-coverage",
+  "kind": "section",
+  "page": "heatmap.html",
+  "pageTitle": "Heatmap",
+  "group": "Data Display",
+  "sectionId": "example-mdash-3-times-4-shift-coverage",
+  "titleEn": "Example &mdash; 3&times;4 Shift Coverage",
+  "titleAr": "مثال: تغطية النوبات 3&times;4",
+  "textEn": "Example &mdash; 3&times;4 Shift Coverage Same component, a completely different shape and a different axis meaning entirely: shelters (rows) &times; four-hour shift blocks (cols), colored by staffing gap instead of risk. Proves rows / cols are genuinely configurable, not a disguised fixed 5&times;5. WUI.heatmap('#demo-heatmap-coverage', { type: 'matrix', rows: 3, cols: 4, rowLabels: ['Primary Shelter', 'Overflow Shelter', 'Warming Center'], colLabels: ['0600-1200', '1200-1800', '1800-0000', '0000-0600'], cells: coverageCells // same { row, col, value, label, tooltip } shape });",
+  "textAr": "مثال: تغطية النوبات 3&times;4 المكوّن نفسه، لكن بشكل مختلف تمامًا ومعنى محاور مختلف كليًا: الملاجئ (الصفوف) × فترات نوبات مدتها أربع ساعات (الأعمدة)، ملوّنة حسب نقص التوظيف بدلًا من المخاطر. يثبت ذلك أن rows / cols قابلان للتهيئة فعليًا، وليسا شبكة ثابتة 5&times;5 متخفية."
+ },
+ {
+  "id": "heatmap#reserved-types-error-handling",
+  "kind": "section",
+  "page": "heatmap.html",
+  "pageTitle": "Heatmap",
+  "group": "Data Display",
+  "sectionId": "reserved-types-error-handling",
+  "titleEn": "Reserved Types & Error Handling",
+  "titleAr": "الأنواع المحجوزة ومعالجة الأخطاء",
+  "textEn": "Reserved Types & Error Handling opts.type defaults to 'matrix' , the only mode this version implements. 'calendar' and 'table' are already reserved, documented values for future variants: passing either one today does not crash and does not silently no-op &mdash; it logs a console.warn and returns null , the same contract WUI.chart() uses when window.uPlot is missing. Any other unrecognized string gets the same treatment. Missing or malformed cells An omitted, empty, or partially-populated opts.cells array never crashes. Any (row, col) with no matching entry simply renders as an empty cell &mdash; row/col labels (if provided) still render normally. Try type: 'calendar' (see console)",
+  "textAr": "الأنواع المحجوزة ومعالجة الأخطاء تكون القيمة الافتراضية لـ opts.type هي 'matrix' ، وهي الوضع الوحيد المطبَّق في هذا الإصدار. القيمتان 'calendar' و 'table' محجوزتان وموثّقتان مسبقًا لمتغيرات مستقبلية: تمرير أي منهما اليوم لا يتسبب في تعطّل ولا يمر بصمت دون فعل شيء، بل يسجّل console.warn ويعيد null ، وهو العقد نفسه الذي يستخدمه WUI.chart() عند غياب window.uPlot . أي نص آخر غير معروف يُعامَل المعاملة نفسها. خلايا مفقودة أو غير صحيحة لا يتسبب حذف مصفوفة opts.cells أو تركها فارغة أو ملء جزء منها فقط في أي تعطّل. أي زوج (صف، عمود) دون مُدخل مطابق يُعرض ببساطة كخلية فارغة، بينما تُعرض تسميات الصفوف/الأعمدة (إن وُجدت) بشكل طبيعي. جرّب type: 'calendar' (راجع وحدة التحكم)"
+ },
+ {
+  "id": "heatmap#theme-awareness",
+  "kind": "section",
+  "page": "heatmap.html",
+  "pageTitle": "Heatmap",
+  "group": "Data Display",
+  "sectionId": "theme-awareness",
+  "titleEn": "Theme Awareness",
+  "titleAr": "إدراك السمة",
+  "textEn": "Theme Awareness No board code is needed for theme support. Like the chart family, wui-heatmap.js subscribes to wui:themechange once at module load; every registered heatmap re-reads --color-success / --color-warning / --color-danger and re-renders inside one requestAnimationFrame whenever the theme switches. Try the theme switcher in the header while looking at the grids above.",
+  "textAr": "إدراك السمة لا حاجة إلى أي كود لوحة لدعم السمة. مثل عائلة المخططات، يشترك wui-heatmap.js في حدث wui:themechange مرة واحدة عند تحميل الوحدة؛ وتعيد كل خريطة حرارية مسجَّلة قراءة --color-success / --color-warning / --color-danger وتُعاد رسمها خلال requestAnimationFrame واحد عند كل تبديل للسمة. جرّب مبدّل السمات في الترويسة أثناء النظر إلى الشبكات أعلاه."
+ },
+ {
   "id": "indicators#wui-status-dot",
   "kind": "section",
   "page": "indicators.html",
@@ -1378,6 +1450,126 @@
   "titleAr": "",
   "textEn": "Custom Events Event Fired on detail wui:open Overlay element { trigger: Element } wui:close Overlay element — wui:activate Activatable item { active: boolean } wui:select Segment container { value: string } wui:viewchange View container { value: string } wui:rowtoggle Row element { open: boolean } wui:panelopen Split element — wui:panelclose Split element — wui:themechange document.documentElement { dark: boolean } wui:sectionrefresh Section element { el: Element } wui:toast:show Toast element { toast: Element } wui:toast:dismiss Toast element { toast: Element } wui:toast:action Toast element { toast: Element }",
   "textAr": ""
+ },
+ {
+  "id": "kanban#overview",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "overview",
+  "titleEn": "Overview",
+  "titleAr": "نظرة عامة",
+  "textEn": "Overview wui-kanban.js renders a column-grouped board from plain columns / cards data and wires native HTML5 drag-and-drop between columns. There is no swimlane support and no baked-in persistence — a board owns saving the new status, this component only owns moving the card and asking first. Card markup reuses the existing .wui-badge component for priority (same severity-token convention documented on the Badges & Chips page) rather than inventing a new visual language.",
+  "textAr": "نظرة عامة يعرض wui-kanban.js لوحة مجمّعة حسب الأعمدة من بيانات columns / cards بسيطة، ويربط السحب والإفلات بتقنية HTML5 الأصلية بين الأعمدة. لا يوجد دعم للمسارات المتوازية (swimlanes) ولا حفظ مضمّن؛ تمتلك اللوحة حفظ الحالة الجديدة، بينما يمتلك هذا المكوّن فقط نقل البطاقة والسؤال أولًا. يعيد استخدام تخطيط البطاقة مكوّن .wui-badge الموجود للأولوية (اتفاقية رمز الشدة نفسها الموثّقة في صفحة الشارات والرقائق ) بدلًا من ابتكار لغة بصرية جديدة."
+ },
+ {
+  "id": "kanban#setup",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "setup",
+  "titleEn": "Setup",
+  "titleAr": "الإعداد",
+  "textEn": "Setup Load the kanban stylesheet and engine after weoc-ui.css / weoc-ui.js. The Task Board demo below also uses WUI.confirm() for its reject-confirmation gate — a themed wrapper ( wui-alert.js ) around the vendored SweetAlert2 library. That needs its own stylesheet pair and scripts loaded first, in this order:",
+  "textAr": "الإعداد حمّل ورقة أنماط كانبان والمحرك بعد weoc-ui.css / weoc-ui.js. يستخدم عرض لوحة المهام أدناه أيضًا WUI.confirm() كبوابة تأكيد الرفض — وهو غلاف مُنسّق بمظهر weoc-ui ( wui-alert.js ) حول مكتبة SweetAlert2 المجهّزة. يتطلب ذلك تحميل زوج أوراق الأنماط الخاصة به والبرمجيات النصية أولًا، بهذا الترتيب:"
+ },
+ {
+  "id": "kanban#wui-kanban-el-opts",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "wui-kanban-el-opts",
+  "titleEn": "WUI.kanban(el, opts)",
+  "titleAr": "WUI.kanban(el, opts)",
+  "textEn": "WUI.kanban(el, opts) Create a kanban board inside a container element. Returns an instance handle, or null if opts.columns is missing/empty or the element cannot be resolved. Parameters Parameter Type Default Description el Element | string — Container element or CSS selector. The whole board (all columns) is rendered inside it. opts.columns Array required Array of { key, label } . Defines the board's columns, in display order. Missing/empty → console.warn , factory returns null . opts.cards Array [] Array of { id, columnKey, title, meta, accent } , where meta may carry { assignee, priority, dueDate } . A card whose columnKey doesn't match any defined column is silently omitted from render ( console.warn naming the bad card id), not a crash. accent is documented separately below. opts.onBeforeMove function — function(card, fromColumnKey, toColumnKey) , fired on drop BEFORE the move commits. Return (or resolve, via a returned Promise ) false to reject the move — the card snaps back to its origin column, nothing commits. Any other return value (including omitting the option entirely) commits the move unconditionally. Return value — instance handle Method Description handle.update(newCards) Replace the full card set and re-render. Same columnKey validation as construction. handle.addCard(card) Append one card. Unknown columnKey → console.warn , not added. handle.removeCard(id) Remove one card by id and re-render. handle.destroy() Unbind drag-and-drop listeners, clear the container's contents, unregister the instance.",
+  "textAr": "WUI.kanban(el, opts) ينشئ لوحة كانبان داخل عنصر حاوٍ. يعيد مقبض النسخة، أو null إذا كان opts.columns مفقودًا أو فارغًا أو تعذّر تحديد العنصر. المعامِلات القيمة المعادة: مقبض النسخة"
+ },
+ {
+  "id": "kanban#rendered-markup",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "rendered-markup",
+  "titleEn": "Rendered Markup",
+  "titleAr": "البنية المعروضة (Markup)",
+  "textEn": "Rendered Markup What WUI.kanban() renders inside your container element — useful when writing CSS overrides or reading the DOM from board-level code.",
+  "textAr": "البنية المعروضة (Markup) ما يعرضه WUI.kanban() داخل عنصر الحاوية الخاص بك — مفيد عند كتابة تجاوزات CSS أو قراءة DOM من كود مستوى اللوحة."
+ },
+ {
+  "id": "kanban#card-accents",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "card-accents",
+  "titleEn": "Card Accents",
+  "titleAr": "ألوان تمييز البطاقات",
+  "textEn": "Card Accents An optional colored left-edge stripe per card — set card.accent to one of the same names .wui-badge already accepts (see the Badges & Chips page), not a new color vocabulary. Omitted (or an unrecognized value) → no stripe, the card renders exactly as it did before this option existed. Accepted values — same tokens the badge/severity system already uses everywhere in this library: Value CSS token 'primary' --color-10 'secondary' --color-secondary 'success' --color-success 'warning' --color-warning 'danger' --color-danger 'info' --color-info 'tier-1' --tier-1-color 'tier-2' --tier-2-color 'tier-3' --tier-3-color 'tier-4' --tier-4-color Visible in the demos below The Task Board demo color-codes accents to priority ( warning / danger / primary / secondary ) and deliberately leaves two cards without one. The different-column-set demo uses tier accents ( tier-1 / tier-2 / tier-4 ) instead, keyed to work-stream rather than priority — the same option, read however a board finds meaningful.",
+  "textAr": "ألوان تمييز البطاقات شريط لوني اختياري عند الحافة اليسرى (البداية) لكل بطاقة — اضبط card.accent على أحد الأسماء نفسها التي يقبلها .wui-badge أصلًا (راجع صفحة الشارات والرقائق )، وليس مفردات لونية جديدة. عند حذفه (أو قيمة غير معروفة) لا يظهر أي شريط، وتُعرض البطاقة تمامًا كما كانت قبل وجود هذا الخيار. القيم المقبولة: الرموز (tokens) نفسها التي يستخدمها نظام الشارات/الشدة أصلًا في كل مكان في هذه المكتبة: مرئي في العروض التوضيحية أدناه يربط عرض لوحة المهام ألوان التمييز بالأولوية ( warning / danger / primary / secondary ) ويترك عمدًا بطاقتين دون أي لون تمييز. أما عرض مجموعة الأعمدة المختلفة فيستخدم ألوان المستويات ( tier-1 / tier-2 / tier-4 ) بدلًا من ذلك، مرتبطة بمسار العمل لا بالأولوية؛ الخيار نفسه، يُقرأ بالطريقة التي تراها اللوحة مناسبة."
+ },
+ {
+  "id": "kanban#example-task-board",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "example-task-board",
+  "titleEn": "Example — Task Board",
+  "titleAr": "مثال: لوحة المهام",
+  "textEn": "Example — Task Board Mirrors TaskManagement 's real 4-status shape. Drag any card between columns. Dropping onto Rejected asks for confirmation first — Cancel snaps the card back to its origin column; Confirm commits the move. Watch the log line below the board. Add sample card Remove a card Destroy board var taskHandle = WUI.kanban('#demo-kanban-tasks', { columns: [ { key: 'open', label: 'Open' }, { key: 'in-progress', label: 'In Progress' }, { key: 'completed', label: 'Completed' }, { key: 'rejected', label: 'Rejected' } ], cards: [ // accent is OPTIONAL -- color-coded to priority here; omit it for the // default no-stripe look (see card 106 below). { id: '101', columnKey: 'open', title: 'Inspect Facility 26-004', accent: 'warning', meta: { assignee: 'Ahmad Naser', priority: 'high', dueDate: '2026-08-02' } }, { id: '104', columnKey: 'in-progress', title: 'Deploy portable water tanks — Zone B', accent: 'warning', meta: { assignee: 'Sara Haddad', priority: 'high', dueDate: '2026-08-01' } }, { id: '106', columnKey: 'completed', title: 'Distribute emergency supplies — Shelter 7', meta: { assignee: 'Layla Mansour', priority: 'medium', dueDate: '2026-07-30' } } // no accent // ... ], // Fired on drop, BEFORE the move commits. onBeforeMove: function (card, fromKey, toKey) { if (toKey === 'rejected') { // Themed confirm popup (wui-alert.js / vendored SweetAlert2). Resolving // false from the returned Promise rejects the move — wui-kanban.js // snaps the card back to its origin column. return WUI.confirm({ title: 'Reject this task?', text: 'Reject \"' + card.title + '\"? This cannot be undone.', icon: 'warning', confirmText: 'Reject', cancelText: 'Cancel' }); } return true; // commit } }); // API methods taskHandle.addCard({ id: 'new-1', columnKey: 'open', title: 'Survey shelter capacity', meta: { assignee: 'Unassigned', priority: 'medium' } }); taskHandle.removeCard('103'); taskHandle.destroy();",
+  "textAr": "مثال: لوحة المهام يطابق الشكل الفعلي لأربع حالات في TaskManagement . اسحب أي بطاقة بين الأعمدة. يطلب الإفلات في عمود مرفوض تأكيدًا أولًا: الإلغاء يعيد البطاقة إلى عمودها الأصلي؛ التأكيد يُثبّت النقل. راقب سطر السجل أسفل اللوحة. إضافة بطاقة نموذجية إزالة بطاقة إتلاف اللوحة"
+ },
+ {
+  "id": "kanban#the-reject-path",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "the-reject-path",
+  "titleEn": "The Reject Path",
+  "titleAr": "مسار الرفض",
+  "textEn": "The Reject Path On drop, wui-kanban.js moves the card's DOM node into the target column FIRST (mirroring the reference board's own \"move visually first, cancel reverts\" approach), THEN calls opts.onBeforeMove . If the result — or the value a returned Promise resolves to — is exactly false , the card animates back to its original position in its original column and gets a brief rejection cue. Anything else commits the move. This library never shows its own modal The demo above calls WUI.confirm() — the vendored, weoc-ui-themed SweetAlert2 wrapper (see wui-alert.js ) — instead of a raw browser confirm() . A real board can go further still and swap in its own dedicated modal or a REST call inside onBeforeMove , returning a Promise that resolves once the board knows whether the move should stick — exactly matching TaskManagement 's real openKanbanStatusModal() pattern, without this library baking in that board-specific UX.",
+  "textAr": "مسار الرفض عند الإفلات، ينقل wui-kanban.js عقدة DOM الخاصة بالبطاقة إلى العمود الهدف أولًا (بما يطابق أسلوب اللوحة المرجعية نفسه: \"انقل بصريًا أولًا، والإلغاء يُرجع النقل\")، ثم يستدعي opts.onBeforeMove . إذا كانت النتيجة، أو القيمة التي يتحلّل إليها Promise معاد، تساوي false تمامًا، تعود البطاقة متحركةً إلى موضعها الأصلي في عمودها الأصلي وتحصل على إشارة رفض موجزة. أي قيمة أخرى تُثبّت النقل. هذه المكتبة لا تعرض نافذتها المنبثقة الخاصة أبدًا يستدعي المثال أعلاه WUI.confirm() — غلاف SweetAlert2 المُجهّز والمُنسّق بمظهر weoc-ui (راجع wui-alert.js ) — بدلًا من نافذة confirm() الأصلية للمتصفح. يمكن للوحة حقيقية أن تذهب أبعد من ذلك وتستبدلها بنافذة تأكيد مخصصة خاصة بها أو باستدعاء REST داخل onBeforeMove ، يعيد Promise يتحلّل بمجرد أن تعرف اللوحة ما إذا كان يجب أن يستقر النقل، بما يطابق تمامًا نمط openKanbanStatusModal() الفعلي في TaskManagement ، دون أن تضمّن هذه المكتبة تلك الواجهة الخاصة باللوحة."
+ },
+ {
+  "id": "kanban#example-a-different-column-set",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "example-a-different-column-set",
+  "titleEn": "Example — A Different Column Set",
+  "titleAr": "مثال: مجموعة أعمدة مختلفة",
+  "textEn": "Example — A Different Column Set Same component, a completely different opts.columns — a plain 3-column To Do / Doing / Done board, proving WUI.kanban() is not secretly hardcoded to TaskManagement 's exact 4 statuses. No onBeforeMove here — omitted means every move commits unconditionally. WUI.kanban('#demo-kanban-simple', { columns: [ { key: 'todo', label: 'To Do' }, { key: 'doing', label: 'Doing' }, { key: 'done', label: 'Done' } ], cards: [ { id: 's1', columnKey: 'todo', title: 'Draft SITREP template', meta: { assignee: 'Nadia Farouk', priority: 'medium' } }, { id: 's3', columnKey: 'doing', title: 'Review after-action report draft', meta: { assignee: 'Huda Al Balushi', priority: 'high' } }, { id: 's4', columnKey: 'done', title: 'Archive Q2 exercise records', meta: { assignee: 'Tariq Aziz', priority: 'low' } } ] // onBeforeMove omitted -> always-true, every drop commits immediately. });",
+  "textAr": "مثال: مجموعة أعمدة مختلفة المكوّن نفسه، مع opts.columns مختلف تمامًا — لوحة بسيطة من ثلاثة أعمدة: قيد الانتظار / قيد التنفيذ / منجز، لإثبات أن WUI.kanban() ليس مقيّدًا سرًا بحالات TaskManagement الأربع الفعلية. لا يوجد onBeforeMove هنا؛ حذفه يعني أن كل نقل يُثبّت دون قيد."
+ },
+ {
+  "id": "kanban#error-handling",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "error-handling",
+  "titleEn": "Error Handling",
+  "titleAr": "معالجة الأخطاء",
+  "textEn": "Error Handling Matches the chart family's no-crash convention: bad configuration logs a warning and returns null (or silently skips the one bad item), it never throws. Condition Behavior opts.columns missing or empty console.warn ; WUI.kanban() returns null . A card's columnKey doesn't match any defined column That card is silently omitted from render (board keeps working); console.warn names the bad card id. opts.onBeforeMove omitted Treated as always- true — every drop commits unconditionally. A board that doesn't need a confirmation step isn't forced to pass a trivial callback.",
+  "textAr": "معالجة الأخطاء يطابق اتفاقية عدم التعطّل نفسها لعائلة المخططات: يسجّل الإعداد الخاطئ تحذيرًا ويعيد قيمة فارغة (أو يتخطى العنصر الخاطئ بصمت)، ولا يتعطّل أبدًا."
+ },
+ {
+  "id": "kanban#destroy",
+  "kind": "section",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "sectionId": "destroy",
+  "titleEn": "destroy()",
+  "titleAr": "destroy()",
+  "textEn": "destroy() Call handle.destroy() when the board's container is removed from the DOM (a split panel closing, an updatesection refresh replacing the whole board region on a WebEOC view, etc). It unbinds the drag-and-drop listeners bound on the container and clears its contents — the container element itself is left in place, ready for a fresh WUI.kanban() call if needed.",
+  "textAr": "destroy() استدعِ handle.destroy() عند إزالة حاوية اللوحة من DOM (إغلاق لوحة مقسومة، أو تحديث updatesection يستبدل منطقة اللوحة بأكملها في عرض WebEOC، إلخ). يزيل ربط مستمعي السحب والإفلات المرتبطة بالحاوية ويمسح محتوياتها؛ يبقى عنصر الحاوية نفسه في مكانه، جاهزًا لاستدعاء جديد لـ WUI.kanban() عند الحاجة."
  },
  {
   "id": "kpi-recipes#dashboard-overview",
@@ -1752,6 +1944,54 @@
   "textAr": ""
  },
  {
+  "id": "lists#rest-live-api-window-eoclistsapi",
+  "kind": "section",
+  "page": "lists.html",
+  "pageTitle": "EOC List Registry",
+  "group": "Get Started",
+  "sectionId": "rest-live-api-window-eoclistsapi",
+  "titleEn": "REST-Live API — window.EOCListsAPI",
+  "titleAr": "",
+  "textEn": "REST-Live API — window.EOCListsAPI EOCLists above is a static, portable registry — data baked into eoc-lists.js at deploy time, no network calls. EOCListsAPI is a different, independent object in the same file: it talks directly to the live WebEOC Nexus REST API's /lists endpoints, reading and writing the environment's own list catalog at runtime. Use the static registry to ship list data that travels with a board package; use EOCListsAPI when a board needs to read or seed lists that actually live in WebEOC admin. The two are unrelated — a name registered in one is not visible to the other. Setup — no separate login call The base URL is resolved once from the current page's own window.location.href : a board view's URL is <scheme>://<host>/<instance>/boards/... , so EOCListsAPI cuts at /boards to get the instance root and appends /api/rest.svc (falls back to location.origin if /boards isn't found). Requests are same-origin and cookie-authenticated using the board's own already-logged-in WebEOC session — no separate REST login/token call is needed from inside a board view. POST /lists is not an upsert — confirmed the hard way createList() (bare POST /lists ) is safe only to create a list that does not exist yet. Calling it again on an existing list does not update it — it blindly appends the subitems as new duplicate top-level items, and using it to add a single item to an already-existing list (the shape WebEOC's own docs describe) creates a spurious unrelated top-level list named after the item and corrupts the target list's own getList() afterward. addItem() 's URL-path style is the only confirmed-safe way to add to an existing list, at any depth. Method Returns Status Description EOCListsAPI.getLists() Promise Confirmed live GET /lists — every list name in the catalog. EOCListsAPI.getList(listName) Promise Confirmed live GET /lists/[listName] — the full recursive tree: { color, name, subitems } . subitems nests all the way down; no separate \"get sub items\" call needed. EOCListsAPI.createList(listName, subitems, color?) Promise Confirmed live POST /lists — creates a brand-new list with its full initial tree in one call. Safe only when listName doesn't exist yet (see the gotcha above). EOCListsAPI.addItem(segments, color?) Promise Confirmed live POST /lists/[seg1]/.../[newName] — adds ONE item to an existing list at any depth. segments[0] is the list name; the new item's name is always the last segment. One call per node — no bulk-add endpoint exists for an existing list. EOCListsAPI.editItem(segments, changes) Promise Not verified POST to the item's own path with a replacement body. WebEOC Nexus's REST API only documents GET / POST / DELETE (no PUT/PATCH), so this is modeled as a POST by convention — the request/response shape has not been tested against a live instance. EOCListsAPI.deleteList(listName) Promise Not verified DELETE /lists/[listName] . Destructive and untested — confirm with throwaway data before relying on it. EOCListsAPI.deleteItem(segments) Promise Not verified DELETE /lists/[seg1]/.../[itemName] — remove one item/sub-item at any depth. Same caveat as deleteList() . EOCListsAPI.findNode(tree, segments) Object|null Local helper Walks an already-fetched tree (from getList() ) down to a nested node, e.g. findNode(tree, ['Hazmat', 'Chemical Spill']) . No network call — pure client-side lookup. EOCListsAPI.summarize(list) Object Local helper Classifies an already-fetched list: { itemCount, isTree } — top-level item count, and whether any top-level item has children of its own. No network call. EOCListsAPI.ensureList(listName, desiredNodes, onProgress?) Promise Composite Create-or-diff-and-fill a whole tree in one call: creates the list if it doesn't exist yet, or recursively adds only the missing nodes if it does. Built entirely from getList() , createList() and addItem() — as reliable as those three, not independently tested beyond them. EOCListsAPI.ensureNodes(listName, parentPath, existingSiblings, desiredNodes, onProgress?) Promise Composite The recursive worker ensureList() calls internally; exposed for callers that already have both trees fetched and just want the diff-and-fill step.",
+  "textAr": ""
+ },
+ {
+  "id": "lists#usage-reading-writing-lists",
+  "kind": "section",
+  "page": "lists.html",
+  "pageTitle": "EOC List Registry",
+  "group": "Get Started",
+  "sectionId": "usage-reading-writing-lists",
+  "titleEn": "Usage — Reading & Writing Lists",
+  "titleAr": "",
+  "textEn": "Usage — Reading & Writing Lists getLists() , getList() , createList() and addItem() are the four confirmed-working entry points — everything else in EOCListsAPI is built on top of them. All four return a Promise ; there is no callback form.",
+  "textAr": ""
+ },
+ {
+  "id": "lists#usage-ensurelist-seed-deploy-helper",
+  "kind": "section",
+  "page": "lists.html",
+  "pageTitle": "EOC List Registry",
+  "group": "Get Started",
+  "sectionId": "usage-ensurelist-seed-deploy-helper",
+  "titleEn": "Usage — ensureList() (Seed/Deploy Helper)",
+  "titleAr": "",
+  "textEn": "Usage — ensureList() (Seed/Deploy Helper) A single idempotent call for board-deploy scripts: creates the list if it's missing, or diffs against what's already there and adds only the missing nodes if it exists, at any depth, one targeted call per missing node. Any getList() failure is treated as \"doesn't exist\" — WebEOC's own API throws the same generic error for a missing list as for a genuinely broken one, so there's no clean 404 to distinguish them (confirmed live).",
+  "textAr": ""
+ },
+ {
+  "id": "lists#usage-edititem-deletelist-deleteitem-not-verified",
+  "kind": "section",
+  "page": "lists.html",
+  "pageTitle": "EOC List Registry",
+  "group": "Get Started",
+  "sectionId": "usage-edititem-deletelist-deleteitem-not-verified",
+  "titleEn": "Usage — editItem() / deleteList() / deleteItem() (Not Verified)",
+  "titleAr": "",
+  "textEn": "Usage — editItem() / deleteList() / deleteItem() (Not Verified) These three exist in eoc-lists.js and are wired up the way the REST API is documented to work, but unlike the four methods above, they were not exercised against a live WebEOC instance. Read them as \"present in code, shape not confirmed\" rather than \"working.\" Test with throwaway data first deleteList() and deleteItem() are destructive and unverified. Try them against a disposable test list on a non-production environment before using them in a real board workflow.",
+  "textAr": ""
+ },
+ {
   "id": "localization#live-language-toggle",
   "kind": "section",
   "page": "localization.html",
@@ -1975,21 +2215,9 @@
   "group": "Navigation",
   "sectionId": "wui-hdr-wrap",
   "titleEn": "wui-hdr-wrap",
-  "titleAr": "",
+  "titleAr": "wui-hdr-wrap",
   "textEn": "wui-hdr-wrap Sticky board header. Structure: wui-hdr-wrap → wui-hdr-inner → wui-hdr-top (the row holding wui-hdr-left = icon + title block, and wui-hdr-right = actions/status). An optional wui-hdr-tabs-wrap sits below wui-hdr-top inside the same inner. The .centered variant turns wui-hdr-inner into a max-width (1100px) card. Realistic EOC board header — icon, title block, stats, actions top > (left: icon + title-row + subtitle) + (right: stats + actions) --> Operations Center Level 3 Active incident response · Sector 4 New report Header stats (wui-hdr-stats) A compact readout row for the header-right. Keep the header itself uncluttered — use one or two stats at most, or move counts into a wui-band-wrap strip below the header. 47 open 312 deployed Centered variant (.centered) — inner becomes a max-width card Atlas Crisis Suite Unified emergency operations Docs Launch",
-  "textAr": ""
- },
- {
-  "id": "navigation#wui-hdr-tabs",
-  "kind": "section",
-  "page": "navigation.html",
-  "pageTitle": "Navigation",
-  "group": "Navigation",
-  "sectionId": "wui-hdr-tabs",
-  "titleEn": "wui-hdr-tabs",
-  "titleAr": "",
-  "textEn": "wui-hdr-tabs Tab strip that lives inside wui-hdr-tabs-wrap (below wui-hdr-top ). wui-hdr-tabs is a horizontal overflow-x scroller with the scrollbar hidden; each wui-hdr-tab is uppercase and gains an accent bottom-border when .active (and lifts to primary text on hover). The wrap paints fade-out edges via ::before / ::after , revealed by adding .has-left / .has-right when the strip is scrolled. Static tab bar — active + hover states EOC Dashboard New Overview Incidents Resources Shelters Communications Interactive — click to switch tabs and panels (data-wui-demo-run) A self-contained vanilla click handler toggles the .active class between tabs and shows/hides the matching panel. It also demonstrates the .has-left / .has-right fade-edge classes being toggled from the scroller's scroll position. Incident Board Live Overview Incidents Resources Shelters Communications Logistics Overview — activation summary and KPIs. Incidents — 47 open across 6 sectors. Resources — 312 units deployed. Shelters — 8 of 12 active. Communications — 3 channels monitored. Logistics — 5 supply runs in progress. var wrap = document.getElementById('nav-demo-tabswrap'); var strip = document.getElementById('nav-demo-tabs'); var tabs = strip.querySelectorAll('.wui-hdr-tab'); var panels = wrap.closest('.wui-demo-preview').querySelectorAll('.tab-panel'); function activate(name) { tabs.forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-tab') === name); }); panels.forEach(function (p) { p.classList.toggle('active', p.getAttribute('data-panel') === name); }); } tabs.forEach(function (t) { t.addEventListener('click', function () { activate(t.getAttribute('data-tab')); }); }); // Fade-edge indicators: reveal ::before/::after via .has-left / .has-right function syncFades() { var maxScroll = strip.scrollWidth - strip.clientWidth; wrap.classList.toggle('has-left', strip.scrollLeft > 1); wrap.classList.toggle('has-right', strip.scrollLeft",
-  "textAr": ""
+  "textAr": "wui-hdr-wrap ترويسة لوحة ثابتة. البنية: wui-hdr-wrap ← wui-hdr-inner ← wui-hdr-top (الصف الذي يحوي wui-hdr-left = الأيقونة وكتلة العنوان، و wui-hdr-right = الإجراءات والحالة). يقع wui-hdr-tabs-wrap الاختياري أسفل wui-hdr-top داخل الحاوية الداخلية نفسها. تُحوِّل النسخة .centered عنصر wui-hdr-inner إلى بطاقة بعرض أقصى (1100px). ترويسة لوحة مركز عمليات طوارئ واقعية: أيقونة، كتلة عنوان، إحصاءات، إجراءات إحصاءات الترويسة (wui-hdr-stats) صف قراءة مُدمَج للجهة اليمنى من الترويسة. حافظ على الترويسة نفسها خالية من الازدحام باستخدام إحصاء واحد أو اثنين على الأكثر، أو انقل الأعداد إلى شريط wui-band-wrap أسفل الترويسة. النسخة الموسّطة (.centered): تصبح الحاوية الداخلية بطاقة بعرض أقصى"
  },
  {
   "id": "navigation#wui-link",
@@ -1999,9 +2227,9 @@
   "group": "Navigation",
   "sectionId": "wui-link",
   "titleEn": "wui-link",
-  "titleAr": "",
+  "titleAr": "wui-link",
   "textEn": "wui-link Inline text link that looks and behaves like an <a> . Works on both <a> and <button> (button chrome is reset). It flows inline with surrounding text; colour comes from a modifier. Underline appears on hover by default. Base + all color variants Primary link Secondary Success Warning Danger Info Muted With icon (inline material symbol) Open dashboard Download report Modifiers — underlined, plain, sm, xs Underlined Plain (no hover underline) Small (sm) Extra small (xs) Disabled — attribute and .disabled class Disabled link Disabled button link In flowing text The EOC has been activated at Level 3 . Review the incident log or dismiss this notice .",
-  "textAr": ""
+  "textAr": "wui-link رابط نصي مضمّن يبدو ويتصرّف مثل <a> . يعمل على كلٍّ من <a> و <button> (مع تصفير مظهر الزر الافتراضي). يتدفّق مضمّنًا مع النص المحيط، ويأتي اللون من مُعدِّل. يظهر التسطير عند التمرير فوقه افتراضيًّا. الأساس وكل نسخ الألوان مع أيقونة (رمز Material مضمّن) المُعدِّلات: underlined، plain، sm، xs مُعطَّل: عبر السمة وعبر الصنف .disabled ضمن نص متدفّق"
  },
  {
   "id": "navigation#wui-band-wrap",
@@ -2011,9 +2239,9 @@
   "group": "Navigation",
   "sectionId": "wui-band-wrap",
   "titleEn": "wui-band-wrap",
-  "titleAr": "",
+  "titleAr": "wui-band-wrap",
   "textEn": "wui-band-wrap Horizontal status strip for EOC counts and KPIs. Structure: wui-band-wrap → one or more wui-band-row → wui-band-seg segments (each a wui-band-label + wui-band-value ), separated by wui-band-divider , with wui-band-spacer pushing a trailing wui-band-actions slot to the end. Stacked segments use wui-band-seg-stack (label over value). Add .stripe.{color} for a diagonal-striped left edge + colored bottom border. Basic band — segments, dividers, spacer, actions Activation Level Level 3 — Partial Incidents Open 47 Resources 312 Shelters Active 8 / 12 Refresh Stacked segment (wui-band-seg-stack) — label over value EOC Director John Davis Opened At 2024-01-15 · 14:00 Duration 04:32:11 Multiple rows (wui-band-row + wui-band-row) Sector North Teams 12 Sector South Teams 9 Stripe variants — all 5 colors (.stripe.{color}) Status Standby — Ready Status EOC Activated — Level 4 Critical Status Elevated — Monitoring Status Normal Operations Status Advisory Issued",
-  "textAr": ""
+  "textAr": "wui-band-wrap شريط حالة أفقي لأعداد مركز العمليات ومؤشرات الأداء الرئيسية. البنية: wui-band-wrap ← صف واحد أو أكثر wui-band-row ← مقاطع wui-band-seg (كل منها wui-band-label + wui-band-value )، مفصولة بـ wui-band-divider ، مع wui-band-spacer يدفع خانة wui-band-actions الأخيرة إلى الطرف. تستخدم المقاطع المكدّسة wui-band-seg-stack (التسمية فوق القيمة). أضف .stripe.{color} للحصول على حافّة يسرى مخطّطة قطريًّا وحدٍّ سفلي ملوّن. شريط أساسي: مقاطع، فواصل، مباعِد، إجراءات مقطع مكدّس (wui-band-seg-stack): التسمية فوق القيمة صفوف متعددة (wui-band-row + wui-band-row) نسخ الشريط المخطّط: الألوان الخمسة كافّة (.stripe.{color})"
  },
  {
   "id": "overlays#wui-popover",
@@ -2254,6 +2482,30 @@
   "titleAr": "",
   "textEn": "Density Tune vertical rhythm on the <table> : is-compact tightens padding (and the card row gap), is-comfortable loosens it. Base density (no class) sits between. Both modifiers work on wui-table-standard and wui-table-cards . Standard — compact vs base vs comfortable Compact Status Power Outage — Tower B Open Water Leak — Level 3 Closed Base Status Power Outage — Tower B Open Water Leak — Level 3 Closed Comfortable Status Power Outage — Tower B Open Water Leak — Level 3 Closed Cards — compact vs comfortable Compact Severity Power Outage — Tower B Critical Water Leak — Level 3 High Comfortable Severity Power Outage — Tower B Critical Water Leak — Level 3 High",
   "textAr": ""
+ },
+ {
+  "id": "tables#responsive-column-hiding",
+  "kind": "section",
+  "page": "tables.html",
+  "pageTitle": "Tables",
+  "group": "Data Display",
+  "sectionId": "responsive-column-hiding",
+  "titleEn": "Responsive column hiding",
+  "titleAr": "",
+  "textEn": "Responsive column hiding Mark a <th> / <td> pair data-wui-hide-below=\"sm|md|lg|xl\" and the column hides once the table's own wui-table-wrap shrinks past that breakpoint &mdash; a real container query against the table's rendered width, not the browser viewport. That is the whole point: a details panel or split view squeezing the table triggers the hide even when the window itself never resizes, which a @media query cannot see. Same sm/md/lg/xl scale as wui-col-sm / wui-col-md and the grid system (576/768/992/1200) &mdash; no new vocabulary. Zero JS: each cell hides itself off its own attribute, nothing pairs the header to its column. Requires loading weoc-tables-responsive.css after weoc-tables.css . Standard table ( wui-table-standard ) only &mdash; wui-table-cards already has its own narrow-width behavior. Live example &mdash; resize the wrapper, not the window Two columns below are marked data-wui-hide-below : Created By hides under the md breakpoint (768px), Created At hides under sm (576px). Drag the handle in the demo box's bottom-right corner, or use the width presets, to see each threshold cross independently of the browser window. Wide (900px) md breakpoint (700px) sm breakpoint (500px) # Facility Status Location Created By Created At 26-004 Central Warehouse Operational Bldg 4, Zone C J. Rivera 07/28/2026 14:02 26-011 North Depot Limited Bldg 1, Zone A A. Chen 07/29/2026 09:14 26-017 Med Supply Cache Closed Bldg 9, Zone F S. Malik 07/30/2026 22:47 <div class=\"wui-table-wrap\"> <table class=\"wui-table-standard\"> <thead> <tr> <th class=\"wui-col-index\">#</th> <th class=\"wui-col-primary\">Facility</th> <th class=\"wui-col-md\">Status</th> <th class=\"wui-col-md\">Location</th> <th class=\"wui-col-md\" data-wui-hide-below=\"md\">Created By</th> <th class=\"wui-col-md\" data-wui-hide-below=\"sm\">Created At</th> </tr> </thead> <tbody> <tr> <td class=\"wui-cell-num\">26-004</td> <td>Central Warehouse</td> <td><span class=\"wui-badge success\">Operational</span></td> <td>Bldg 4, Zone C</td> <td data-wui-hide-below=\"md\">J. Rivera</td> <td data-wui-hide-below=\"sm\">07/28/2026 14:02</td> </tr> <!-- …more rows… --> </tbody> </table> </div> Opt-in module &mdash; load weoc-tables-responsive.css after weoc-tables.css The hide hook ships in its own file. Add <link rel=\"stylesheet\" href=\"../../CSS/weoc-ui/weoc-tables-responsive.css\"> after weoc-tables.css on any table view. It reuses the container-type: inline-size context weoc-tables.css already establishes on wui-table-wrap &mdash; no extra markup beyond the wrapper you already use.",
+  "textAr": ""
+ },
+ {
+  "id": "tabs#wui-hdr-tabs",
+  "kind": "section",
+  "page": "tabs.html",
+  "pageTitle": "Tabs",
+  "group": "Navigation",
+  "sectionId": "wui-hdr-tabs",
+  "titleEn": "wui-hdr-tabs",
+  "titleAr": "wui-hdr-tabs",
+  "textEn": "wui-hdr-tabs Tab strip that lives inside wui-hdr-tabs-wrap (below wui-hdr-top ). wui-hdr-tabs is a horizontal overflow-x scroller with the scrollbar hidden; each wui-hdr-tab is uppercase and gains an accent bottom-border when .active (and lifts to primary text on hover). The wrap paints fade-out edges via ::before / ::after , revealed by adding .has-left / .has-right when the strip is scrolled. Static tab bar — active + hover states EOC Dashboard New Overview Incidents Resources Shelters Communications Interactive — click to switch tabs and panels (data-wui-demo-run) A self-contained vanilla click handler toggles the .active class between tabs and shows/hides the matching panel. It also demonstrates the .has-left / .has-right fade-edge classes being toggled from the scroller's scroll position. Incident Board Live Overview Incidents Resources Shelters Communications Logistics Overview — activation summary and KPIs. Incidents — 47 open across 6 sectors. Resources — 312 units deployed. Shelters — 8 of 12 active. Communications — 3 channels monitored. Logistics — 5 supply runs in progress. var wrap = document.getElementById('tabs-demo-tabswrap'); var strip = document.getElementById('tabs-demo-tabs'); var tabs = strip.querySelectorAll('.wui-hdr-tab'); var panels = wrap.closest('.wui-demo-preview').querySelectorAll('.tab-panel'); function activate(name) { tabs.forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-tab') === name); }); panels.forEach(function (p) { p.classList.toggle('active', p.getAttribute('data-panel') === name); }); } tabs.forEach(function (t) { t.addEventListener('click', function () { activate(t.getAttribute('data-tab')); }); }); // Fade-edge indicators: reveal ::before/::after via .has-left / .has-right function syncFades() { var maxScroll = strip.scrollWidth - strip.clientWidth; wrap.classList.toggle('has-left', strip.scrollLeft > 1); wrap.classList.toggle('has-right', strip.scrollLeft",
+  "textAr": "wui-hdr-tabs شريط تبويبات يقع داخل wui-hdr-tabs-wrap (أسفل wui-hdr-top ). العنصر wui-hdr-tabs هو ممرِّر أفقي بخاصية overflow-x مع إخفاء شريط التمرير؛ وكل wui-hdr-tab بأحرف كبيرة ويكتسب حدًّا سفليًّا بلون التمييز عند .active (ويرتقي إلى النص الأساسي عند التمرير فوقه). تَرسم الحاوية حوافّ متلاشية عبر ::before / ::after ، تظهر بإضافة .has-left / .has-right عند تمرير الشريط. شريط تبويبات ثابت: حالتا التنشيط والتمرير فوقه تفاعلي: انقر لتبديل التبويبات واللوحات (data-wui-demo-run) مُعالِج نقر مستقل بلغة JavaScript خالصة يبدّل الصنف .active بين التبويبات ويُظهِر اللوحة المطابقة أو يُخفيها. كما يوضّح صنفَي الحافّة المتلاشية .has-left / .has-right وهما يُبدَّلان تبعًا لموضع تمرير الممرِّر."
  },
  {
   "id": "tier-colors#wui-badge",
@@ -2720,8 +2972,8 @@
   "sectionId": "navigation",
   "titleEn": "Navigation",
   "titleAr": "التنقّل",
-  "textEn": "Navigation Navigation Header bar, tabs, and the band-wrap stat strip.",
-  "textAr": "التنقّل التنقّل شريط الترويسة، والتبويبات، وشريط الإحصاءات band-wrap."
+  "textEn": "Navigation Navigation Header bar, inline link, and the band-wrap stat strip. Tabs Scrollable wui-hdr-tabs strip, static and interactive tab-switching demos.",
+  "textAr": "التنقّل التنقّل شريط الترويسة، والرابط المضمّن، وشريط الإحصاءات band-wrap. التبويبات شريط تبويبات wui-hdr-tabs قابل للتمرير، مع عروض توضيحية ثابتة وتفاعلية لتبديل التبويبات."
  },
  {
   "id": "index#feedback",
@@ -2978,7 +3230,16 @@
   "page": "navigation.html",
   "pageTitle": "Navigation",
   "group": "Navigation",
-  "textEn": "Navigation tabs anchor link band header hdr banner breadcrumbs stepper",
+  "textEn": "Navigation anchor link band header hdr banner breadcrumbs stepper",
+  "textAr": ""
+ },
+ {
+  "id": "nav#tabs",
+  "kind": "nav",
+  "page": "tabs.html",
+  "pageTitle": "Tabs",
+  "group": "Navigation",
+  "textEn": "Tabs tabs tab-panel hdr-tabs strip switcher",
   "textAr": ""
  },
  {
@@ -3045,6 +3306,15 @@
   "textAr": ""
  },
  {
+  "id": "nav#heatmap",
+  "kind": "nav",
+  "page": "heatmap.html",
+  "pageTitle": "Heatmap",
+  "group": "Data Display",
+  "textEn": "Heatmap heatmap risk matrix grid cell severity tooltip",
+  "textAr": ""
+ },
+ {
   "id": "nav#dates",
   "kind": "nav",
   "page": "dates.html",
@@ -3105,6 +3375,15 @@
   "pageTitle": "Maps",
   "group": "Patterns",
   "textEn": "Maps map esri basemap point popover controls location",
+  "textAr": ""
+ },
+ {
+  "id": "nav#kanban",
+  "kind": "nav",
+  "page": "kanban.html",
+  "pageTitle": "Kanban",
+  "group": "Patterns",
+  "textEn": "Kanban kanban board task drag drop column card accent",
   "textAr": ""
  },
  {

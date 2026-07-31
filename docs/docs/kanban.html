@@ -234,14 +234,14 @@
 
         <!-- ── Overview ───────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_6"><span class="material-symbols-outlined">info</span>Overview</div>
+          <div class="docs-section-title" id="overview" data-wui-i18n-html="docs_kanban_6"><span class="material-symbols-outlined">info</span>Overview</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kanban_7"><code>wui-kanban.js</code> renders a column-grouped board from plain <code>columns</code>/<code>cards</code> data and wires native HTML5 drag-and-drop between columns. There is no swimlane support and no baked-in persistence — a board owns saving the new status, this component only owns moving the card and asking first.</p>
           <p class="docs-desc" data-wui-i18n-html="docs_kanban_8">Card markup reuses the existing <code>.wui-badge</code> component for priority (same severity-token convention documented on the <a href="interactive.html">Badges &amp; Chips</a> page) rather than inventing a new visual language.</p>
         </div>
 
         <!-- ── Setup ──────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_9"><span class="material-symbols-outlined">code</span>Setup</div>
+          <div class="docs-section-title" id="setup" data-wui-i18n-html="docs_kanban_9"><span class="material-symbols-outlined">code</span>Setup</div>
           <p class="docs-desc" data-wui-i18n="docs_kanban_10">Load the kanban stylesheet and engine after weoc-ui.css / weoc-ui.js.</p>
           <pre class="docs-code">&lt;link rel="stylesheet" href="path/to/weoc-ui.css"&gt;
 &lt;link rel="stylesheet" href="path/to/weoc-kanban.css"&gt;
@@ -258,7 +258,7 @@
 
         <!-- ── WUI.kanban() API ───────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_11"><span class="material-symbols-outlined">view_kanban</span>WUI.kanban(el, opts)</div>
+          <div class="docs-section-title" id="wui-kanban-el-opts" data-wui-i18n-html="docs_kanban_11"><span class="material-symbols-outlined">view_kanban</span>WUI.kanban(el, opts)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kanban_12">Create a kanban board inside a container element. Returns an instance handle, or <code>null</code> if <code>opts.columns</code> is missing/empty or the element cannot be resolved.</p>
 
           <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_kanban_13"><strong>Parameters</strong></p>
@@ -318,7 +318,7 @@
 
         <!-- ── Markup shape ───────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_15"><span class="material-symbols-outlined">data_object</span>Rendered Markup</div>
+          <div class="docs-section-title" id="rendered-markup" data-wui-i18n-html="docs_kanban_15"><span class="material-symbols-outlined">data_object</span>Rendered Markup</div>
           <p class="docs-desc" data-wui-i18n="docs_kanban_16">What WUI.kanban() renders inside your container element — useful when writing CSS overrides or reading the DOM from board-level code.</p>
           <pre class="docs-code">&lt;div class="wui-kanban"&gt;
   &lt;div class="wui-kanban-col" data-column-key="open"&gt;
@@ -347,7 +347,7 @@
 
         <!-- ── Card Accents ───────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_32"><span class="material-symbols-outlined">palette</span>Card Accents</div>
+          <div class="docs-section-title" id="card-accents" data-wui-i18n-html="docs_kanban_32"><span class="material-symbols-outlined">palette</span>Card Accents</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kanban_33">An optional colored left-edge stripe per card — set <code>card.accent</code> to one of the same names <code>.wui-badge</code> already accepts (see the <a href="interactive.html">Badges &amp; Chips</a> page), not a new color vocabulary. Omitted (or an unrecognized value) → no stripe, the card renders exactly as it did before this option existed.</p>
           <pre class="docs-code">{ id: '101', columnKey: 'open', title: 'Inspect Facility 26-004', accent: 'warning', meta: { /* ... */ } }
 { id: '103', columnKey: 'open', title: 'Update road closure signage — Sector 4', meta: { /* ... */ } } // no accent -> no stripe</pre>
@@ -380,7 +380,7 @@
 
         <!-- ── Live example: task board ───────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_17"><span class="material-symbols-outlined">view_kanban</span>Example — Task Board</div>
+          <div class="docs-section-title" id="example-task-board" data-wui-i18n-html="docs_kanban_17"><span class="material-symbols-outlined">view_kanban</span>Example — Task Board</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kanban_18">Mirrors <code>TaskManagement</code>'s real 4-status shape. Drag any card between columns. Dropping onto <strong>Rejected</strong> asks for confirmation first — Cancel snaps the card back to its origin column; Confirm commits the move. Watch the log line below the board.</p>
 
           <div class="wui-demo" data-wui-demo>
@@ -453,7 +453,7 @@ taskHandle.destroy();
 
         <!-- ── onBeforeMove / reject path ─────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_22"><span class="material-symbols-outlined">block</span>The Reject Path</div>
+          <div class="docs-section-title" id="the-reject-path" data-wui-i18n-html="docs_kanban_22"><span class="material-symbols-outlined">block</span>The Reject Path</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kanban_23">On drop, <code>wui-kanban.js</code> moves the card's DOM node into the target column FIRST (mirroring the reference board's own "move visually first, cancel reverts" approach), THEN calls <code>opts.onBeforeMove</code>. If the result — or the value a returned <code>Promise</code> resolves to — is exactly <code>false</code>, the card animates back to its original position in its original column and gets a brief rejection cue. Anything else commits the move.</p>
           <div class="wui-callout warning" style="margin-top: var(--space-4)">
             <span class="material-symbols-outlined">warning</span>
@@ -466,7 +466,7 @@ taskHandle.destroy();
 
         <!-- ── Live example: different column set ─────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_26"><span class="material-symbols-outlined">view_column</span>Example — A Different Column Set</div>
+          <div class="docs-section-title" id="example-a-different-column-set" data-wui-i18n-html="docs_kanban_26"><span class="material-symbols-outlined">view_column</span>Example — A Different Column Set</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kanban_27">Same component, a completely different <code>opts.columns</code> — a plain 3-column To Do / Doing / Done board, proving <code>WUI.kanban()</code> is not secretly hardcoded to <code>TaskManagement</code>'s exact 4 statuses. No <code>onBeforeMove</code> here — omitted means every move commits unconditionally.</p>
 
           <div class="wui-demo" data-wui-demo>
@@ -499,7 +499,7 @@ WUI.kanban('#demo-kanban-simple', {
 
         <!-- ── Error handling ─────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_28"><span class="material-symbols-outlined">error_outline</span>Error Handling</div>
+          <div class="docs-section-title" id="error-handling" data-wui-i18n-html="docs_kanban_28"><span class="material-symbols-outlined">error_outline</span>Error Handling</div>
           <p class="docs-desc" data-wui-i18n="docs_kanban_29">Matches the chart family's no-crash convention: bad configuration logs a warning and returns null (or silently skips the one bad item), it never throws.</p>
           <table class="docs-api-table">
             <thead><tr><th>Condition</th><th>Behavior</th></tr></thead>
@@ -522,7 +522,7 @@ WUI.kanban('#demo-kanban-simple', {
 
         <!-- ── destroy() ──────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_kanban_30"><span class="material-symbols-outlined">delete</span>destroy()</div>
+          <div class="docs-section-title" id="destroy" data-wui-i18n-html="docs_kanban_30"><span class="material-symbols-outlined">delete</span>destroy()</div>
           <p class="docs-desc" data-wui-i18n-html="docs_kanban_31">Call <code>handle.destroy()</code> when the board's container is removed from the DOM (a split panel closing, an <code>updatesection</code> refresh replacing the whole board region on a WebEOC view, etc). It unbinds the drag-and-drop listeners bound on the container and clears its contents — the container element itself is left in place, ready for a fresh <code>WUI.kanban()</code> call if needed.</p>
         </div>
 

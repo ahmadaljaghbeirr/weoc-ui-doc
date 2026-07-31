@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Tabs</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="tabs">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_tabs_1">Tabs</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_tabs_2">Tabs</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_tabs_3">The scrollable tab strip <code>wui-hdr-tabs</code> that lives inside a board's sticky header. Every variant is shown with its exact markup. For the surrounding header chrome (<code>wui-hdr-wrap</code>) and the status strip (<code>wui-band-wrap</code>), see the <a class="wui-link" href="navigation.html">Navigation</a> page.</div>
+        </div>
+
+        <!-- ══════════════════════════ wui-hdr-tabs ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="wui-hdr-tabs" data-wui-i18n-html="docs_tabs_4"><span class="material-symbols-outlined">tab</span>wui-hdr-tabs</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tabs_5">Tab strip that lives inside <code>wui-hdr-tabs-wrap</code> (below <code>wui-hdr-top</code>). <code>wui-hdr-tabs</code> is a horizontal <code>overflow-x</code> scroller with the scrollbar hidden; each <code>wui-hdr-tab</code> is uppercase and gains an accent bottom-border when <code>.active</code> (and lifts to primary text on hover). The wrap paints fade-out edges via <code>::before</code>/<code>::after</code>, revealed by adding <code>.has-left</code> / <code>.has-right</code> when the strip is scrolled.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tabs_6">Static tab bar — active + hover states</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-hdr-wrap" style="width:100%">
+                <div class="wui-hdr-inner">
+                  <div class="wui-hdr-top">
+                    <div class="wui-hdr-left"><div class="wui-hdr-title">EOC Dashboard</div></div>
+                    <div class="wui-hdr-right">
+                      <div class="wui-hdr-actions">
+                        <button class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">add</span>New</button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- wui-hdr-tabs-wrap wraps the scroller and owns the fade edges -->
+                  <div class="wui-hdr-tabs-wrap">
+                    <div class="wui-hdr-tabs">
+                      <!-- Active tab -->
+                      <button class="wui-hdr-tab active"><span class="material-symbols-outlined">dashboard</span>Overview</button>
+                      <!-- Resting tabs (hover to preview) -->
+                      <button class="wui-hdr-tab"><span class="material-symbols-outlined">warning</span>Incidents</button>
+                      <button class="wui-hdr-tab"><span class="material-symbols-outlined">inventory_2</span>Resources</button>
+                      <button class="wui-hdr-tab"><span class="material-symbols-outlined">home_work</span>Shelters</button>
+                      <button class="wui-hdr-tab"><span class="material-symbols-outlined">forum</span>Communications</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tabs_7">Interactive — click to switch tabs and panels (data-wui-demo-run)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tabs_8">A self-contained vanilla click handler toggles the <code>.active</code> class between tabs and shows/hides the matching panel. It also demonstrates the <code>.has-left</code> / <code>.has-right</code> fade-edge classes being toggled from the scroller's scroll position.</p>
+          <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <div class="wui-hdr-wrap" style="width:100%">
+                <div class="wui-hdr-inner">
+                  <div class="wui-hdr-top">
+                    <div class="wui-hdr-left"><div class="wui-hdr-title">Incident Board</div></div>
+                    <div class="wui-hdr-right">
+                      <div class="wui-hdr-stats">
+                        <div class="wui-hdr-stat"><span class="material-symbols-outlined">schedule</span>Live</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="wui-hdr-tabs-wrap" id="tabs-demo-tabswrap">
+                    <div class="wui-hdr-tabs" id="tabs-demo-tabs">
+                      <!-- Each tab carries data-tab pointing at a panel id -->
+                      <button class="wui-hdr-tab active" data-tab="overview"><span class="material-symbols-outlined">dashboard</span>Overview</button>
+                      <button class="wui-hdr-tab" data-tab="incidents"><span class="material-symbols-outlined">warning</span>Incidents</button>
+                      <button class="wui-hdr-tab" data-tab="resources"><span class="material-symbols-outlined">inventory_2</span>Resources</button>
+                      <button class="wui-hdr-tab" data-tab="shelters"><span class="material-symbols-outlined">home_work</span>Shelters</button>
+                      <button class="wui-hdr-tab" data-tab="comms"><span class="material-symbols-outlined">forum</span>Communications</button>
+                      <button class="wui-hdr-tab" data-tab="logistics"><span class="material-symbols-outlined">local_shipping</span>Logistics</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Panels: only the .active one is shown -->
+              <div style="padding:var(--space-3) var(--space-4);width:100%;box-sizing:border-box">
+                <div class="tab-panel active" data-panel="overview">Overview — activation summary and KPIs.</div>
+                <div class="tab-panel" data-panel="incidents">Incidents — 47 open across 6 sectors.</div>
+                <div class="tab-panel" data-panel="resources">Resources — 312 units deployed.</div>
+                <div class="tab-panel" data-panel="shelters">Shelters — 8 of 12 active.</div>
+                <div class="tab-panel" data-panel="comms">Communications — 3 channels monitored.</div>
+                <div class="tab-panel" data-panel="logistics">Logistics — 5 supply runs in progress.</div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+var wrap  = document.getElementById('tabs-demo-tabswrap');
+var strip = document.getElementById('tabs-demo-tabs');
+var tabs  = strip.querySelectorAll('.wui-hdr-tab');
+var panels = wrap.closest('.wui-demo-preview').querySelectorAll('.tab-panel');
+
+function activate(name) {
+  tabs.forEach(function (t) {
+    t.classList.toggle('active', t.getAttribute('data-tab') === name);
+  });
+  panels.forEach(function (p) {
+    p.classList.toggle('active', p.getAttribute('data-panel') === name);
+  });
+}
+
+tabs.forEach(function (t) {
+  t.addEventListener('click', function () {
+    activate(t.getAttribute('data-tab'));
+  });
+});
+
+// Fade-edge indicators: reveal ::before/::after via .has-left / .has-right
+function syncFades() {
+  var maxScroll = strip.scrollWidth - strip.clientWidth;
+  wrap.classList.toggle('has-left', strip.scrollLeft > 1);
+  wrap.classList.toggle('has-right', strip.scrollLeft < maxScroll - 1);
+}
+strip.addEventListener('scroll', syncFades);
+syncFades();
+            </template>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('tabs');</script>
+</body>
+</html>

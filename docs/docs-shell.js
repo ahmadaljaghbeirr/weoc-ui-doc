@@ -51,7 +51,8 @@
     {
       group: 'Navigation',
       items: [
-        { key: 'navigation', label: 'Navigation', file: 'navigation.html', kw: 'tabs anchor link band header hdr banner breadcrumbs stepper' }
+        { key: 'navigation', label: 'Navigation', file: 'navigation.html', kw: 'anchor link band header hdr banner breadcrumbs stepper' },
+        { key: 'tabs', label: 'Tabs', file: 'tabs.html', kw: 'tabs tab-panel hdr-tabs strip switcher' }
       ]
     },
     {
@@ -372,7 +373,7 @@
   // the rest are one file each under i18n/ to keep them maintainable).
   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
     'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
-    'kanban', 'heatmap'];
+    'kanban', 'heatmap', 'navigation', 'tabs'];
   function ensureI18nStore(root) {
     if (i18nStoreLoaded) return Promise.resolve();
     i18nStoreLoaded = true;
