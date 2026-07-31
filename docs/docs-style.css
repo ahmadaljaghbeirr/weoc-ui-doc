@@ -609,10 +609,18 @@
 .docs-search-results.is-open { display: block; }
 
 .docs-search-hit {
+  /* Column, not row: .docs-search-hit-snippet (added when a hit is a
+     section-kind result with a match snippet) is `display:block` and
+     `margin-top`, both of which are no-ops on a flex ROW item -- they only
+     stack visually with the label above them once the container itself is
+     a column. .docs-search-hit is only ever used for these search-result
+     anchors (see docs-shell.js renderSearchResults) so this isn't shared
+     with any other row-shaped consumer that would need to stay row-flex. */
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0;
   text-decoration: none;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
