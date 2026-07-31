@@ -137,3 +137,92 @@ test('buildIndex surfaces a missing i18n ref instead of silently dropping it', (
     fs.unlinkSync(brokenI18n);
   }
 });
+
+// Regression test for the whole-branch review's Finding 1: the home page
+// (docs/index.html) is the only page addressed via a NAV item with
+// `file: null` rather than a real docs/docs/*.html file, so it can never be
+// picked up by a walk of docsDir alone -- both the section-level walk and
+// the nav-doc-per-NAV-item emission have to special-case it. Built on the fly
+// (not committed fixtures) and cleaned up in `finally`, same pattern as the
+// "surfaces a missing i18n ref" test above.
+test('buildIndex includes the home page (NAV item with file:null) as both a nav doc and section docs', () => {
+  const homeShellPath = path.join(FIXTURE_ROOT, 'docs', 'docs-shell-home.js');
+  const homePagePath = path.join(FIXTURE_ROOT, 'docs', 'index.html');
+  const homeI18nPath = path.join(FIXTURE_I18N_DIR, 'home.js');
+
+  fs.writeFileSync(homeShellPath, `(function () {
+  'use strict';
+  var NAV = [
+    { group: 'Get Started', items: [
+      { key: 'home', label: 'Introduction', file: null, kw: 'intro overview install getting started' }
+    ] },
+    { group: 'Data Display', items: [
+      { key: 'widgets', label: 'Widgets', file: 'widgets.html', kw: 'widget component reusable' }
+    ] }
+  ];
+})();
+`, 'utf8');
+
+  fs.writeFileSync(homePagePath, `<!DOCTYPE html>
+<html>
+<head><title>weoc-ui</title></head>
+<body class="wui-body-shell">
+  <div id="docs-main">
+    <div class="docs-page" x-data="homePage()">
+      <div class="docs-hero">
+        <div class="docs-hero-title" data-wui-i18n="docs_home_1">weoc-ui</div>
+      </div>
+      <div class="docs-section-title" data-wui-i18n-html="docs_home_2">Get Started</div>
+      <p data-wui-i18n-html="docs_home_3">Install and go.</p>
+    </div>
+  </div>
+  <script src="./docs-shell.js"></script>
+</body>
+</html>
+`, 'utf8');
+
+  fs.writeFileSync(homeI18nPath, `(function () {
+  if (!window.WUI || !window.WUI.i18n) return;
+  WUI.i18n.register([
+    { lang:'en', id:'docs_home_1', value:'weoc-ui' }, { lang:'ar', id:'docs_home_1', value:'weoc-ui' },
+    { lang:'en', id:'docs_home_2', value:'Get Started' }, { lang:'ar', id:'docs_home_2', value:'ابدأ الآن' },
+    { lang:'en', id:'docs_home_3', value:'Install and go.' }, { lang:'ar', id:'docs_home_3', value:'ثبّت وابدأ.' }
+  ]);
+})();
+`, 'utf8');
+
+  try {
+    const result = buildIndex({
+      docsDir: path.join(FIXTURE_ROOT, 'docs', 'docs'),
+      i18nDir: FIXTURE_I18N_DIR,
+      shellPath: homeShellPath,
+      homePath: homePagePath
+    });
+    assert.equal(result.missingRefs.length, 0);
+
+    const navDocs = result.index.filter(d => d.kind === 'nav');
+    const homeNavDoc = navDocs.find(d => d.id === 'nav#home');
+    assert.ok(homeNavDoc, 'the file:null home NAV item must still produce a nav doc');
+    assert.equal(homeNavDoc.page, 'index.html');
+    assert.match(homeNavDoc.textEn, /Introduction/);
+    // Every NAV item gets a nav doc regardless of a matching page file --
+    // there are 2 items across the 2 groups in this fixture's NAV.
+    assert.equal(navDocs.length, 2);
+
+    const homeSectionDocs = result.index.filter(d => d.kind === 'section' && d.page === 'index.html');
+    assert.equal(homeSectionDocs.length, 1);
+    assert.equal(homeSectionDocs[0].id, 'index#get-started');
+    assert.equal(homeSectionDocs[0].titleEn, 'Get Started');
+    assert.match(homeSectionDocs[0].titleAr, /ابدأ الآن/);
+    assert.match(homeSectionDocs[0].textAr, /ثبّت/);
+
+    assert.ok(
+      result.patchedFiles.some(f => f.replace(/\\/g, '/').endsWith('docs/index.html')),
+      'home page section ids should be injected into the file just like any docs/docs/*.html page'
+    );
+  } finally {
+    fs.unlinkSync(homeShellPath);
+    fs.unlinkSync(homePagePath);
+    fs.unlinkSync(homeI18nPath);
+  }
+});
