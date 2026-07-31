@@ -1032,18 +1032,6 @@
   "textAr": "wui-empty-state عنصر نائب بعمود متمركز لقائمة أو لوح أو قسم لا يحتوي عناصر: أيقونة مع .wui-empty-label . المُعدّلات: compact (أكثر إحكامًا، لأجسام الودجات الصغيرة) و dashed (محاط بإطار، يحفظ مساحة التخطيط في الأعمدة المنظّمة). أضف .wui-empty-sub لسطر تلميح ثانوي. لصف نصي فقط مضمّن، استخدم .wui-empty-section (بدون أيقونة). الأساس مضغوط متقطّع: مع .wui-empty-sub wui-empty-section: نص مضمّن فقط"
  },
  {
-  "id": "feedback#loader",
-  "kind": "section",
-  "page": "feedback.html",
-  "pageTitle": "Feedback",
-  "group": "Feedback",
-  "sectionId": "loader",
-  "titleEn": "Loader",
-  "titleAr": "مؤشر التحميل",
-  "textEn": "Loader For a live spinner, add the utility class .spin (from weoc-utilities.css, loaded via the core barrel) to any icon. It applies a continuous 1s linear rotation. Pair it with a Material Symbol such as progress_activity . Spinner progress_activity progress_activity Loading…",
-  "textAr": "مؤشر التحميل للحصول على دوّار حي، أضف صنف الأدوات .spin (من weoc-utilities.css، المُحمّل عبر حزمة النواة) إلى أي أيقونة. يطبّق دورانًا خطيًا مستمرًا مدته ثانية واحدة. اقرنه برمز Material مثل progress_activity . الدوّار"
- },
- {
   "id": "flex#wui-flex",
   "kind": "section",
   "page": "flex.html",
@@ -2050,6 +2038,78 @@
   "titleAr": "",
   "textEn": "Usage — editItem() / deleteList() / deleteItem() (Not Verified) These three exist in eoc-lists.js and are wired up the way the REST API is documented to work, but unlike the four methods above, they were not exercised against a live WebEOC instance. Read them as \"present in code, shape not confirmed\" rather than \"working.\" Test with throwaway data first deleteList() and deleteItem() are destructive and unverified. Try them against a disposable test list on a non-production environment before using them in a real board workflow.",
   "textAr": ""
+ },
+ {
+  "id": "loader#wui-busy-full-page-overlay",
+  "kind": "section",
+  "page": "loader.html",
+  "pageTitle": "Loader",
+  "group": "Feedback",
+  "sectionId": "wui-busy-full-page-overlay",
+  "titleEn": "WUI.busy() — full-page overlay",
+  "titleAr": "WUI.busy(): طبقة على كامل الصفحة",
+  "textEn": "WUI.busy() — full-page overlay Call WUI.busy(true) with no target to cover the whole viewport: a fixed, blurred backdrop plus the busy figure and \"Please wait\" label, and the page scroll is locked for the duration. WUI.busy(false) tears it down and restores scroll. Idempotent — calling it again while already open is a no-op. Show / hide Show full-page busy (2.5s) var btn = document.getElementById('loader-fullpage-btn'); btn.addEventListener('click', function () { WUI.busy(true); // no target = full page, locks scroll setTimeout(function () { WUI.busy(false); }, 2500); });",
+  "textAr": "WUI.busy(): طبقة على كامل الصفحة استدعِ WUI.busy(true) بلا هدف لتغطية نافذة العرض بأكملها: خلفية ثابتة ضبابية مع رسم الانشغال وتسمية \"يرجى الانتظار\"، مع قفل تمرير الصفحة طوال المدة. يزيل WUI.busy(false) الطبقة ويعيد التمرير. متكرر الاستدعاء بأمان (idempotent): استدعاؤه مرة أخرى أثناء فتحه لا يفعل شيئًا. إظهار / إخفاء"
+ },
+ {
+  "id": "loader#wui-busy-el-element-scoped-overlay",
+  "kind": "section",
+  "page": "loader.html",
+  "pageTitle": "Loader",
+  "group": "Feedback",
+  "sectionId": "wui-busy-el-element-scoped-overlay",
+  "titleEn": "WUI.busy(el) — element-scoped overlay",
+  "titleAr": "WUI.busy(el): طبقة مقيّدة بعنصر",
+  "textEn": "WUI.busy(el) — element-scoped overlay Pass a target element as the second argument to scope the overlay to that element instead of the full page: it is absolutely positioned to cover the target (a positioning context is set automatically if the target is statically positioned) and does not lock page scroll. Tracked per target, so a page can have several busy regions open at once. Scoped over a panel Panel content Busy this panel (2.5s) var panel = document.getElementById('loader-panel-demo'); var btn = document.getElementById('loader-panel-btn'); btn.addEventListener('click', function () { WUI.busy(true, panel); setTimeout(function () { WUI.busy(false, panel); }, 2500); });",
+  "textAr": "WUI.busy(el): طبقة مقيّدة بعنصر مرّر عنصرًا هدفًا كوسيط ثانٍ لتقييد الطبقة بذلك العنصر بدلًا من الصفحة كاملة: تُموضَع بشكل مطلق (absolute) لتغطية الهدف (يُضبط سياق التموضع تلقائيًا إذا كان الهدف بتموضع ثابت)، ولا تقفل تمرير الصفحة. تُتابَع لكل هدف على حدة، بحيث يمكن أن تكون عدة مناطق انشغال مفتوحة في آن واحد. مقيّدة فوق لوحة"
+ },
+ {
+  "id": "loader#wui-buttonbusy-btn-on",
+  "kind": "section",
+  "page": "loader.html",
+  "pageTitle": "Loader",
+  "group": "Feedback",
+  "sectionId": "wui-buttonbusy-btn-on",
+  "titleEn": "WUI.buttonBusy(btn, on)",
+  "titleAr": "WUI.buttonBusy(btn, on)",
+  "textEn": "WUI.buttonBusy(btn, on) A lighter surface for a single action button: no overlay, just the button itself. It disables the button, adds .is-busy (which hides the label and renders an inline spinner via CSS), and sets aria-busy . Turning it off restores whatever disabled state the button had before — a button that was already disabled stays disabled. Toggle a single button Save var btn = document.getElementById('loader-btnbusy-btn'); btn.addEventListener('click', function () { WUI.buttonBusy(btn, true); setTimeout(function () { WUI.buttonBusy(btn, false); }, 1500); });",
+  "textAr": "WUI.buttonBusy(btn, on) سطح أخف لزر إجراء واحد: بلا طبقة، الزر نفسه فقط. يعطّل الزر، ويضيف .is-busy (الذي يخفي التسمية ويرسم دوّارًا مضمّنًا عبر CSS)، ويضبط aria-busy . إيقافه يعيد حالة disabled التي كانت للزر قبل ذلك؛ فالزر المعطّل أصلًا يبقى معطّلًا. تبديل حالة زر واحد"
+ },
+ {
+  "id": "loader#data-wui-loading-declarative",
+  "kind": "section",
+  "page": "loader.html",
+  "pageTitle": "Loader",
+  "group": "Feedback",
+  "sectionId": "data-wui-loading-declarative",
+  "titleEn": "data-wui-loading — declarative",
+  "titleAr": "data-wui-loading: تصريحي",
+  "textEn": "data-wui-loading — declarative No JavaScript required for the common case. Add data-wui-loading to a <form> and its submit shows a busy overlay; add it to a standalone <button> and its click sets that button busy. Neither handler auto-hides the state — in a real form that is fine (the page navigates or reloads); a script-driven flow calls WUI.busy(false, …) / WUI.buttonBusy(btn, false) once the response comes back. On a form (submit) The attribute value scopes the overlay: empty = full page, self = the form itself (shown here), or a CSS selector for another element on the page. Report title Submit // The data-wui-loading=\"self\" attribute alone shows the busy overlay on // submit — no JS needed for that part. This demo only prevents the actual // page navigation and clears the overlay after a beat so it can be replayed. var form = document.getElementById('loader-form-demo'); form.addEventListener('submit', function (e) { e.preventDefault(); setTimeout(function () { WUI.busy(false, form); }, 2000); }); On a standalone button (click) A non-submit button[data-wui-loading] (or [role=\"button\"] ) sets itself busy on click, equivalent to calling WUI.buttonBusy(this, true) . Submit buttons inside a data-wui-loading form are already covered by the form handler above, so this path is for standalone triggers (load-more, refresh, etc). Load more // data-wui-loading alone sets the button busy on click. This demo only // reverts it after a beat so it can be replayed. var btn = document.getElementById('loader-declarative-btn'); btn.addEventListener('click', function () { setTimeout(function () { WUI.buttonBusy(btn, false); }, 1500); });",
+  "textAr": "data-wui-loading: تصريحي لا حاجة لجافاسكربت في الحالة الشائعة. أضف data-wui-loading إلى <form> فيُظهر إرسالها طبقة انشغال؛ أضفها إلى <button> مستقل فيضبط نقره ذلك الزر مشغولًا. لا يُخفي أي من المعالجين الحالة تلقائيًا؛ وهذا مقبول في نموذج حقيقي (تنتقل الصفحة أو تُعاد تحميلها)؛ أما التدفق المُدار بالسكربت فيستدعي WUI.busy(false, …) / WUI.buttonBusy(btn, false) بعد وصول الاستجابة. على نموذج (عند الإرسال) قيمة السمة تحدد نطاق الطبقة: فارغة = الصفحة كاملة، و self = النموذج نفسه (كما هو معروض هنا)، أو مُحدِّد CSS لعنصر آخر في الصفحة. على زر مستقل (عند النقر) أي button[data-wui-loading] غير مخصص للإرسال (أو [role=\"button\"] ) يضبط نفسه مشغولًا عند النقر، وهو ما يعادل استدعاء WUI.buttonBusy(this, true) . أزرار الإرسال داخل نموذج يحمل data-wui-loading مشمولة بمعالج النموذج نفسه، لذا هذا المسار مخصص للمُحفّزات المستقلة (تحميل المزيد، التحديث، إلخ)."
+ },
+ {
+  "id": "loader#localization",
+  "kind": "section",
+  "page": "loader.html",
+  "pageTitle": "Loader",
+  "group": "Feedback",
+  "sectionId": "localization",
+  "titleEn": "Localization",
+  "titleAr": "التعريب",
+  "textEn": "Localization The overlay label text lives in its own <span data-wui-i18n=\"LoaderPleaseWait\"> , so WUI.i18n.apply can re-localize an already-open overlay without touching the animated trailing dots next to it. Register the LoaderPleaseWait key with your own EN/AR strings the same way as any other WUI.i18n key.",
+  "textAr": "التعريب نص تسمية الطبقة موجود ضمن <span data-wui-i18n=\"LoaderPleaseWait\"> خاص به، بحيث يمكن لـ WUI.i18n.apply إعادة تعريب طبقة مفتوحة بالفعل دون المساس بالنقاط المتحركة المتتابعة بجانبها. سجّل المفتاح LoaderPleaseWait بنصوصك الإنجليزية/العربية الخاصة تمامًا كأي مفتاح WUI.i18n آخر. يرجى الانتظار"
+ },
+ {
+  "id": "loader#spin-icon-utility",
+  "kind": "section",
+  "page": "loader.html",
+  "pageTitle": "Loader",
+  "group": "Feedback",
+  "sectionId": "spin-icon-utility",
+  "titleEn": ".spin — icon utility",
+  "titleAr": ".spin: أداة أيقونة",
+  "textEn": ".spin — icon utility For a bare spinning icon with no overlay or button state, add the utility class .spin (from weoc-utilities.css, loaded via the core barrel) to any icon. It applies a continuous 1s linear rotation. Pair it with a Material Symbol such as progress_activity . Spinner progress_activity progress_activity Loading…",
+  "textAr": ".spin: أداة أيقونة لأيقونة دوّارة مجردة بلا طبقة أو حالة زر، أضف صنف الأدوات .spin (من weoc-utilities.css، المُحمّل عبر حزمة النواة) إلى أي أيقونة. يطبّق دورانًا خطيًا مستمرًا مدته ثانية واحدة. اقرنه برمز Material مثل progress_activity . الدوّار"
  },
  {
   "id": "localization#live-language-toggle",
@@ -3185,7 +3245,16 @@
   "page": "feedback.html",
   "pageTitle": "Feedback",
   "group": "Feedback",
-  "textEn": "Feedback alert callout banner toast snackbar alarm skeleton empty-state loader spinner notification",
+  "textEn": "Feedback alert callout banner toast snackbar alarm skeleton empty-state notification",
+  "textAr": ""
+ },
+ {
+  "id": "nav#loader",
+  "kind": "nav",
+  "page": "loader.html",
+  "pageTitle": "Loader",
+  "group": "Feedback",
+  "textEn": "Loader loader busy overlay spinner spin loading data-wui-loading buttonBusy please wait",
   "textAr": ""
  },
  {

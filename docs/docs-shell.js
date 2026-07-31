@@ -59,7 +59,8 @@
     {
       group: 'Feedback',
       items: [
-        { key: 'feedback', label: 'Feedback', file: 'feedback.html', kw: 'alert callout banner toast snackbar alarm skeleton empty-state loader spinner notification' },
+        { key: 'feedback', label: 'Feedback', file: 'feedback.html', kw: 'alert callout banner toast snackbar alarm skeleton empty-state notification' },
+        { key: 'loader', label: 'Loader', file: 'loader.html', kw: 'loader busy overlay spinner spin loading data-wui-loading buttonBusy please wait' },
         { key: 'progress', label: 'Progress', file: 'progress.html', kw: 'progress bar ring semicircle segmented percentage' }
       ]
     },
@@ -374,7 +375,7 @@
   // Per-page translation files (chrome + several pages live in docs-i18n.js;
   // the rest are one file each under i18n/ to keep them maintainable).
   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
-    'feedback', 'js-api', 'grid', 'flex', 'container', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
+    'feedback', 'loader', 'js-api', 'grid', 'flex', 'container', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
     'kanban', 'heatmap', 'navigation', 'tabs', 'icons', 'avatars'];
   function ensureI18nStore(root) {
     if (i18nStoreLoaded) return Promise.resolve();
