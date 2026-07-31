@@ -34,5 +34,3 @@
     { lang:'en', id:'docs_motion_30', value:'Every <code>WUIAnim.*</code> method checks <code>reducedMotion()</code> before tweening. When the OS setting is on, values are set instantly (no animation) and callbacks still fire — the interface never breaks, the motion just stops.' }, { lang:'ar', id:'docs_motion_30', value:'تتحقق كل دالة <code>WUIAnim.*</code> من <code>reducedMotion()</code> قبل التحريك. وعند تفعيل الإعداد في نظام التشغيل، تُضبط القيم فوراً (دون حركة) مع بقاء ردود النداء تُنفَّذ، فلا تنكسر الواجهة أبداً، بل تتوقف الحركة فحسب.' }
   ]);
 })();
-
-// sentinel: Finding 5 hook end-to-end verification (temporary, reverted after test)
