@@ -504,8 +504,9 @@
      data-wui-demo-run also executes the JS, so JS demos are single-source too.
      2+ boxes render as tabs (Markup / CSS / JavaScript). Idempotent. */
   function escapeHtml(s) {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
   }
   function dedent(s) {
     var lines = s.replace(/\t/g, '  ').replace(/^\n+/, '').replace(/\s+$/, '').split('\n');
@@ -974,12 +975,6 @@
       throw err;
     });
     return searchIndexPromise;
-  }
-
-  function escapeHtml(s) {
-    return String(s || '').replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
   }
 
   function highlightSnippet(text, terms) {
