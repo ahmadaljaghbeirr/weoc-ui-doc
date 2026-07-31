@@ -40,6 +40,7 @@ For a *compact*, fast-to-grep cheat-sheet instead of the full replica (API signa
 ## Navigation
 
 - [Navigation](navigation.md)
+- [Tabs](tabs.md)
 
 ## Feedback
 

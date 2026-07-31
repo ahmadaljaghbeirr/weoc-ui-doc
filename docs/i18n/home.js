@@ -37,7 +37,7 @@
     { lang:'en', id:'docs_home_33', value:'Buttons, FAB, floating action, icon-only, and extended variants.' }, { lang:'ar', id:'docs_home_33', value:'الأزرار، وزر الإجراء العائم FAB، والإجراء العائم، والأزرار الأيقونية فقط، والأنماط الممتدّة.' },
     { lang:'en', id:'docs_home_34', value:'<span class="material-symbols-outlined">tab</span>Navigation' }, { lang:'ar', id:'docs_home_34', value:'<span class="material-symbols-outlined">tab</span>التنقّل' },
     { lang:'en', id:'docs_home_35', value:'Navigation' }, { lang:'ar', id:'docs_home_35', value:'التنقّل' },
-    { lang:'en', id:'docs_home_36', value:'Header bar, tabs, and the band-wrap stat strip.' }, { lang:'ar', id:'docs_home_36', value:'شريط الترويسة، والتبويبات، وشريط الإحصاءات band-wrap.' },
+    { lang:'en', id:'docs_home_36', value:'Header bar, inline link, and the band-wrap stat strip.' }, { lang:'ar', id:'docs_home_36', value:'شريط الترويسة، والرابط المضمّن، وشريط الإحصاءات band-wrap.' },
     { lang:'en', id:'docs_home_37', value:'<span class="material-symbols-outlined">notifications</span>Feedback' }, { lang:'ar', id:'docs_home_37', value:'<span class="material-symbols-outlined">notifications</span>التنبيهات' },
     { lang:'en', id:'docs_home_38', value:'Feedback' }, { lang:'ar', id:'docs_home_38', value:'التنبيهات' },
     { lang:'en', id:'docs_home_39', value:'Banners, callouts, alarms, skeleton loaders, empty states.' }, { lang:'ar', id:'docs_home_39', value:'اللافتات، والتنويهات، والإنذارات، ومؤشّرات التحميل الهيكلية، والحالات الفارغة.' },
@@ -81,6 +81,8 @@
     { lang:'en', id:'docs_home_77', value:'Dark mode is resolved from <code>localStorage</code> synchronously when the JS parses. Toggle persists across page loads. On WebEOC Nexus, <code>WUI.nativeTheme</code> is <code>true</code> and theme-toggle buttons are hidden automatically.' }, { lang:'ar', id:'docs_home_77', value:'يُحدَّد الوضع الداكن من <code>localStorage</code> بشكل متزامن عند تحليل JS. ويبقى التبديل ثابتاً عبر عمليات تحميل الصفحة. وعلى WebEOC Nexus تكون قيمة <code>WUI.nativeTheme</code> هي <code>true</code>، وتُخفى أزرار تبديل السمة تلقائياً.' },
     { lang:'en', id:'docs_home_78', value:'<span class="material-symbols-outlined">gavel</span>WebEOC XML Constraint' }, { lang:'ar', id:'docs_home_78', value:'<span class="material-symbols-outlined">gavel</span>قيد XML في WebEOC' },
     { lang:'en', id:'docs_home_79', value:'Boolean data-wui-* attributes must use ="true" or =""' }, { lang:'ar', id:'docs_home_79', value:'يجب أن تستخدم سمات data-wui-* المنطقية الصيغة ="true" أو =""' },
-    { lang:'en', id:'docs_home_80', value:'WebEOC\'s XML parser rejects bare boolean attributes. Always use the value form.' }, { lang:'ar', id:'docs_home_80', value:'يرفض محلّل XML في WebEOC السمات المنطقية المجرّدة. استخدم دائماً صيغة القيمة.' }
+    { lang:'en', id:'docs_home_80', value:'WebEOC\'s XML parser rejects bare boolean attributes. Always use the value form.' }, { lang:'ar', id:'docs_home_80', value:'يرفض محلّل XML في WebEOC السمات المنطقية المجرّدة. استخدم دائماً صيغة القيمة.' },
+    { lang:'en', id:'docs_home_81', value:'Tabs' }, { lang:'ar', id:'docs_home_81', value:'التبويبات' },
+    { lang:'en', id:'docs_home_82', value:'Scrollable wui-hdr-tabs strip, static and interactive tab-switching demos.' }, { lang:'ar', id:'docs_home_82', value:'شريط تبويبات wui-hdr-tabs قابل للتمرير، مع عروض توضيحية ثابتة وتفاعلية لتبديل التبويبات.' }
   ]);
 })();
