@@ -16,6 +16,13 @@
   <link rel="stylesheet" href="../../CSS/uPlot.min.css">
   <!-- WUI charts adapter -->
   <script src="../../JS/wui-charts.js"></script>
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="chartsPage()">
   <style>
     .demo-chart-wrap {
       /* Fill the flex .wui-demo-preview row. Without this the wrap collapses to
@@ -58,13 +65,6 @@
     .color-dot-tier3     { background: var(--tier-3-color); }
     .color-dot-tier4     { background: var(--tier-4-color); }
   </style>
-</head>
-<body class="wui-body-shell">
-  <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split">
-    <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main">
-      <div class="docs-page" x-data="chartsPage()">
         <script>
         (function () {
           function registerChartsPage() {

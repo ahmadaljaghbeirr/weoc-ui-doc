@@ -14,6 +14,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-ignore x-data="kpiRecipesPage()">
   <style>
     /* Real-board recipe cards (sections 3/4/6): native <details>/<summary>
        click-to-reveal, no JS needed. Local to this page — promote to
@@ -106,13 +113,223 @@
     .dash-tile.is-flash { animation: dashTileFlash 0.6s ease 2; }
     .recipe-card.is-flash { animation: dashTileFlash 0.6s ease 2; }
   </style>
-</head>
-<body class="wui-body-shell">
-  <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split">
-    <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main">
-      <div class="docs-page">
+  <script>
+    // Live previews for the real-board recipe cards (sections 3/4/6), plus
+    // the Dashboard Overview tile-click nav. Converted to Alpine.data() so
+    // init() re-runs on every htmx-boosted visit to this page, not just the
+    // first hard load (kpi-recipes.html predates the htmx/Alpine nav
+    // migration and was missed by that pass — see
+    // docs/superpowers/specs/2026-07-30-htmx-alpine-nav-architecture-design.md
+    // Task 4). Click-delegate is bound once via window.__kpiRecipesClickBound
+    // since document-level listeners survive across swaps and would
+    // otherwise stack on every re-visit.
+    //
+    // x-ignore + explicit Alpine.initTree(): on an htmx-boosted swap, this
+    // script's own execution (a dynamically-inserted script with
+    // async=false, per htmx's vendored source) does NOT run synchronously at
+    // insertion -- it's scheduled to run in-order but genuinely races
+    // Alpine's independent MutationObserver-driven scan of the same swapped
+    // subtree. On a large page that race can go either way (confirmed live:
+    // x-data="kpiRecipesPage()" threw "kpiRecipesPage is not defined"
+    // because Alpine's scan won and evaluated x-data before this script had
+    // registered it -- smaller pages like charts.html happened to have this
+    // script win instead, masking the same underlying race). x-ignore tells
+    // Alpine to skip this subtree during its automatic walk entirely; once
+    // registration is guaranteed complete, we explicitly remove x-ignore and
+    // call Alpine.initTree() ourselves, making initialization order
+    // deterministic instead of a scheduling race.
+    (function () {
+      function registerKpiRecipesPage() {
+        Alpine.data('kpiRecipesPage', function () {
+          return {
+            init: function () {
+    // Real boards read these values from WebEOC expressions (shown in full in
+    // each card's code panel) — here we just assume the expression is
+    // ALREADY resolved and stand in with a randomized number, so the preview
+    // never looks tied to one fixed "screenshot" value.
+    (function () {
+      function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+      // 2b) KPI + sparkline — stand-in for total_events_expr / trend / spark data
+      function drawDemoSparkline(selector, data, color) {
+        var canvas = document.querySelector(selector);
+        if (!canvas || !data || !data.length) { return; }
+        var ctx = canvas.getContext('2d');
+        var width = canvas.offsetWidth, height = canvas.offsetHeight;
+        var ratio = window.devicePixelRatio || 1;
+        canvas.width = width * ratio; canvas.height = height * ratio;
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+        ctx.clearRect(0, 0, width, height);
+        var padding = 4;
+        var max = Math.max.apply(null, data), min = Math.min.apply(null, data);
+        var range = max - min || 1;
+        var stepX = data.length > 1 ? (width - padding * 2) / (data.length - 1) : 0;
+        var points = data.map(function (value, index) {
+          return { x: padding + index * stepX, y: height - padding - ((value - min) / range) * (height - padding * 2) };
+        });
+        function path() {
+          ctx.moveTo(points[0].x, points[0].y);
+          for (var i = 0; i < points.length - 1; i++) {
+            var c = points[i], n = points[i + 1];
+            ctx.quadraticCurveTo(c.x, c.y, (c.x + n.x) / 2, (c.y + n.y) / 2);
+          }
+          ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+        }
+        function rgba(hex, a) {
+          var r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+          return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+        }
+        var col = color === 'danger' ? '#dc2626' : '#16a34a';
+        var grad = ctx.createLinearGradient(0, 0, 0, height);
+        grad.addColorStop(0, rgba(col, 0.28)); grad.addColorStop(0.5, rgba(col, 0.12)); grad.addColorStop(1, rgba(col, 0));
+        ctx.beginPath(); path();
+        ctx.lineTo(points[points.length - 1].x, height - padding);
+        ctx.lineTo(points[0].x, height - padding);
+        ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+        ctx.beginPath(); path();
+        ctx.lineWidth = 2; ctx.strokeStyle = rgba(col, 0.85);
+        ctx.shadowBlur = 8; ctx.shadowColor = rgba(col, 0.5);
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); ctx.shadowBlur = 0;
+      }
+      var kpiTrendUp = Math.random() > 0.3;
+      var kpiSpark = []; for (var k = 0; k < 7; k++) { kpiSpark.push(rand(20, 50)); }
+      var kpiTotalEl = document.getElementById('demo-kpi-total-value');
+      if (kpiTotalEl) {
+        kpiTotalEl.textContent = kpiSpark[kpiSpark.length - 1];
+        document.getElementById('demo-kpi-total-trend').className = 'kpi-trend' + (kpiTrendUp ? '' : ' danger');
+        document.getElementById('demo-kpi-total-arrow').textContent = kpiTrendUp ? 'arrow_upward' : 'arrow_downward';
+        document.getElementById('demo-kpi-total-percent').textContent = rand(3, 25) + '%';
+        drawDemoSparkline('#demo-kpi-total-spark', kpiSpark, kpiTrendUp ? 'success' : 'danger');
+      }
+
+      // 5a) Bar-Row — stand-in for the hardcoded Events By Location ranking
+      if (window.WUI && WUI.barRow && document.getElementById('demo-kpi-location')) {
+        var locationItems = ['Downtown Area', 'West Park Area', 'Riverside Drive', 'Industrial Zone', 'Sunset Boulevard']
+          .map(function (label) { return { label: label, value: rand(80, 340) }; })
+          .sort(function (a, b) { return b.value - a.value; });
+        var locationMax = Math.max.apply(null, locationItems.map(function (i) { return i.value; }));
+        WUI.barRow('#demo-kpi-location', {
+          rows: locationItems.map(function (item) {
+            return { label: item.label, value: String(item.value), segments: [{ pct: (item.value / locationMax) * 100, color: 'primary' }] };
+          })
+        });
+      }
+
+      // 5b) Bar-Row — stand-in for the six emergency_*_tiers_expr values
+      if (window.WUI && WUI.barRow && document.getElementById('demo-kpi-emergency')) {
+        var tierColors = ['var(--tier-1-glow)', 'var(--tier-2-glow)', 'var(--tier-3-glow)', 'var(--tier-4-glow)'];
+        var emergencyRows = ['HSE', 'Fire and Safety', 'Environmental', 'Compliance', 'Security', 'Operations'].map(function (label) {
+          var tiers = [rand(0, 4), rand(0, 4), rand(0, 4), rand(0, 4)];
+          var total = tiers[0] + tiers[1] + tiers[2] + tiers[3];
+          var segments = total === 0
+            ? [{ pct: 100, color: 'var(--color-secondary-muted)' }]
+            : tiers.map(function (v, i) { return { pct: (v / total) * 100, color: tierColors[i] }; });
+          return { label: label, value: String(total), segments: segments };
+        });
+        WUI.barRow('#demo-kpi-emergency', { rows: emergencyRows });
+      }
+
+      // 3) Gauge — stand-in for //@event_closure_rate_expr
+      var closurePct = rand(15, 95);
+      var closureStatus = closurePct < 40 ? 'Needs attention' : closurePct < 70 ? 'In Progress' : 'Good closure';
+      if (window.WUI && WUI.gauge) {
+        WUI.gauge('#demo-kpi-gauge', { value: closurePct, status: closureStatus, height: 128 });
+      }
+
+      // 4) Donut — stand-in for the six classification_*_expr values
+      var classificationData = [
+        { label: 'HSE', value: rand(0, 8), color: '#185fa5' },
+        { label: 'Fire and Safety', value: rand(0, 8), color: '#dc2626' },
+        { label: 'Environmental', value: rand(0, 8), color: '#16a34a' },
+        { label: 'Compliance', value: rand(0, 8), color: '#6d5bd0' },
+        { label: 'Security', value: rand(0, 8), color: '#0284c7' },
+        { label: 'Operations', value: rand(0, 8), color: '#ea7c14' }
+      ];
+      var classificationTotal = classificationData.reduce(function (sum, item) { return sum + item.value; }, 0);
+      if (window.WUI && WUI.donut) {
+        WUI.donut('#demo-kpi-donut', {
+          height: 124,
+          legend: true,
+          center: { label: String(classificationTotal), sub: 'Events' },
+          data: classificationData
+        });
+        var donutHost = document.getElementById('demo-kpi-donut');
+        var donutLegendDock = document.getElementById('demo-kpi-donut-legend');
+        var generatedLegend = donutHost.lastElementChild;
+        if (donutLegendDock && generatedLegend && generatedLegend !== donutHost.firstElementChild) {
+          donutLegendDock.appendChild(generatedLegend);
+        }
+      }
+
+      // 6) Chart — stand-in for //@event_timeline_values_expr (7-day JSON array)
+      var timelineValues = [];
+      for (var i = 0; i < 7; i++) { timelineValues.push(rand(5, 25)); }
+      var timestamps = [];
+      var now = Math.floor(Date.now() / 1000);
+      var dayInSeconds = 86400;
+      for (var j = timelineValues.length - 1; j >= 0; j--) { timestamps.unshift(now - j * dayInSeconds); }
+      if (window.uPlot && window.WUI && WUI.chart) {
+        WUI.chart('#demo-kpi-chart', {
+          type: 'area',
+          series: [{ label: 'Events', color: 'primary' }],
+          data: [timestamps, timelineValues],
+          height: 196,
+          legend: false
+        });
+      }
+    })();
+
+    // Dashboard Overview — click a tile, open + scroll to its recipe below.
+    // Single-open-at-a-time: closes any other open recipe card first so the
+    // page height is stable BEFORE we measure where to scroll (an
+    // already-open unrelated card growing/shrinking the page at the same
+    // time as this one opens was throwing scrollIntoView's target off).
+    if (!window.__kpiRecipesClickBound) {
+      window.__kpiRecipesClickBound = true;
+      document.addEventListener('click', function (e) {
+        var tile = e.target.closest('.dash-tile[data-recipe]');
+        if (!tile) { return; }
+        var target = document.getElementById(tile.getAttribute('data-recipe'));
+        if (!target) { return; }
+        document.querySelectorAll('.recipe-card[open]').forEach(function (el) {
+          if (el !== target) { el.open = false; }
+        });
+        target.open = true;
+        // wait a frame so the browser has laid out the now-open (and any
+        // now-closed) <details> before scrollIntoView measures positions.
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('is-flash');
+            setTimeout(function () { target.classList.remove('is-flash'); }, 1300);
+          });
+        });
+      });
+    }
+            }
+          };
+        });
+      }
+      if (window.Alpine) {
+        // Alpine already started (htmx swap case) -- x-ignore kept its
+        // MutationObserver-driven walk from touching this subtree before we
+        // got here. Register, then explicitly hand it off.
+        registerKpiRecipesPage();
+        var pageEl = document.querySelector('.docs-page[x-ignore]');
+        if (pageEl) { pageEl.removeAttribute('x-ignore'); Alpine.initTree(pageEl); }
+      } else {
+        // Cold/hard load -- Alpine hasn't run its own start() walk yet.
+        // Register and drop x-ignore before that walk happens, so it picks
+        // up the element normally on its own; no explicit initTree call
+        // here, to avoid double-initializing on top of that upcoming walk.
+        document.addEventListener('alpine:init', function () {
+          registerKpiRecipesPage();
+          var pageEl = document.querySelector('.docs-page[x-ignore]');
+          if (pageEl) { pageEl.removeAttribute('x-ignore'); }
+        });
+      }
+    })();
+  </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_kpi_1">Conventions</div>
@@ -1080,173 +1297,6 @@ document.addEventListener("click", function (e) {
       </div>
     </div>
   </div>
-
-  <script>
-    // Live previews for the real-board recipe cards (sections 3/4/6). Real
-    // boards read these values from WebEOC expressions (shown in full in each
-    // card's code panel) — here we just assume the expression is ALREADY
-    // resolved and stand in with a randomized number, so the preview never
-    // looks tied to one fixed "screenshot" value.
-    (function () {
-      function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
-      // 2b) KPI + sparkline — stand-in for total_events_expr / trend / spark data
-      function drawDemoSparkline(selector, data, color) {
-        var canvas = document.querySelector(selector);
-        if (!canvas || !data || !data.length) { return; }
-        var ctx = canvas.getContext('2d');
-        var width = canvas.offsetWidth, height = canvas.offsetHeight;
-        var ratio = window.devicePixelRatio || 1;
-        canvas.width = width * ratio; canvas.height = height * ratio;
-        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-        ctx.clearRect(0, 0, width, height);
-        var padding = 4;
-        var max = Math.max.apply(null, data), min = Math.min.apply(null, data);
-        var range = max - min || 1;
-        var stepX = data.length > 1 ? (width - padding * 2) / (data.length - 1) : 0;
-        var points = data.map(function (value, index) {
-          return { x: padding + index * stepX, y: height - padding - ((value - min) / range) * (height - padding * 2) };
-        });
-        function path() {
-          ctx.moveTo(points[0].x, points[0].y);
-          for (var i = 0; i < points.length - 1; i++) {
-            var c = points[i], n = points[i + 1];
-            ctx.quadraticCurveTo(c.x, c.y, (c.x + n.x) / 2, (c.y + n.y) / 2);
-          }
-          ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
-        }
-        function rgba(hex, a) {
-          var r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-          return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-        }
-        var col = color === 'danger' ? '#dc2626' : '#16a34a';
-        var grad = ctx.createLinearGradient(0, 0, 0, height);
-        grad.addColorStop(0, rgba(col, 0.28)); grad.addColorStop(0.5, rgba(col, 0.12)); grad.addColorStop(1, rgba(col, 0));
-        ctx.beginPath(); path();
-        ctx.lineTo(points[points.length - 1].x, height - padding);
-        ctx.lineTo(points[0].x, height - padding);
-        ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
-        ctx.beginPath(); path();
-        ctx.lineWidth = 2; ctx.strokeStyle = rgba(col, 0.85);
-        ctx.shadowBlur = 8; ctx.shadowColor = rgba(col, 0.5);
-        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); ctx.shadowBlur = 0;
-      }
-      var kpiTrendUp = Math.random() > 0.3;
-      var kpiSpark = []; for (var k = 0; k < 7; k++) { kpiSpark.push(rand(20, 50)); }
-      var kpiTotalEl = document.getElementById('demo-kpi-total-value');
-      if (kpiTotalEl) {
-        kpiTotalEl.textContent = kpiSpark[kpiSpark.length - 1];
-        document.getElementById('demo-kpi-total-trend').className = 'kpi-trend' + (kpiTrendUp ? '' : ' danger');
-        document.getElementById('demo-kpi-total-arrow').textContent = kpiTrendUp ? 'arrow_upward' : 'arrow_downward';
-        document.getElementById('demo-kpi-total-percent').textContent = rand(3, 25) + '%';
-        drawDemoSparkline('#demo-kpi-total-spark', kpiSpark, kpiTrendUp ? 'success' : 'danger');
-      }
-
-      // 5a) Bar-Row — stand-in for the hardcoded Events By Location ranking
-      if (window.WUI && WUI.barRow && document.getElementById('demo-kpi-location')) {
-        var locationItems = ['Downtown Area', 'West Park Area', 'Riverside Drive', 'Industrial Zone', 'Sunset Boulevard']
-          .map(function (label) { return { label: label, value: rand(80, 340) }; })
-          .sort(function (a, b) { return b.value - a.value; });
-        var locationMax = Math.max.apply(null, locationItems.map(function (i) { return i.value; }));
-        WUI.barRow('#demo-kpi-location', {
-          rows: locationItems.map(function (item) {
-            return { label: item.label, value: String(item.value), segments: [{ pct: (item.value / locationMax) * 100, color: 'primary' }] };
-          })
-        });
-      }
-
-      // 5b) Bar-Row — stand-in for the six emergency_*_tiers_expr values
-      if (window.WUI && WUI.barRow && document.getElementById('demo-kpi-emergency')) {
-        var tierColors = ['var(--tier-1-glow)', 'var(--tier-2-glow)', 'var(--tier-3-glow)', 'var(--tier-4-glow)'];
-        var emergencyRows = ['HSE', 'Fire and Safety', 'Environmental', 'Compliance', 'Security', 'Operations'].map(function (label) {
-          var tiers = [rand(0, 4), rand(0, 4), rand(0, 4), rand(0, 4)];
-          var total = tiers[0] + tiers[1] + tiers[2] + tiers[3];
-          var segments = total === 0
-            ? [{ pct: 100, color: 'var(--color-secondary-muted)' }]
-            : tiers.map(function (v, i) { return { pct: (v / total) * 100, color: tierColors[i] }; });
-          return { label: label, value: String(total), segments: segments };
-        });
-        WUI.barRow('#demo-kpi-emergency', { rows: emergencyRows });
-      }
-
-      // 3) Gauge — stand-in for //@event_closure_rate_expr
-      var closurePct = rand(15, 95);
-      var closureStatus = closurePct < 40 ? 'Needs attention' : closurePct < 70 ? 'In Progress' : 'Good closure';
-      if (window.WUI && WUI.gauge) {
-        WUI.gauge('#demo-kpi-gauge', { value: closurePct, status: closureStatus, height: 128 });
-      }
-
-      // 4) Donut — stand-in for the six classification_*_expr values
-      var classificationData = [
-        { label: 'HSE', value: rand(0, 8), color: '#185fa5' },
-        { label: 'Fire and Safety', value: rand(0, 8), color: '#dc2626' },
-        { label: 'Environmental', value: rand(0, 8), color: '#16a34a' },
-        { label: 'Compliance', value: rand(0, 8), color: '#6d5bd0' },
-        { label: 'Security', value: rand(0, 8), color: '#0284c7' },
-        { label: 'Operations', value: rand(0, 8), color: '#ea7c14' }
-      ];
-      var classificationTotal = classificationData.reduce(function (sum, item) { return sum + item.value; }, 0);
-      if (window.WUI && WUI.donut) {
-        WUI.donut('#demo-kpi-donut', {
-          height: 124,
-          legend: true,
-          center: { label: String(classificationTotal), sub: 'Events' },
-          data: classificationData
-        });
-        var donutHost = document.getElementById('demo-kpi-donut');
-        var donutLegendDock = document.getElementById('demo-kpi-donut-legend');
-        var generatedLegend = donutHost.lastElementChild;
-        if (donutLegendDock && generatedLegend && generatedLegend !== donutHost.firstElementChild) {
-          donutLegendDock.appendChild(generatedLegend);
-        }
-      }
-
-      // 6) Chart — stand-in for //@event_timeline_values_expr (7-day JSON array)
-      var timelineValues = [];
-      for (var i = 0; i < 7; i++) { timelineValues.push(rand(5, 25)); }
-      var timestamps = [];
-      var now = Math.floor(Date.now() / 1000);
-      var dayInSeconds = 86400;
-      for (var j = timelineValues.length - 1; j >= 0; j--) { timestamps.unshift(now - j * dayInSeconds); }
-      if (window.uPlot && window.WUI && WUI.chart) {
-        WUI.chart('#demo-kpi-chart', {
-          type: 'area',
-          series: [{ label: 'Events', color: 'primary' }],
-          data: [timestamps, timelineValues],
-          height: 196,
-          legend: false
-        });
-      }
-    })();
-
-    // Dashboard Overview — click a tile, open + scroll to its recipe below.
-    // Single-open-at-a-time: closes any other open recipe card first so the
-    // page height is stable BEFORE we measure where to scroll (an
-    // already-open unrelated card growing/shrinking the page at the same
-    // time as this one opens was throwing scrollIntoView's target off).
-    (function () {
-      document.addEventListener('click', function (e) {
-        var tile = e.target.closest('.dash-tile[data-recipe]');
-        if (!tile) { return; }
-        var target = document.getElementById(tile.getAttribute('data-recipe'));
-        if (!target) { return; }
-        document.querySelectorAll('.recipe-card[open]').forEach(function (el) {
-          if (el !== target) { el.open = false; }
-        });
-        target.open = true;
-        // wait a frame so the browser has laid out the now-open (and any
-        // now-closed) <details> before scrollIntoView measures positions.
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            target.classList.add('is-flash');
-            setTimeout(function () { target.classList.remove('is-flash'); }, 1300);
-          });
-        });
-      });
-    })();
-  </script>
-
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('kpi-recipes');</script>
 </body>
