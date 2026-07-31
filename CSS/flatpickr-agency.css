@@ -120,8 +120,24 @@
 }
 
 /* --- Month/year dropdowns --- */
+/* Vendor lays the month + year out as two independently inline-block'd
+   children with their own hardcoded font-weights (month bold via
+   span.cur-month, year light via input.cur-year) and ch-based spacing —
+   reads as two mismatched fragments instead of one "July 2026" label. Flex +
+   a single gap makes them one evenly-spaced, vertically-centered unit; the
+   shared font-weight below makes month and year read as the same weight
+   class instead of bold-vs-light. */
 .flatpickr-current-month {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
   color: var(--fp-month-color);
+}
+
+.flatpickr-current-month span.cur-month,
+.flatpickr-current-month input.cur-year {
+  font-weight: 600;
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months {
@@ -139,6 +155,8 @@
 /* Year number input */
 .flatpickr-current-month .numInputWrapper {
   background: var(--fp-num-input-bg);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
 }
 
 .flatpickr-current-month input.cur-year {
@@ -153,6 +171,18 @@
   outline: none;
 }
 
+.flatpickr-current-month input.cur-year:focus {
+  box-shadow: var(--fp-focus-ring);
+}
+
+/* Vendor hardcodes rgba(0,0,0,.5) here — invisible/wrong on a dark calendar
+   (only reachable when minDate/maxDate pin the year to a single value). */
+.flatpickr-current-month input.cur-year[disabled],
+.flatpickr-current-month input.cur-year[disabled]:hover {
+  color: var(--fp-disabled-color);
+  background: transparent;
+}
+
 .numInputWrapper span.arrowUp:after {
   border-bottom-color: var(--fp-text-muted);
 }
@@ -163,6 +193,22 @@
 
 .numInputWrapper:hover {
   background: var(--fp-num-input-hover-bg);
+}
+
+/* Vendor's spin-arrow box (year / hour / minute / second) hardcodes a
+   translucent-black border + hover/active tint sized for a white calendar —
+   left a stray light-gray seam and near-invisible hover/press feedback in
+   dark mode. Themed here so every numeric stepper in the picker matches. */
+.numInputWrapper span {
+  border-color: var(--fp-calendar-border);
+}
+
+.numInputWrapper span:hover {
+  background: var(--fp-num-input-hover-bg);
+}
+
+.numInputWrapper span:active {
+  background: var(--color-10-muted);
 }
 
 /* --- Weekdays row --- */
@@ -340,6 +386,13 @@ span.flatpickr-weekday {
   background: var(--fp-time-hover-bg);
 }
 
+/* Vendor kills outline on these entirely (`outline:0;border:0`) — keyboard
+   users tabbing through h/m/s/AM-PM had zero focus affordance. */
+.flatpickr-time input:focus,
+.flatpickr-time .flatpickr-am-pm:focus {
+  box-shadow: var(--fp-focus-ring);
+}
+
 /* --- Input field --- */
 
 .flatpickr-input {
@@ -414,4 +467,63 @@ span.flatpickr-weekday {
   color: var(--fp-text-muted) !important;
   cursor: default !important;
   pointer-events: none;
+}
+
+/* --- Custom month dropdown (replaces the native <select>) ---
+   flatpickr's default month-selector is a real <select>; clicking it opens
+   the BROWSER's own OS listbox, which is browser chrome — no CSS can restyle
+   those <option> rows. flatpickr-factory.js now forces
+   monthSelectorType:'static' (a plain, non-native <span class="cur-month">)
+   and wires it into a WUI floating menu instead (buildMonthDropdowns() in
+   flatpickr-factory.js), reusing the exact .wui-dropdown / .wui-dropdown-item
+   visual language from weoc-overlays.css — no bespoke colors here.
+
+   The interactive hit target is .fp-month-trigger-wrap, NOT span.cur-month
+   itself — flatpickr overwrites span.cur-month's textContent on every
+   month/year redraw, which would wipe out a chevron nested inside it, so the
+   chevron lives as a SIBLING inside a wrapper the factory inserts around it. */
+.fp-month-trigger-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+}
+
+.fp-month-trigger-wrap:hover,
+.fp-month-trigger-wrap[aria-expanded="true"] {
+  background: var(--fp-dropdown-hover-bg);
+}
+
+.fp-month-trigger-wrap:focus {
+  outline: none;
+  box-shadow: var(--fp-focus-ring);
+}
+
+/* Same expand_more + rotate(180deg) convention as .wui-collapsible-chevron
+   (weoc-containers.css) and .wui-log-expand (weoc-tables.css) — reused, not
+   reinvented. Keyed off aria-expanded (which WUI.open/close already
+   maintains on this trigger) rather than an .is-open ancestor, since the
+   panel — not the trigger — is what carries that class. */
+.fp-month-chevron {
+  font-size: var(--icon-xs);
+  color: var(--fp-arrow-color);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fp-month-trigger-wrap[aria-expanded="true"] .fp-month-chevron {
+  transform: rotate(180deg);
+}
+
+.fp-month-menu {
+  min-width: 140px;
+  max-height: 264px;
+  overflow-y: auto;
+}
+
+/* Current month, at rest (not just on :hover) — reuses the same accent token
+   as every other "primary" dropdown item in the library. */
+.fp-month-menu .wui-dropdown-item.primary {
+  background: var(--color-10-light);
 }

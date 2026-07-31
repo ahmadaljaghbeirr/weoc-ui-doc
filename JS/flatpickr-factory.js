@@ -62,6 +62,16 @@
  * data-fp-default-date Initial value
  * data-fp-disable-mobile "true"          — force custom picker on iOS
  * data-fp-on-change    Name of a global function to call on date change
+ * data-fp-locale       flatpickr locale key ("ar" — see flatpickr-l10n-ar.js).
+ *                       Also drives the custom month-dropdown's labels.
+ *
+ * MONTH SELECTOR
+ * ──────────────
+ * Every instance renders a custom themed month dropdown (weoc-ui .wui-dropdown)
+ * instead of flatpickr's native <select> — clicking a native <select> opens the
+ * browser's own unstyleable OS listbox. monthSelectorType is forced to 'static'
+ * by the factory; a preset may set monthSelectorType:'dropdown' itself to opt
+ * back into the native control.
  *
  * FORMAT ALIASES (data-fp-format shorthand)
  * ─────────────────────────────────────────
@@ -252,8 +262,148 @@
     if ('fpPosition'       in d) o.position         = d.fpPosition;
     if ('fpDefaultDate'    in d) o.defaultDate      = d.fpDefaultDate;
     if ('fpDisableMobile'  in d) o.disableMobile    = parseBool(d.fpDisableMobile);
+    if ('fpLocale'         in d) o.locale           = d.fpLocale;
 
     return o;
+  }
+
+  // ── onReady wiring (data-wui-no-number opt-out + custom month dropdown) ───────
+
+  var _mdUid = 0;
+
+  // Chains onto whatever the preset/board already put on this hook — flatpickr
+  // itself normalizes a single function OR an array into an array internally,
+  // so accept either shape here too.
+  function wrapHook(existing, extra) {
+    return function (dates, dateStr, fp) {
+      if (existing) {
+        if (existing instanceof Array) {
+          for (var i = 0; i < existing.length; i++) existing[i](dates, dateStr, fp);
+        } else {
+          existing(dates, dateStr, fp);
+        }
+      }
+      extra(dates, dateStr, fp);
+    };
+  }
+
+  // Every <input type="number"> on the page (weoc-ui's number.js, loaded
+  // globally) gets auto-wrapped into a themed .wui-number stepper — including
+  // flatpickr's OWN internal year/hour/minute/second inputs, which are also
+  // type="number". That wrapper reserves `padding-inline-end: 1.9rem` for its
+  // +/- buttons, which silently ate the year input's text area (truncating
+  // "2026" to "202") and padded out the time spinners. number.js already
+  // ships an opt-out — any input under a `[data-wui-no-number]` ancestor is
+  // skipped — so tag the whole calendar with it here instead of fighting the
+  // wrapper's CSS after the fact.
+  function suppressNumberWrap(fp) {
+    if (fp.calendarContainer) fp.calendarContainer.setAttribute('data-wui-no-number', '');
+  }
+
+  // Bug 3: flatpickr's default month-selector is a real <select> — clicking it
+  // opens the BROWSER's native OS listbox (browser chrome, not flatpickr DOM),
+  // which CSS cannot restyle. initAll() forces monthSelectorType:'static', so
+  // flatpickr renders a plain <span class="cur-month"> instead of a <select>;
+  // this turns that span into a trigger for a custom WUI floating menu built
+  // from the SAME .wui-dropdown/.wui-dropdown-item markup + CSS every other
+  // menu in this library uses (weoc-overlays.css) — reusing the existing
+  // [data-wui-toggle] / [data-wui-dismiss] delegated handlers in overlays.js
+  // gives outside-click, Escape, and aria-expanded for free, no bespoke JS.
+  // Month names come from flatpickr's OWN l10n (fp.l10n.months) — whatever
+  // locale that instance is configured with (incl. flatpickr-l10n-ar.js via
+  // data-fp-locale="ar") — never hardcoded English.
+  function buildMonthDropdowns(fp) {
+    if (!fp.monthElements || !fp.monthElements.length) return; // noCalendar: no month row at all
+
+    var months = fp.l10n.months[fp.config.shorthandCurrentMonth ? 'shorthand' : 'longhand'];
+
+    fp.monthElements.forEach(function (trigger, colIndex) {
+      // Only true when a preset/override explicitly forces monthSelectorType
+      // back to 'dropdown' — leave the native (still-unstyleable) <select> alone.
+      if (trigger.tagName !== 'SPAN') return;
+
+      var uid = 'fp-month-menu-' + (++_mdUid);
+
+      // The wrapper (not the <span> itself) is the actual clickable control —
+      // flatpickr's own redraw sets span.cur-month.textContent on every
+      // month/year change, which would silently delete a chevron nested
+      // inside it. Insert a sibling wrapper instead: move the original span
+      // into it, then append the chevron next to it.
+      var wrap = document.createElement('span');
+      wrap.className = 'fp-month-trigger-wrap';
+      trigger.parentNode.insertBefore(wrap, trigger);
+      wrap.appendChild(trigger);
+
+      var chevron = document.createElement('span');
+      chevron.className = 'material-symbols-outlined fp-month-chevron';
+      chevron.setAttribute('aria-hidden', 'true');
+      chevron.textContent = 'expand_more';
+      wrap.appendChild(chevron);
+
+      wrap.setAttribute('tabindex', '0');
+      wrap.setAttribute('role', 'button');
+      wrap.setAttribute('aria-haspopup', 'listbox');
+      wrap.setAttribute('aria-expanded', 'false');
+      wrap.setAttribute('data-wui-toggle', '#' + uid);
+
+      var menu = document.createElement('div');
+      menu.className = 'wui-dropdown fp-month-menu';
+      menu.id = uid;
+      menu.setAttribute('role', 'listbox');
+      menu.setAttribute('data-wui-open-class', 'show');
+      menu.setAttribute('data-wui-anchor', 'bottom-start');
+      // Any click inside closes the menu — same convention as the docs
+      // overlays.html dropdown demo (data-wui-dismiss on the panel root).
+      menu.setAttribute('data-wui-dismiss', '');
+
+      for (var i = 0; i < months.length; i++) {
+        var item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'wui-dropdown-item';
+        item.setAttribute('role', 'option');
+        item.setAttribute('data-month-index', String(i));
+        item.textContent = months[i];
+        menu.appendChild(item);
+      }
+
+      // Selection: delta-form changeMonth so this works even under
+      // showMonths>1, where each visible month column is currentMonth+colIndex.
+      menu.addEventListener('click', function (e) {
+        var item = e.target.closest('[data-month-index]');
+        if (!item) return;
+        var target = parseInt(item.getAttribute('data-month-index'), 10);
+        fp.changeMonth(target - colIndex - fp.currentMonth, true);
+      });
+
+      // Re-sync the "current month" highlight every time the menu opens
+      // (WUI.open dispatches a bubbling wui:open on the panel itself).
+      menu.addEventListener('wui:open', function () {
+        var current = ((fp.currentMonth + colIndex) % 12 + 12) % 12;
+        var items = menu.querySelectorAll('[data-month-index]');
+        for (var j = 0; j < items.length; j++) {
+          var isCurrent = parseInt(items[j].getAttribute('data-month-index'), 10) === current;
+          items[j].classList.toggle('primary', isCurrent);
+          items[j].setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+        }
+      });
+
+      // The trigger wrapper is a <span>, not a <button> — browsers don't
+      // auto-fire click on Enter/Space for a role="button" span, so wire it
+      // manually.
+      wrap.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
+          wrap.click();
+        }
+      });
+
+      fp.calendarContainer.appendChild(menu);
+    });
+  }
+
+  function wireDatePicker(_dates, _dateStr, fp) {
+    suppressNumberWrap(fp);
+    buildMonthDropdowns(fp);
   }
 
   function buildRangeHooks(el, group, inheritedOnOpen) {
@@ -307,7 +457,10 @@
         return;
       }
 
-      var config  = Object.assign({}, preset, readOverrides(el));
+      // monthSelectorType:'static' is the default for every instance (see
+      // buildMonthDropdowns above) — a preset MAY still opt back into the
+      // native <select> by setting monthSelectorType:'dropdown' itself.
+      var config  = Object.assign({ monthSelectorType: 'static' }, preset, readOverrides(el));
       var group   = el.dataset.fpRangeGroup;
       var role    = el.dataset.fpRangeRole;
 
@@ -321,6 +474,7 @@
       }
 
       config.onChange = wrapOnChange(config.onChange || null, el, namedFn);
+      config.onReady  = wrapHook(config.onReady || null, wireDatePicker);
 
       var fp = flatpickr(el, config);
 
