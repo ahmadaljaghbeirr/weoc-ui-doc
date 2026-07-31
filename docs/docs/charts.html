@@ -319,7 +319,7 @@
         <!-- ── Overview ───────────────────────────────────────────────────── -->
         <div class="docs-section">
           <div class="docs-section-title" id="overview" data-wui-i18n-html="docs_charts_6"><span class="material-symbols-outlined">info</span>Overview</div>
-          <p class="docs-desc" data-wui-i18n-html="docs_charts_7"><code>wui-charts.js</code> is an adapter layer for real-time boards. It wraps <strong>uPlot</strong> (a canvas-based, ~50 kb time-series library) behind the <code>WUI.chart()</code> API. Your boards never touch uPlot directly; they call <code>WUI.chart()</code> and get back a simple <code>{ update, resize, destroy }</code> handle.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_charts_7"><code>wui-charts.js</code> is an adapter layer. It wraps <strong>uPlot</strong> (a canvas-based, ~50 kb time-series library) behind the <code>WUI.chart()</code> API. Your boards never touch uPlot directly; they call <code>WUI.chart()</code> and get back a simple <code>{ update, resize, destroy }</code> handle.</p>
           <p class="docs-desc" data-wui-i18n-html="docs_charts_8">All colors, fonts, and grid lines are read from CSS custom properties at creation time and on every theme change. A <code>wui:themechange</code> event (fired by <code>weoc-ui.js</code>) causes every registered chart to re-read tokens and recreate itself within one <code>requestAnimationFrame</code> — boards do not need any theme-aware code.</p>
         </div>
 
