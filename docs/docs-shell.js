@@ -72,7 +72,9 @@
       items: [
         { key: 'containers', label: 'Cards & Containers', file: 'containers.html', kw: 'card paper plane panel embed collapsible accordion person info-grid datalist' },
         { key: 'interactive', label: 'Badges & Chips', file: 'interactive.html', kw: 'badge chip pill label tag' },
-        { key: 'indicators', label: 'Indicators', file: 'indicators.html', kw: 'avatar status-dot indicator icon-bubble themeicon level elapsed' },
+        { key: 'indicators', label: 'Indicators', file: 'indicators.html', kw: 'status-dot indicator level elapsed' },
+        { key: 'icons', label: 'Icon Bubbles', file: 'icons.html', kw: 'icon-bubble icon bubble semantic themeicon' },
+        { key: 'avatars', label: 'Avatars', file: 'avatars.html', kw: 'avatar identity initials icon avatar-sm avatar-lg avatar-xl' },
         { key: 'tables', label: 'Tables', file: 'tables.html', kw: 'table standard cards log row column sticky sortable' }
       ]
     },
@@ -342,7 +344,8 @@
   // Per-page translation files (chrome + several pages live in docs-i18n.js;
   // the rest are one file each under i18n/ to keep them maintainable).
   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
-    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes'];
+    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
+    'icons', 'avatars'];
   function ensureI18nStore(root) {
     if (i18nStoreLoaded) return Promise.resolve();
     i18nStoreLoaded = true;
