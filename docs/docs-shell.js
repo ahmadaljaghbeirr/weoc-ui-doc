@@ -1119,12 +1119,22 @@
   function bindSearch() {
     if (searchBound) return;
     searchBound = true;
-    var root = getRoot();
+    // getRoot() is called fresh inside each handler below, NOT cached in a
+    // closure var here -- bindSearch() itself only ever runs once per true
+    // page load (guarded by searchBound above), but docs-shell.js persists
+    // across every SPA navigation afterward, and index.html (depth 0) vs.
+    // every docs/docs/*.html page (depth 1) need different root prefixes.
+    // A closured root computed once at bind time goes stale the moment the
+    // user SPA-navigates across that depth boundary -- confirmed live: it
+    // silently produces an extra/missing 'docs/' segment in every search
+    // hit's href thereafter (404s the first click after such a nav), even
+    // though renderChrome() elsewhere already gets this right by taking a
+    // freshly-computed root per navigation.
     document.addEventListener('focus', function (e) {
-      if (e.target && e.target.id === 'docs-search') loadSearchIndex(root).catch(function () {});
+      if (e.target && e.target.id === 'docs-search') loadSearchIndex(getRoot()).catch(function () {});
     }, true);
     document.addEventListener('input', function (e) {
-      if (e.target && e.target.id === 'docs-search') renderSearchResults(e.target.value, root);
+      if (e.target && e.target.id === 'docs-search') renderSearchResults(e.target.value, getRoot());
     });
     document.addEventListener('keydown', function (e) {
       var input = document.getElementById('docs-search');
