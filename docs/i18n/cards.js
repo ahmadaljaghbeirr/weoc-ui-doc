@@ -43,6 +43,7 @@
     { lang:'en', id:'docs_cards_39', value:'Dynamic — base (live JS fill)' }, { lang:'ar', id:'docs_cards_39', value:'ديناميكي: base (تعبئة حيّة بـ JS)' },
     { lang:'en', id:'docs_cards_40', value:'Sizes — sm / base / lg (live JS fill)' }, { lang:'ar', id:'docs_cards_40', value:'الأحجام: sm / base / lg (تعبئة حيّة بـ JS)' },
     { lang:'en', id:'docs_cards_41', value:'Color accents — all (live JS fill)' }, { lang:'ar', id:'docs_cards_41', value:'الألوان المميّزة: الكل (تعبئة حيّة بـ JS)' },
-    { lang:'en', id:'docs_cards_42', value:'Stepped — .stepped + wui-slider-ticks (live JS fill)' }, { lang:'ar', id:'docs_cards_42', value:'متدرّج: .stepped + wui-slider-ticks (تعبئة حيّة بـ JS)' }
+    { lang:'en', id:'docs_cards_42', value:'Stepped — .stepped + wui-slider-ticks (live JS fill)' }, { lang:'ar', id:'docs_cards_42', value:'متدرّج: .stepped + wui-slider-ticks (تعبئة حيّة بـ JS)' },
+    { lang:'en', id:'docs_cards_43', value:'On this page' }, { lang:'ar', id:'docs_cards_43', value:'في هذه الصفحة' }
   ]);
 })();

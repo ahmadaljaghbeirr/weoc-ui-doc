@@ -18,6 +18,33 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_js-api_25">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_js-api_25">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_js-api_25">
+            <a href="#theme-api" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_js-api_6"><span class="material-symbols-outlined">dark_mode</span>Theme API</a>
+            <a href="#utility-functions" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_js-api_7"><span class="material-symbols-outlined">build</span>Utility Functions</a>
+            <a href="#section-observer-refresh" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_js-api_8"><span class="material-symbols-outlined">sync</span>Section Observer &amp; Refresh</a>
+            <a href="#overlay-lifecycle" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_js-api_15"><span class="material-symbols-outlined">layers</span>Overlay Lifecycle</a>
+            <a href="#toast-snackbar" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_js-api_16"><span class="material-symbols-outlined">notifications</span>Toast &amp; Snackbar</a>
+            <a href="#class-helpers" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_js-api_19"><span class="material-symbols-outlined">style</span>Class Helpers</a>
+            <a href="#anchor-positioning" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_js-api_20"><span class="material-symbols-outlined">location_on</span>Anchor Positioning</a>
+            <a href="#declarative-attributes" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_js-api_22"><span class="material-symbols-outlined">data_object</span>Declarative Attributes</a>
+            <a href="#custom-events" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_js-api_24"><span class="material-symbols-outlined">bolt</span>Custom Events</a>
+          </nav>
+        </div>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_js-api_1">Reference</div>

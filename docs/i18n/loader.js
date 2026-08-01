@@ -31,5 +31,6 @@
     { lang:'en', id:'docs_loader_23', value:'<span class="material-symbols-outlined">progress_activity</span>.spin — icon utility' }, { lang:'ar', id:'docs_loader_23', value:'<span class="material-symbols-outlined">progress_activity</span>.spin: أداة أيقونة' },
     { lang:'en', id:'docs_loader_24', value:'For a bare spinning icon with no overlay or button state, add the utility class <code>.spin</code> (from weoc-utilities.css, loaded via the core barrel) to any icon. It applies a continuous 1s linear rotation. Pair it with a Material Symbol such as <code>progress_activity</code>.' }, { lang:'ar', id:'docs_loader_24', value:'لأيقونة دوّارة مجردة بلا طبقة أو حالة زر، أضف صنف الأدوات <code>.spin</code> (من weoc-utilities.css، المُحمّل عبر حزمة النواة) إلى أي أيقونة. يطبّق دورانًا خطيًا مستمرًا مدته ثانية واحدة. اقرنه برمز Material مثل <code>progress_activity</code>.' },
     { lang:'en', id:'docs_loader_25', value:'Spinner' }, { lang:'ar', id:'docs_loader_25', value:'الدوّار' },
+    { lang:'en', id:'docs_loader_26', value:'On this page' }, { lang:'ar', id:'docs_loader_26', value:'في هذه الصفحة' }
   ]);
 })();

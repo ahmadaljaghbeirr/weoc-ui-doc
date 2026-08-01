@@ -18,6 +18,30 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_conventions_13">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_conventions_13">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_conventions_13">
+            <a href="#no-inline-styles" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_conventions_1"><span class="material-symbols-outlined">rule</span>No inline styles</a>
+            <a href="#viewtype-css-pattern" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_conventions_3"><span class="material-symbols-outlined">description</span>{viewType}.css pattern</a>
+            <a href="#device-tiers" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_conventions_5"><span class="material-symbols-outlined">devices</span>Device tiers</a>
+            <a href="#component-promotion" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_conventions_7"><span class="material-symbols-outlined">extension</span>Component promotion</a>
+            <a href="#css-js-minimalism-declarative-first" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_conventions_9"><span class="material-symbols-outlined">compress</span>CSS/JS minimalism — declarative first</a>
+            <a href="#tile-chrome-header-footer-border-toggle" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_conventions_11"><span class="material-symbols-outlined">dashboard</span>Tile chrome — header/footer border toggle</a>
+          </nav>
+        </div>
 
         <div class="docs-section">
           <div class="docs-section-title" id="no-inline-styles" data-wui-i18n-html="docs_conventions_1"><span class="material-symbols-outlined">rule</span>No inline styles</div>

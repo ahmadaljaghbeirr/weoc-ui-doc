@@ -19,6 +19,29 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_maps_37">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_maps_37">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_maps_37">
+            <a href="#wui-map-wrap-wui-map-view" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_maps_6"><span class="material-symbols-outlined">map</span>wui-map-wrap &amp; wui-map-view</a>
+            <a href="#wui-map-controls-wui-map-btn" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_maps_8"><span class="material-symbols-outlined">tune</span>wui-map-controls &amp; wui-map-btn</a>
+            <a href="#wui-basemap-group-wui-basemap-tools" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_maps_12"><span class="material-symbols-outlined">layers</span>wui-basemap-group &amp; wui-basemap-tools</a>
+            <a href="#wui-map-point-popover" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_maps_18"><span class="material-symbols-outlined">location_on</span>wui-map-point-popover</a>
+            <a href="#layout-fullscreen-states" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_maps_29"><span class="material-symbols-outlined">fullscreen</span>Layout &amp; fullscreen states</a>
+          </nav>
+        </div>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_maps_1">Components</div>

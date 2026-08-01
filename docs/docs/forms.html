@@ -19,6 +19,53 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page" x-data="formsPage()">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_forms_130">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_forms_130">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_forms_130">
+            <a href="#form-control" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_6"><span class="material-symbols-outlined">text_fields</span>form-control</a>
+            <a href="#wui-number-themed-stepper" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_12"><span class="material-symbols-outlined">123</span>wui-number — themed stepper</a>
+            <a href="#wui-fieldset" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_16"><span class="material-symbols-outlined">tune</span>wui-fieldset</a>
+            <a href="#field-grid-field-row-field-item" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_20"><span class="material-symbols-outlined">grid_view</span>Field grid — field-row / field-item</a>
+            <a href="#readonly-fields" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_28"><span class="material-symbols-outlined">lock</span>Readonly fields</a>
+            <a href="#disabled-fields" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_35"><span class="material-symbols-outlined">block</span>Disabled fields</a>
+            <a href="#form-section" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_38"><span class="material-symbols-outlined">view_agenda</span>form-section</a>
+            <a href="#wui-ftr-wrap-form-footer" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_41"><span class="material-symbols-outlined">dock_to_bottom</span>wui-ftr-wrap — form footer</a>
+            <a href="#date-time-flatpickr" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_47"><span class="material-symbols-outlined">calendar_month</span>Date &amp; Time (Flatpickr)</a>
+            <a href="#date-only" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_53"><span class="material-symbols-outlined">calendar_today</span>Date only</a>
+            <a href="#time-only" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_56"><span class="material-symbols-outlined">schedule</span>Time only</a>
+            <a href="#date-time" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_59"><span class="material-symbols-outlined">event</span>Date + time</a>
+            <a href="#future-only-past-only" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_62"><span class="material-symbols-outlined">history_toggle_off</span>Future-only &amp; past-only</a>
+            <a href="#date-range-paired" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_66"><span class="material-symbols-outlined">date_range</span>Date range (paired)</a>
+            <a href="#inline-calendar" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_69"><span class="material-symbols-outlined">calendar_month</span>Inline calendar</a>
+            <a href="#per-input-overrides" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_72"><span class="material-symbols-outlined">tune</span>Per-input overrides</a>
+            <a href="#readonly-display" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_75"><span class="material-symbols-outlined">lock</span>Readonly display</a>
+            <a href="#select-combobox-tomselect" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_78"><span class="material-symbols-outlined">arrow_drop_down_circle</span>Select / Combobox (TomSelect)</a>
+            <a href="#single-select" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_86"><span class="material-symbols-outlined">arrow_drop_down_circle</span>Single select</a>
+            <a href="#multi-select" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_94"><span class="material-symbols-outlined">checklist</span>Multi-select</a>
+            <a href="#creatable-tags" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_101"><span class="material-symbols-outlined">new_label</span>Creatable / tags</a>
+            <a href="#remote-autocomplete-data-src-api" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_106"><span class="material-symbols-outlined">cloud_download</span>Remote / autocomplete (data-src="api")</a>
+            <a href="#optgroups" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_113"><span class="material-symbols-outlined">segment</span>Optgroups</a>
+            <a href="#custom-option-item-renderers" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_115"><span class="material-symbols-outlined">palette</span>Custom option / item renderers</a>
+            <a href="#dependent-cascading-selects" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_117"><span class="material-symbols-outlined">account_tree</span>Dependent / cascading selects</a>
+            <a href="#dropdown-slots-header-footer" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_119"><span class="material-symbols-outlined">vertical_split</span>Dropdown slots (header / footer)</a>
+            <a href="#change-callback-data-on-change" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_124"><span class="material-symbols-outlined">bolt</span>Change callback (data-on-change)</a>
+            <a href="#dropdown-parent-data-dropdown-parent" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_126"><span class="material-symbols-outlined">open_in_full</span>Dropdown parent (data-dropdown-parent)</a>
+            <a href="#states-disabled-readonly" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_forms_128"><span class="material-symbols-outlined">block</span>States — disabled &amp; readonly</a>
+          </nav>
+        </div>
         <script>
         (function () {
           function registerFormsPage() {

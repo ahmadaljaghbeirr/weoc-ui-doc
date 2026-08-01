@@ -25,6 +25,7 @@
     { lang:'en', id:'docs_js-api_21', value:'Position a floating element relative to a trigger, with viewport collision detection.' }, { lang:'ar', id:'docs_js-api_21', value:'حدد موضع عنصر عائم بالنسبة إلى عنصر مُحفِّز، مع كشف التصادم مع حدود منطقة العرض.' },
     { lang:'en', id:'docs_js-api_22', value:'<span class="material-symbols-outlined">data_object</span>Declarative Attributes' }, { lang:'ar', id:'docs_js-api_22', value:'<span class="material-symbols-outlined">data_object</span>السمات التعريفية' },
     { lang:'en', id:'docs_js-api_23', value:'Auto-wired by <code>weoc-ui.js</code> on <code>DOMContentLoaded</code>. All boolean values must use <code>="true"</code> or <code>=""</code> in WebEOC XML.' }, { lang:'ar', id:'docs_js-api_23', value:'تُوصَّل تلقائيًا بواسطة <code>weoc-ui.js</code> عند <code>DOMContentLoaded</code>. يجب أن تستخدم جميع القيم المنطقية <code>="true"</code> أو <code>=""</code> في WebEOC XML.' },
-    { lang:'en', id:'docs_js-api_24', value:'<span class="material-symbols-outlined">bolt</span>Custom Events' }, { lang:'ar', id:'docs_js-api_24', value:'<span class="material-symbols-outlined">bolt</span>الأحداث المخصصة' }
+    { lang:'en', id:'docs_js-api_24', value:'<span class="material-symbols-outlined">bolt</span>Custom Events' }, { lang:'ar', id:'docs_js-api_24', value:'<span class="material-symbols-outlined">bolt</span>الأحداث المخصصة' },
+    { lang:'en', id:'docs_js-api_25', value:'On this page' }, { lang:'ar', id:'docs_js-api_25', value:'في هذه الصفحة' }
   ]);
 })();

@@ -20,6 +20,7 @@
     { lang:'en', id:'docs_flex_16', value:'Spacing utilities that work on any <code>wui-flex</code> or <code>wui-grid</code> container. <code>wui-gap-0/xs/sm/1…6/8</code> sets both axes; <code>wui-gap-x-*</code> sets column-gap only; <code>wui-gap-y-*</code> sets row-gap only. The scale maps to the <code>--space-*</code> tokens.' }, { lang:'ar', id:'docs_flex_16', value:'أدوات تباعد تعمل على أي حاوية <code>wui-flex</code> أو <code>wui-grid</code>. تضبط <code>wui-gap-0/xs/sm/1…6/8</code> كلا المحورين؛ وتضبط <code>wui-gap-x-*</code> فجوة الأعمدة فقط؛ وتضبط <code>wui-gap-y-*</code> فجوة الصفوف فقط. ويرتبط المقياس برموز <code>--space-*</code>.' },
     { lang:'en', id:'docs_flex_17', value:'Uniform gap — wui-gap-0 … wui-gap-8' }, { lang:'ar', id:'docs_flex_17', value:'فجوة موحّدة: wui-gap-0 … wui-gap-8' },
     { lang:'en', id:'docs_flex_18', value:'Axis gaps — wui-gap-x-* (columns) & wui-gap-y-* (rows)' }, { lang:'ar', id:'docs_flex_18', value:'فجوات المحاور: wui-gap-x-* (الأعمدة) و wui-gap-y-* (الصفوف)' },
-    { lang:'en', id:'docs_flex_19', value:'Full sets: <code>wui-gap-x-0 … 5</code> and <code>wui-gap-y-0 … 5</code>.' }, { lang:'ar', id:'docs_flex_19', value:'المجموعات الكاملة: <code>wui-gap-x-0 … 5</code> و<code>wui-gap-y-0 … 5</code>.' }
+    { lang:'en', id:'docs_flex_19', value:'Full sets: <code>wui-gap-x-0 … 5</code> and <code>wui-gap-y-0 … 5</code>.' }, { lang:'ar', id:'docs_flex_19', value:'المجموعات الكاملة: <code>wui-gap-x-0 … 5</code> و<code>wui-gap-y-0 … 5</code>.' },
+    { lang:'en', id:'docs_flex_20', value:'On this page' }, { lang:'ar', id:'docs_flex_20', value:'في هذه الصفحة' }
   ]);
 })();

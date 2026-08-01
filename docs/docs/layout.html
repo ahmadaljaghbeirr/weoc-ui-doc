@@ -18,6 +18,44 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_layout_127">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_layout_127">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_layout_127">
+            <a href="#app-shell-wui-body-shell-wui-page-shell-wui-main-div-wui-view-body" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_4"><span class="material-symbols-outlined">wysiwyg</span>App shell — wui-body-shell · wui-page-shell · wui-main-div · wui-view-body</a>
+            <a href="#wui-split" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_10"><span class="material-symbols-outlined">view_column</span>wui-split</a>
+            <a href="#wui-scroll-area" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_22"><span class="material-symbols-outlined">swap_vert</span>wui-scroll-area</a>
+            <a href="#wui-fill-area" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_28"><span class="material-symbols-outlined">fit_screen</span>wui-fill-area</a>
+            <a href="#tab-shell-wui-det-body-wui-det-inner-wui-tab-panel" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_30"><span class="material-symbols-outlined">view_agenda</span>Tab shell — wui-det-body · wui-det-inner · wui-tab-panel</a>
+            <a href="#wui-toolbar" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_38"><span class="material-symbols-outlined">toolbar</span>wui-toolbar</a>
+            <a href="#wui-list-wui-card-stack" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_43"><span class="material-symbols-outlined">view_list</span>wui-list &amp; wui-card-stack</a>
+            <a href="#wui-grid-view-wui-details-panel" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_47"><span class="material-symbols-outlined">dashboard</span>wui-grid-view &amp; wui-details-panel</a>
+            <a href="#wui-cards-grid" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_52"><span class="material-symbols-outlined">grid_view</span>wui-cards-grid</a>
+            <a href="#wui-two-col" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_54"><span class="material-symbols-outlined">splitscreen</span>wui-two-col</a>
+            <a href="#wui-sidebar-layout" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_58"><span class="material-symbols-outlined">side_navigation</span>wui-sidebar-layout</a>
+            <a href="#wui-split-pane" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_60"><span class="material-symbols-outlined">vertical_split</span>wui-split-pane</a>
+            <a href="#wui-field-row" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_62"><span class="material-symbols-outlined">table_rows</span>wui-field-row</a>
+            <a href="#wui-table-view" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_66"><span class="material-symbols-outlined">table_chart</span>wui-table-view</a>
+            <a href="#dashboard-grid-wui-widget" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_68"><span class="material-symbols-outlined">widgets</span>Dashboard grid (wui-widget)</a>
+            <a href="#board-views" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_70"><span class="material-symbols-outlined">view_quilt</span>Board Views</a>
+            <a href="#display-views" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_72"><span class="material-symbols-outlined">list_alt</span>Display Views</a>
+            <a href="#input-views" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_91"><span class="material-symbols-outlined">edit_note</span>Input Views</a>
+            <a href="#details-views" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_108"><span class="material-symbols-outlined">info</span>Details Views</a>
+            <a href="#remove-views" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_layout_124"><span class="material-symbols-outlined">delete</span>Remove Views</a>
+          </nav>
+        </div>
         <style>
           /* Placeholder tiles used inside the contained shell demos. Structure-only:
              plain tinted boxes so the layout skeleton reads without pulling in
