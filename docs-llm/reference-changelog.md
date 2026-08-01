@@ -51,7 +51,7 @@ entry per session that touches source, in the same session as the edit.
   remain in the file but are no longer used for any section body — only the
   gauge needle's own always-on glow still uses `_lightenColor`. This is now
   the FINAL, locked-in design — see the updated `opts.neon` row in
-  [js-api.md](js-api.md) for the authoritative per-component mechanism (the
+  [reference-js-api.md](reference-js-api.md) for the authoritative per-component mechanism (the
   entry below is superseded and kept only for history).
 - 2026-07-27 — **Final correction** to `opts.neon` on `WUI.pie`/`donut`/
   `gauge`/`barRow`, replacing BOTH of the two designs below same day: the
@@ -69,7 +69,7 @@ entry per session that touches source, in the same session as the edit.
   thin accent (`lineWidth` ~5% of radius for pie/donut, ~25% of track width
   for gauge bands, small `shadowBlur`). Verified via direct canvas pixel
   sampling (muted body ~176-186 RGB range vs. vivid rim ~58-69 range) plus
-  visual zoom screenshots. Full detail in [js-api.md](js-api.md).
+  visual zoom screenshots. Full detail in [reference-js-api.md](reference-js-api.md).
 - 2026-07-27 — Extended `opts.neon` to ALL 5 chart-family factories
   (`chart`/`pie`/`donut`/`gauge`/`barRow`, not just pie/donut/barRow) with a
   new `_applyGlassPanel()` that gives the host container the exact same
@@ -103,7 +103,7 @@ entry per session that touches source, in the same session as the edit.
   be visually a complete no-op before this fix. `WUI.chart`/`gauge` keep
   their original severity-keyed single-color glow — that distinction is now
   explicit in both [css-classes.md](css-classes.md) and
-  [js-api.md](js-api.md) (two separate `opts.neon` rows, not one). Also: the
+  [reference-js-api.md](reference-js-api.md) (two separate `opts.neon` rows, not one). Also: the
   plane's glow itself went through 2 rounds of user-directed refinement this
   same day (outer halo → refracted inset+wash → inset-only, outer halo
   removed) — see [css-classes.md](css-classes.md)'s `.wui-plane.neon` row for
@@ -119,7 +119,7 @@ entry per session that touches source, in the same session as the edit.
   `gauge`/`barRow` — canvas-drawn ones glow via `ctx.shadowBlur`, DOM-drawn
   ones via a new `weoc-charts.css` file + toggled class, now imported by
   `weoc-ui-core.css` as module #21). Full detail in
-  [css-classes.md](css-classes.md) and [js-api.md](js-api.md)'s `opts.neon`
+  [css-classes.md](css-classes.md) and [reference-js-api.md](reference-js-api.md)'s `opts.neon`
   row. Docs updated on `interactive.html`, `containers.html`, `progress.html`,
   and `charts.html` (new "Neon Glow" section) — each with matching EN/AR
   i18n entries, per the lane's default-on localization rule. Dispatched as
@@ -140,7 +140,7 @@ entry per session that touches source, in the same session as the edit.
   with skeleton-loader `style="width:...px"` as the single biggest cause).
 - 2026-07-24 — Added opt-in `weoc-display-tv.css` (TV/projector scale mode,
   first-pass values pending real-TV QA) and a canonical device-tier
-  breakpoint table (see [conventions.md](conventions.md)). Deliberately NOT
+  breakpoint table (see [reference-conventions.md](reference-conventions.md)). Deliberately NOT
   in the `weoc-ui-core.css` barrel.
 - 2026-07-24 — Fixed 3 confirmed docs/code drift points: `charts.html` was
   missing `WUI.gauge()`/`WUI.barRow()` entirely (both implemented, exported,
@@ -163,7 +163,7 @@ entry per session that touches source, in the same session as the edit.
   so `wui:themechange` never fired and charts only picked up the new theme
   on an unrelated resize. Fixed by switching both to `[data-wui-theme-toggle]`.
   Confirmed this was a harness bug, not a library regression — see the
-  `WUI.setTheme` gotcha in [js-api.md](js-api.md).
+  `WUI.setTheme` gotcha in [reference-js-api.md](reference-js-api.md).
 - 2026-07-24 — Added `.wui-tile` (hdr/body/footer dashboard-tile component)
   and generalized a new `.flush` border-removal modifier across it plus
   `.wui-panel`, `.wui-collapse-panel`, and `.wui-card-footer`. Found and
@@ -210,7 +210,7 @@ entry per session that touches source, in the same session as the edit.
   (matches the real `.widget-icon`), and a new `.wui-tile-legend` anatomical
   slot (pins to the bottom of `.wui-tile-body` via `margin-top:auto`,
   answering "where does a chart legend go" — body, not footer). See
-  [css-classes.md](css-classes.md) and [js-api.md](js-api.md) for the
+  [css-classes.md](css-classes.md) and [reference-js-api.md](reference-js-api.md) for the
   `WUI.donut()` legend-relocation gotcha this slot depends on.
   Also fetched and rebuilt the real "Events by Classification" donut card
   from `HomePage/out/board.web` (Operation Home Page view) as a standalone,

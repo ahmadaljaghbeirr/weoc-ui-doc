@@ -26,9 +26,10 @@
    board-specific business logic — flag it as a porting candidate. One line
    in that session's context/notes: what it is, why it's generic. Don't
    leave it silently board-local, and don't build a one-off for something
-   the library should own (see the callout at the bottom of
-   [`kpi-recipes.html`](../docs/docs/kpi-recipes.html) — heatmaps, box
-   plots, funnels, maps-with-markers are known current gaps).
+   the library should own (see the callout at the bottom of the
+   [KPI & Tile Recipes](../docs/docs/charts.html#1-the-tile-shell-wui-tile)
+   section of `charts.html` — heatmaps, box plots, funnels, maps-with-markers
+   are known current gaps).
 
 5. **Declarative-first / CSS-JS minimalism**: prefer an existing `wui-*`
    class or `data-wui-*` attribute over new CSS or new JS. JS components

@@ -1,0 +1,11 @@
+# Cloudflare Workers Static Assets / Pages _headers convention: this file
+# must live at the root of `assets.directory` (see wrangler.jsonc — that's
+# "." here, the repo root) to be read at all; a copy nested inside a
+# subfolder is not recognized. Path patterns below scope the rules to that
+# subfolder instead.
+#
+# Force docs-llm/*.md to be served as plain text (not octet-stream), so a
+# browser or an LLM's raw HTTP fetch renders/reads it inline instead of
+# triggering a download prompt.
+/docs-llm/*.md
+  Content-Type: text/plain; charset=utf-8
