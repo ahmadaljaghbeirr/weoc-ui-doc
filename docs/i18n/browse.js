@@ -11,17 +11,18 @@
   WUI.i18n.register([
     { lang:'en', id:'docs_browse_1', value:'weoc-ui — see it in action' }, { lang:'ar', id:'docs_browse_1', value:'weoc-ui — شاهدها في العمل' },
     { lang:'en', id:'docs_browse_2', value:'A curated tour of the library\'s most visual components. Click any tile to open its full documentation.' }, { lang:'ar', id:'docs_browse_2', value:'جولة منتقاة عبر أكثر مكوّنات المكتبة تأثيرًا بصريًا. انقر على أي بطاقة لفتح توثيقها الكامل.' },
-    { lang:'en', id:'docs_browse_3', value:'<span class="material-symbols-outlined">show_chart</span>Charts' }, { lang:'ar', id:'docs_browse_3', value:'<span class="material-symbols-outlined">show_chart</span>المخططات' },
-    { lang:'en', id:'docs_browse_4', value:'<span class="material-symbols-outlined">view_kanban</span>Kanban' }, { lang:'ar', id:'docs_browse_4', value:'<span class="material-symbols-outlined">view_kanban</span>كانبان' },
-    { lang:'en', id:'docs_browse_5', value:'<span class="material-symbols-outlined">grid_on</span>Heatmap' }, { lang:'ar', id:'docs_browse_5', value:'<span class="material-symbols-outlined">grid_on</span>الخريطة الحرارية' },
-    { lang:'en', id:'docs_browse_6', value:'<span class="material-symbols-outlined">calendar_month</span>Calendar' }, { lang:'ar', id:'docs_browse_6', value:'<span class="material-symbols-outlined">calendar_month</span>التقويم' },
-    { lang:'en', id:'docs_browse_7', value:'<span class="material-symbols-outlined">speed</span>Gauge' }, { lang:'ar', id:'docs_browse_7', value:'<span class="material-symbols-outlined">speed</span>المقياس' },
-    { lang:'en', id:'docs_browse_8', value:'<span class="material-symbols-outlined">donut_large</span>Donut' }, { lang:'ar', id:'docs_browse_8', value:'<span class="material-symbols-outlined">donut_large</span>المخطط الحلقي' },
-    { lang:'en', id:'docs_browse_9', value:'<span class="material-symbols-outlined">trending_up</span>Progress' }, { lang:'ar', id:'docs_browse_9', value:'<span class="material-symbols-outlined">trending_up</span>التقدّم' },
-    { lang:'en', id:'docs_browse_10', value:'<span class="material-symbols-outlined">calendar_today</span>Date Picker' }, { lang:'ar', id:'docs_browse_10', value:'<span class="material-symbols-outlined">calendar_today</span>منتقي التاريخ' },
-    { lang:'en', id:'docs_browse_11', value:'<span class="material-symbols-outlined">view_agenda</span>Cards &amp; Containers' }, { lang:'ar', id:'docs_browse_11', value:'<span class="material-symbols-outlined">view_agenda</span>البطاقات والحاويات' },
-    { lang:'en', id:'docs_browse_12', value:'<span class="material-symbols-outlined">sell</span>Badges &amp; Chips' }, { lang:'ar', id:'docs_browse_12', value:'<span class="material-symbols-outlined">sell</span>الشارات والرقائق' },
-    { lang:'en', id:'docs_browse_13', value:'<span class="material-symbols-outlined">smart_button</span>Buttons' }, { lang:'ar', id:'docs_browse_13', value:'<span class="material-symbols-outlined">smart_button</span>الأزرار' },
-    { lang:'en', id:'docs_browse_14', value:'<span class="material-symbols-outlined">table_rows</span>Tables' }, { lang:'ar', id:'docs_browse_14', value:'<span class="material-symbols-outlined">table_rows</span>الجداول' }
+    { lang:'en', id:'docs_browse_3', value:'Charts' }, { lang:'ar', id:'docs_browse_3', value:'المخططات' },
+    { lang:'en', id:'docs_browse_4', value:'Kanban' }, { lang:'ar', id:'docs_browse_4', value:'كانبان' },
+    { lang:'en', id:'docs_browse_5', value:'Heatmap' }, { lang:'ar', id:'docs_browse_5', value:'الخريطة الحرارية' },
+    { lang:'en', id:'docs_browse_6', value:'Calendar' }, { lang:'ar', id:'docs_browse_6', value:'التقويم' },
+    { lang:'en', id:'docs_browse_7', value:'Gauge' }, { lang:'ar', id:'docs_browse_7', value:'المقياس' },
+    { lang:'en', id:'docs_browse_8', value:'Donut' }, { lang:'ar', id:'docs_browse_8', value:'المخطط الحلقي' },
+    { lang:'en', id:'docs_browse_9', value:'Progress' }, { lang:'ar', id:'docs_browse_9', value:'التقدّم' },
+    { lang:'en', id:'docs_browse_10', value:'Form Controls — date, select & field' }, { lang:'ar', id:'docs_browse_10', value:'عناصر النموذج: تاريخ وقائمة اختيار وحقل' },
+    { lang:'en', id:'docs_browse_11', value:'Cards & Containers' }, { lang:'ar', id:'docs_browse_11', value:'البطاقات والحاويات' },
+    { lang:'en', id:'docs_browse_12', value:'Badges & Chips' }, { lang:'ar', id:'docs_browse_12', value:'الشارات والرقائق' },
+    { lang:'en', id:'docs_browse_13', value:'Buttons' }, { lang:'ar', id:'docs_browse_13', value:'الأزرار' },
+    { lang:'en', id:'docs_browse_14', value:'Tables' }, { lang:'ar', id:'docs_browse_14', value:'الجداول' },
+    { lang:'en', id:'docs_browse_15', value:'Records — list with actions popover' }, { lang:'ar', id:'docs_browse_15', value:'السجلات: قائمة مع قائمة إجراءات منبثقة' }
   ]);
 })();
