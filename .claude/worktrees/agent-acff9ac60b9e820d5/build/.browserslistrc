@@ -1,7 +1,0 @@
-# weoc-ui runs inside WebEOC's embedded browser. Until the exact engine is
-# confirmed, we target IE 11 as the floor so Babel emits true ES5. When the
-# view is confirmed to run a modern Chromium WebView, raise this floor and the
-# bundle shrinks.
-ie 11
-last 2 Edge versions
-last 2 Chrome versions
