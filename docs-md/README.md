@@ -16,8 +16,7 @@ For a *compact*, fast-to-grep cheat-sheet instead of the full replica (API signa
 
 ## Theming
 
-- [Design Tokens](tokens.md)
-- [Tier Colors](tier-colors.md)
+- [Design Tokens](tokens.md) *(includes Tier Color Variants)*
 
 ## Layout
 
@@ -40,6 +39,7 @@ For a *compact*, fast-to-grep cheat-sheet instead of the full replica (API signa
 ## Navigation
 
 - [Navigation](navigation.md)
+- [Tabs](tabs.md)
 
 ## Feedback
 

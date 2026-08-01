@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Facility Dashboard — real markup replica (no WebEOC)</title>
+<link href="../../CSS/material-symbols-outlined/material-symbols-outlined.css" rel="stylesheet" />
+<link rel="stylesheet" href="../../CSS/weoc-ui/agency-theme-obsidian.css">
+<link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+<link rel="stylesheet" href="../../CSS/uPlot.min.css">
+<link rel="stylesheet" href="facility-dashboard-real.css">
+</head>
+<body data-theme="dark">
+  <div class="gradient-overlay"></div>
+
+  <div class="wui-main-div wui-p-0 wui-gap-2">
+    <div class="wui-band-wrap topbar">
+      <div class="wui-band-row">
+        <div class="wui-band-seg">
+          <span class="material-symbols-outlined wui-text-lg" style="color:#00ace8">bolt</span>
+          <span class="wui-text-md wui-semibold">TAQA</span>
+        </div>
+        <div class="wui-band-divider"></div>
+        <div class="wui-band-seg">
+          <span class="material-symbols-outlined wui-text-base wui-text-brand">home</span>
+          <div class="wui-breadcrumbs">
+            <span class="wui-breadcrumb-item">All companies</span>
+            <span class="wui-breadcrumb-item">TAQA Distribution</span>
+            <span class="wui-breadcrumb-item">Abu Dhabi</span>
+            <span class="wui-breadcrumb-item current">Jebel Ali Complex</span>
+          </div>
+        </div>
+        <div class="wui-band-divider"></div>
+        <div class="wui-band-seg wui-band-spacer" style="justify-content:center;">
+          <span class="wui-text-md wui-semibold">Jebel Ali Power &amp; Water Complex</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wui-band-wrap" id="toolbar">
+      <div class="wui-band-row">
+        <div class="wui-band-seg">
+          <button type="button" class="wui-btn outline secondary wui-btn-xs">
+            <span class="material-symbols-outlined wui-text-sm">arrow_back</span>
+            <span>Back</span>
+          </button>
+        </div>
+        <div class="wui-band-divider"></div>
+        <div class="wui-band-seg">
+          <span class="wui-band-label">Navigate</span>
+        </div>
+        <div class="wui-band-divider"></div>
+        <div class="wui-band-seg">
+          <div class="wui-plane primary wui-plane-nav wui-flex wui-items-center wui-gap-2">
+            <span class="wui-text-sm wui-semibold">TAQA Distribution</span>
+          </div>
+        </div>
+        <div class="wui-band-seg">
+          <span class="material-symbols-outlined wui-text-sm">arrow_forward</span>
+        </div>
+        <div class="wui-band-seg">
+          <div class="wui-plane primary wui-plane-nav wui-flex wui-items-center wui-gap-2">
+            <span class="material-symbols-outlined wui-text-sm">location_on</span>
+            <span class="wui-text-sm wui-semibold">Abu Dhabi</span>
+          </div>
+        </div>
+        <div class="wui-band-seg">
+          <span class="material-symbols-outlined wui-text-sm">arrow_forward</span>
+        </div>
+        <div class="wui-band-seg">
+          <div class="wui-plane primary wui-plane-nav wui-flex wui-items-center wui-gap-2">
+            <span class="material-symbols-outlined wui-text-sm">factory</span>
+            <span class="wui-text-sm wui-semibold">Jebel Ali Complex</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wui-fill-area wui-pb-2">
+      <!-- Start: Main -->
+      <div class="wui-flex wui-flex-col wui-gap-3 wui-h-full wui-min-h-0">
+        <!-- Main dashboard bento — exact structure from Display - Facility Dashboard.weoc -->
+        <div class="wui-bento cols-8 rows-1 is-page wui-gap-3 wui-flex-1 wui-min-h-0">
+
+          <!-- Left panel -->
+          <div class="wui-bento-tile wui-w-2x1">
+            <div class="wui-bento cols-1 rows-4 is-page wui-gap-3">
+
+              <div class="wui-bento-tile wui-w-1x2">
+                <div class="wui-card">
+                  <div class="wui-card-body wui-flex wui-flex-col wui-gap-3">
+                    <div>
+                      <div class="wui-text-sm wui-semibold">Facility Profile</div>
+                      <div class="wui-text-xs wui-text-secondary">Operational for 6 years &middot; Power + Water</div>
+                    </div>
+                    <div class="wui-flex-1 wui-min-h-0" id="tile-overall-readiness"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wui-bento-tile wui-w-1x1">
+                <div class="wui-card">
+                  <div class="wui-card-body">
+                    <div class="wui-text-xs wui-text-secondary wui-mb-1">Facility Readiness</div>
+                    <div id="tile-facility-readiness"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wui-bento-tile wui-w-1x1">
+                <div class="wui-card">
+                  <div class="wui-card-body wui-flex wui-gap-3">
+                    <div class="wui-flex-1">
+                      <div class="wui-text-2xs wui-text-secondary">In Progress</div>
+                      <div class="dash-kpi-value">3</div>
+                    </div>
+                    <div class="wui-flex-1">
+                      <div class="wui-text-2xs wui-text-secondary">Improvements</div>
+                      <div class="dash-kpi-value warning">7</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Main center panel -->
+          <div class="wui-bento-tile wui-w-4x1">
+            <div class="wui-card">
+              <div class="wui-card-body wui-flex wui-flex-col wui-gap-3">
+                <div class="wui-grid wui-grid-3 wui-gap-3">
+                  <div>
+                    <div class="wui-text-2xs wui-text-secondary">Total Events</div>
+                    <div class="dash-kpi-value">20</div>
+                  </div>
+                  <div>
+                    <div class="wui-text-2xs wui-text-secondary">Active</div>
+                    <div class="dash-kpi-value danger">4</div>
+                  </div>
+                  <div>
+                    <div class="wui-text-2xs wui-text-secondary">Closed</div>
+                    <div class="dash-kpi-value success">16</div>
+                  </div>
+                </div>
+                <div class="wui-flex-1 wui-min-h-0" id="tile-event-timeline"></div>
+                <div id="tile-resources-stacked"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right panel -->
+          <div class="wui-bento-tile wui-w-2x1">
+            <div class="wui-card">
+              <div class="wui-card-body wui-flex wui-flex-col wui-gap-3">
+                <div>
+                  <div class="wui-text-2xs wui-text-secondary">Total Employees</div>
+                  <div class="dash-kpi-value">312</div>
+                </div>
+                <div class="wui-flex-1 wui-min-h-0" id="tile-workforce-availability"></div>
+                <div>
+                  <div class="wui-text-2xs wui-text-secondary">Mobilizable (within 30 min)</div>
+                  <div class="dash-kpi-value">245</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End: Main -->
+
+  <script src="../../JS/uPlot.iife.min.js"></script>
+  <script src="../../JS/weoc-ui.js"></script>
+  <script src="../../JS/wui-charts.js"></script>
+  <script>
+    WUI.gauge('#tile-overall-readiness', { value: 78, status: 'Partially Ready', height: 100 });
+    WUI.gauge('#tile-facility-readiness', { value: 91, status: 'Ready', height: 90 });
+
+    (function () {
+      var now = Math.floor(Date.now() / 1000);
+      var ts = [];
+      for (var i = 0; i < 7; i++) { ts.push(now - (6 - i) * 86400); }
+      WUI.chart('#tile-event-timeline', { type: 'line', height: 110, series: [{ label: 'Events', color: 'primary' }], data: [ts, [12,15,11,18,14,20,17]] });
+    })();
+
+    WUI.barRow('#tile-resources-stacked', { rows: [
+      { label: 'Vehicles', value: 100, segments: [{ pct: 62, color: 'success' }, { pct: 23, color: 'warning' }, { pct: 15, color: 'danger' }] },
+      { label: 'Chemicals', value: 100, segments: [{ pct: 71, color: 'success' }, { pct: 12, color: 'primary' }, { pct: 17, color: 'danger' }] }
+    ]});
+
+    WUI.gauge('#tile-workforce-availability', { value: 82, status: 'Healthy', height: 100 });
+  </script>
+</body>
+</html>

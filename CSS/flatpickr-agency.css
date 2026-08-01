@@ -51,8 +51,13 @@
 --fp-input-gap-inline:    var(--space-3);
 --fp-input-gap-block:     var(--space-sm);
 
---fp-icon-date: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23185fa5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
---fp-icon-time: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23185fa5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpolyline points='12 6 12 12 16 14'/%3E%3C/svg%3E");
+/* Trigger icon (calendar/clock shown on the closed input) is a REAL inline
+   <svg> injected by flatpickr-weoc.js's wireTriggerIcon(), not a CSS
+   background-image — a background-image built from a data-URI SVG string
+   bakes its color into the string itself and can never read this token; an
+   inline SVG's stroke="currentColor" picks this up live, same as every
+   other themed icon in the library. See ".fp-icon-trigger" below. */
+--fp-icon-color: var(--color-10);
 }
 
 
@@ -120,8 +125,25 @@
 }
 
 /* --- Month/year dropdowns --- */
+/* Vendor lays the month + year out as two independently inline-block'd
+   children with their own hardcoded font-weights (month bold via
+   span.cur-month, year light via input.cur-year) and ch-based spacing —
+   reads as two mismatched fragments instead of one "July 2026" label. Flex +
+   a single gap makes them one evenly-spaced, vertically-centered unit; the
+   shared font-weight below makes month and year read as the same weight
+   class instead of bold-vs-light. */
 .flatpickr-current-month {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
   color: var(--fp-month-color);
+  padding: var(--space-2);
+}
+
+.flatpickr-current-month span.cur-month,
+.flatpickr-current-month input.cur-year {
+  font-weight: 600;
 }
 
 .flatpickr-current-month .flatpickr-monthDropdown-months {
@@ -139,6 +161,8 @@
 /* Year number input */
 .flatpickr-current-month .numInputWrapper {
   background: var(--fp-num-input-bg);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
 }
 
 .flatpickr-current-month input.cur-year {
@@ -150,7 +174,20 @@
 .flatpickr-current-month input.cur-year:hover,
 .flatpickr-current-month input.cur-year:focus {
   background: var(--fp-num-input-hover-bg);
+  border-radius: var(--radius-sm);
   outline: none;
+}
+
+.flatpickr-current-month input.cur-year:focus {
+  box-shadow: var(--fp-focus-ring);
+}
+
+/* Vendor hardcodes rgba(0,0,0,.5) here — invisible/wrong on a dark calendar
+   (only reachable when minDate/maxDate pin the year to a single value). */
+.flatpickr-current-month input.cur-year[disabled],
+.flatpickr-current-month input.cur-year[disabled]:hover {
+  color: var(--fp-disabled-color);
+  background: transparent;
 }
 
 .numInputWrapper span.arrowUp:after {
@@ -163,6 +200,23 @@
 
 .numInputWrapper:hover {
   background: var(--fp-num-input-hover-bg);
+  border-radius: var(--radius-sm);
+}
+
+/* Vendor's spin-arrow box (year / hour / minute / second) hardcodes a
+   translucent-black border + hover/active tint sized for a white calendar —
+   left a stray light-gray seam and near-invisible hover/press feedback in
+   dark mode. Themed here so every numeric stepper in the picker matches. */
+.numInputWrapper span {
+  border-color: var(--fp-calendar-border);
+}
+
+.numInputWrapper span:hover {
+  background: var(--fp-num-input-hover-bg);
+}
+
+.numInputWrapper span:active {
+  background: var(--color-10-muted);
 }
 
 /* --- Weekdays row --- */
@@ -312,10 +366,71 @@ span.flatpickr-weekday {
   cursor: default;
 }
 
+/* --- Time picker steppers: themed .wui-number replaces the default tiny
+   CSS-triangle spinners on hour/minute/second. As of 2026-07-31 this is
+   native — createTimeStepperInput() in the forked JS/flatpickr-weoc.js
+   (see that file's header) builds hour/minute/second as
+   numInputWrapper > .wui-number > input + .wui-number-btns directly, so
+   there are no arrowUp/arrowDown spans in the DOM to hide/collide with in
+   the first place (the year field, in .flatpickr-current-month, is
+   untouched and still uses the classic numInputWrapper > input +
+   arrowUp/arrowDown markup — see createNumberInput() in the fork). */
+
+/* .wui-number's base rules (weoc-forms.css) assume a normal, full-width
+   form-field context. Inside .flatpickr-time's fixed 40px-tall / ~40-49%-wide
+   numInputWrapper flex cell, the 1.5rem button column + 1.9rem input padding
+   is oversized for a 2-digit box next to a ":" separator and the AM/PM
+   toggle. Shrink both — sizing/spacing only, no color values, .wui-number is
+   already fully token-driven.
+
+   Every dimension below is an EXPLICIT pixel/rem value, not a percentage or
+   inherited one — .wui-number-btns' base rule positions itself via
+   `top:1px; bottom:1px` (stretch-to-fill-parent), which depends on
+   .wui-number's own height resolving correctly; rather than rely on that
+   chain (.flatpickr-time .numInputWrapper's fixed 40px -> .wui-number's
+   height:100% -> .wui-number-btns' top/bottom stretch), pin every box's
+   height directly so the two stepper buttons can never collapse onto each
+   other regardless of how any ancestor's height resolves. */
+.flatpickr-time .wui-number {
+  height: 40px; /* matches .flatpickr-time .numInputWrapper's own fixed height */
+}
+
+.flatpickr-time .wui-number input[type="number"] {
+  height: 40px;
+  padding-inline-end: 1.25rem !important;
+}
+
+.flatpickr-time .wui-number-btns {
+  top: 1px;
+  bottom: auto;
+  height: 38px;
+  width: 1.1rem;
+}
+
+.flatpickr-time .wui-number-step {
+  height: 19px;
+  min-height: 0;
+  flex: none; /* explicit height above replaces the base flex:1 split */
+}
+
+.flatpickr-time .wui-number-step .material-symbols-outlined {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
 /* --- Time picker --- */
+/* .flatpickr-calendar clips to var(--radius-lg), but any hover/select
+   highlight on an hour/minute/second field that touches this row's own
+   edges (it's the calendar's last child) still painted past that curve
+   with its own square corners, since a child's background isn't clipped
+   by an ancestor's border-radius unless that ancestor also sets
+   overflow:hidden. Rounding+clipping here, once, replaces chasing
+   border-radius on every individual hover/focus/selection state inside. */
 .flatpickr-calendar.hasTime .flatpickr-time {
   border-top: 1px solid var(--fp-time-border);
   background: var(--fp-calendar-bg);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  overflow: hidden;
 }
 
 .flatpickr-time input,
@@ -338,6 +453,15 @@ span.flatpickr-weekday {
 .flatpickr-time input:focus,
 .flatpickr-time .flatpickr-am-pm:focus {
   background: var(--fp-time-hover-bg);
+  border-radius: var(--radius-sm);
+}
+
+/* Vendor kills outline on these entirely (`outline:0;border:0`) — keyboard
+   users tabbing through h/m/s/AM-PM had zero focus affordance. */
+.flatpickr-time input:focus,
+.flatpickr-time .flatpickr-am-pm:focus {
+  box-shadow: var(--fp-focus-ring);
+  border-radius: var(--radius-sm);
 }
 
 /* --- Input field --- */
@@ -387,21 +511,38 @@ span.flatpickr-weekday {
   opacity: 0.5;
 }
 
-/* --- Icons --- */
+/* --- Icons ---
+   The calendar/clock trigger icon is a real inline <svg>, injected as a
+   sibling of the input by flatpickr-weoc.js's wireTriggerIcon() (gated on
+   these same classes) and wrapped in .fp-icon-slot — NOT a CSS
+   background-image. A background-image built from a data-URI SVG string
+   bakes its color into the string itself and is opaque to this stylesheet,
+   so it could never live-retheme; stroke="currentColor" on the real SVG +
+   color: var(--fp-icon-color) below re-themes it live on wui:themechange,
+   same as every other themed icon in this library. The input itself keeps
+   its own reserved end-padding so its text never runs under the icon. */
 .flat-date,
 .flat-range-start,
-.flat-range-end {
-  background-image: var(--fp-icon-date);
-  background-repeat: no-repeat;
-  background-position: right var(--fp-icon-gap) center;
-  padding-right: calc(var(--fp-icon-gap) * 2 + 16px);
+.flat-range-end,
+.flat-time {
+  padding-inline-end: calc(var(--fp-icon-gap) * 2 + 16px);
 }
 
-.flat-time {
-  background-image: var(--fp-icon-time);
-  background-repeat: no-repeat;
-  background-position: right var(--fp-icon-gap) center;
-  padding-right: calc(var(--fp-icon-gap) * 2 + 16px);
+.fp-icon-slot {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.fp-icon-trigger {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: var(--fp-icon-gap);
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  color: var(--fp-icon-color);
+  pointer-events: none;
 }
 
 /* Readonly display state — apply .is-readonly to the flatpickr input
@@ -414,4 +555,66 @@ span.flatpickr-weekday {
   color: var(--fp-text-muted) !important;
   cursor: default !important;
   pointer-events: none;
+}
+
+/* --- Custom month dropdown (replaces the native <select>) ---
+   flatpickr's default month-selector is a real <select>; clicking it opens
+   the BROWSER's own OS listbox, which is browser chrome — no CSS can restyle
+   those <option> rows. As of 2026-07-31 this is native — the forked
+   JS/flatpickr-weoc.js defaults monthSelectorType to 'static' (a plain,
+   non-native <span class="cur-month">) and builds the WUI floating menu
+   directly in its own buildMonth()/buildMonthDropdownMenu() (see that file's
+   header), reusing the exact .wui-dropdown / .wui-dropdown-item visual
+   language from weoc-overlays.css — no bespoke colors here. This applies to
+   every flatpickr() call on the page, not just ones wired through
+   flatpickr-factory.js.
+
+   The interactive hit target is .fp-month-trigger-wrap, NOT span.cur-month
+   itself — flatpickr overwrites span.cur-month's textContent on every
+   month/year redraw, which would wipe out a chevron nested inside it, so the
+   chevron lives as a SIBLING inside a wrapper the factory inserts around it. */
+.fp-month-trigger-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+}
+
+.fp-month-trigger-wrap:hover,
+.fp-month-trigger-wrap[aria-expanded="true"] {
+  background: var(--fp-dropdown-hover-bg);
+}
+
+.fp-month-trigger-wrap:focus {
+  outline: none;
+  box-shadow: var(--fp-focus-ring);
+}
+
+/* Same expand_more + rotate(180deg) convention as .wui-collapsible-chevron
+   (weoc-containers.css) and .wui-log-expand (weoc-tables.css) — reused, not
+   reinvented. Keyed off aria-expanded (which WUI.open/close already
+   maintains on this trigger) rather than an .is-open ancestor, since the
+   panel — not the trigger — is what carries that class. */
+.fp-month-chevron {
+  font-size: var(--icon-xs);
+  color: var(--fp-arrow-color);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fp-month-trigger-wrap[aria-expanded="true"] .fp-month-chevron {
+  transform: rotate(180deg);
+}
+
+.fp-month-menu {
+  min-width: 140px;
+  max-height: 264px;
+  overflow-y: auto;
+}
+
+/* Current month, at rest (not just on :hover) — reuses the same accent token
+   as every other "primary" dropdown item in the library. */
+.fp-month-menu .wui-dropdown-item.primary {
+  background: var(--color-10-light);
 }

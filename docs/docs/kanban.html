@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Kanban</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+  <!-- weoc-kanban.css is NOT YET in weoc-ui-core.css's @import list (controller
+       wires that centrally once table-hook/heatmap/kanban all land — see this
+       page's own Setup section). Loaded directly here so the page is fully
+       functional standalone right now. -->
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-kanban.css">
+  <!-- SweetAlert2 (vendored) + its weoc-ui theme override — flat under CSS/,
+       NOT CSS/weoc-ui/, per explicit placement instruction (see
+       docs/superpowers/specs/2026-07-31-sweetalert-design.md). Not yet in
+       docs-shell.js's global asset list (controller wires that centrally),
+       loaded directly here so this page stays fully functional standalone. -->
+  <link rel="stylesheet" href="../../CSS/sweetalert2.min.css">
+  <link rel="stylesheet" href="../../CSS/sweetalert2-weoc-theme.css">
+  <!-- WUI kanban engine — same reasoning, not yet in docs-shell.js's global
+       asset list. -->
+  <script src="../../JS/wui-kanban.js"></script>
+  <!-- SweetAlert2 engine + the WUI.alert/WUI.confirm wrapper — must load
+       BEFORE the reject-confirm demo below calls WUI.confirm(). Flat under
+       JS/, same reasoning as the CSS pair above. -->
+  <script src="../../JS/sweetalert2.all.min.js"></script>
+  <script src="../../JS/wui-alert.js"></script>
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="kanbanPage()">
+  <style>
+    .demo-kanban-wrap {
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+    .demo-kanban-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+    .demo-kanban-log {
+      margin-top: var(--space-3);
+      padding: var(--space-2) var(--space-3);
+      border: 1px dashed var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono, monospace);
+      font-size: var(--text-xs);
+      color: var(--color-text-secondary);
+      min-height: 1.5em;
+    }
+    /* Accent-value swatch table (same pattern as charts.html's Series Colors
+       section) — token-only, one dot per accepted opts.cards[].accent value. */
+    .docs-color-swatch {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+    }
+    .docs-color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .color-dot-primary   { background: var(--color-10); }
+    .color-dot-secondary { background: var(--color-secondary); }
+    .color-dot-success   { background: var(--color-success); }
+    .color-dot-warning   { background: var(--color-warning); }
+    .color-dot-danger    { background: var(--color-danger); }
+    .color-dot-info      { background: var(--color-info); }
+    .color-dot-tier1     { background: var(--tier-1-color); }
+    .color-dot-tier2     { background: var(--tier-2-color); }
+    .color-dot-tier3     { background: var(--tier-3-color); }
+    .color-dot-tier4     { background: var(--tier-4-color); }
+  </style>
+        <script>
+        (function () {
+          function registerKanbanPage() {
+            Alpine.data('kanbanPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    if (!window.WUI || !window.WUI.kanban) return;
+
+                    /* ── Demo 1: Task board — mirrors TaskManagement's real
+                       4-status shape (Open / In Progress / Completed /
+                       Rejected) with realistic sample task data. ────────── */
+                    var taskEl = document.getElementById('demo-kanban-tasks');
+                    var taskLogEl = document.getElementById('demo-kanban-tasks-log');
+                    var taskHandle = null;
+                    function logTask(msg) { if (taskLogEl) taskLogEl.textContent = msg; }
+
+                    if (taskEl) {
+                      taskHandle = window.WUI.kanban(taskEl, {
+                        columns: [
+                          { key: 'open',         label: 'Open' },
+                          { key: 'in-progress',  label: 'In Progress' },
+                          { key: 'completed',    label: 'Completed' },
+                          { key: 'rejected',     label: 'Rejected' }
+                        ],
+                        cards: [
+                          // accent is OPTIONAL — 101/102/104/105/107 demonstrate it (color-coded to
+                          // priority here, though a board can key it to anything meaningful);
+                          // 103 and 106 deliberately carry no accent, to show the no-stripe default.
+                          { id: '101', columnKey: 'open', title: 'Inspect Facility 26-004', accent: 'warning', meta: { assignee: 'Ahmad Naser', priority: 'high', dueDate: '2026-08-02' } },
+                          { id: '102', columnKey: 'open', title: 'Verify generator fuel levels — Shelter 12', accent: 'primary', meta: { assignee: 'Fatima Al Suwaidi', priority: 'medium', dueDate: '2026-08-03' } },
+                          { id: '103', columnKey: 'open', title: 'Update road closure signage — Sector 4', meta: { assignee: 'Omar Khalil', priority: 'low', dueDate: '2026-08-05' } },
+                          { id: '104', columnKey: 'in-progress', title: 'Deploy portable water tanks — Zone B', accent: 'warning', meta: { assignee: 'Sara Haddad', priority: 'high', dueDate: '2026-08-01' } },
+                          { id: '105', columnKey: 'in-progress', title: 'Repair downed power line — Al Ain Rd', accent: 'danger', meta: { assignee: 'Youssef Marzouq', priority: 'critical', dueDate: '2026-07-31' } },
+                          { id: '106', columnKey: 'completed', title: 'Distribute emergency supplies — Shelter 7', meta: { assignee: 'Layla Mansour', priority: 'medium', dueDate: '2026-07-30' } },
+                          { id: '107', columnKey: 'rejected', title: 'Cancel non-essential road closures', accent: 'secondary', meta: { assignee: 'Khalid Rashid', priority: 'low', dueDate: '2026-07-29' } }
+                        ],
+                        // Reject path demo: dropping onto "Rejected" fires the
+                        // themed WUI.confirm() popup (wui-alert.js, backed by
+                        // the vendored+weoc-ui-themed SweetAlert2). Cancel ->
+                        // onBeforeMove resolves false -> wui-kanban.js snaps
+                        // the card back to its origin column. Confirm -> the
+                        // move commits normally. Any OTHER column pair
+                        // commits immediately (no gate).
+                        onBeforeMove: function (card, fromKey, toKey) {
+                          if (toKey === 'rejected') {
+                            return window.WUI.confirm({
+                              title: 'Reject this task?',
+                              text: 'Reject "' + card.title + '"? This cannot be undone.',
+                              icon: 'warning',
+                              confirmText: 'Reject',
+                              cancelText: 'Cancel'
+                            }).then(function (ok) {
+                              logTask(ok
+                                ? 'onBeforeMove: "' + card.title + '" moved ' + fromKey + ' → ' + toKey + ' (confirmed).'
+                                : 'onBeforeMove: "' + card.title + '" REJECTED — snapped back to ' + fromKey + '.');
+                              return ok;
+                            });
+                          }
+                          logTask('onBeforeMove: "' + card.title + '" moved ' + fromKey + ' → ' + toKey + '.');
+                          return true;
+                        }
+                      });
+                    }
+
+                    var addBtn = document.getElementById('demo-kanban-add');
+                    if (addBtn && taskHandle) {
+                      addBtn.addEventListener('click', function () {
+                        var n = Math.floor(Math.random() * 900) + 100;
+                        taskHandle.addCard({
+                          id: 'new-' + n,
+                          columnKey: 'open',
+                          title: 'Survey shelter capacity — Site ' + n,
+                          meta: { assignee: 'Unassigned', priority: 'medium', dueDate: '2026-08-06' }
+                        });
+                        logTask('addCard(): appended card "new-' + n + '" to Open.');
+                      });
+                    }
+
+                    var removeBtn = document.getElementById('demo-kanban-remove');
+                    if (removeBtn && taskHandle) {
+                      removeBtn.addEventListener('click', function () {
+                        taskHandle.removeCard('103');
+                        logTask('removeCard("103"): removed "Update road closure signage — Sector 4".');
+                      });
+                    }
+
+                    var destroyBtn = document.getElementById('demo-kanban-destroy');
+                    if (destroyBtn && taskHandle) {
+                      destroyBtn.addEventListener('click', function () {
+                        taskHandle.destroy();
+                        logTask('destroy(): board removed. Reload the page to rebuild it.');
+                      });
+                    }
+
+                    /* ── Demo 2: Different column set — proves the component
+                       is NOT hardcoded to TaskManagement's 4 statuses. Plain
+                       3-column To Do / Doing / Done board, no onBeforeMove
+                       (omitted -> every move commits unconditionally). ──── */
+                    var simpleEl = document.getElementById('demo-kanban-simple');
+                    if (simpleEl) {
+                      window.WUI.kanban(simpleEl, {
+                        columns: [
+                          { key: 'todo',  label: 'To Do' },
+                          { key: 'doing', label: 'Doing' },
+                          { key: 'done',  label: 'Done' }
+                        ],
+                        cards: [
+                          // Same optional accent, keyed here to work-stream (tier colors) instead
+                          // of priority — s2 carries none, showing the two demos together cover
+                          // every accepted accent value across the page.
+                          { id: 's1', columnKey: 'todo',  title: 'Draft SITREP template', accent: 'tier-2', meta: { assignee: 'Nadia Farouk', priority: 'medium' } },
+                          { id: 's2', columnKey: 'todo',  title: 'Update EOC contact roster', meta: { assignee: 'Rami Zaidan', priority: 'low' } },
+                          { id: 's3', columnKey: 'doing', title: 'Review after-action report draft', accent: 'tier-1', meta: { assignee: 'Huda Al Balushi', priority: 'high' } },
+                          { id: 's4', columnKey: 'done',  title: 'Archive Q2 exercise records', accent: 'tier-4', meta: { assignee: 'Tariq Aziz', priority: 'low' } }
+                        ]
+                      });
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerKanbanPage();
+          else document.addEventListener('alpine:init', registerKanbanPage);
+        })();
+        </script>
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_kanban_1">Reference</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_kanban_2">Kanban</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_kanban_3">Board-agnostic drag-and-drop kanban board. Native HTML5 DnD, no library dependency, configurable columns — <code>WUI.kanban()</code> owns the mechanics, your board owns what happens on drop.</div>
+        </div>
+
+        <div class="wui-callout primary">
+          <span class="material-symbols-outlined">swap_horiz</span>
+          <div class="wui-callout-body">
+            <div class="wui-callout-title" data-wui-i18n="docs_kanban_4">Mechanics, not modal UX</div>
+            <span data-wui-i18n-html="docs_kanban_5">The reference implementation this component is modeled on (<code>eoc-makeover</code>'s TaskManagement board) opens a board-specific confirmation modal on every drop. <code>WUI.kanban()</code> deliberately does not bake that in — it fires <code>opts.onBeforeMove(card, fromColumnKey, toColumnKey)</code> before committing and lets YOUR board decide: commit immediately, show your own modal, call a REST endpoint, or reject the move outright.</span>
+          </div>
+        </div>
+
+        <!-- ── Overview ───────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="overview" data-wui-i18n-html="docs_kanban_6"><span class="material-symbols-outlined">info</span>Overview</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_kanban_7"><code>wui-kanban.js</code> renders a column-grouped board from plain <code>columns</code>/<code>cards</code> data and wires native HTML5 drag-and-drop between columns. There is no swimlane support and no baked-in persistence — a board owns saving the new status, this component only owns moving the card and asking first.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_kanban_8">Card markup reuses the existing <code>.wui-badge</code> component for priority (same severity-token convention documented on the <a href="interactive.html">Badges &amp; Chips</a> page) rather than inventing a new visual language.</p>
+        </div>
+
+        <!-- ── Setup ──────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="setup" data-wui-i18n-html="docs_kanban_9"><span class="material-symbols-outlined">code</span>Setup</div>
+          <p class="docs-desc" data-wui-i18n="docs_kanban_10">Load the kanban stylesheet and engine after weoc-ui.css / weoc-ui.js.</p>
+          <pre class="docs-code">&lt;link rel="stylesheet" href="path/to/weoc-ui.css"&gt;
+&lt;link rel="stylesheet" href="path/to/weoc-kanban.css"&gt;
+
+&lt;script src="path/to/weoc-ui.js"&gt;&lt;/script&gt;
+&lt;script src="path/to/wui-kanban.js"&gt;&lt;/script&gt;</pre>
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_kanban_37">The Task Board demo below also uses <code>WUI.confirm()</code> for its reject-confirmation gate — a themed wrapper (<code>wui-alert.js</code>) around the vendored SweetAlert2 library. That needs its own stylesheet pair and scripts loaded first, in this order:</p>
+          <pre class="docs-code">&lt;link rel="stylesheet" href="path/to/sweetalert2.min.css"&gt;
+&lt;link rel="stylesheet" href="path/to/sweetalert2-weoc-theme.css"&gt;
+
+&lt;script src="path/to/sweetalert2.all.min.js"&gt;&lt;/script&gt;
+&lt;script src="path/to/wui-alert.js"&gt;&lt;/script&gt;</pre>
+        </div>
+
+        <!-- ── WUI.kanban() API ───────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="wui-kanban-el-opts" data-wui-i18n-html="docs_kanban_11"><span class="material-symbols-outlined">view_kanban</span>WUI.kanban(el, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_kanban_12">Create a kanban board inside a container element. Returns an instance handle, or <code>null</code> if <code>opts.columns</code> is missing/empty or the element cannot be resolved.</p>
+
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_kanban_13"><strong>Parameters</strong></p>
+          <table class="docs-api-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-api-method">el</span></td>
+                <td><span class="docs-api-type">Element | string</span></td>
+                <td>—</td>
+                <td>Container element or CSS selector. The whole board (all columns) is rendered inside it.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">opts.columns</span></td>
+                <td><span class="docs-api-type">Array</span></td>
+                <td>required</td>
+                <td>Array of <code>{ key, label }</code>. Defines the board's columns, in display order. Missing/empty → <code>console.warn</code>, factory returns <code>null</code>.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">opts.cards</span></td>
+                <td><span class="docs-api-type">Array</span></td>
+                <td><code>[]</code></td>
+                <td>Array of <code>{ id, columnKey, title, meta, accent }</code>, where <code>meta</code> may carry <code>{ assignee, priority, dueDate }</code>. A card whose <code>columnKey</code> doesn't match any defined column is silently omitted from render (<code>console.warn</code> naming the bad card id), not a crash. <code>accent</code> is documented separately below.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">opts.onBeforeMove</span></td>
+                <td><span class="docs-api-type">function</span></td>
+                <td>—</td>
+                <td><code>function(card, fromColumnKey, toColumnKey)</code>, fired on drop BEFORE the move commits. Return (or resolve, via a returned <code>Promise</code>) <code>false</code> to reject the move — the card snaps back to its origin column, nothing commits. Any other return value (including omitting the option entirely) commits the move unconditionally.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_kanban_14"><strong>Return value — instance handle</strong></p>
+          <table class="docs-api-table">
+            <thead><tr><th>Method</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-api-method">handle.update(newCards)</span></td>
+                <td>Replace the full card set and re-render. Same <code>columnKey</code> validation as construction.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">handle.addCard(card)</span></td>
+                <td>Append one card. Unknown <code>columnKey</code> → <code>console.warn</code>, not added.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">handle.removeCard(id)</span></td>
+                <td>Remove one card by id and re-render.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">handle.destroy()</span></td>
+                <td>Unbind drag-and-drop listeners, clear the container's contents, unregister the instance.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Markup shape ───────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="rendered-markup" data-wui-i18n-html="docs_kanban_15"><span class="material-symbols-outlined">data_object</span>Rendered Markup</div>
+          <p class="docs-desc" data-wui-i18n="docs_kanban_16">What WUI.kanban() renders inside your container element — useful when writing CSS overrides or reading the DOM from board-level code.</p>
+          <pre class="docs-code">&lt;div class="wui-kanban"&gt;
+  &lt;div class="wui-kanban-col" data-column-key="open"&gt;
+    &lt;div class="wui-kanban-col-hdr"&gt;
+      &lt;span class="wui-kanban-col-title"&gt;Open&lt;/span&gt;
+      &lt;span class="wui-kanban-col-count"&gt;3&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class="wui-kanban-col-body"&gt;
+      &lt;!-- accent present (opts.cards[].accent: 'warning') -&gt; has-accent + accent-warning,
+           renders the left-edge stripe. Omitted entirely on a card -&gt; neither class,
+           no stripe (see "Card Accents" below). --&gt;
+      &lt;div class="wui-kanban-card has-accent accent-warning" draggable="true" data-card-id="101"&gt;
+        &lt;div class="wui-kanban-card-title"&gt;Inspect Facility 26-004&lt;/div&gt;
+        &lt;div class="wui-kanban-card-meta"&gt;
+          &lt;span class="wui-kanban-card-assignee"&gt;Ahmad Naser&lt;/span&gt;
+          &lt;span class="wui-badge warning"&gt;high&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="wui-kanban-card-due"&gt;2026-08-02&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;!-- ...remaining cards... --&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- ...remaining columns... --&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <!-- ── Card Accents ───────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="card-accents" data-wui-i18n-html="docs_kanban_32"><span class="material-symbols-outlined">palette</span>Card Accents</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_kanban_33">An optional colored left-edge stripe per card — set <code>card.accent</code> to one of the same names <code>.wui-badge</code> already accepts (see the <a href="interactive.html">Badges &amp; Chips</a> page), not a new color vocabulary. Omitted (or an unrecognized value) → no stripe, the card renders exactly as it did before this option existed.</p>
+          <pre class="docs-code">{ id: '101', columnKey: 'open', title: 'Inspect Facility 26-004', accent: 'warning', meta: { /* ... */ } }
+{ id: '103', columnKey: 'open', title: 'Update road closure signage — Sector 4', meta: { /* ... */ } } // no accent -> no stripe</pre>
+
+          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n="docs_kanban_34">Accepted values — same tokens the badge/severity system already uses everywhere in this library:</p>
+          <table class="docs-api-table">
+            <thead><tr><th>Value</th><th>CSS token</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-primary"></span><span class="docs-api-method">'primary'</span></span></td><td><code>--color-10</code></td></tr>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-secondary"></span><span class="docs-api-method">'secondary'</span></span></td><td><code>--color-secondary</code></td></tr>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-success"></span><span class="docs-api-method">'success'</span></span></td><td><code>--color-success</code></td></tr>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-warning"></span><span class="docs-api-method">'warning'</span></span></td><td><code>--color-warning</code></td></tr>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-danger"></span><span class="docs-api-method">'danger'</span></span></td><td><code>--color-danger</code></td></tr>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-info"></span><span class="docs-api-method">'info'</span></span></td><td><code>--color-info</code></td></tr>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-tier1"></span><span class="docs-api-method">'tier-1'</span></span></td><td><code>--tier-1-color</code></td></tr>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-tier2"></span><span class="docs-api-method">'tier-2'</span></span></td><td><code>--tier-2-color</code></td></tr>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-tier3"></span><span class="docs-api-method">'tier-3'</span></span></td><td><code>--tier-3-color</code></td></tr>
+              <tr><td><span class="docs-color-swatch"><span class="docs-color-dot color-dot-tier4"></span><span class="docs-api-method">'tier-4'</span></span></td><td><code>--tier-4-color</code></td></tr>
+            </tbody>
+          </table>
+
+          <div class="wui-callout secondary" style="margin-top: var(--space-4)">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_kanban_35">Visible in the demos below</div>
+              <span data-wui-i18n-html="docs_kanban_36">The Task Board demo color-codes accents to priority (<code>warning</code>/<code>danger</code>/<code>primary</code>/<code>secondary</code>) and deliberately leaves two cards without one. The different-column-set demo uses tier accents (<code>tier-1</code>/<code>tier-2</code>/<code>tier-4</code>) instead, keyed to work-stream rather than priority — the same option, read however a board finds meaningful.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Live example: task board ───────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="example-task-board" data-wui-i18n-html="docs_kanban_17"><span class="material-symbols-outlined">view_kanban</span>Example — Task Board</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_kanban_18">Mirrors <code>TaskManagement</code>'s real 4-status shape. Drag any card between columns. Dropping onto <strong>Rejected</strong> asks for confirmation first — Cancel snaps the card back to its origin column; Confirm commits the move. Watch the log line below the board.</p>
+
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-kanban-wrap">
+                <!-- Kanban board host -->
+                <div id="demo-kanban-tasks"></div>
+                <div class="demo-kanban-actions">
+                  <button class="wui-btn primary wui-btn-sm" id="demo-kanban-add">
+                    <span class="material-symbols-outlined">add</span>
+                    <span data-wui-i18n="docs_kanban_19">Add sample card</span>
+                  </button>
+                  <button class="wui-btn secondary ghost wui-btn-sm" id="demo-kanban-remove">
+                    <span class="material-symbols-outlined">remove</span>
+                    <span data-wui-i18n="docs_kanban_20">Remove a card</span>
+                  </button>
+                  <button class="wui-btn danger ghost wui-btn-sm" id="demo-kanban-destroy">
+                    <span class="material-symbols-outlined">delete</span>
+                    <span data-wui-i18n="docs_kanban_21">Destroy board</span>
+                  </button>
+                </div>
+                <div class="demo-kanban-log" id="demo-kanban-tasks-log"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+var taskHandle = WUI.kanban('#demo-kanban-tasks', {
+  columns: [
+    { key: 'open',        label: 'Open' },
+    { key: 'in-progress', label: 'In Progress' },
+    { key: 'completed',   label: 'Completed' },
+    { key: 'rejected',    label: 'Rejected' }
+  ],
+  cards: [
+    // accent is OPTIONAL -- color-coded to priority here; omit it for the
+    // default no-stripe look (see card 106 below).
+    { id: '101', columnKey: 'open', title: 'Inspect Facility 26-004', accent: 'warning',
+      meta: { assignee: 'Ahmad Naser', priority: 'high', dueDate: '2026-08-02' } },
+    { id: '104', columnKey: 'in-progress', title: 'Deploy portable water tanks — Zone B', accent: 'warning',
+      meta: { assignee: 'Sara Haddad', priority: 'high', dueDate: '2026-08-01' } },
+    { id: '106', columnKey: 'completed', title: 'Distribute emergency supplies — Shelter 7',
+      meta: { assignee: 'Layla Mansour', priority: 'medium', dueDate: '2026-07-30' } } // no accent
+    // ...
+  ],
+  // Fired on drop, BEFORE the move commits.
+  onBeforeMove: function (card, fromKey, toKey) {
+    if (toKey === 'rejected') {
+      // Themed confirm popup (wui-alert.js / vendored SweetAlert2). Resolving
+      // false from the returned Promise rejects the move — wui-kanban.js
+      // snaps the card back to its origin column.
+      return WUI.confirm({
+        title: 'Reject this task?',
+        text: 'Reject "' + card.title + '"? This cannot be undone.',
+        icon: 'warning',
+        confirmText: 'Reject',
+        cancelText: 'Cancel'
+      });
+    }
+    return true; // commit
+  }
+});
+
+// API methods
+taskHandle.addCard({ id: 'new-1', columnKey: 'open', title: 'Survey shelter capacity',
+  meta: { assignee: 'Unassigned', priority: 'medium' } });
+taskHandle.removeCard('103');
+taskHandle.destroy();
+            </template>
+          </div>
+        </div>
+
+        <!-- ── onBeforeMove / reject path ─────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="the-reject-path" data-wui-i18n-html="docs_kanban_22"><span class="material-symbols-outlined">block</span>The Reject Path</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_kanban_23">On drop, <code>wui-kanban.js</code> moves the card's DOM node into the target column FIRST (mirroring the reference board's own "move visually first, cancel reverts" approach), THEN calls <code>opts.onBeforeMove</code>. If the result — or the value a returned <code>Promise</code> resolves to — is exactly <code>false</code>, the card animates back to its original position in its original column and gets a brief rejection cue. Anything else commits the move.</p>
+          <div class="wui-callout warning" style="margin-top: var(--space-4)">
+            <span class="material-symbols-outlined">warning</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_kanban_24">This library never shows its own modal</div>
+              <span data-wui-i18n-html="docs_kanban_25">The demo above calls <code>WUI.confirm()</code> — the vendored, weoc-ui-themed SweetAlert2 wrapper (see <code>wui-alert.js</code>) — instead of a raw browser <code>confirm()</code>. A real board can go further still and swap in its own dedicated modal or a REST call inside <code>onBeforeMove</code>, returning a <code>Promise</code> that resolves once the board knows whether the move should stick — exactly matching <code>TaskManagement</code>'s real <code>openKanbanStatusModal()</code> pattern, without this library baking in that board-specific UX.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Live example: different column set ─────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="example-a-different-column-set" data-wui-i18n-html="docs_kanban_26"><span class="material-symbols-outlined">view_column</span>Example — A Different Column Set</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_kanban_27">Same component, a completely different <code>opts.columns</code> — a plain 3-column To Do / Doing / Done board, proving <code>WUI.kanban()</code> is not secretly hardcoded to <code>TaskManagement</code>'s exact 4 statuses. No <code>onBeforeMove</code> here — omitted means every move commits unconditionally.</p>
+
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="demo-kanban-wrap">
+                <!-- Kanban board host (different column set) -->
+                <div id="demo-kanban-simple"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+WUI.kanban('#demo-kanban-simple', {
+  columns: [
+    { key: 'todo',  label: 'To Do' },
+    { key: 'doing', label: 'Doing' },
+    { key: 'done',  label: 'Done' }
+  ],
+  cards: [
+    { id: 's1', columnKey: 'todo',  title: 'Draft SITREP template',
+      meta: { assignee: 'Nadia Farouk', priority: 'medium' } },
+    { id: 's3', columnKey: 'doing', title: 'Review after-action report draft',
+      meta: { assignee: 'Huda Al Balushi', priority: 'high' } },
+    { id: 's4', columnKey: 'done',  title: 'Archive Q2 exercise records',
+      meta: { assignee: 'Tariq Aziz', priority: 'low' } }
+  ]
+  // onBeforeMove omitted -> always-true, every drop commits immediately.
+});
+            </template>
+          </div>
+        </div>
+
+        <!-- ── Error handling ─────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="error-handling" data-wui-i18n-html="docs_kanban_28"><span class="material-symbols-outlined">error_outline</span>Error Handling</div>
+          <p class="docs-desc" data-wui-i18n="docs_kanban_29">Matches the chart family's no-crash convention: bad configuration logs a warning and returns null (or silently skips the one bad item), it never throws.</p>
+          <table class="docs-api-table">
+            <thead><tr><th>Condition</th><th>Behavior</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><code>opts.columns</code> missing or empty</td>
+                <td><code>console.warn</code>; <code>WUI.kanban()</code> returns <code>null</code>.</td>
+              </tr>
+              <tr>
+                <td>A card's <code>columnKey</code> doesn't match any defined column</td>
+                <td>That card is silently omitted from render (board keeps working); <code>console.warn</code> names the bad card id.</td>
+              </tr>
+              <tr>
+                <td><code>opts.onBeforeMove</code> omitted</td>
+                <td>Treated as always-<code>true</code> — every drop commits unconditionally. A board that doesn't need a confirmation step isn't forced to pass a trivial callback.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── destroy() ──────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="destroy" data-wui-i18n-html="docs_kanban_30"><span class="material-symbols-outlined">delete</span>destroy()</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_kanban_31">Call <code>handle.destroy()</code> when the board's container is removed from the DOM (a split panel closing, an <code>updatesection</code> refresh replacing the whole board region on a WebEOC view, etc). It unbinds the drag-and-drop listeners bound on the container and clears its contents — the container element itself is left in place, ready for a fresh <code>WUI.kanban()</code> call if needed.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('kanban');</script>
+</body>
+</html>

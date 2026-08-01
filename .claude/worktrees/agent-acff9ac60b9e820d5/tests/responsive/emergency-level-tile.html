@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>weoc-ui — Events By Emergency Level (wui-tile + barRow, standalone)</title>
+<link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css">
+<link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+<style>
+  /* emergency-level.css, trimmed to the legend dots this recipe uses. */
+  .emergency-level-legend { width: 100%; display: flex; align-items: center; justify-content: center;
+    gap: var(--space-3); flex-wrap: wrap; margin-top: auto; }
+  .emergency-level-legend-item { display: inline-flex; align-items: center; gap: 5px;
+    font-size: var(--text-2xs); font-weight: var(--font-semibold); color: var(--color-text-secondary); white-space: nowrap; }
+  .emergency-level-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .emergency-level-dot.tier-1 { background: var(--tier-1-glow); box-shadow: 0 0 5px var(--tier-1-muted); }
+  .emergency-level-dot.tier-2 { background: var(--tier-2-glow); box-shadow: 0 0 5px var(--tier-2-muted); }
+  .emergency-level-dot.tier-3 { background: var(--tier-3-glow); box-shadow: 0 0 5px var(--tier-3-muted); }
+  .emergency-level-dot.tier-4 { background: var(--tier-4-glow); box-shadow: 0 0 5px var(--tier-4-muted); }
+</style>
+</head>
+<body>
+  <div class="wui-p-3" style="max-width: 320px;">
+    <div class="wui-bento-tile">
+      <div class="wui-tile">
+        <div class="wui-tile-hdr">
+          <div class="wui-tile-title-wrap">
+            <h3 class="wui-tile-title">Events By Emergency Level</h3>
+            <div class="wui-tile-sub">Tier distribution by classification</div>
+          </div>
+          <div class="wui-tile-icon orange"><span class="material-symbols-outlined">emergency</span></div>
+        </div>
+        <div class="wui-tile-body wui-flex wui-flex-col wui-gap-3">
+          <div id="emergencyLevelList"></div>
+          <div class="emergency-level-legend">
+            <span class="emergency-level-legend-item"><span class="emergency-level-dot tier-1"></span>Tier 1</span>
+            <span class="emergency-level-legend-item"><span class="emergency-level-dot tier-2"></span>Tier 2</span>
+            <span class="emergency-level-legend-item"><span class="emergency-level-dot tier-3"></span>Tier 3</span>
+            <span class="emergency-level-legend-item"><span class="emergency-level-dot tier-4"></span>Tier 4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../JS/weoc-ui.js"></script>
+  <script src="../../JS/wui-charts.js"></script>
+  <script>
+    // Stand-in for the six emergency_*_tiers_expr hidden spans — each a
+    // JSON 4-element array: [tier1Count, tier2Count, tier3Count, tier4Count].
+    var EMERGENCY_SOURCES = [
+      { label: 'HSE', tiers: [4, 2, 1, 0] },
+      { label: 'Fire and Safety', tiers: [2, 3, 1, 1] },
+      { label: 'Environmental', tiers: [1, 1, 2, 0] },
+      { label: 'Compliance', tiers: [0, 2, 1, 1] },
+      { label: 'Security', tiers: [3, 1, 0, 0] },
+      { label: 'Operations', tiers: [1, 2, 2, 1] }
+    ];
+
+    var TIER_COLORS = ['var(--tier-1-glow)', 'var(--tier-2-glow)', 'var(--tier-3-glow)', 'var(--tier-4-glow)'];
+
+    function drawEmergencyLevelList() {
+      var host = document.getElementById('emergencyLevelList');
+      if (!host || !window.WUI || !WUI.barRow) { return; }
+
+      var rows = EMERGENCY_SOURCES.map(function (source) {
+        var tiers = source.tiers;
+        var total = tiers[0] + tiers[1] + tiers[2] + tiers[3];
+        var segments;
+
+        if (total === 0) {
+          segments = [{ pct: 100, color: 'var(--color-secondary-muted)' }];
+        } else {
+          segments = tiers.map(function (tierValue, tierIndex) {
+            return { pct: (tierValue / total) * 100, color: TIER_COLORS[tierIndex] };
+          });
+        }
+
+        return { label: source.label, value: String(total), segments: segments };
+      });
+
+      WUI.barRow(host, { rows: rows });
+    }
+
+    WUI.ready(drawEmergencyLevelList);
+  </script>
+</body>
+</html>
+
+
+<!--
+
+<div class="wui-tile-hdr">
+  <div class="wui-tile-title-wrap">
+    <h3 class="wui-tile-title">{{Title}}</h3>
+    <div class="wui-tile-sub">{{subTitle}}</div>
+  </div>
+  <div class="wui-tile-icon orange"><span class="material-symbols-outlined">{{icon_name}}</span></div>
+</div>
+
+<div class="wui-tile-body wui-flex wui-flex-col wui-gap-3">
+  <div id="{{YourListId}}"></div>
+  (omit this whole legend div if your segments don't need a color key)
+  <div class="emergency-level-legend">
+    <span class="emergency-level-legend-item"><span class="emergency-level-dot tier-1"></span>{{Tier 1 label}}</span>
+    {{ ... one legend-item span per segment color }}
+  </div>
+</div>
+
+const TIER_1 = `<value-of select="//@your_group_a_tiers_expr" />`; // JSON array, e.g. "[4,2,1,0]"
+{{ ... one hidden expression span per row/group }}
+
+// OR pull each row's tier array FROM A BOARDSCRIPT CALL instead of expression-backed hidden spans
+
+var {{YOUR_SOURCES}} = [
+  { label: '{{Row label}}', tiers: JSON.parse(TIER_1) }
+  {{ ... one entry per row/group }}
+];
+
+function draw{{YourList}}() {
+  var host = document.getElementById('{{YourListId}}');
+  if (!host || !window.WUI || !WUI.barRow) { return; }
+
+  var rows = {{YOUR_SOURCES}}.map(function (source) {
+    var tiers = source.tiers;
+    var total = tiers.reduce(function (sum, v) { return sum + v; }, 0);
+    var segments = total === 0
+      ? [{ pct: 100, color: 'var(--color-secondary-muted)' }]
+      : tiers.map(function (v, i) { return { pct: (v / total) * 100, color: {{TIER_COLORS}}[i] }; });
+    return { label: source.label, value: String(total), segments: segments };
+  });
+
+  WUI.barRow(host, { rows: rows });
+}
+
+-->

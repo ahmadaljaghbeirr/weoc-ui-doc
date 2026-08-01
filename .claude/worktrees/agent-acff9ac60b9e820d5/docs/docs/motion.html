@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Animation</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <script src="../../JS/gsap.min.js"></script>
+  <script src="../../JS/weoc-anim.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="motion">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_motion_1">Recipes</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_motion_2">Animation</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_motion_3"><code>weoc-anim.js</code> — the animation companion for weoc-ui. GSAP-powered tweens for progress rings, bars, and counters. One extra script tag; no separate GSAP CDN link needed; reduced-motion is always honored.</div>
+        </div>
+
+        <!-- ── Setup ────────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_motion_4"><span class="material-symbols-outlined">download</span>Setup</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_motion_5">Deploy <code>weoc-anim.js</code> and <code>gsap.min.js</code> together in the same server folder. The board only needs two script tags — <code>weoc-anim.js</code> self-loads GSAP from its sibling directory at runtime. If GSAP fails to load, every method silently becomes a no-op; boards never need their own guard.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <template class="wui-demo-js">
+&lt;!-- Deploy both to the same folder on the CDN --&gt;
+&lt;!--   Shared/JS/gsap.min.js        (download from gsap.com) --&gt;
+&lt;!--   Shared/JS/weoc-anim.js       (this library)           --&gt;
+
+&lt;!-- Board &lt;head&gt; — only two script tags needed --&gt;
+&lt;script src="Shared/JS/weoc-ui.js"&gt;&lt;/script&gt;
+&lt;script src="Shared/JS/weoc-anim.js"&gt;&lt;/script&gt;
+
+&lt;!-- WUIAnim is available synchronously (stubs) immediately.
+     Real methods replace them once GSAP finishes loading.
+     Safe to call before DOMContentLoaded. --&gt;
+            </template>
+          </div>
+          <div class="wui-callout info">
+            <span class="material-symbols-outlined">bolt</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n-html="docs_motion_6">Namespace: <code>window.WUIAnim</code></div>
+              <div data-wui-i18n-html="docs_motion_7">All methods live on <code>window.WUIAnim</code>. Stubs are installed synchronously at parse time so any board code that calls <code>WUIAnim.*</code> before GSAP loads gets a harmless no-op rather than a ReferenceError.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ring() ────────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_motion_8"><span class="material-symbols-outlined">donut_large</span>WUIAnim.ring(el, toPct, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_motion_9">Tween a <code>.wui-progress-ring</code> from its current rendered value to <code>toPct</code>. The pct text (<code>.wui-progress-ring-pct</code>) animates in sync by default.</p>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-api-method">el</span></td><td><span class="docs-api-type">Element</span></td><td>—</td><td><code>.wui-progress-ring</code> wrapper <em>or</em> the <code>.wui-progress-ring-fill</code> circle directly.</td></tr>
+              <tr><td><span class="docs-api-method">toPct</span></td><td><span class="docs-api-type">number</span></td><td>—</td><td>Target percentage (0–100).</td></tr>
+              <tr><td><span class="docs-api-method">opts.from</span></td><td><span class="docs-api-type">number</span></td><td>DOM read</td><td>Override starting pct instead of reading from the DOM.</td></tr>
+              <tr><td><span class="docs-api-method">opts.duration</span></td><td><span class="docs-api-type">number</span></td><td><code>0.85s</code></td><td>Tween duration in seconds.</td></tr>
+              <tr><td><span class="docs-api-method">opts.ease</span></td><td><span class="docs-api-type">string</span></td><td>standard</td><td>GSAP ease string. Default: M3 standard curve.</td></tr>
+              <tr><td><span class="docs-api-method">opts.counter</span></td><td><span class="docs-api-type">boolean|Element</span></td><td><code>true</code></td><td>Animate the pct text alongside the ring. Pass <code>false</code> to skip, or a specific element.</td></tr>
+              <tr><td><span class="docs-api-method">opts.onComplete</span></td><td><span class="docs-api-type">function</span></td><td>—</td><td>Callback fired after the tween finishes.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_motion_10">Live demo</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap">
+                <button class="wui-btn primary wui-btn-sm" id="ring-play"><span class="material-symbols-outlined">play_arrow</span> 75%</button>
+                <button class="wui-btn outline secondary wui-btn-sm" id="ring-reset"><span class="material-symbols-outlined">replay</span> Reset</button>
+              </div>
+              <div style="display:flex;gap:var(--space-6);align-items:flex-start;flex-wrap:wrap">
+                <div class="wui-progress-ring primary" id="demo-ring-1" data-target-pct="75">
+                  <svg viewBox="0 0 120 120" width="100" height="100">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Ring</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+const ring = document.getElementById('my-ring');
+
+// Tween to 75% (reads current value from DOM)
+WUIAnim.ring(ring, 75);
+
+// Tween from 0 to 50%, custom duration, skip counter
+WUIAnim.ring(ring, 50, { from: 0, duration: 1.2, counter: false });
+
+// Callback when done
+WUIAnim.ring(ring, 100, { onComplete: () => console.log('done') });
+            </template>
+          </div>
+        </div>
+
+        <!-- ── ringEntrance() ─────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_motion_11"><span class="material-symbols-outlined">north_east</span>WUIAnim.ringEntrance(el, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_motion_12">Animate a freshly-injected ring from 0 to its target value. Reads the target from <code>data-target-pct</code> (preferred — set by XSL) or from the rendered <code>stroke-dashoffset</code>. Use for single-ring injections; for bulk post-reload use <code>sectionEntrance()</code>.</p>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-api-method">el</span></td><td><span class="docs-api-type">Element</span></td><td>—</td><td><code>.wui-progress-ring</code> wrapper.</td></tr>
+              <tr><td><span class="docs-api-method">opts.from</span></td><td><span class="docs-api-type">number</span></td><td><code>0</code></td><td>Starting pct. Pass the old value after a per-row reload to animate old → new.</td></tr>
+              <tr><td><span class="docs-api-method">opts.duration</span></td><td><span class="docs-api-type">number</span></td><td><code>0.85s</code></td><td>Tween duration.</td></tr>
+              <tr><td><span class="docs-api-method">opts.ease</span></td><td><span class="docs-api-type">string</span></td><td>decelerate</td><td>Auto-set: M3 decelerate for entrances (from=0), standard for value changes (from&gt;0).</td></tr>
+              <tr><td><span class="docs-api-method">opts.counter</span></td><td><span class="docs-api-type">boolean</span></td><td><code>true</code></td><td>Animate the pct text alongside the ring.</td></tr>
+              <tr><td><span class="docs-api-method">opts.onComplete</span></td><td><span class="docs-api-type">function</span></td><td>—</td><td>Callback fired after the tween finishes.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_motion_13">Markup + call</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- XSL sets data-target-pct; renders fill as empty (326.73) -->
+              <div class="wui-progress-ring primary" data-target-pct="68">
+                <svg viewBox="0 0 120 120" width="90" height="90">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">0%</div>
+                  <div class="wui-progress-ring-label">Capacity</div>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+// Page load: animate from 0 → data-target-pct
+WUIAnim.ringEntrance(document.querySelector('.wui-progress-ring'));
+
+// After a per-row reload: animate from old value → new value
+WUIAnim.ringEntrance(ring, { from: 42 });
+            </template>
+          </div>
+        </div>
+
+        <!-- ── sectionEntrance() ──────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_motion_14"><span class="material-symbols-outlined">grid_view</span>WUIAnim.sectionEntrance(containerEl, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_motion_15">Animate all <code>.wui-progress-ring</code> elements inside a container after a section reload or innerHTML swap. Each ring sweeps from empty to its target with a stagger — so a table of ten rings fills in left-to-right rather than all at once.</p>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-api-method">containerEl</span></td><td><span class="docs-api-type">Element</span></td><td>—</td><td>The reloaded container holding one or more rings.</td></tr>
+              <tr><td><span class="docs-api-method">opts.stagger</span></td><td><span class="docs-api-type">number</span></td><td><code>0.06s</code></td><td>Seconds between each ring start.</td></tr>
+              <tr><td><span class="docs-api-method">opts.delay</span></td><td><span class="docs-api-type">number</span></td><td><code>0</code></td><td>Seconds before the first ring starts.</td></tr>
+              <tr><td><span class="docs-api-method">opts.duration</span></td><td><span class="docs-api-type">number</span></td><td><code>0.85s</code></td><td>Each ring tween duration.</td></tr>
+              <tr><td><span class="docs-api-method">opts.ease</span></td><td><span class="docs-api-type">string</span></td><td>decelerate</td><td>GSAP ease applied to all rings.</td></tr>
+              <tr><td><span class="docs-api-method">opts.onComplete</span></td><td><span class="docs-api-type">function</span></td><td>—</td><td>Fired after the last ring finishes.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_motion_16">Live demo</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4)">
+                <button class="wui-btn primary wui-btn-sm" id="section-play"><span class="material-symbols-outlined">play_arrow</span> Play Entrance</button>
+              </div>
+              <div id="demo-section-container" style="display:flex;gap:var(--space-5);flex-wrap:wrap;align-items:flex-start">
+                <div class="wui-progress-ring primary sm" data-target-pct="80">
+                  <svg viewBox="0 0 120 120" width="70" height="70">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Power</div>
+                  </div>
+                </div>
+                <div class="wui-progress-ring success sm" data-target-pct="55">
+                  <svg viewBox="0 0 120 120" width="70" height="70">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Water</div>
+                  </div>
+                </div>
+                <div class="wui-progress-ring warning sm" data-target-pct="30">
+                  <svg viewBox="0 0 120 120" width="70" height="70">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Fuel</div>
+                  </div>
+                </div>
+                <div class="wui-progress-ring info sm" data-target-pct="65">
+                  <svg viewBox="0 0 120 120" width="70" height="70">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                      stroke-dasharray="326.73" style="stroke-dashoffset:326.73" transform="rotate(-90 60 60)"/>
+                  </svg>
+                  <div class="wui-progress-ring-center">
+                    <div class="wui-progress-ring-pct">0%</div>
+                    <div class="wui-progress-ring-label">Comms</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+// After reloadSection() or any innerHTML swap:
+await reloadSection('items-body');
+const container = document.getElementById('items-body');
+WUIAnim.sectionEntrance(container);
+
+// Custom stagger + delay
+WUIAnim.sectionEntrance(container, { stagger: 0.10, delay: 0.2 });
+            </template>
+          </div>
+        </div>
+
+        <!-- ── completion() ───────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_motion_17"><span class="material-symbols-outlined">check_circle</span>WUIAnim.completion(el, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_motion_18">Animate a ring to 100% with a completion flourish: the arc sweeps with a spring overshoot, then the wrapper scales up and bounces back. Reserve this for moments that deserve emphasis — status transitions to "Complete", KPI modals hitting 100%. For regular value changes use <code>ring()</code>.</p>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-api-method">el</span></td><td><span class="docs-api-type">Element</span></td><td>—</td><td><code>.wui-progress-ring</code> wrapper.</td></tr>
+              <tr><td><span class="docs-api-method">opts.duration</span></td><td><span class="docs-api-type">number</span></td><td><code>0.85s</code></td><td>Ring sweep duration.</td></tr>
+              <tr><td><span class="docs-api-method">opts.counter</span></td><td><span class="docs-api-type">boolean</span></td><td><code>true</code></td><td>Animate the pct text to 100% alongside the ring.</td></tr>
+              <tr><td><span class="docs-api-method">opts.onComplete</span></td><td><span class="docs-api-type">function</span></td><td>—</td><td>Callback fired after the full flourish finishes.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_motion_19">Live demo</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4)">
+                <button class="wui-btn success wui-btn-sm" id="completion-play"><span class="material-symbols-outlined">check</span> Complete</button>
+                <button class="wui-btn outline secondary wui-btn-sm" id="completion-reset"><span class="material-symbols-outlined">replay</span> Reset</button>
+              </div>
+              <div class="wui-progress-ring success" id="demo-ring-completion">
+                <svg viewBox="0 0 120 120" width="100" height="100">
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-track"/>
+                  <circle cx="60" cy="60" r="52" fill="none" stroke-width="10" class="wui-progress-ring-fill"
+                    stroke-dasharray="326.73" style="stroke-dashoffset:163.37" transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="wui-progress-ring-center">
+                  <div class="wui-progress-ring-pct">50%</div>
+                  <div class="wui-progress-ring-label">Tasks</div>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+// When an incident status changes to Complete:
+const ring = document.querySelector('.wui-progress-ring');
+WUIAnim.completion(ring, {
+  onComplete: () => showSuccessBanner(),
+});
+            </template>
+          </div>
+        </div>
+
+        <!-- ── counter() ──────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_motion_20"><span class="material-symbols-outlined">123</span>WUIAnim.counter(el, from, to, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_motion_21">Standalone numeric ticker for any text element — independent of progress rings. Useful for KPI stat cards, elapsed time readouts, or any number that changes on reload.</p>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-api-method">el</span></td><td><span class="docs-api-type">Element</span></td><td>—</td><td>Any text element whose <code>textContent</code> will be updated.</td></tr>
+              <tr><td><span class="docs-api-method">from</span></td><td><span class="docs-api-type">number</span></td><td>—</td><td>Starting value.</td></tr>
+              <tr><td><span class="docs-api-method">to</span></td><td><span class="docs-api-type">number</span></td><td>—</td><td>Target value.</td></tr>
+              <tr><td><span class="docs-api-method">opts.duration</span></td><td><span class="docs-api-type">number</span></td><td><code>0.30s</code></td><td>Tick duration in seconds.</td></tr>
+              <tr><td><span class="docs-api-method">opts.ease</span></td><td><span class="docs-api-type">string</span></td><td><code>power1.out</code></td><td>GSAP ease.</td></tr>
+              <tr><td><span class="docs-api-method">opts.suffix</span></td><td><span class="docs-api-type">string</span></td><td><code>''</code></td><td>Appended after the number (e.g. <code>'%'</code>, <code>' units'</code>).</td></tr>
+              <tr><td><span class="docs-api-method">opts.onComplete</span></td><td><span class="docs-api-type">function</span></td><td>—</td><td>Callback fired when the count finishes.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_motion_22">Live demo</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4)">
+                <button class="wui-btn primary wui-btn-sm" id="counter-play"><span class="material-symbols-outlined">play_arrow</span> Count Up</button>
+              </div>
+              <div style="display:flex;gap:var(--space-6);flex-wrap:wrap">
+                <div class="wui-card" style="min-width:110px">
+                  <div class="wui-card-body" style="align-items:center;text-align:center">
+                    <div class="wui-card-num" id="demo-counter-1" style="font-size:2rem;font-weight:700;color:var(--color-10)">0</div>
+                    <div class="wui-card-sub">Incidents</div>
+                  </div>
+                </div>
+                <div class="wui-card" style="min-width:110px">
+                  <div class="wui-card-body" style="align-items:center;text-align:center">
+                    <div class="wui-card-num" id="demo-counter-2" style="font-size:2rem;font-weight:700;color:var(--color-success)">0</div>
+                    <div class="wui-card-sub">Resolved</div>
+                  </div>
+                </div>
+                <div class="wui-card" style="min-width:110px">
+                  <div class="wui-card-body" style="align-items:center;text-align:center">
+                    <div class="wui-card-num" id="demo-counter-3" style="font-size:2rem;font-weight:700;color:var(--color-warning)">0%</div>
+                    <div class="wui-card-sub">Capacity</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+const stat = document.getElementById('incident-count');
+
+// Basic tick from 0 to 142
+WUIAnim.counter(stat, 0, 142);
+
+// With suffix and slower duration
+WUIAnim.counter(stat, 0, 78, { suffix: '%', duration: 1.0 });
+
+// On section reload: animate from old value to new
+WUIAnim.counter(stat, oldVal, newVal, { duration: 0.5 });
+            </template>
+          </div>
+        </div>
+
+        <!-- ── bar() ──────────────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_motion_23"><span class="material-symbols-outlined">linear_scale</span>WUIAnim.bar(el, toPct, opts)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_motion_24">Animate a <code>.wui-progress-bar-fill</code> width from its current value to <code>toPct</code>. Pass either the <code>.wui-progress-bar</code> wrapper or the fill element directly.</p>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="docs-api-method">el</span></td><td><span class="docs-api-type">Element</span></td><td>—</td><td><code>.wui-progress-bar</code> wrapper <em>or</em> <code>.wui-progress-bar-fill</code> directly.</td></tr>
+              <tr><td><span class="docs-api-method">toPct</span></td><td><span class="docs-api-type">number</span></td><td>—</td><td>Target percentage (0–100). Clamped automatically.</td></tr>
+              <tr><td><span class="docs-api-method">opts.duration</span></td><td><span class="docs-api-type">number</span></td><td><code>0.85s</code></td><td>Tween duration (matched to ring by default).</td></tr>
+              <tr><td><span class="docs-api-method">opts.ease</span></td><td><span class="docs-api-type">string</span></td><td>standard</td><td>GSAP ease string.</td></tr>
+              <tr><td><span class="docs-api-method">opts.onComplete</span></td><td><span class="docs-api-type">function</span></td><td>—</td><td>Callback fired when the fill reaches target.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_motion_25">Live demo</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div style="display:flex;gap:var(--space-3);margin-bottom:var(--space-4);flex-wrap:wrap">
+                <button class="wui-btn primary wui-btn-sm" id="bar-play-40"><span class="material-symbols-outlined">play_arrow</span> 40%</button>
+                <button class="wui-btn warning wui-btn-sm" id="bar-play-75">75%</button>
+                <button class="wui-btn success wui-btn-sm" id="bar-play-100">100%</button>
+                <button class="wui-btn outline secondary wui-btn-sm" id="bar-reset"><span class="material-symbols-outlined">replay</span> Reset</button>
+              </div>
+              <div class="wui-progress-bar primary" id="demo-bar" style="max-width:420px">
+                <div class="wui-progress-bar-fill" style="width:0%"></div>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+const bar = document.getElementById('capacity-bar');
+
+// Animate fill to 60%
+WUIAnim.bar(bar, 60);
+
+// Pass the fill element directly — same result
+WUIAnim.bar(bar.querySelector('.wui-progress-bar-fill'), 60);
+
+// After a data reload
+WUIAnim.bar(bar, newPct, { duration: 0.6, onComplete: refreshLabel });
+            </template>
+          </div>
+        </div>
+
+        <!-- ── Constants & Internals ──────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_motion_26"><span class="material-symbols-outlined">tune</span>Constants &amp; internals</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_motion_27">Exposed on <code>WUIAnim</code> for extension or consistency — pull these into your own board code rather than hardcoding values.</p>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Member</th><th>Type</th><th>Value / Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-api-method">WUIAnim.RING_CIRC</span></td>
+                <td><span class="docs-api-type">number</span></td>
+                <td><code>326.73</code> — 2π × r(52); matches <code>stroke-dasharray</code> in <code>weoc-progress.css</code>.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">WUIAnim.DUR</span></td>
+                <td><span class="docs-api-type">object</span></td>
+                <td><code>{ fast: 0.18, base: 0.30, ring: 0.85, slow: 1.10 }</code> — aligned with CSS transition durations.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">WUIAnim.EASE</span></td>
+                <td><span class="docs-api-type">object</span></td>
+                <td><code>{ standard, decelerate, spring, elastic }</code> — Material Design 3 curves + flourish eases.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">WUIAnim.pctToOffset(pct)</span></td>
+                <td><span class="docs-api-type">function → number</span></td>
+                <td>Convert 0–100 → <code>stroke-dashoffset</code>. Clamped to valid range.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">WUIAnim.reducedMotion()</span></td>
+                <td><span class="docs-api-type">function → boolean</span></td>
+                <td>Live <code>prefers-reduced-motion</code> check. Checked on every method call — responds to OS changes mid-session.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_motion_28">Usage</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <template class="wui-demo-js">
+// Use duration constants for consistency
+gsap.to(myEl, { opacity: 1, duration: WUIAnim.DUR.base });
+
+// Gate any custom animation on reduced-motion
+if (!WUIAnim.reducedMotion()) {
+  gsap.from('.wui-card', { y: 12, opacity: 0, stagger: 0.05 });
+}
+
+// Compute dashoffset for a static inline style (XSL template)
+const offset = WUIAnim.pctToOffset(68); // → 104.55
+            </template>
+          </div>
+
+          <div class="wui-callout success">
+            <span class="material-symbols-outlined">accessibility_new</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_motion_29">Reduced-motion is always honored — nothing to configure</div>
+              <div data-wui-i18n-html="docs_motion_30">Every <code>WUIAnim.*</code> method checks <code>reducedMotion()</code> before tweening. When the OS setting is on, values are set instantly (no animation) and callbacks still fire — the interface never breaks, the motion just stops.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('motion');</script>
+</body>
+</html>

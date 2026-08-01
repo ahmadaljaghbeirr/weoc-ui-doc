@@ -1,0 +1,265 @@
+/* =============================================================================
+   sweetalert2-weoc-theme.css — weoc-ui theme override for vendored SweetAlert2
+
+   Placed FLAT under CSS/ (NOT CSS/weoc-ui/) per explicit user instruction —
+   see docs/superpowers/specs/2026-07-31-sweetalert-design.md. Load order:
+     1. sweetalert2.min.css   (vendored, unmodified)
+     2. sweetalert2-weoc-theme.css   (this file)
+     3. sweetalert2.all.min.js, then wui-alert.js
+
+   SweetAlert2 v11 already exposes most of its own visual language as
+   --swal2-* custom properties on :root (confirmed by reading the real
+   vendored sweetalert2.min.css, not guessed/invented) — so most of this
+   file just remaps those variables onto weoc-ui's own design tokens
+   (CSS/weoc-ui/agency-theme.css). Values are matched against real
+   components: .wui-modal-dialog (weoc-overlays.css) for the popup shell,
+   .wui-btn.primary/.secondary (weoc-interactive.css) for action buttons,
+   .form-control (weoc-forms.css) for the rare prompt-style input.
+
+   A handful of things are hardcoded hex/px in SweetAlert2's own CSS rather
+   than exposed as variables (icon ring colors, close-button hover tint) —
+   those are overridden directly on the real class selectors below instead,
+   confirmed against the vendored file's actual class names (.swal2-success,
+   .swal2-error, .swal2-warning, .swal2-info, .swal2-question, .swal2-close,
+   etc). All such class-selector overrides here are deliberately WRITTEN
+   MORE SPECIFICALLY than SweetAlert2's own rules (e.g. `.swal2-icon.swal2-
+   success` — two classes — beats their `div:where(.swal2-container)
+   h2:where(.swal2-title)`-style selectors, since :where() always
+   contributes zero specificity) — so these win on specificity alone,
+   regardless of source order, no !important needed.
+
+   ── Why the :root block below IS !important (verified, not precautionary) ─
+   sweetalert2.all.min.js (the "all" UMD bundle) embeds its OWN copy of
+   sweetalert2.min.css and injects it as a fresh <style> element into
+   <head> at script-load time — confirmed by live inspection (a ~30KB
+   injected <style> appears, byte-identical in size to the vendored CSS
+   file). That injected block always lands AFTER any static <link> in the
+   document, including this file, so its `:root { --swal2-confirm-button-
+   background-color: #7066e0; ... }` etc. would otherwise win the cascade
+   on pure source order (same `:root` selector = identical specificity on
+   both sides — specificity can't break the tie, only order can, and the
+   JS-injected copy is always later). Every declaration in the :root block
+   below is therefore !important, which beats a same-origin non-important
+   declaration regardless of order. The class-selector overrides above/
+   below do NOT need this (their higher specificity already wins outright,
+   independent of order), so !important stays scoped to :root only.
+
+   ── Re-theming ───────────────────────────────────────────────────────────
+   SweetAlert2 popups are recreated fresh on every .fire() call (no
+   persistent DOM to keep in sync) — WUI.alert()/WUI.confirm() just read
+   whatever the CURRENT resolved --swal2-* / agency-theme.css token values
+   are at call time. Switching theme (data-theme="dark", or an agency
+   palette swap) "just works" for the NEXT popup with no JS re-theme
+   listener needed — unlike wui-charts.js's persistent-canvas case, which
+   has to subscribe to wui:themechange and redraw in place.
+   ============================================================================= */
+
+:root {
+  /* ── Popup shell — matches .wui-modal-dialog (weoc-overlays.css) ────── */
+  --swal2-width: 30em !important;
+  --swal2-padding: 0 0 var(--space-5) !important;
+  --swal2-border: 1px solid var(--color-border) !important;
+  --swal2-border-radius: var(--border-radius) !important;
+  --swal2-background: var(--color-30) !important;
+  --swal2-color: var(--color-text-primary) !important;
+  --swal2-container-padding: var(--space-4) !important;
+  --swal2-backdrop: var(--color-overlay) !important;
+  --swal2-outline: 0 0 0 3px var(--color-10-light) !important;
+  --swal2-title-padding: var(--space-5) var(--space-5) var(--space-2) !important;
+  --swal2-html-container-padding: var(--space-2) var(--space-5) 0 !important;
+
+  /* ── Actions row / buttons — matches .wui-btn.primary/.secondary
+     (weoc-interactive.css).
+
+     Hover/active darkening does NOT use SweetAlert2's own --swal2-action-
+     button-hover/-active + color-mix() mechanism (removed — see the
+     `.swal2-styled.swal2-confirm/-deny/-cancel:hover/:active` rules
+     below for the replacement). That mechanism structurally requires an
+     OPAQUE second color: color-mix() alpha-premultiplies, so mixing a
+     button's opaque background toward a SEMI-TRANSPARENT color produces
+     a semi-transparent computed `background-color`, which the browser
+     then alpha-composites against whatever sits behind the button (the
+     popup's --color-30 surface). A prior fix here swapped the vendor's
+     literal `black 10%` for `var(--color-overlay)` (the real weoc-ui
+     scrim/backdrop token) to satisfy the zero-hardcoded-colors rule —
+     but --color-overlay carries alpha (~0.45), and this codebase has NO
+     opaque, theme-invariant dark token to offer instead (checked
+     --color-black/--color-ink/--color-shadow/--color-90 — none exist).
+     The alpha-composited result pulled the "darkened" hover/active color
+     back TOWARD LIGHT under a light --color-30 surface — buttons got
+     visibly LIGHTER on hover in light theme, the opposite of intent.
+     Dark theme happened to look fine by coincidence (a dark backdrop
+     reinforces darkening there), which is why this only showed up as a
+     light-theme regression. `filter: brightness()` sidesteps the whole
+     class of bug: it multiplies the ALREADY-COMPOSITED on-screen pixel
+     by a scalar, so there's no second color and no alpha to premultiply
+     or composite against — brightness(0.92) unconditionally darkens
+     whatever is actually rendered, in every theme, every time. ──── */
+  --swal2-actions-margin: var(--space-5) auto 0 !important;
+  --swal2-actions-padding: 0 var(--space-5) !important;
+  --swal2-actions-justify-content: flex-end !important;
+  --swal2-actions-width: auto !important;
+  --swal2-actions-background: transparent !important;
+  --swal2-actions-border-radius: 0 !important;
+
+  --swal2-confirm-button-background-color: var(--color-10) !important;
+  --swal2-confirm-button-color: var(--color-on-accent) !important;
+  --swal2-confirm-button-border-radius: var(--border-radius) !important;
+  --swal2-confirm-button-box-shadow: none !important;
+
+  --swal2-cancel-button-background-color: var(--color-60) !important;
+  --swal2-cancel-button-color: var(--color-text-ui) !important;
+  --swal2-cancel-button-border-radius: var(--border-radius) !important;
+  --swal2-cancel-button-box-shadow: none !important;
+
+  --swal2-deny-button-background-color: var(--color-danger) !important;
+  --swal2-deny-button-color: var(--color-on-accent) !important;
+  --swal2-deny-button-border-radius: var(--border-radius) !important;
+  --swal2-deny-button-box-shadow: none !important;
+
+  --swal2-action-button-focus-box-shadow: 0 0 0 3px var(--color-10-light) !important;
+  --swal2-action-button-transition: background-color 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease !important;
+
+  /* ── Close button ─────────────────────────────────────────────────────── */
+  --swal2-close-button-color: var(--color-text-secondary) !important;
+  --swal2-close-button-focus-box-shadow: 0 0 0 3px var(--color-10-light) !important;
+
+  /* ── Prompt-style inputs — matches .form-control (weoc-forms.css) ──── */
+  --swal2-input-background: transparent !important;
+  --swal2-input-border: 1px solid var(--color-border) !important;
+  --swal2-input-border-radius: var(--border-radius) !important;
+  --swal2-input-box-shadow: none !important;
+  --swal2-input-focus-border: 1px solid var(--color-10) !important;
+  --swal2-input-focus-box-shadow: 0 0 0 3px var(--color-10-light) !important;
+  --swal2-input-hover-box-shadow: none !important;
+  --swal2-input-transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+
+  /* ── Footer / timer / validation / progress-step ─────────────────────── */
+  --swal2-footer-background: transparent !important;
+  --swal2-footer-border-color: var(--color-border) !important;
+  --swal2-footer-color: var(--color-text-secondary) !important;
+  --swal2-timer-progress-bar-background: var(--color-10-muted) !important;
+  --swal2-validation-message-background: var(--color-danger-light) !important;
+  --swal2-validation-message-color: var(--color-danger-text) !important;
+  --swal2-progress-step-background: var(--color-border) !important;
+
+  /* ── Toast variant ────────────────────────────────────────────────────── */
+  --swal2-toast-border: 1px solid var(--color-border) !important;
+  --swal2-toast-box-shadow: var(--shadow-md) !important;
+}
+
+/* ── Icon ring colors ─────────────────────────────────────────────────────
+   SweetAlert2 hardcodes these as literal hex on .swal2-success/-error/
+   -warning/-info/-question (confirmed: no --swal2-* variable covers them
+   in the vendored CSS), so they're remapped directly here onto weoc-ui's
+   severity tokens instead. Same selectors as the vendored rule, later in
+   the cascade → wins without !important.
+   'question' has no dedicated severity token in this library —
+   --color-secondary (neutral, non-alarming) is the closest real match,
+   same reasoning wui-charts.js's _DEFAULT_PALETTE uses 'secondary' as a
+   neutral filler entry. */
+.swal2-icon.swal2-success  { border-color: var(--color-success); color: var(--color-success); }
+.swal2-icon.swal2-success .swal2-success-ring { border-color: var(--color-success-muted); }
+.swal2-icon.swal2-error    { border-color: var(--color-danger);  color: var(--color-danger); }
+.swal2-icon.swal2-warning  { border-color: var(--color-warning); color: var(--color-warning); }
+.swal2-icon.swal2-info     { border-color: var(--color-info);    color: var(--color-info); }
+.swal2-icon.swal2-question { border-color: var(--color-secondary); color: var(--color-secondary); }
+
+/* ── Typography ──────────────────────────────────────────────────────────
+   SweetAlert2 sets no font-family of its own anywhere (confirmed: zero
+   font-family declarations in the vendored CSS) — it just inherits from
+   the page. Declared explicitly anyway so WUI.alert()/WUI.confirm() still
+   render correctly themed even called from a bare board page that hasn't
+   loaded weoc-typography.css. */
+.swal2-popup {
+  font-family: var(--font-body);
+}
+
+h2.swal2-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.swal2-html-container {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-normal);
+}
+
+/* ── Action buttons ──────────────────────────────────────────────────────
+   Matches .wui-btn's own box (weoc-interactive.css: min-height/padding/
+   font) rather than SweetAlert2's stock button proportions. */
+button.swal2-styled {
+  min-height: 2.375rem;
+  padding: var(--space-1) var(--space-4);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  box-shadow: none !important;
+}
+
+button.swal2-styled:focus-visible {
+  outline: none;
+}
+
+/* ── Action button hover/active darkening ──────────────────────────────
+   Replaces SweetAlert2's own color-mix()-based hover/active mechanism
+   (see the long comment in the :root block above for why that mechanism
+   was abandoned — it requires an opaque second color and this codebase
+   has none). Mirrors the ONE existing place in this codebase that already
+   does "darken on hover, darker still on active" via an unconditional
+   filter instead of a paint mix: .wui-badge.is-interactive:hover/:active
+   (weoc-labels.css, brightness(0.82)/brightness(0.72)). NOTE: .wui-btn
+   itself does NOT do this — .wui-btn.primary/.danger/.success/.warning/
+   .info:hover only LIGHTEN via brightness(1.03-1.06), and .wui-btn has no
+   :active filter rule at all — so it is not actually the closest existing
+   analog for a hover-darken/active-darker-still shape; the badge pattern
+   is. brightness(0.92) / brightness(0.84) below are chosen to match this
+   file's own prior 8%/16% darken intent exactly (1 - 0.08, 1 - 0.16),
+   just expressed as a filter instead of a color-mix percentage.
+
+   Selectors mirror the vendored rule's target elements exactly (read from
+   CSS/sweetalert2.min.css: `div:where(.swal2-container) button:where(
+   .swal2-styled):where(.swal2-confirm):hover` etc.) but written as plain
+   class selectors instead of :where()-wrapped ones, so they win on
+   specificity alone ((0,3,0) beats the vendor's (0,1,2), since :where()
+   always contributes zero specificity) — no !important needed, consistent
+   with the icon-ring/close-button overrides elsewhere in this file. Each
+   rule also resets `background-color` back to the button's own base color
+   custom property, canceling the vendor's own color-mix() output for that
+   property so the two darkening mechanisms don't stack. */
+.swal2-styled.swal2-confirm:hover {
+  background-color: var(--swal2-confirm-button-background-color);
+  filter: brightness(0.92);
+}
+.swal2-styled.swal2-confirm:active {
+  background-color: var(--swal2-confirm-button-background-color);
+  filter: brightness(0.84);
+}
+.swal2-styled.swal2-deny:hover {
+  background-color: var(--swal2-deny-button-background-color);
+  filter: brightness(0.92);
+}
+.swal2-styled.swal2-deny:active {
+  background-color: var(--swal2-deny-button-background-color);
+  filter: brightness(0.84);
+}
+.swal2-styled.swal2-cancel:hover {
+  background-color: var(--swal2-cancel-button-background-color);
+  filter: brightness(0.92);
+}
+.swal2-styled.swal2-cancel:active {
+  background-color: var(--swal2-cancel-button-background-color);
+  filter: brightness(0.84);
+}
+
+/* ── Close button ────────────────────────────────────────────────────────
+   Vendored CSS hardcodes a red hover tint (#f27474) on .swal2-close — not
+   exposed as a variable — overridden to the same neutral hover
+   .wui-modal-close uses (weoc-overlays.css: var(--color-60) bg,
+   var(--color-text-primary) icon). */
+.swal2-close:hover {
+  color: var(--color-text-primary);
+  background: var(--color-60);
+}

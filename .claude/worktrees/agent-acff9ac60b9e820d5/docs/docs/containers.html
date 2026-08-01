@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Cards &amp; Containers</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+  <style>
+    /* ── TRIAL: no-desc spacing candidates (page-local until one is chosen). ──
+       Base .no-desc (in weoc-containers.css) only caps the name column; these
+       decide how the freed space is distributed. Promote the winner to core and
+       delete the losers + this block once decided. */
+
+    /* A — Proportional fill: name left, status right, middle columns grow equally */
+    .wui-card.is-record.no-desc.spread-fill > :not(.wui-card-lead):not(.wui-card-primary):not(.wui-card-status) {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    /* B — Even gaps: equal gap between every column, first flush-left / last flush-right */
+    .wui-card.is-record.no-desc.spread-even {
+      justify-content: space-between;
+    }
+    /* C — Equal columns: every non-lead column gets an equal share (table-like) */
+    .wui-card.is-record.no-desc.spread-cols > :not(.wui-card-lead) {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    /* Full record row demo: let the description column grow (mirrors the board
+       override shown in that demo's CSS tab). Scoped so it doesn't affect the
+       is-record demos that nest wui-card-content inside wui-card-primary. */
+    .wui-card.is-record.record-full > .wui-card-content {
+      flex: 1;
+      min-width: 0;
+    }
+  </style>
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="containers">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_containers_1">Data Display</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_containers_2">Cards &amp; Containers</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_containers_3">Structured content shells for the EOC: the three-layer <code>wui-card</code>, the flat <code>wui-plane</code> surface, the framed <code>wui-panel</code> and <code>wui-embed</code>, the <code>wui-person</code> / <code>wui-person-card</code> identity blocks, the read-only <code>wui-info-grid</code>, the dashboard <code>wui-widget</code>, and the declarative <code>wui-collapsible</code> family. Every variant, atom, and state is shown below with its exact markup.</div>
+        </div>
+
+        <!-- ══════════════════════════ wui-card ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_4"><span class="material-symbols-outlined">dashboard</span>wui-card</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_5">A three-layer system. <strong>Layer 1</strong> is the surface (<code>wui-card</code>) with states, density, accent, and side-column modifiers. <strong>Layer 2</strong> is a template that shapes the layout: <code>is-metric</code>, <code>is-record</code>, <code>is-item</code>. <strong>Layer 3</strong> is the atoms (<code>wui-card-hdr</code>, <code>wui-card-body</code>, <code>wui-card-value</code>, etc.) you drop inside. Density is set with <code>is-compact</code> / <code>is-comfortable</code>; the surface publishes <code>--wui-surface</code> for descendants such as sticky headers.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_6">Base surface + atoms (hdr / body / footer)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Base card with header (bordered), body, and footer -->
+              <div class="wui-card" style="width:320px">
+                <div class="wui-card-hdr has-border">
+                  <div class="wui-card-hdr-left">
+                    <span class="material-symbols-outlined">description</span>
+                    <span class="wui-card-title-row">Incident Summary</span>
+                  </div>
+                  <div class="wui-card-hdr-right">
+                    <span class="wui-card-id">INC-2024-0471</span>
+                  </div>
+                </div>
+                <div class="wui-card-body">
+                  <div>Structure fire reported at the north warehouse. Command post established; three engine companies on scene.</div>
+                  <div class="wui-card-divider"></div>
+                  <div class="wui-card-meta">
+                    <span class="wui-badge danger wui-badge-sm">Critical</span>
+                    <span class="wui-card-id">Reported 14:32</span>
+                  </div>
+                </div>
+                <div class="wui-card-footer justify-end">
+                  <button class="wui-btn ghost secondary wui-btn-sm">Dismiss</button>
+                  <button class="wui-btn primary wui-btn-sm">Open</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_7">Footer alignment — justify-end / justify-between</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- justify-end — actions pushed to the right (default pairing) -->
+              <div class="wui-card" style="width:320px">
+                <div class="wui-card-body">Footer with <code>justify-end</code>.</div>
+                <div class="wui-card-footer justify-end">
+                  <button class="wui-btn ghost secondary wui-btn-sm">Dismiss</button>
+                  <button class="wui-btn primary wui-btn-sm">Open</button>
+                </div>
+              </div>
+              <!-- justify-between — meta on the left, actions on the right -->
+              <div class="wui-card" style="width:320px">
+                <div class="wui-card-body">Footer with <code>justify-between</code>.</div>
+                <div class="wui-card-footer justify-between">
+                  <span class="wui-card-id">Updated 15:47</span>
+                  <button class="wui-btn primary wui-btn-sm">Open</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_8">States — interactive / selected / disabled</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Interactive (hover for gradient border) -->
+              <div class="wui-card is-interactive" style="width:220px">
+                <div class="wui-card-body"><strong>is-interactive</strong><div style="color:var(--color-text-secondary);font-size:var(--text-xs)">Hover for the gradient border.</div></div>
+              </div>
+              <!-- Selected -->
+              <div class="wui-card is-selected" style="width:220px">
+                <div class="wui-card-body"><strong>is-selected</strong><div style="color:var(--color-text-secondary);font-size:var(--text-xs)">Persistent gradient border.</div></div>
+              </div>
+              <!-- Disabled -->
+              <div class="wui-card is-disabled" style="width:220px">
+                <div class="wui-card-body"><strong>is-disabled</strong><div style="color:var(--color-text-secondary);font-size:var(--text-xs)">Dimmed, non-interactive.</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_9">Density — compact / base / comfortable</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Compact -->
+              <div class="wui-card is-compact" style="width:200px">
+                <div class="wui-card-hdr has-border"><div class="wui-card-hdr-left">is-compact</div></div>
+                <div class="wui-card-body">Tighter padding + gap.</div>
+              </div>
+              <!-- Base (no density class) -->
+              <div class="wui-card" style="width:200px">
+                <div class="wui-card-hdr has-border"><div class="wui-card-hdr-left">Base (md)</div></div>
+                <div class="wui-card-body">Default padding + gap.</div>
+              </div>
+              <!-- Comfortable -->
+              <div class="wui-card is-comfortable" style="width:200px">
+                <div class="wui-card-hdr has-border"><div class="wui-card-hdr-left">is-comfortable</div></div>
+                <div class="wui-card-body">Roomier padding + gap.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_10">Accent bar — has-accent + color</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <div class="wui-card has-accent primary" style="width:180px"><div class="wui-card-body">primary</div></div>
+              <!-- Success -->
+              <div class="wui-card has-accent success" style="width:180px"><div class="wui-card-body">success</div></div>
+              <!-- Warning -->
+              <div class="wui-card has-accent warning" style="width:180px"><div class="wui-card-body">warning</div></div>
+              <!-- Danger -->
+              <div class="wui-card has-accent danger" style="width:180px"><div class="wui-card-body">danger</div></div>
+              <!-- Info -->
+              <div class="wui-card has-accent info" style="width:180px"><div class="wui-card-body">info</div></div>
+              <!-- Secondary -->
+              <div class="wui-card has-accent secondary" style="width:180px"><div class="wui-card-body">secondary</div></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_11">Side column (has-side)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_12">The side column pairs naturally with a <code>wui-icon-bubble</code> (see the Indicators page) to flag severity.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Danger side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side danger">
+                  <div class="wui-icon-bubble solid danger"><span class="material-symbols-outlined">priority_high</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>HAZMAT Release</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Chlorine leak, Sector 4. Evacuation in progress.</div>
+                </div>
+              </div>
+              <!-- Warning side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side warning">
+                  <div class="wui-icon-bubble solid warning"><span class="material-symbols-outlined">warning</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>Flood Advisory</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">River gauge rising near Bridge Road.</div>
+                </div>
+              </div>
+              <!-- Success side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side success">
+                  <div class="wui-icon-bubble solid success"><span class="material-symbols-outlined">check_circle</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>All Clear — Sector 2</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Evacuation zone reopened to residents.</div>
+                </div>
+              </div>
+              <!-- Primary side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side primary">
+                  <div class="wui-icon-bubble solid primary"><span class="material-symbols-outlined">assignment</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>New Mission Assigned</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Damage assessment — Task Force Bravo.</div>
+                </div>
+              </div>
+              <!-- Info side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side info">
+                  <div class="wui-icon-bubble solid info"><span class="material-symbols-outlined">campaign</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>Public Information Update</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Press briefing scheduled for 16:00.</div>
+                </div>
+              </div>
+              <!-- Secondary side with an icon bubble -->
+              <div class="wui-card has-side" style="width:340px">
+                <div class="wui-card-side secondary">
+                  <div class="wui-icon-bubble solid secondary"><span class="material-symbols-outlined">draft</span></div>
+                </div>
+                <div class="wui-card-body">
+                  <strong>Draft SITREP #14</strong>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Awaiting review before distribution.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_13">Template: is-metric (KPI cell)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Metric with header + value + delta -->
+              <div class="wui-card is-metric" style="width:200px">
+                <div class="wui-card-hdr">
+                  <span class="wui-card-label">Active Incidents</span>
+                  <span class="material-symbols-outlined">local_fire_department</span>
+                </div>
+                <div class="wui-card-value">27</div>
+                <div class="wui-card-delta up">
+                  <span class="material-symbols-outlined">trending_up</span>+4
+                  <span class="wui-card-delta-lbl">since 06:00</span>
+                </div>
+              </div>
+              <!-- Metric, value sizes + down delta -->
+              <div class="wui-card is-metric" style="width:200px">
+                <div class="wui-card-hdr">
+                  <span class="wui-card-label">Open Resources</span>
+                  <span class="material-symbols-outlined">inventory_2</span>
+                </div>
+                <div class="wui-card-value sm">142</div>
+                <div class="wui-card-delta down">
+                  <span class="material-symbols-outlined">trending_down</span>-8
+                  <span class="wui-card-delta-lbl">last hour</span>
+                </div>
+              </div>
+              <!-- Headless metric — no header, body fills -->
+              <div class="wui-card is-metric is-headless" style="width:200px">
+                <div class="wui-card-hdr"><span class="wui-card-label">Hidden</span></div>
+                <div class="wui-card-body" style="align-items:center;justify-content:center;text-align:center">
+                  <div class="wui-card-value xs">99.4%</div>
+                  <div class="wui-card-label">Uptime (is-headless)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_14">Template: is-metric — stats row</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Boxed stats (default) with color variants -->
+              <div class="wui-card is-metric" style="width:420px">
+                <div class="wui-card-hdr"><span class="wui-card-label">Shelter Occupancy</span></div>
+                <div class="wui-card-stats">
+                  <div class="wui-card-stat success">
+                    <span class="wui-card-stat-value">312</span>
+                    <span class="wui-card-stat-label">Sheltered</span>
+                  </div>
+                  <div class="wui-card-stat warning">
+                    <span class="wui-card-stat-value">48</span>
+                    <span class="wui-card-stat-label">Pending</span>
+                  </div>
+                  <div class="wui-card-stat danger">
+                    <span class="wui-card-stat-value">6</span>
+                    <span class="wui-card-stat-label">At capacity</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Inline stats (divider-separated) with primary + secondary -->
+              <div class="wui-card is-metric" style="width:420px">
+                <div class="wui-card-hdr"><span class="wui-card-label">Response Summary</span></div>
+                <div class="wui-card-stats is-inline">
+                  <div class="wui-card-stat primary">
+                    <span class="wui-card-stat-value">8</span>
+                    <span class="wui-card-stat-label">Engines</span>
+                  </div>
+                  <div class="wui-card-stat secondary">
+                    <span class="wui-card-stat-value">3</span>
+                    <span class="wui-card-stat-label">Ladders</span>
+                  </div>
+                  <div class="wui-card-stat">
+                    <span class="wui-card-stat-value">14</span>
+                    <span class="wui-card-stat-label">Personnel</span>
+                  </div>
+                </div>
+                <div class="wui-card-sub" style="font-size:var(--text-xs);color:var(--color-text-secondary)">wui-card-sub pins to the bottom.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_15">Template: is-record (log / event row)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Record: lead · primary/content · meta · status · end -->
+              <div class="wui-card is-record" style="width:520px">
+                <div class="wui-card-lead">
+                  <span class="material-symbols-outlined">flood</span>
+                </div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-content"><strong>Levee overtopping — District 5</strong></div>
+                  <div class="wui-card-content" style="font-size:var(--text-xs);color:var(--color-text-secondary)">Water crews dispatched; sandbag operation underway.</div>
+                </div>
+                <div class="wui-card-meta">
+                  <span class="wui-card-id">14:12</span>
+                  <span class="wui-card-id">Ops</span>
+                </div>
+                <div class="wui-card-status">
+                  <span class="wui-badge warning wui-badge-sm">Active</span>
+                </div>
+                <div class="wui-card-end">
+                  <button class="wui-action-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_16">Template: is-record + has-lead-fill (colored lead strip)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Danger lead fill -->
+              <div class="wui-card is-record has-lead-fill" style="width:520px">
+                <div class="wui-card-lead danger">
+                  <span class="material-symbols-outlined">priority_high</span>
+                </div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-content"><strong>Tier 3 Escalation</strong></div>
+                  <div class="wui-card-content" style="font-size:var(--text-xs);color:var(--color-text-secondary)">EOC fully activated. Unified command established.</div>
+                </div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Tier 3</span></div>
+              </div>
+              <!-- Success lead fill -->
+              <div class="wui-card is-record has-lead-fill" style="width:520px">
+                <div class="wui-card-lead success">
+                  <span class="material-symbols-outlined">check_circle</span>
+                </div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-content"><strong>All Clear — Sector 2</strong></div>
+                  <div class="wui-card-content" style="font-size:var(--text-xs);color:var(--color-text-secondary)">Evacuation zone reopened to residents.</div>
+                </div>
+                <div class="wui-card-status"><span class="wui-badge success wui-badge-sm">Resolved</span></div>
+              </div>
+              <!-- Info lead fill -->
+              <div class="wui-card is-record has-lead-fill" style="width:520px">
+                <div class="wui-card-lead info"><span class="material-symbols-outlined">campaign</span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-content"><strong>Public Information Update</strong></div>
+                  <div class="wui-card-content" style="font-size:var(--text-xs);color:var(--color-text-secondary)">Press briefing scheduled for 16:00.</div>
+                </div>
+                <div class="wui-card-status"><span class="wui-badge info wui-badge-sm">Notice</span></div>
+              </div>
+              <!-- Warning lead fill -->
+              <div class="wui-card is-record has-lead-fill" style="width:520px">
+                <div class="wui-card-lead warning"><span class="material-symbols-outlined">bolt</span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-content"><strong>Power Grid Instability</strong></div>
+                  <div class="wui-card-content" style="font-size:var(--text-xs);color:var(--color-text-secondary)">Rolling brownouts anticipated in the west district.</div>
+                </div>
+                <div class="wui-card-status"><span class="wui-badge warning wui-badge-sm">Watch</span></div>
+              </div>
+              <!-- Primary lead fill -->
+              <div class="wui-card is-record has-lead-fill" style="width:520px">
+                <div class="wui-card-lead primary"><span class="material-symbols-outlined">assignment</span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-content"><strong>New Mission Assigned</strong></div>
+                  <div class="wui-card-content" style="font-size:var(--text-xs);color:var(--color-text-secondary)">Damage assessment — Task Force Bravo.</div>
+                </div>
+                <div class="wui-card-status"><span class="wui-badge primary wui-badge-sm">Assigned</span></div>
+              </div>
+              <!-- Secondary lead fill -->
+              <div class="wui-card is-record has-lead-fill" style="width:520px">
+                <div class="wui-card-lead secondary"><span class="material-symbols-outlined">draft</span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-content"><strong>Draft SITREP #14</strong></div>
+                  <div class="wui-card-content" style="font-size:var(--text-xs);color:var(--color-text-secondary)">Awaiting review before distribution.</div>
+                </div>
+                <div class="wui-card-status"><span class="wui-badge secondary wui-badge-sm">Draft</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_17">Template: is-record without a description column — spacing options</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_18">Real log rows (Event Reports, Information Sharing) put the description in its own <code>wui-card-content</code> column beside <code>wui-card-primary</code>. Drop that column and <code>wui-card-primary</code> — which is <code>flex: 1</code> — grows to fill the entire row, so the name stretches across most of the card. Add <code>no-desc</code>: the base caps the name (tune with <code>--wui-record-name-w</code>), then a <code>spread-*</code> modifier decides how the freed space is distributed. Three candidates are shown below — the <strong>CSS</strong> tab holds each one's rule. <strong>Pick one to keep.</strong></p>
+
+          <div class="docs-subsection-title" style="opacity:.8" data-wui-i18n-html="docs_containers_19">Option A — Proportional fill (<code>spread-fill</code>) · recommended</div>
+          <p class="docs-desc" data-wui-i18n="docs_containers_20">Name pinned left, status pinned right; the middle columns (reporter, date/time) grow equally to absorb the free space. Scales cleanly at any width.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Long name -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>Chemical spill — Berth 4</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div>
+                  <span class="wui-card-id">#EVT-2043 · Port Zone</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">AM</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">A. Mansoori</span><span class="wui-person-sub">Duty Officer</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 14:12</div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span></div>
+              </div>
+              <!-- Short name — columns stay aligned with the row above -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead success"><span class="wui-icon-bubble solid-reverse sm ripple circle success"><span class="material-symbols-outlined">check_circle</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>All clear — Sector 2</strong></span><span class="wui-badge success wui-badge-sm">Resolved</span></div>
+                  <span class="wui-card-id">#EVT-2044 · Sector 2</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">RK</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">R. Khan</span><span class="wui-person-sub">Ops Lead</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 15:40</div></div>
+                <div class="wui-card-status"><span class="wui-badge success wui-badge-sm">Closed</span></div>
+              </div>
+            </div>
+            <template class="wui-demo-css">
+/* Option A — Proportional fill. Base no-desc caps the name; the middle
+   columns (everything except lead / name / status) grow equally to fill. */
+.wui-card.is-record.no-desc.spread-fill > :not(.wui-card-lead):not(.wui-card-primary):not(.wui-card-status) {
+  flex: 1 1 0;
+  min-width: 0;
+}
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" style="opacity:.8" data-wui-i18n-html="docs_containers_21">Option B — Even gaps (<code>spread-even</code>)</div>
+          <p class="docs-desc" data-wui-i18n="docs_containers_22">Equal gap between every column (first flush-left, last flush-right). Balanced on medium rows; on very wide panels the items drift far apart and the lead detaches from the name.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-card is-record no-desc spread-even" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>Chemical spill — Berth 4</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div>
+                  <span class="wui-card-id">#EVT-2043 · Port Zone</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">AM</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">A. Mansoori</span><span class="wui-person-sub">Duty Officer</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 14:12</div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span></div>
+              </div>
+              <div class="wui-card is-record no-desc spread-even" style="width:100%">
+                <div class="wui-card-lead success"><span class="wui-icon-bubble solid-reverse sm ripple circle success"><span class="material-symbols-outlined">check_circle</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>All clear — Sector 2</strong></span><span class="wui-badge success wui-badge-sm">Resolved</span></div>
+                  <span class="wui-card-id">#EVT-2044 · Sector 2</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">RK</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">R. Khan</span><span class="wui-person-sub">Ops Lead</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 15:40</div></div>
+                <div class="wui-card-status"><span class="wui-badge success wui-badge-sm">Closed</span></div>
+              </div>
+            </div>
+            <template class="wui-demo-css">
+/* Option B — Even gaps. Space distributed equally between all columns. */
+.wui-card.is-record.no-desc.spread-even {
+  justify-content: space-between;
+}
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" style="opacity:.8" data-wui-i18n-html="docs_containers_23">Option C — Equal columns (<code>spread-cols</code>)</div>
+          <p class="docs-desc" data-wui-i18n="docs_containers_24">Every non-lead column gets an equal share (table-like). Most rigidly aligned across rows, but wastes width on short columns like status and squeezes the name.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-card is-record no-desc spread-cols" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>Chemical spill — Berth 4</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div>
+                  <span class="wui-card-id">#EVT-2043 · Port Zone</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">AM</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">A. Mansoori</span><span class="wui-person-sub">Duty Officer</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 14:12</div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span></div>
+              </div>
+              <div class="wui-card is-record no-desc spread-cols" style="width:100%">
+                <div class="wui-card-lead success"><span class="wui-icon-bubble solid-reverse sm ripple circle success"><span class="material-symbols-outlined">check_circle</span></span></div>
+                <div class="wui-card-primary">
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>All clear — Sector 2</strong></span><span class="wui-badge success wui-badge-sm">Resolved</span></div>
+                  <span class="wui-card-id">#EVT-2044 · Sector 2</span>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">RK</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">R. Khan</span><span class="wui-person-sub">Ops Lead</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 15:40</div></div>
+                <div class="wui-card-status"><span class="wui-badge success wui-badge-sm">Closed</span></div>
+              </div>
+            </div>
+            <template class="wui-demo-css">
+/* Option C — Equal columns. Every non-lead column shares width equally. */
+.wui-card.is-record.no-desc.spread-cols > :not(.wui-card-lead) {
+  flex: 1 1 0;
+  min-width: 0;
+}
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_25">Record leads — proper wui-icon-bubble usage</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_26">The lead holds a <code>wui-icon-bubble</code>. Event Reports uses <code>solid-reverse sm ripple circle</code> plus a tier/semantic color, on a <code>wui-card-lead</code> that carries the same color for context. All four tiers and the six semantic colors work identically.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Tier 1 -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-1"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-1"><span class="material-symbols-outlined">info</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Advisory issued</strong></span><span class="wui-badge tier-1 wui-badge-sm">Tier 1</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge secondary wui-badge-sm">Monitoring</span></div>
+              </div>
+              <!-- Tier 2 -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-2"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-2"><span class="material-symbols-outlined">notifications_active</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Localised incident</strong></span><span class="wui-badge tier-2 wui-badge-sm">Tier 2</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge warning wui-badge-sm">Watch</span></div>
+              </div>
+              <!-- Tier 3 -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Major escalation</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span></div>
+              </div>
+              <!-- Tier 4 -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead tier-4"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-4"><span class="material-symbols-outlined">crisis_alert</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Full activation</strong></span><span class="wui-badge tier-4 wui-badge-sm">Tier 4</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge animate danger wui-badge-sm">Activated</span></div>
+              </div>
+              <!-- Semantic example: info -->
+              <div class="wui-card is-record no-desc spread-fill" style="width:100%">
+                <div class="wui-card-lead info"><span class="wui-icon-bubble solid-reverse sm ripple circle info"><span class="material-symbols-outlined">campaign</span></span></div>
+                <div class="wui-card-primary"><div class="wui-card-title-row"><span class="wui-truncate"><strong>Public information update</strong></span><span class="wui-badge info wui-badge-sm">Notice</span></div></div>
+                <div class="wui-card-status"><span class="wui-badge info wui-badge-sm">Sent</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_27">Full record row — as used in Event Reports / Information Sharing</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_28">The complete row <strong>with</strong> the description column: severity lead, the stacked <code>wui-card-primary</code> (elapsed, title + tier badge, classification / record no. / location lines), the <code>wui-card-content</code> description block (the flex filler), the <code>wui-person</code> reporter, the <code>wui-card-meta</code> dates, and the <code>wui-card-status</code> badges. This is the record log the <code>no-desc</code> variants above are derived from — here nothing is removed, so no spacing modifier is needed. The <strong>CSS</strong> tab shows the one override boards apply: letting the description column grow.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-card is-record has-lead-fill tier-3 record-full" style="width:100%">
+                <div class="wui-card-lead tier-3"><span class="wui-icon-bubble solid-reverse sm ripple circle tier-3"><span class="material-symbols-outlined">warning</span></span></div>
+                <div class="wui-card-primary">
+                  <span class="wui-elapsed danger"><span class="material-symbols-outlined">history</span> 2h ago</span>
+                  <div class="wui-card-title-row"><span class="wui-truncate"><strong>Chemical spill — Berth 4</strong></span><span class="wui-badge tier-3 wui-badge-sm">Tier 3</span></div>
+                  <span class="wui-card-id"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">category</span> Hazmat</span>
+                  <span class="wui-card-id"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">fork_right</span> Chemical release</span>
+                  <span class="wui-card-id wui-text-brand"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">tag</span> EVT-2043</span>
+                  <span class="wui-card-id"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">location_on</span> Port Zone</span>
+                </div>
+                <div class="wui-card-content">
+                  <div class="wui-update-entry">
+                    <div class="wui-card-id">Description</div>
+                    <div class="wui-update-desc">Vapour cloud reported near Berth 4; hazmat team dispatched and a 200 m cordon established. Air monitoring in progress.</div>
+                    <div class="wui-card-id">A. Mansoori as Duty Officer on 01/07/2026 14:12</div>
+                    <button class="wui-link" type="button">Show history</button>
+                  </div>
+                </div>
+                <div class="wui-person"><div class="wui-avatar primary">AM</div><div class="wui-person-info"><span class="wui-person-label">Created by</span><span class="wui-person-name">A. Mansoori</span><span class="wui-person-sub">Duty Officer</span><span class="wui-person-sub">01/07/2026 14:12</span></div></div>
+                <div class="wui-card-meta"><div class="wui-card-id">Event Date / Time</div><div class="wui-card-id">01/07/2026 14:12</div></div>
+                <div class="wui-card-status"><span class="wui-badge danger wui-badge-sm">Open</span><span class="wui-badge animate danger wui-badge-sm">Activated</span></div>
+              </div>
+            </div>
+            <template class="wui-demo-css">
+/* The description is the flex filler that shares the row with the name.
+   wui-card-content is content-sized by default, so let the description column
+   grow (direct child, so nested content inside wui-card-primary is unaffected): */
+.wui-card.is-record > .wui-card-content {
+  flex: 1;
+  min-width: 0;
+}
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_29">Template: is-item (gallery tile) — band + fields</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Item tile with colored band + field grid -->
+              <div class="wui-card is-item" style="width:260px">
+                <div class="wui-card-band primary">
+                  <span>Engine 7</span>
+                  <span class="material-symbols-outlined">fire_truck</span>
+                </div>
+                <div class="wui-card-body">
+                  <div class="wui-card-fields cols-2">
+                    <div class="wui-card-field"><span class="wui-card-field-label">Status:</span> Available</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Crew:</span> 4</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Station:</span> 3</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Fuel:</span> 82%</div>
+                    <div class="wui-card-field span-full is-stacked">
+                      <span class="wui-card-field-label">Last Assignment</span>
+                      Structure fire, Warehouse District
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Item tile — success band + stacked fields -->
+              <div class="wui-card is-item" style="width:260px">
+                <div class="wui-card-band success">
+                  <span>Shelter Alpha</span>
+                  <span class="material-symbols-outlined">home</span>
+                </div>
+                <div class="wui-card-body">
+                  <div class="wui-card-fields">
+                    <div class="wui-card-field is-stacked"><span class="wui-card-field-label">Occupancy</span>312 / 500</div>
+                    <div class="wui-card-field is-stacked span-2"><span class="wui-card-field-label">Manager</span>R. Osei</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_30">Card band — all colors</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary --> <div class="wui-card is-item" style="width:150px"><div class="wui-card-band primary"><span>Primary</span></div><div class="wui-card-body" style="font-size:var(--text-xs)">band</div></div>
+              <!-- Info --> <div class="wui-card is-item" style="width:150px"><div class="wui-card-band info"><span>Info</span></div><div class="wui-card-body" style="font-size:var(--text-xs)">band</div></div>
+              <!-- Success --> <div class="wui-card is-item" style="width:150px"><div class="wui-card-band success"><span>Success</span></div><div class="wui-card-body" style="font-size:var(--text-xs)">band</div></div>
+              <!-- Warning --> <div class="wui-card is-item" style="width:150px"><div class="wui-card-band warning"><span>Warning</span></div><div class="wui-card-body" style="font-size:var(--text-xs)">band</div></div>
+              <!-- Danger --> <div class="wui-card is-item" style="width:150px"><div class="wui-card-band danger"><span>Danger</span></div><div class="wui-card-body" style="font-size:var(--text-xs)">band</div></div>
+              <!-- Secondary --> <div class="wui-card is-item" style="width:150px"><div class="wui-card-band secondary"><span>Secondary</span></div><div class="wui-card-body" style="font-size:var(--text-xs)">band</div></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_31">Field grid — column counts + span</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- cols-3 with a span-2 and a span-full field -->
+              <div class="wui-card" style="width:100%">
+                <div class="wui-card-body">
+                  <div class="wui-card-fields cols-3">
+                    <div class="wui-card-field"><span class="wui-card-field-label">Unit:</span> ICP-1</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Sector:</span> North</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Radio:</span> TAC-3</div>
+                    <div class="wui-card-field span-2"><span class="wui-card-field-label">Objective:</span> Establish perimeter and staging area</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">ETA:</span> 12m</div>
+                    <div class="wui-card-field span-full is-stacked"><span class="wui-card-field-label">Notes</span> Access road partially blocked; reroute via Gate B.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- cols-4 with a span-2 and a span-full field -->
+              <div class="wui-card" style="width:100%">
+                <div class="wui-card-body">
+                  <div class="wui-card-fields cols-4">
+                    <div class="wui-card-field"><span class="wui-card-field-label">Engines:</span> 8</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Ladders:</span> 3</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Medics:</span> 12</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Chiefs:</span> 2</div>
+                    <div class="wui-card-field span-2"><span class="wui-card-field-label">Staging:</span> Municipal Lot C</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">Radio:</span> TAC-3</div>
+                    <div class="wui-card-field"><span class="wui-card-field-label">ETA:</span> 12m</div>
+                    <div class="wui-card-field span-full is-stacked"><span class="wui-card-field-label">Notes</span> Four-column grid for dense resource summaries.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-plane ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_32"><span class="material-symbols-outlined">crop_square</span>wui-plane</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_33">A flat surface container with border and radius, driven by a local <code>--_bg</code> / <code>--_border</code> token pair so each color variant is a one-word modifier. Default (no modifier) equals <code>.color-60</code>. Neutrals: <code>color-60</code>, <code>color-30</code>. Semantic tints (<code>-light</code> fill + <code>-muted</code> border): <code>primary</code>, <code>success</code>, <code>warning</code>, <code>danger</code>, <code>info</code>, <code>secondary</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_34">Surface neutrals</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default = color-60 -->
+              <div class="wui-plane" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">Default / .color-60</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Off-white in light mode, near-black in dark mode.</div>
+              </div>
+              <!-- color-30 -->
+              <div class="wui-plane color-30" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.color-30</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Pure white in light, elevated dark surface in dark.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_35">Semantic tinted variants</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <div class="wui-plane primary" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.primary</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Tinted blue — active operational context.</div>
+              </div>
+              <!-- Success -->
+              <div class="wui-plane success" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.success</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Tinted green — resolved, all-clear states.</div>
+              </div>
+              <!-- Warning -->
+              <div class="wui-plane warning" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.warning</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Tinted amber — advisories, watch conditions.</div>
+              </div>
+              <!-- Danger -->
+              <div class="wui-plane danger" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.danger</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Tinted red — critical alerts, active hazards.</div>
+              </div>
+              <!-- Info -->
+              <div class="wui-plane info" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.info</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Tinted cyan — informational callouts.</div>
+              </div>
+              <!-- Secondary -->
+              <div class="wui-plane secondary" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.secondary</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Tinted slate — muted, supplementary content.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_62">Neon glow — .neon + severity variant</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_63">Opt-in glow modifier. Combine <code>.neon</code> with one of the six severity variants for a "lit panel" halo off the matching <code>--color-X-glow</code> token — the same convention as <code>.wui-btn</code>/<code>.wui-fab</code> <code>.neon-outline</code>, sized up for a card-sized surface. Has no effect on its own; always pair it with a color variant.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <div class="wui-plane neon primary" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.neon.primary</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Blue glow — active operational focus.</div>
+              </div>
+              <!-- Success -->
+              <div class="wui-plane neon success" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.neon.success</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Green glow — resolved, all-clear states.</div>
+              </div>
+              <!-- Warning -->
+              <div class="wui-plane neon warning" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.neon.warning</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Amber glow — advisories, watch conditions.</div>
+              </div>
+              <!-- Danger -->
+              <div class="wui-plane neon danger" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.neon.danger</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Red glow — critical alerts, active hazards.</div>
+              </div>
+              <!-- Info -->
+              <div class="wui-plane neon info" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.neon.info</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Cyan glow — informational callouts.</div>
+              </div>
+              <!-- Secondary -->
+              <div class="wui-plane neon secondary" style="width:100%">
+                <div style="font-weight:600;margin-bottom:var(--space-1)">.neon.secondary</div>
+                <div style="font-size:var(--text-sm);color:var(--color-text-secondary)">Slate glow — muted, supplementary content.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-panel ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_36"><span class="material-symbols-outlined">dock_to_right</span>wui-panel</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_37">Framed content shell with header, body, footer, and actions regions. Default is <code>flex: 0 0 auto</code> (sizes to content). Add <code>.is-scrollable</code> so the panel fills its container and the body scrolls. The header carries a title (<code>wui-panel-title</code> with optional leading icon), a subtitle (<code>wui-panel-sub</code>), and an actions cluster (<code>wui-panel-hdr-actions</code>).</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_38">Header · body · footer · actions</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Full panel -->
+              <div class="wui-panel" style="width:360px">
+                <div class="wui-panel-hdr">
+                  <div class="wui-panel-title-wrap">
+                    <div class="wui-panel-title"><span class="material-symbols-outlined">description</span>Incident Details</div>
+                    <div class="wui-panel-sub">INC-2024-0471</div>
+                  </div>
+                  <div class="wui-panel-hdr-actions">
+                    <button class="wui-action-btn"><span class="material-symbols-outlined">edit</span></button>
+                    <button class="wui-action-btn"><span class="material-symbols-outlined">more_vert</span></button>
+                  </div>
+                </div>
+                <div class="wui-panel-body">
+                  <p style="margin:0;font-size:var(--text-sm);color:var(--color-text-secondary)">
+                    Panel body holds arbitrary content: info grids, field rows, tables, or any component.
+                  </p>
+                </div>
+                <div class="wui-panel-footer">
+                  <div class="wui-panel-actions">
+                    <button class="wui-btn ghost secondary wui-btn-sm">Cancel</button>
+                    <button class="wui-btn primary wui-btn-sm">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_39">Scrollable body (is-scrollable)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- is-scrollable: fixed height, body scrolls -->
+              <div class="wui-panel is-scrollable" style="width:360px;height:180px">
+                <div class="wui-panel-hdr">
+                  <div class="wui-panel-title-wrap">
+                    <div class="wui-panel-title">Activity Log</div>
+                    <div class="wui-panel-sub">Body scrolls; header/footer pinned</div>
+                  </div>
+                </div>
+                <div class="wui-panel-body">
+                  <p style="margin:0 0 var(--space-2)">14:32 — Command post established.</p>
+                  <p style="margin:0 0 var(--space-2)">14:41 — Engine 7 on scene.</p>
+                  <p style="margin:0 0 var(--space-2)">14:52 — Ladder 4 requested.</p>
+                  <p style="margin:0 0 var(--space-2)">15:03 — Water supply secured.</p>
+                  <p style="margin:0 0 var(--space-2)">15:18 — Second alarm struck.</p>
+                  <p style="margin:0 0 var(--space-2)">15:30 — Overhaul in progress.</p>
+                  <p style="margin:0">15:47 — Fire under control.</p>
+                </div>
+                <div class="wui-panel-footer">
+                  <div class="wui-panel-actions"><button class="wui-btn ghost primary wui-btn-sm">View all</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-embed ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_40"><span class="material-symbols-outlined">open_in_browser</span>wui-embed</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_41">Shell for embedding iframes, maps, or external content with a consistent header/body/footer. The outer <code>wui-embed-wrap</code> supplies the border and clipping; the inner <code>wui-embed</code> is the flex column. The body scrolls by default; add <code>.no-scroll</code> to let it grow. Wrap padded body content in <code>wui-embed-body-wrap</code>.</p>
+
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Embed: header (title row + sub + actions), body, footer -->
+              <div class="wui-embed-wrap" style="width:100%;max-width:480px;height:220px">
+                <div class="wui-embed">
+                  <div class="wui-embed-hdr">
+                    <div class="wui-embed-hdr-title-row">
+                      <div>
+                        <div class="wui-embed-hdr-title"><span class="material-symbols-outlined">map</span>Situational Map</div>
+                        <div class="wui-embed-hdr-sub">Live feed · GIS layer</div>
+                      </div>
+                    </div>
+                    <div class="wui-embed-hdr-actions">
+                      <button class="wui-action-btn" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
+                      <button class="wui-action-btn" title="Full screen"><span class="material-symbols-outlined">open_in_full</span></button>
+                    </div>
+                  </div>
+                  <div class="wui-embed-body" style="display:flex;align-items:center;justify-content:center;background:var(--color-60);color:var(--color-text-secondary);font-size:var(--text-sm)">
+                    [ iframe / map canvas ]
+                  </div>
+                  <div class="wui-embed-footer" style="font-size:var(--text-xs);color:var(--color-text-secondary)">
+                    Last updated: 15:47
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-person ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_42"><span class="material-symbols-outlined">person</span>wui-person</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_43">Compact identity block: avatar + stacked info (optional label, name, sub). Size axis: default (md) or <code>.sm</code>. Parts: <code>wui-person-info</code>, <code>wui-person-label</code>, <code>wui-person-name</code>, <code>wui-person-sub</code>.</p>
+
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default (md) with label + name + sub -->
+              <div class="wui-person">
+                <div class="wui-avatar">JD</div>
+                <div class="wui-person-info">
+                  <div class="wui-person-label">Reported by</div>
+                  <div class="wui-person-name">John Davis</div>
+                  <div class="wui-person-sub">EOC Director</div>
+                </div>
+              </div>
+              <!-- Small (.sm) -->
+              <div class="wui-person sm">
+                <div class="wui-avatar wui-avatar-sm">AK</div>
+                <div class="wui-person-info">
+                  <div class="wui-person-name">Alice Kim</div>
+                  <div class="wui-person-sub">Logistics Lead</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-person-card ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_44"><span class="material-symbols-outlined">badge</span>wui-person-card</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_45">Bordered contact card: circular icon avatar + body with name, a dot-separated meta row (<code>wui-person-card-role</code> / <code>wui-person-card-unit</code>), a highlighted contact line, and an optional date. Meta children auto-insert a bullet separator between items.</p>
+
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Full person card: avatar + name + meta + contact + date -->
+              <div class="wui-person-card" style="width:320px">
+                <div class="wui-person-card-avatar"><span class="material-symbols-outlined">person</span></div>
+                <div class="wui-person-card-body">
+                  <div class="wui-person-card-name">Maria Rodriguez</div>
+                  <div class="wui-person-card-meta">
+                    <span class="wui-person-card-role">Fire Chief</span>
+                    <span class="wui-person-card-unit">Station 3</span>
+                  </div>
+                  <div class="wui-person-card-contact">m.rodriguez@eoc.gov</div>
+                  <div class="wui-person-card-date">On duty since 06:00</div>
+                </div>
+              </div>
+              <!-- Minimal: avatar + name + single meta -->
+              <div class="wui-person-card" style="width:320px">
+                <div class="wui-person-card-avatar"><span class="material-symbols-outlined">engineering</span></div>
+                <div class="wui-person-card-body">
+                  <div class="wui-person-card-name">Samuel Osei</div>
+                  <div class="wui-person-card-meta">
+                    <span class="wui-person-card-role">Logistics Section Chief</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-info-grid ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_46"><span class="material-symbols-outlined">table_rows</span>wui-info-grid</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_47">Read-only label/value grid for detail views and panels. Default is 2 columns; column modifiers: <code>.col1</code>, <code>.col3</code>, <code>.col4</code> (all collapse to one column under 576px). Item modifiers: <code>.span-all</code>, <code>.spaced</code>. Value modifiers: <code>.muted</code>, <code>.prose</code>, <code>.is-empty</code> (renders a "No data available" placeholder).</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_48">Default 2-column + item/value modifiers</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-info-grid" style="width:100%">
+                <!-- Standard item -->
+                <div class="wui-info-item">
+                  <div class="wui-info-label"><span class="material-symbols-outlined">local_fire_department</span>Incident Type</div>
+                  <div class="wui-info-value">Structure Fire</div>
+                </div>
+                <!-- Value with a badge -->
+                <div class="wui-info-item">
+                  <div class="wui-info-label">Priority</div>
+                  <div class="wui-info-value"><span class="wui-badge danger">Critical</span></div>
+                </div>
+                <!-- Standard -->
+                <div class="wui-info-item">
+                  <div class="wui-info-label">Reported At</div>
+                  <div class="wui-info-value">2024-01-15 · 14:32</div>
+                </div>
+                <!-- Standard -->
+                <div class="wui-info-item">
+                  <div class="wui-info-label">Assigned Units</div>
+                  <div class="wui-info-value">Engine 7, Ladder 4</div>
+                </div>
+                <!-- span-all + prose value -->
+                <div class="wui-info-item span-all">
+                  <div class="wui-info-label">Description</div>
+                  <div class="wui-info-value prose">Command post established at the north entrance gate. Multiple agencies responding under unified command.</div>
+                </div>
+                <!-- muted value -->
+                <div class="wui-info-item">
+                  <div class="wui-info-label">Status</div>
+                  <div class="wui-info-value muted">Under review</div>
+                </div>
+                <!-- is-empty value (auto placeholder) -->
+                <div class="wui-info-item">
+                  <div class="wui-info-label">Closed At</div>
+                  <div class="wui-info-value is-empty"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_49">Column variants — col1 / col3 / col4</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- col1 -->
+              <div class="wui-info-grid col1" style="width:100%">
+                <div class="wui-info-item"><div class="wui-info-label">.col1 — single column</div><div class="wui-info-value">Full-width stacked pairs</div></div>
+                <div class="wui-info-item"><div class="wui-info-label">Location</div><div class="wui-info-value">North Warehouse, Bay 3</div></div>
+              </div>
+              <!-- col3 -->
+              <div class="wui-info-grid col3" style="width:100%">
+                <div class="wui-info-item"><div class="wui-info-label">.col3</div><div class="wui-info-value">Three across</div></div>
+                <div class="wui-info-item"><div class="wui-info-label">Sector</div><div class="wui-info-value">North</div></div>
+                <div class="wui-info-item"><div class="wui-info-label">Radio</div><div class="wui-info-value">TAC-3</div></div>
+              </div>
+              <!-- col4 + spaced item -->
+              <div class="wui-info-grid col4" style="width:100%">
+                <div class="wui-info-item"><div class="wui-info-label">.col4</div><div class="wui-info-value">Four across</div></div>
+                <div class="wui-info-item"><div class="wui-info-label">Engines</div><div class="wui-info-value">8</div></div>
+                <div class="wui-info-item"><div class="wui-info-label">Ladders</div><div class="wui-info-value">3</div></div>
+                <div class="wui-info-item spaced"><div class="wui-info-label">.spaced</div><div class="wui-info-value">Extra bottom margin</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-widget ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_50"><span class="material-symbols-outlined">widgets</span>wui-widget</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_51">Dashboard widget shell for GridStack layouts. The header (<code>wui-widget-hdr</code>) and drag handle (<code>wui-widget-drag</code>) are hidden until the grid container enters edit mode (board CSS toggles them); <code>wui-widget-body</code> flexes to fill. The demo below forces both visible via inline overrides so you can see every part.</p>
+
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Widget: header forced visible + drag handle + title + body -->
+              <div class="wui-widget" style="width:100%;max-width:420px;border:1px solid var(--color-border)">
+                <div class="wui-widget-hdr" style="display:flex">
+                  <div class="wui-widget-drag" style="opacity:1"><span class="material-symbols-outlined">drag_indicator</span></div>
+                  <span class="wui-widget-title">Active Incidents</span>
+                </div>
+                <div class="wui-widget-body" style="padding:var(--space-4)">
+                  <div style="font-size:var(--text-2xl);font-weight:var(--font-bold)">27</div>
+                  <div style="font-size:var(--text-xs);color:var(--color-text-secondary)">Widget body content flexes to fill.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-update-entry ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_52"><span class="material-symbols-outlined">history</span>wui-update-entry</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_53">A single timestamped row in an update feed: a description (<code>wui-update-desc</code>) over muted meta (<code>wui-update-meta</code>). Stack several inside a panel body to form an activity stream.</p>
+
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Entry -->
+              <div class="wui-update-entry">
+                <div class="wui-update-desc">Backup generators brought online for Tower B.</div>
+                <div class="wui-update-meta">J. Rivera · 12 min ago</div>
+              </div>
+              <!-- Entry -->
+              <div class="wui-update-entry">
+                <div class="wui-update-desc">Incident escalated to Tier 3.</div>
+                <div class="wui-update-meta">Watch Officer · 41 min ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Collapsible family ══════════════════════════ -->
+        <!--
+          All three collapsibles share ONE declarative mechanism from weoc-ui.js
+          (loaded in <head>): a document-delegated click on [data-wui-collapse]
+          toggles .is-open on the nearest [data-wui-collapsible]. No page init,
+          no data-wui-demo-run. Body = .wui-collapsible-body > .wui-collapsible-content.
+          Chevron = .wui-collapsible-chevron (rotates via [data-wui-collapsible].is-open).
+        -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_54"><span class="material-symbols-outlined">expand_more</span>wui-collapsible</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_55">Boxed minimal accordion. Container carries <code>data-wui-collapsible</code>; the header button carries <code>data-wui-collapse</code>. weoc-ui.js toggles <code>.is-open</code> on click (delegated document handler, loaded in head). Start open by adding <code>.is-open</code>. The body animates via a <code>0fr → 1fr</code> grid row, so keep padding on your own content, not on <code>wui-collapsible-content</code>.</p>
+
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Open by default (.is-open) -->
+              <div class="wui-collapsible is-open" data-wui-collapsible style="width:100%">
+                <button class="wui-collapsible-header" data-wui-collapse>
+                  <span class="wui-collapsible-title">
+                    <span class="material-symbols-outlined">inventory_2</span> Activated Resources
+                    <span class="wui-badge primary">12</span>
+                  </span>
+                  <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                </button>
+                <div class="wui-collapsible-body">
+                  <div class="wui-collapsible-content">
+                    <div style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-text-secondary)">Starts open. Click the header to collapse.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Collapsed by default -->
+              <div class="wui-collapsible" data-wui-collapsible style="width:100%">
+                <button class="wui-collapsible-header" data-wui-collapse>
+                  <span class="wui-collapsible-title">Shelters</span>
+                  <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                </button>
+                <div class="wui-collapsible-body">
+                  <div class="wui-collapsible-content">
+                    <div style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-text-secondary)">Collapsed by default. Click to open.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_56"><span class="material-symbols-outlined">horizontal_rule</span>wui-section-collapse</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_57">Ghost inline section header — no box, blends into the page. Good for grouping fields inside a panel or card body. The header (<code>wui-section-collapse-hdr</code>) is a full-width labeled separator; its bottom border fades when open. Same <code>data-wui-collapsible</code> / <code>data-wui-collapse</code> mechanism.</p>
+
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Wrapped in a plane so the ghost header has a surface to sit on -->
+              <div class="wui-plane color-30" style="width:100%">
+                <!-- Open by default -->
+                <div class="wui-section-collapse is-open" data-wui-collapsible>
+                  <button class="wui-section-collapse-hdr" data-wui-collapse>
+                    <span class="wui-section-collapse-title">Location Details</span>
+                    <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                  </button>
+                  <div class="wui-collapsible-body">
+                    <div class="wui-collapsible-content">
+                      <div style="padding:var(--space-3) 0;font-size:var(--text-sm);color:var(--color-text-secondary)">North Warehouse, Bay 3 · Grid 12-B.</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Collapsed by default -->
+                <div class="wui-section-collapse" data-wui-collapsible>
+                  <button class="wui-section-collapse-hdr" data-wui-collapse>
+                    <span class="wui-section-collapse-title">Contacts</span>
+                    <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                  </button>
+                  <div class="wui-collapsible-body">
+                    <div class="wui-collapsible-content">
+                      <div style="padding:var(--space-3) 0;font-size:var(--text-sm);color:var(--color-text-secondary)">Primary: J. Davis · Secondary: A. Kim.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_containers_58"><span class="material-symbols-outlined">web_asset</span>wui-collapse-panel</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_containers_59">Card-shaped collapsible with an optional top accent stripe via color variant: <code>.primary</code>, <code>.success</code>, <code>.warning</code>, <code>.danger</code>, <code>.secondary</code>. Header holds an optional leading icon (<code>wui-collapse-panel-icon</code>, tinted by variant) plus a stacked title/subtitle (<code>wui-collapse-panel-titles</code> → <code>-title</code> / <code>-sub</code>). Same <code>data-wui-collapsible</code> / <code>data-wui-collapse</code> mechanism.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_60">No accent</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Plain, open by default -->
+              <div class="wui-collapse-panel is-open" data-wui-collapsible style="width:100%">
+                <button class="wui-collapse-panel-hdr" data-wui-collapse>
+                  <div class="wui-collapse-panel-titles">
+                    <div class="wui-collapse-panel-title">Situation Report</div>
+                    <div class="wui-collapse-panel-sub">Last updated 14:32</div>
+                  </div>
+                  <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                </button>
+                <div class="wui-collapsible-body">
+                  <div class="wui-collapsible-content">
+                    <div style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-text-secondary)">Fire contained to the original structure. No injuries reported.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_containers_61">Color variants + leading icon</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary (open) -->
+              <div class="wui-collapse-panel primary is-open" data-wui-collapsible style="width:100%">
+                <button class="wui-collapse-panel-hdr" data-wui-collapse>
+                  <span class="wui-collapse-panel-icon material-symbols-outlined">people</span>
+                  <div class="wui-collapse-panel-titles">
+                    <div class="wui-collapse-panel-title">Resources</div>
+                    <div class="wui-collapse-panel-sub">12 activated</div>
+                  </div>
+                  <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                </button>
+                <div class="wui-collapsible-body">
+                  <div class="wui-collapsible-content">
+                    <div style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-text-secondary)">Engine 7, Ladder 4, Rescue 1, Medic 12 …</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Success -->
+              <div class="wui-collapse-panel success" data-wui-collapsible style="width:100%">
+                <button class="wui-collapse-panel-hdr" data-wui-collapse>
+                  <span class="wui-collapse-panel-icon material-symbols-outlined">check_circle</span>
+                  <div class="wui-collapse-panel-titles">
+                    <div class="wui-collapse-panel-title">Resolved Actions</div>
+                    <div class="wui-collapse-panel-sub">8 of 8 complete</div>
+                  </div>
+                  <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                </button>
+                <div class="wui-collapsible-body">
+                  <div class="wui-collapsible-content">
+                    <div style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-text-secondary)">All assigned tasks closed out.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Warning -->
+              <div class="wui-collapse-panel warning" data-wui-collapsible style="width:100%">
+                <button class="wui-collapse-panel-hdr" data-wui-collapse>
+                  <span class="wui-collapse-panel-icon material-symbols-outlined">warning</span>
+                  <div class="wui-collapse-panel-titles">
+                    <div class="wui-collapse-panel-title">Open Actions</div>
+                    <div class="wui-collapse-panel-sub">3 pending</div>
+                  </div>
+                  <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                </button>
+                <div class="wui-collapsible-body">
+                  <div class="wui-collapsible-content">
+                    <div style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-text-secondary)">Awaiting resource assignment.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Danger -->
+              <div class="wui-collapse-panel danger" data-wui-collapsible style="width:100%">
+                <button class="wui-collapse-panel-hdr" data-wui-collapse>
+                  <span class="wui-collapse-panel-icon material-symbols-outlined">priority_high</span>
+                  <div class="wui-collapse-panel-titles">
+                    <div class="wui-collapse-panel-title">Critical Issues</div>
+                    <div class="wui-collapse-panel-sub">2 unacknowledged</div>
+                  </div>
+                  <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                </button>
+                <div class="wui-collapsible-body">
+                  <div class="wui-collapsible-content">
+                    <div style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-text-secondary)">Water supply pressure below threshold.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Secondary -->
+              <div class="wui-collapse-panel secondary" data-wui-collapsible style="width:100%">
+                <button class="wui-collapse-panel-hdr" data-wui-collapse>
+                  <span class="wui-collapse-panel-icon material-symbols-outlined">draft</span>
+                  <div class="wui-collapse-panel-titles">
+                    <div class="wui-collapse-panel-title">Draft Notes</div>
+                    <div class="wui-collapse-panel-sub">Not yet published</div>
+                  </div>
+                  <span class="material-symbols-outlined wui-collapsible-chevron">expand_more</span>
+                </button>
+                <div class="wui-collapsible-body">
+                  <div class="wui-collapsible-content">
+                    <div style="padding:var(--space-3) var(--space-4);font-size:var(--text-sm);color:var(--color-text-secondary)">Internal working notes.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('containers');</script>
+</body>
+</html>

@@ -1,0 +1,874 @@
+/* =============================================
+   weoc-calendar.css
+   Calendar system — month / week / day / agenda
+   views, with an accented clickable event card and
+   a detail popup (rendered into a wui-modal by
+   weoc-calendar.js).
+
+   Loaded via the weoc-ui.css barrel.
+   Requires: agency-theme.css (tokens), and at runtime
+   weoc-calendar.js to render the grids and wire the
+   toolbar + event popup. The popup reuses .wui-modal
+   from weoc-overlays.css.
+
+   ── Namespace ────────────────────────────────────
+   Root            .wui-calendar
+   Toolbar         .wui-cal-toolbar / -nav / -title / -views
+   View switch     .wui-cal-seg + .wui-cal-seg-btn (data-cal-view)
+   Body            .wui-cal-body
+   Month           .wui-cal-month, -weekdays, -grid, -day, -daynum, -events
+   Week / Day      .wui-cal-time, -gutter, -allday, -cols, -col, -slot, -now
+   Agenda          .wui-cal-agenda, -agenda-group, -agenda-row
+   Event card      .wui-cal-event  (the accented, clickable slot card)
+   Popup body      .wui-cal-popup  (lives inside .wui-modal-body)
+
+   ── Accent model ─────────────────────────────────
+   Every event carries ONE local --_accent (+ --_tint)
+   set by a color modifier. Default = primary. Variants:
+   primary | success | warning | danger | info | secondary
+   | tier-1 | tier-2 | tier-3 | tier-4. The card shows the
+   accent as a left rail (month/agenda) or a full tinted
+   block with an accent left border (week/day timed block).
+   ============================================= */
+
+/* ============================================================
+   0) ACCENT TOKENS — one block, reused by event cards + popup
+   Each modifier just rebinds --_accent / --_tint / --_text.
+   ============================================================ */
+
+.wui-calendar {
+  /* component-local sizing knobs (overridable per instance) */
+  --wui-cal-slot-h: 48px;        /* px per hour in week/day timegrid */
+  --wui-cal-gutter-w: 56px;      /* time-label gutter width          */
+  --wui-cal-min-day-h: 96px;     /* min height of a month day cell   */
+  --wui-cal-border: var(--color-border);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  background: var(--color-30);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  font-family: var(--font-ui);
+  color: var(--color-text-primary);
+}
+
+/* accent palette — applied to .wui-cal-event and .wui-cal-popup */
+.wui-cal-accent-primary   { --_accent: var(--color-10);        --_tint: var(--color-10-light);        --_text: var(--color-10); }
+.wui-cal-accent-success   { --_accent: var(--color-success);   --_tint: var(--color-success-light);   --_text: var(--color-success-text); }
+.wui-cal-accent-warning   { --_accent: var(--color-warning);   --_tint: var(--color-warning-light);   --_text: var(--color-warning-text); }
+.wui-cal-accent-danger    { --_accent: var(--color-danger);    --_tint: var(--color-danger-light);    --_text: var(--color-danger-text); }
+.wui-cal-accent-info      { --_accent: var(--color-info);      --_tint: var(--color-info-light);      --_text: var(--color-info-text); }
+.wui-cal-accent-secondary { --_accent: var(--color-secondary); --_tint: var(--color-secondary-light); --_text: var(--color-text-secondary); }
+.wui-cal-accent-tier-1    { --_accent: var(--tier-1-color);    --_tint: var(--tier-1-light);          --_text: var(--tier-1-text); }
+.wui-cal-accent-tier-2    { --_accent: var(--tier-2-color);    --_tint: var(--tier-2-light);          --_text: var(--tier-2-text); }
+.wui-cal-accent-tier-3    { --_accent: var(--tier-3-color);    --_tint: var(--tier-3-light);          --_text: var(--tier-3-text); }
+.wui-cal-accent-tier-4    { --_accent: var(--tier-4-color);    --_tint: var(--tier-4-light);          --_text: var(--tier-4-text); }
+
+/* ============================================================
+   1) TOOLBAR
+   ============================================================ */
+
+.wui-cal-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.wui-cal-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* round icon nav buttons (prev / next) */
+.wui-cal-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background: var(--color-30);
+  color: var(--color-text-ui);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.wui-cal-nav-btn .material-symbols-outlined { font-size: var(--text-md); }
+
+.wui-cal-nav-btn:hover {
+  background: var(--color-60);
+  color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
+}
+
+.wui-cal-today-btn {
+  height: 32px;
+  padding: 0 var(--space-3);
+  margin-inline-start: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background: var(--color-30);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.wui-cal-today-btn:hover {
+  background: var(--color-60);
+  border-color: var(--color-text-secondary);
+}
+
+.wui-cal-title {
+  font-size: var(--text-md);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  margin: 0 var(--space-1);
+}
+
+.wui-cal-title .wui-cal-title-sub {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-regular);
+  margin-inline-start: var(--space-1);
+}
+
+/* push the view switcher to the right */
+.wui-cal-spacer { flex: 1 1 auto; }
+
+/* ── segmented view switch (Month / Week / Day / Agenda) ── */
+.wui-cal-seg {
+  display: inline-flex;
+  padding: 3px;
+  background: var(--color-60);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.wui-cal-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 26px;
+  padding: 0 var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.wui-cal-seg-btn .material-symbols-outlined { font-size: var(--text-sm); }
+
+.wui-cal-seg-btn:hover { color: var(--color-text-primary); }
+
+.wui-cal-seg-btn.active {
+  background: var(--color-30);
+  color: var(--color-10);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ============================================================
+   2) BODY (scroll host for whichever view is mounted)
+   ============================================================ */
+
+.wui-cal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ============================================================
+   3) MONTH VIEW
+   ============================================================ */
+
+.wui-cal-month {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.wui-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.wui-cal-weekday {
+  padding: var(--space-2) var(--space-2);
+  text-align: center;
+  font-size: var(--text-2xs);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+}
+
+.wui-cal-weekday.is-weekend { color: var(--color-text-ui); }
+
+.wui-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.wui-cal-day {
+  display: flex;
+  flex-direction: column;
+  min-height: var(--wui-cal-min-day-h);
+  min-width: 0;
+  padding: var(--space-1);
+  border-inline-end: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-30);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.wui-cal-day:nth-child(7n) { border-inline-end: none; }
+.wui-cal-day:hover { background: var(--color-60); }
+
+.wui-cal-day.is-other-month { background: var(--color-60); }
+.wui-cal-day.is-other-month .wui-cal-daynum { color: var(--color-text-ui); opacity: 0.6; }
+.wui-cal-day.is-weekend:not(.is-other-month) { background: color-mix(in srgb, var(--color-60) 55%, var(--color-30)); }
+.wui-cal-day.is-selected { background: var(--color-10-light); }
+
+.wui-cal-day-head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.wui-cal-daynum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 var(--space-1);
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-pill);
+}
+
+.wui-cal-day.is-today .wui-cal-daynum {
+  background: var(--color-10);
+  color: var(--color-on-accent);
+  font-weight: var(--font-semibold);
+}
+
+.wui-cal-events {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--space-1);
+  overflow: hidden;
+}
+
+.wui-cal-more {
+  margin-top: 1px;
+  padding: 1px var(--space-1);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  text-align: start;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+}
+
+.wui-cal-more:hover { color: var(--color-10); background: var(--color-10-light); }
+
+/* ============================================================
+   4) EVENT CARD — the accented, clickable slot card
+   Default (compact) form used in month + agenda + all-day row.
+   ============================================================ */
+
+.wui-cal-event {
+  --_accent: var(--color-10);
+  --_tint: var(--color-10-light);
+  --_text: var(--color-10);
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: 100%;
+  padding-block: 2px;
+  padding-inline: 5px var(--space-1);
+  border: none;
+  border-inline-start: 3px solid var(--_accent);
+  border-radius: var(--radius-xs);
+  background: var(--_tint);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--text-2xs);
+  line-height: var(--leading-tight);
+  text-align: start;
+  cursor: pointer;
+  overflow: hidden;
+  transition: filter 0.12s, box-shadow 0.12s, transform 0.06s;
+}
+
+.wui-cal-event:hover {
+  filter: brightness(0.97);
+  box-shadow: var(--shadow-xs);
+}
+
+[data-theme="dark"] .wui-cal-event:hover { filter: brightness(1.15); }
+
+.wui-cal-event:active { transform: translateY(0.5px); }
+
+.wui-cal-event:focus-visible {
+  outline: 2px solid var(--_accent);
+  outline-offset: 1px;
+}
+
+/* leading dot used in compact form when no time is shown */
+.wui-cal-event-dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--_accent);
+}
+
+.wui-cal-event-time {
+  flex-shrink: 0;
+  font-weight: var(--font-semibold);
+  color: var(--_text);
+  font-variant-numeric: tabular-nums;
+}
+
+.wui-cal-event-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--font-medium);
+}
+
+/* all-day / solid emphasis: fill with the accent instead of a tint */
+.wui-cal-event.is-solid {
+  background: var(--_accent);
+  border-inline-start-color: var(--_accent);
+  color: var(--color-on-accent);
+}
+.wui-cal-event.is-solid .wui-cal-event-time { color: var(--color-on-accent); opacity: 0.85; }
+.wui-cal-event.is-solid .wui-cal-event-dot  { background: var(--color-on-accent); }
+
+/* status flags on the card */
+.wui-cal-event.is-done .wui-cal-event-title { text-decoration: line-through; opacity: 0.65; }
+.wui-cal-event.is-cancelled { opacity: 0.55; }
+.wui-cal-event.is-cancelled .wui-cal-event-title { text-decoration: line-through; }
+
+/* ============================================================
+   5) WEEK / DAY VIEW (shared timegrid)
+   ============================================================ */
+
+.wui-cal-time {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* sticky header row: corner + day headers */
+.wui-cal-time-head {
+  display: grid;
+  grid-template-columns: var(--wui-cal-gutter-w) 1fr;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.wui-cal-time-corner { border-inline-end: 1px solid var(--color-border); }
+
+.wui-cal-daycols-head {
+  display: grid;
+  grid-template-columns: repeat(var(--wui-cal-cols, 7), 1fr);
+}
+
+.wui-cal-dayhead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: var(--space-2) var(--space-1);
+  border-inline-start: 1px solid var(--color-border);
+  cursor: pointer;
+}
+.wui-cal-dayhead:first-child { border-inline-start: none; }
+.wui-cal-dayhead:hover .wui-cal-dayhead-name { color: var(--color-text-primary); }
+
+.wui-cal-dayhead-name {
+  font-size: var(--text-2xs);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+}
+
+.wui-cal-dayhead-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-pill);
+}
+
+.wui-cal-dayhead.is-today .wui-cal-dayhead-num {
+  background: var(--color-10);
+  color: var(--color-on-accent);
+  font-weight: var(--font-semibold);
+}
+.wui-cal-dayhead.is-today .wui-cal-dayhead-name { color: var(--color-10); }
+
+/* all-day strip under the headers */
+.wui-cal-allday {
+  display: grid;
+  grid-template-columns: var(--wui-cal-gutter-w) 1fr;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  max-height: 96px;
+  overflow-y: auto;
+}
+
+.wui-cal-allday-label {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+  border-inline-end: 1px solid var(--color-border);
+}
+
+.wui-cal-allday-cols {
+  display: grid;
+  grid-template-columns: repeat(var(--wui-cal-cols, 7), 1fr);
+}
+
+.wui-cal-allday-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-1);
+  border-inline-start: 1px solid var(--color-border);
+  min-width: 0;
+}
+.wui-cal-allday-cell:first-child { border-inline-start: none; }
+
+/* scrollable timegrid */
+.wui-cal-timegrid {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: var(--wui-cal-gutter-w) 1fr;
+}
+
+.wui-cal-gutter {
+  border-inline-end: 1px solid var(--color-border);
+}
+
+.wui-cal-gutter-hour {
+  height: var(--wui-cal-slot-h);
+  position: relative;
+  text-align: end;
+  padding-inline-end: var(--space-2);
+}
+
+.wui-cal-gutter-hour > span {
+  position: absolute;
+  top: -7px;
+  inset-inline-end: var(--space-2);
+  font-size: var(--text-2xs);
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+  background: var(--color-30);
+  padding: 0 2px;
+}
+.wui-cal-gutter-hour:first-child > span { top: 1px; }
+
+.wui-cal-cols {
+  display: grid;
+  grid-template-columns: repeat(var(--wui-cal-cols, 7), 1fr);
+  position: relative;
+}
+
+.wui-cal-col {
+  position: relative;
+  border-inline-start: 1px solid var(--color-border);
+  min-width: 0;
+}
+.wui-cal-col:first-child { border-inline-start: none; }
+.wui-cal-col.is-today { background: var(--color-10-light); }
+.wui-cal-col.is-weekend { background: color-mix(in srgb, var(--color-60) 45%, transparent); }
+
+/* hour lines (background) */
+.wui-cal-hour {
+  height: var(--wui-cal-slot-h);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+}
+.wui-cal-hour:hover { background: var(--color-10-light); }
+/* half-hour guide */
+.wui-cal-hour::after {
+  content: "";
+  display: block;
+  height: 50%;
+  border-bottom: 1px dashed color-mix(in srgb, var(--color-border) 60%, transparent);
+}
+
+/* absolutely-positioned timed event block (top/height set inline by JS) */
+.wui-cal-event.is-timed {
+  position: absolute;
+  inset-inline: 2px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding-block: 3px;
+  padding-inline: 6px var(--space-1);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-2xs);
+  z-index: 2;
+  overflow: hidden;
+}
+
+.wui-cal-event.is-timed .wui-cal-event-title {
+  white-space: normal;
+  font-size: var(--text-2xs);
+  font-weight: var(--font-semibold);
+}
+
+.wui-cal-event.is-timed .wui-cal-event-time {
+  font-weight: var(--font-regular);
+  font-size: var(--text-2xs);
+  opacity: 0.9;
+}
+
+.wui-cal-event.is-timed .wui-cal-event-loc {
+  font-size: var(--text-2xs);
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wui-cal-event.is-timed.is-solid .wui-cal-event-loc { color: var(--color-on-accent); opacity: 0.85; }
+
+/* compressed timed block (very short events) */
+.wui-cal-event.is-timed.is-compact {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-1);
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+.wui-cal-event.is-timed.is-compact .wui-cal-event-title { white-space: nowrap; }
+
+/* current-time indicator */
+.wui-cal-now {
+  position: absolute;
+  inset-inline: 0;
+  height: 0;
+  border-top: 2px solid var(--color-danger);
+  z-index: 3;
+  pointer-events: none;
+}
+.wui-cal-now::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -4px;
+  top: -4px;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: 50%;
+  background: var(--color-danger);
+}
+
+/* ============================================================
+   6) AGENDA / LIST VIEW
+   ============================================================ */
+
+.wui-cal-agenda {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-2) 0;
+}
+
+.wui-cal-agenda-group { border-bottom: 1px solid var(--color-border); }
+.wui-cal-agenda-group:last-child { border-bottom: none; }
+
+.wui-cal-agenda-date {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  position: sticky;
+  top: 0;
+  background: var(--color-30);
+  z-index: 1;
+}
+
+.wui-cal-agenda-date.is-today { color: var(--color-10); }
+
+.wui-cal-agenda-dow {
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+}
+.wui-cal-agenda-date.is-today .wui-cal-agenda-dow { color: var(--color-10); }
+
+.wui-cal-agenda-dnum {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+}
+
+.wui-cal-agenda-month {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.wui-cal-agenda-rows {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--space-4) var(--space-2);
+  gap: var(--space-1);
+}
+
+/* a richer event row (more room than the month chip) */
+.wui-cal-agenda-row {
+  --_accent: var(--color-10);
+  --_tint: var(--color-10-light);
+  --_text: var(--color-10);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-inline-start: 3px solid var(--_accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-30);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background 0.12s, box-shadow 0.12s;
+}
+
+.wui-cal-agenda-row:hover { background: var(--_tint); box-shadow: var(--shadow-xs); }
+
+.wui-cal-agenda-when {
+  flex-shrink: 0;
+  width: 116px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--_text);
+  font-variant-numeric: tabular-nums;
+}
+
+.wui-cal-agenda-body { flex: 1 1 auto; min-width: 0; }
+
+.wui-cal-agenda-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wui-cal-agenda-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: 1px;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+.wui-cal-agenda-meta .material-symbols-outlined { font-size: var(--text-sm); }
+
+.wui-cal-agenda-row.is-done .wui-cal-agenda-title { text-decoration: line-through; opacity: 0.6; }
+
+/* ============================================================
+   7) EMPTY STATE (no events in current range / agenda)
+   ============================================================ */
+
+.wui-cal-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  padding: var(--space-8) var(--space-4);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+.wui-cal-empty .material-symbols-outlined { font-size: var(--text-3xl); opacity: 0.5; }
+.wui-cal-empty-title { font-size: var(--text-sm); font-weight: var(--font-medium); color: var(--color-text-primary); }
+
+/* ============================================================
+   8) EVENT POPUP  (rendered into .wui-modal-body by the JS)
+   The modal frame/backdrop come from weoc-overlays.css; this is
+   only the inner content layout. Carry a .wui-cal-accent-* class
+   on .wui-cal-popup so the header strip + chips pick up --_accent.
+   ============================================================ */
+
+.wui-cal-popup {
+  --_accent: var(--color-10);
+  --_tint: var(--color-10-light);
+  --_text: var(--color-10);
+  display: flex;
+  flex-direction: column;
+}
+
+/* colored header band */
+.wui-cal-popup-band {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--_tint);
+  border-inline-start: 4px solid var(--_accent);
+  border-radius: var(--radius-sm);
+}
+
+.wui-cal-popup-band .wui-cal-popup-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--_accent);
+  color: var(--color-on-accent);
+}
+.wui-cal-popup-band .wui-cal-popup-icon .material-symbols-outlined { font-size: var(--text-lg); }
+
+.wui-cal-popup-headings { min-width: 0; flex: 1 1 auto; }
+
+.wui-cal-popup-title {
+  font-size: var(--text-md);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  line-height: var(--leading-snug);
+}
+
+.wui-cal-popup-when {
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  color: var(--_text);
+  font-weight: var(--font-medium);
+}
+
+/* detail rows */
+.wui-cal-popup-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-2) var(--space-2);
+}
+
+.wui-cal-popup-row {
+  display: grid;
+  grid-template-columns: 20px 84px 1fr;
+  align-items: start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.wui-cal-popup-row .material-symbols-outlined {
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+  margin-top: 1px;
+}
+
+.wui-cal-popup-row-label {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-medium);
+}
+
+.wui-cal-popup-row-value { color: var(--color-text-primary); word-break: break-word; }
+
+.wui-cal-popup-desc {
+  padding: var(--space-2);
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-ui);
+}
+
+/* attendee chips */
+.wui-cal-popup-people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.wui-cal-popup-person {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding-block: 2px;
+  padding-inline: var(--space-1) var(--space-2);
+  background: var(--color-60);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+}
+
+.wui-cal-popup-person-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--_accent);
+  color: var(--color-on-accent);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-semibold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wui-cal-event { transition: none; }
+}

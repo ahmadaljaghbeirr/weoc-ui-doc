@@ -1,0 +1,39 @@
+/* Decorative touches lifted from the real board's display.css (eoc-makeover
+   HomePage/CSS/display.css), reproduced locally here rather than cross-linking
+   another lane's board-local file, to keep this test self-contained. */
+
+.gradient-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 0% 0%, rgb(0 172 232 / 28%) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 35% at 100% 100%, rgb(0 172 232 / 28%) 0%, transparent 70%);
+}
+
+.wui-main-div { position: relative; z-index: 1; }
+
+.topbar { position: relative; }
+.topbar::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, #00ace8 0%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Demo-only KPI-number look — not a library class, reuses real tokens. */
+.dash-kpi-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-extrabold);
+  color: var(--color-text-primary);
+  line-height: 1.1;
+}
+.dash-kpi-value.danger  { color: var(--color-danger); }
+.dash-kpi-value.warning { color: var(--color-warning); }
+.dash-kpi-value.success { color: var(--color-success); }

@@ -1,0 +1,253 @@
+/* =============================================
+   weoc-kanban.css
+   Drag-and-drop kanban board: board / column /
+   card. Rendered by JS/wui-kanban.js
+   (WUI.kanban(el, opts)) — this file styles the
+   markup shape that engine produces, it renders
+   no styling of its own.
+   Loaded via weoc-ui.css barrel (controller-wired
+   @import — see JS/wui-kanban.js report).
+   Requires: agency-theme.css (loaded by barrel).
+
+   Token-only: every color below is a var(--color-*)
+   custom property, so all 7 agency-theme palettes
+   (and any future variant) apply live on theme
+   switch — the board never reads/re-renders on
+   wui:themechange in JS because it never bakes a
+   resolved color into anything (pure CSS cascade,
+   same reasoning as WUI.barRow's plain-DOM rows in
+   wui-charts.js).
+   ============================================= */
+
+/* ============================================================
+   1) BOARD (wui-kanban)
+   ============================================================ */
+
+.wui-kanban {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+/* ============================================================
+   2) COLUMN (wui-kanban-col)
+   ============================================================ */
+
+.wui-kanban-col {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 260px;
+  min-width: 260px;
+  max-width: 340px;
+  /* Tray tone = page background, so cards (--color-surface below) read as
+     elevated content sitting on top of it — same layering wui-charts.js
+     documents between --color-bg and --color-30/--color-surface. */
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.wui-kanban-col-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.wui-kanban-col-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wui-kanban-col-count {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5em;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--color-secondary-light);
+  color: var(--color-text-secondary);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-semibold);
+}
+
+.wui-kanban-col-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  min-height: 96px;
+  /* A drop target still needs to be "hittable" even with zero cards — this
+     floor keeps an empty column body a real drag-and-drop target instead of
+     collapsing to a hairline. */
+  flex: 1 1 auto;
+  overflow-y: auto;
+  transition: background-color 0.15s ease;
+}
+
+/* Drag-over feedback — toggled by wui-kanban.js on dragover/dragleave. Tint
+   only (no hardcoded color): reuses the primary "light" token the rest of
+   the library already uses for hover/active tints (e.g. .wui-badge.primary). */
+.wui-kanban-col-body.is-drag-over {
+  background: var(--color-10-light);
+  outline: 2px dashed var(--color-10);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   3) CARD (wui-kanban-card)
+   ============================================================ */
+
+.wui-kanban-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  cursor: grab;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease, transform 0.15s ease;
+}
+
+/* ─── Optional accent stripe (opts.cards[].accent) ───
+   Same visual recipe as .wui-card.has-accent.<color> (weoc-containers.css):
+   a 4px inline-start bar, rounded on the inline-start corners only, so it
+   reads as flush with the card's own border-radius instead of a separate
+   floating rectangle. inset-inline-start (not left) keeps it correct under
+   RTL. Purely additive — a card with no .has-accent class renders exactly
+   as it did before this option existed. Color values are the SAME
+   var(--color-*)/var(--tier-*-color) tokens .wui-card's own accent bar and
+   .wui-badge already use — no new palette, no hardcoded hex. */
+.wui-kanban-card.has-accent::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-start-start-radius: var(--border-radius);
+  border-end-start-radius: var(--border-radius);
+  pointer-events: none;
+}
+
+.wui-kanban-card.accent-primary::before   { background: var(--color-10); }
+.wui-kanban-card.accent-secondary::before { background: var(--color-secondary); }
+.wui-kanban-card.accent-success::before   { background: var(--color-success); }
+.wui-kanban-card.accent-warning::before   { background: var(--color-warning); }
+.wui-kanban-card.accent-danger::before    { background: var(--color-danger); }
+.wui-kanban-card.accent-info::before      { background: var(--color-info); }
+.wui-kanban-card.accent-tier-1::before    { background: var(--tier-1-color); }
+.wui-kanban-card.accent-tier-2::before    { background: var(--tier-2-color); }
+.wui-kanban-card.accent-tier-3::before    { background: var(--tier-3-color); }
+.wui-kanban-card.accent-tier-4::before    { background: var(--tier-4-color); }
+
+.wui-kanban-card:hover {
+  border-color: var(--color-10-muted);
+  box-shadow: var(--widget-shadow);
+}
+
+.wui-kanban-card:active {
+  cursor: grabbing;
+}
+
+.wui-kanban-card-title {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+  line-height: var(--leading-snug);
+}
+
+.wui-kanban-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.wui-kanban-card-assignee {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wui-kanban-card-assignee .material-symbols-outlined {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.wui-kanban-card-due {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-2xs);
+  color: var(--color-text-secondary);
+}
+
+.wui-kanban-card-due .material-symbols-outlined {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+/* ─── Drag states ───
+   Dragging: the card being moved fades and lifts slightly so the user can
+   still see the column layout beneath the browser's native drag ghost. */
+.wui-kanban-card-dragging {
+  opacity: 0.45;
+  border-color: var(--color-10);
+  box-shadow: var(--widget-shadow);
+}
+
+/* Rejected: opts.onBeforeMove resolved false — the card has already been
+   snapped back to its origin column by wui-kanban.js; this is the brief
+   visual cue that the drop was declined, not silently ignored. Token-only:
+   danger-severity glow, matching .wui-badge's own neon convention
+   (weoc-labels.css) rather than an invented color. */
+@keyframes wui-kanban-reject-shake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-4px); }
+  40%  { transform: translateX(4px); }
+  60%  { transform: translateX(-3px); }
+  80%  { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+.wui-kanban-card-rejected {
+  animation: wui-kanban-reject-shake 0.4s ease;
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 2px var(--color-danger-glow);
+}
+
+/* ============================================================
+   4) Responsive density
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .wui-kanban-col {
+    min-width: 220px;
+    flex: 1 1 220px;
+  }
+}

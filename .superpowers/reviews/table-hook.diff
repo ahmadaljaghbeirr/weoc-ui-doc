@@ -1,0 +1,342 @@
+diff --git a/.superpowers/table-hook-report.md b/.superpowers/table-hook-report.md
+new file mode 100644
+index 0000000..040ad31
+--- /dev/null
++++ b/.superpowers/table-hook-report.md
+@@ -0,0 +1,150 @@
++# Task A report — Table column-hide hook
++
++**Date:** 2026-07-31
++**Scope:** `CSS/weoc-ui/weoc-tables-responsive.css` (new), `docs/docs/tables.html` (modified). No other files touched.
++
++## What was built
++
++1. **`CSS/weoc-ui/weoc-tables-responsive.css`** (new file) — four `@container` rules that hide any
++   `[data-wui-hide-below="sm|md|lg|xl"]` cell inside a `.wui-table-standard` once the table's own
++   `.wui-table-wrap` (which already has `container-type: inline-size`, established in
++   `weoc-tables.css`) shrinks past the named breakpoint. Breakpoints match the existing
++   `wui-col-sm/md` + grid scale exactly: xl 1200 / lg 992 / md 768 / sm 576. Pure structural CSS
++   (`display: none` only) — no colors, no new custom properties, nothing to re-theme on switch.
++
++2. **`docs/docs/tables.html`** — added:
++   - `<link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables-responsive.css">` in `<head>`,
++     right after the existing `weoc-tables.css` link (mirrors the page's own "opt-in module, load
++     explicitly" convention already documented for `weoc-tables.css` itself). This was necessary —
++     without it the live demo would silently do nothing, since the barrel (`weoc-ui-core.css`)
++     import is deliberately deferred to the controller per the plan.
++   - A new "Responsive column hiding" `docs-section` (after Density, before the closing
++     `docs-page` div): prose explaining the attribute/breakpoint scale and the container-vs-viewport
++     rationale, then a live demo.
++   - The live demo is a real `wui-table-standard` (mirroring `FacilitiesManagement`'s Facility/
++     Status/Location/Created By/Created At columns per the spec, `#` from `wui-col-index` added for
++     realism) with `Created By` marked `data-wui-hide-below="md"` and `Created At` marked
++     `data-wui-hide-below="sm"`, inside a resizable box (`resize: horizontal; overflow: auto`,
++     native browser resize handle in the corner) plus three preset buttons (`wui-btn wui-btn-sm
++     outline primary`, `900px` / `700px` / `500px`) wired by ~10 lines of vanilla JS at the bottom
++     of the page (same plain-`<script>`-after-`DocShell.init()` pattern used in `progress.html`).
++     The resize scaffold + toolbar are demo-only chrome; the `[data-wui-demo]` block supplies a
++     `<template class="wui-demo-markup">` override (the site's own documented mechanism for
++     "strip demo scaffolding, show the real component markup" — same technique already used
++     elsewhere in this codebase) so the auto-generated Markup code panel shows the clean, real,
++     copyable `wui-table-wrap > table.wui-table-standard` markup, not the resize `<div>`/buttons.
++   - A closing `wui-callout info` documenting the explicit `<link>` requirement, same shape as the
++     existing "Opt-in module" callout at the top of the page.
++   - Bilingual markers: `data-wui-i18n`/`data-wui-i18n-html` on every new string (`docs_tables_40`
++     through `docs_tables_49`, continuing the page's existing sequential numbering which topped
++     out at `docs_tables_39`), plus `data-wui-i18n-attr="aria-label:docs_tables_44"` on the toolbar
++     group (same `attr:key` syntax already used in `docs-shell.js`'s search input).
++
++## Deviation from spec (why)
++
++The spec's illustrative markup used `<table class="wui-table">`. The **real** class in
++`CSS/weoc-ui/weoc-tables.css` is `.wui-table-standard` (there is no `.wui-table` class anywhere in
++the codebase). Per the task's explicit instruction to verify against the real file, I read
++`weoc-tables.css` in full first and used `.wui-table-standard` as the selector root in both the new
++CSS file and all markup. This is the only deviation from the spec, and it's a correction, not a
++design change — the spec's own CSS comment block ("Scoped to `.wui-table`... not `.wui-table-cards`")
++translates directly with the corrected class name; the cards-exclusion rationale is unchanged.
++
++## Pre-existing i18n gap (not fixed, per plan instruction)
++
++`docs/i18n/tables.js` does not exist, and `'tables'` is not in `docs-shell.js`'s `I18N_PAGES` array
++— confirmed by reading both. This matches the plan's anticipated case ("if tables.html isn't
++currently in the I18N_PAGES list, note that as a pre-existing gap, don't block on fixing it"). I
++added `data-wui-i18n*` markers to the new content anyway, matching the exact convention already
++used throughout the rest of `tables.html` (which is itself not localized despite carrying ~80
++existing markers) and on other not-yet-localized pages such as `buttons.html` (`docs_buttons_N`
++markers, also no registered i18n file). No `docs/i18n/tables.js` was created and `docs-shell.js` was
++not touched — out of scope per the plan.
++
++## Files NOT touched (as instructed)
++
++- `CSS/weoc-ui/weoc-ui-core.css` — barrel `@import` for `weoc-tables-responsive.css` is deferred to
++  the controller. **Line to add:** `@import url("weoc-tables-responsive.css");` after the
++  `weoc-tier-colors.css` import (or any point after `weoc-tables.css` would load — note
++  `weoc-tables.css` itself is NOT in this barrel today, it's always linked explicitly per-view, so
++  the new file's barrel position relative to it doesn't matter functionally; it only needs to land
++  after `weoc-grid.css`/`weoc-utilities.css` are established, which any position in the existing
++  list satisfies).
++- `docs-shell.js` — not modified at all (no JS asset-loading entry needed; this is pure CSS, as the
++  plan itself notes).
++- No files belonging to Task B (heatmap) or Task C (kanban) were touched.
++- The user's own uncommitted edits (`agency-theme.css`, `weoc-card-group.css`, new theme variant
++  files) were left untouched and were NOT staged as part of this commit.
++
++## Theme-token discipline
++
++Per the coordinator's mid-task addition: grepped both new/changed files for `#[0-9a-fA-F]{3,6}`
++after writing them.
++- `CSS/weoc-ui/weoc-tables-responsive.css`: **zero matches** (the file has no colors at all — it's
++  purely `@container`/`display: none`).
++- `docs/docs/tables.html`: the only hex-shaped matches are pre-existing `&#10003;` (checkmark glyph)
++  HTML entities in the unmodified `wui-table-log` demo, not colors and not something I added. All
++  inline styles I added use tokens exclusively: `var(--color-border)`, `var(--border-radius)`,
++  `var(--space-2)`, `var(--space-3)`. Zero hardcoded hex/rgb anywhere in my additions.
++
++## Verification
++
++Live-browser verification via the `claude-in-chrome` MCP tool (available and used):
++
++1. Served the repo root over `python -m http.server` (had to work around several stray/duplicate
++   server processes already bound to nearby ports from other concurrent agents in this shared repo
++   — resolved by killing strays and picking a clean port, 8955).
++2. Navigated a fresh MCP tab to `http://localhost:8955/docs/docs/tables.html` — page loads, header/
++   sidebar/nav render normally alongside the pre-existing table sections.
++3. Scrolled to and screenshotted the new "Responsive column hiding" section — headings, prose,
++   toolbar, and the live demo table all render correctly with proper dark-theme token colors (no
++   raw/unstyled fallback, confirming the new `<link>` actually loads).
++4. Clicked the **"md breakpoint (700px)"** preset button — confirmed via screenshot that `Created
++   By` (the `data-wui-hide-below="md"` column) disappears while `Created At` (`sm`) remains, and the
++   demo box visibly narrows to 700px.
++5. Clicked **"sm breakpoint (500px)"** — confirmed both `Created By` and `Created At` are hidden.
++6. Clicked **"Wide (900px)"** — confirmed both columns reappear.
++7. Checked the auto-generated Markup code panel under the demo — confirmed it shows the clean
++   override template (`wui-table-wrap > table.wui-table-standard` with the two
++   `data-wui-hide-below` attributes), not the resize scaffold/toolbar, proving the
++   `wui-demo-markup` override works as intended.
++8. Read browser console messages at each step — **zero page-originated errors or warnings** (the
++   one console line present is an unrelated Chrome-extension content-script log, not from this
++   page).
++9. Scrolled through the rest of the page (standard/cards/log table sections, column widths,
++   cell utilities, row accents, density) both before and after adding the section — visually
++   unaffected, since the new CSS only targets the `[data-wui-hide-below]` attribute selector, which
++   doesn't exist anywhere else on the page.
++10. Toggled the page's language switcher (found it doubles as an EN/AR + RTL toggle, distinct from
++    a light/dark toggle) — confirmed the new section's chrome (sidebar/nav) flips to RTL and the
++    table itself reflows RTL without breaking; new prose stays in English as expected (no Arabic
++    translation registered yet, consistent with the documented pre-existing i18n gap — this is not
++    a bug, just an unlocalized string falling back to source text).
++
++**Not separately verified:** the native browser drag-resize handle's exact pixel behavior via mouse
++drag (the automation tool doesn't do sub-pixel drag well) — instead verified the equivalent and more
++precise deterministic path (JS-set exact widths via the preset buttons), which exercises the exact
++same `@container` mechanism the drag handle would trigger, since both simply change the computed
++width of `#tables-hide-demo` → `.wui-table-wrap`. Also did not verify light-mode / alternate theme
++variants pixel-by-pixel (dark mode confirmed correctly themed via tokens; since zero hardcoded
++colors exist in the new code, and all reused classes (`wui-btn`, `wui-callout`, `docs-section`,
++etc.) are the same ones already proven correct elsewhere on this exact page, there is no new
++theming risk introduced).
++
++## Self-review findings
++
++- Confirmed `.wui-table-standard` (not `.wui-table`) is the correct real selector — see Deviation
++  section above.
++- Confirmed the demo does NOT touch `wui-table-cards` styling/selectors at all — additive only.
++- Confirmed `data-wui-hide-below` cells are set on both `<th>` and matching `<td>` per row (spec's
++  "no JS pairs them up" requirement) in both the live demo and the markup-panel override template.
++- Confirmed no edits landed in `CSS/weoc-ui/weoc-ui-core.css` or `docs-shell.js`.
++- Confirmed the user's own uncommitted files (`agency-theme.css`, `weoc-card-group.css`, new theme
++  variant files) are excluded from the commit (checked `git status`/`git diff` scope before
++  staging).
++- Confirmed zero hardcoded hex/rgb colors in all new/changed content (grep, see above).
++
++## Concerns
++
++- None blocking. The one open item is the barrel-wiring line noted above for the controller to
++  apply centrally, as instructed by the plan.
+diff --git a/CSS/weoc-ui/weoc-tables-responsive.css b/CSS/weoc-ui/weoc-tables-responsive.css
+new file mode 100644
+index 0000000..9e8a082
+--- /dev/null
++++ b/CSS/weoc-ui/weoc-tables-responsive.css
+@@ -0,0 +1,31 @@
++/* =============================================
++   weoc-tables-responsive.css
++   Supplementary module — always load after weoc-tables.css.
++   Requires .wui-table-wrap's container-type: inline-size (weoc-tables.css).
++
++   Declarative column-hide hook for standard (non-cards) wui-table-standard
++   tables: mark a <th>/<td> pair `data-wui-hide-below="sm|md|lg|xl"` and the
++   cell hides once the table's OWN wrapper (.wui-table-wrap) shrinks past
++   that named breakpoint — not the browser viewport. That distinction is the
++   entire point: a details/split panel opening squeezes the table without
++   ever resizing the window, and a viewport @media query would miss it
++   completely (the exact failure mode two boards already hand-rolled and
++   hit — see the design spec).
++
++   Breakpoint scale matches wui-col-sm/md + the grid system exactly
++   (weoc-grid.css: sm 576 / md 768 / lg 992 / xl 1200) — no new vocabulary.
++
++   Scoped to .wui-table-standard only. .wui-table-cards already has its own
++   narrow-width behavior (§11 in weoc-tables.css: shrinks wui-col-primary/
++   index/actions) — this hook is additive to the standard variant, which
++   today relies purely on horizontal scroll.
++
++   Not paired by JS: each cell hides itself independently off its own
++   attribute. An unrecognized value (typo) simply matches no rule — the
++   column stays visible always, a silent no-op, not a crash.
++   ============================================= */
++
++@container (max-width: 1200px) { .wui-table-standard [data-wui-hide-below="xl"] { display: none; } }
++@container (max-width: 992px)  { .wui-table-standard [data-wui-hide-below="lg"] { display: none; } }
++@container (max-width: 768px)  { .wui-table-standard [data-wui-hide-below="md"] { display: none; } }
++@container (max-width: 576px)  { .wui-table-standard [data-wui-hide-below="sm"] { display: none; } }
+diff --git a/docs/docs/tables.html b/docs/docs/tables.html
+index 068965f..f20a12c 100644
+--- a/docs/docs/tables.html
++++ b/docs/docs/tables.html
+@@ -2,16 +2,17 @@
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>weoc-ui — Tables</title>
+   <script src="../../JS/weoc-ui.js"></script>
+   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables.css">
++  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables-responsive.css">
+   <link rel="stylesheet" href="../docs-style.css">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+   <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+ </head>
+ <body class="wui-body-shell">
+   <div id="docs-hdr"></div>
+@@ -783,15 +784,126 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
+                     <tr><td class="wui-col-primary">Water Leak — Level 3</td><td><span class="wui-badge warning">High</span></td></tr>
+                   </tbody>
+                 </table>
+               </div>
+             </div>
+           </div>
+         </div>
+ 
++        <!-- ══════════════════════════ Responsive column hiding ══════════════════════════ -->
++        <div class="docs-section">
++          <div class="docs-section-title" data-wui-i18n-html="docs_tables_40"><span class="material-symbols-outlined">view_week</span>Responsive column hiding</div>
++          <p class="docs-desc" data-wui-i18n-html="docs_tables_41">Mark a <code>&lt;th&gt;</code>/<code>&lt;td&gt;</code> pair <code>data-wui-hide-below="sm|md|lg|xl"</code> and the column hides once the table's own <code>wui-table-wrap</code> shrinks past that breakpoint &mdash; a real container query against the table's rendered width, not the browser viewport. That is the whole point: a details panel or split view squeezing the table triggers the hide even when the window itself never resizes, which a <code>@media</code> query cannot see. Same <code>sm/md/lg/xl</code> scale as <code>wui-col-sm</code>/<code>wui-col-md</code> and the grid system (576/768/992/1200) &mdash; no new vocabulary. Zero JS: each cell hides itself off its own attribute, nothing pairs the header to its column. Requires loading <code>weoc-tables-responsive.css</code> after <code>weoc-tables.css</code>. Standard table (<code>wui-table-standard</code>) only &mdash; <code>wui-table-cards</code> already has its own narrow-width behavior.</p>
++
++          <div class="docs-subsection-title" data-wui-i18n="docs_tables_42">Live example &mdash; resize the wrapper, not the window</div>
++          <p class="docs-desc" data-wui-i18n-html="docs_tables_43">Two columns below are marked <code>data-wui-hide-below</code>: <code>Created By</code> hides under the <code>md</code> breakpoint (768px), <code>Created At</code> hides under <code>sm</code> (576px). Drag the handle in the demo box's bottom-right corner, or use the width presets, to see each threshold cross independently of the browser window.</p>
++
++          <div style="display:flex; flex-wrap:wrap; gap:var(--space-2); margin-bottom:var(--space-3);" role="group" data-wui-i18n-attr="aria-label:docs_tables_44">
++            <button type="button" class="wui-btn wui-btn-sm outline primary is-active" data-hide-demo-width="900" data-wui-i18n="docs_tables_45">Wide (900px)</button>
++            <button type="button" class="wui-btn wui-btn-sm outline primary" data-hide-demo-width="700" data-wui-i18n="docs_tables_46">md breakpoint (700px)</button>
++            <button type="button" class="wui-btn wui-btn-sm outline primary" data-hide-demo-width="500" data-wui-i18n="docs_tables_47">sm breakpoint (500px)</button>
++          </div>
++
++          <div class="wui-demo stacked" data-wui-demo>
++            <div class="wui-demo-preview">
++              <div id="tables-hide-demo" style="resize:horizontal; overflow:auto; min-width:320px; max-width:100%; width:900px; border:1px dashed var(--color-border); border-radius:var(--border-radius); padding:var(--space-3);">
++                <div class="wui-table-wrap">
++                  <table class="wui-table-standard">
++                    <thead>
++                      <tr>
++                        <th class="wui-col-index">#</th>
++                        <th class="wui-col-primary">Facility</th>
++                        <th class="wui-col-md">Status</th>
++                        <th class="wui-col-md">Location</th>
++                        <th class="wui-col-md" data-wui-hide-below="md">Created By</th>
++                        <th class="wui-col-md" data-wui-hide-below="sm">Created At</th>
++                      </tr>
++                    </thead>
++                    <tbody>
++                      <tr>
++                        <td class="wui-cell-num">26-004</td>
++                        <td>Central Warehouse</td>
++                        <td><span class="wui-badge success">Operational</span></td>
++                        <td>Bldg 4, Zone C</td>
++                        <td data-wui-hide-below="md">J. Rivera</td>
++                        <td data-wui-hide-below="sm">07/28/2026 14:02</td>
++                      </tr>
++                      <tr>
++                        <td class="wui-cell-num">26-011</td>
++                        <td>North Depot</td>
++                        <td><span class="wui-badge warning">Limited</span></td>
++                        <td>Bldg 1, Zone A</td>
++                        <td data-wui-hide-below="md">A. Chen</td>
++                        <td data-wui-hide-below="sm">07/29/2026 09:14</td>
++                      </tr>
++                      <tr>
++                        <td class="wui-cell-num">26-017</td>
++                        <td>Med Supply Cache</td>
++                        <td><span class="wui-badge danger">Closed</span></td>
++                        <td>Bldg 9, Zone F</td>
++                        <td data-wui-hide-below="md">S. Malik</td>
++                        <td data-wui-hide-below="sm">07/30/2026 22:47</td>
++                      </tr>
++                    </tbody>
++                  </table>
++                </div>
++              </div>
++            </div>
++            <template class="wui-demo-markup">
++&lt;div class="wui-table-wrap"&gt;
++  &lt;table class="wui-table-standard"&gt;
++    &lt;thead&gt;
++      &lt;tr&gt;
++        &lt;th class="wui-col-index"&gt;#&lt;/th&gt;
++        &lt;th class="wui-col-primary"&gt;Facility&lt;/th&gt;
++        &lt;th class="wui-col-md"&gt;Status&lt;/th&gt;
++        &lt;th class="wui-col-md"&gt;Location&lt;/th&gt;
++        &lt;th class="wui-col-md" data-wui-hide-below="md"&gt;Created By&lt;/th&gt;
++        &lt;th class="wui-col-md" data-wui-hide-below="sm"&gt;Created At&lt;/th&gt;
++      &lt;/tr&gt;
++    &lt;/thead&gt;
++    &lt;tbody&gt;
++      &lt;tr&gt;
++        &lt;td class="wui-cell-num"&gt;26-004&lt;/td&gt;
++        &lt;td&gt;Central Warehouse&lt;/td&gt;
++        &lt;td&gt;&lt;span class="wui-badge success"&gt;Operational&lt;/span&gt;&lt;/td&gt;
++        &lt;td&gt;Bldg 4, Zone C&lt;/td&gt;
++        &lt;td data-wui-hide-below="md"&gt;J. Rivera&lt;/td&gt;
++        &lt;td data-wui-hide-below="sm"&gt;07/28/2026 14:02&lt;/td&gt;
++      &lt;/tr&gt;
++      &lt;!-- …more rows… --&gt;
++    &lt;/tbody&gt;
++  &lt;/table&gt;
++&lt;/div&gt;
++            </template>
++          </div>
++
++          <div class="wui-callout info">
++            <span class="material-symbols-outlined">info</span>
++            <div class="wui-callout-body">
++              <div class="wui-callout-title" data-wui-i18n="docs_tables_48">Opt-in module &mdash; load weoc-tables-responsive.css after weoc-tables.css</div>
++              <span data-wui-i18n-html="docs_tables_49">The hide hook ships in its own file. Add <code>&lt;link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables-responsive.css"&gt;</code> <em>after</em> <code>weoc-tables.css</code> on any table view. It reuses the <code>container-type: inline-size</code> context <code>weoc-tables.css</code> already establishes on <code>wui-table-wrap</code> &mdash; no extra markup beyond the wrapper you already use.</span>
++            </div>
++          </div>
++        </div>
++
+       </div>
+     </div>
+   </div>
+   <script src="../docs-shell.js"></script>
+   <script>DocShell.init('tables');</script>
++  <script>
++    (function () {
++      var box = document.getElementById('tables-hide-demo');
++      var btns = document.querySelectorAll('[data-hide-demo-width]');
++      if (!box || !btns.length) return;
++      for (var i = 0; i < btns.length; i++) {
++        btns[i].addEventListener('click', function (e) {
++          var btn = e.currentTarget;
++          box.style.width = btn.getAttribute('data-hide-demo-width') + 'px';
++          for (var j = 0; j < btns.length; j++) btns[j].classList.toggle('is-active', btns[j] === btn);
++        });
++      }
++    })();
++  </script>
+ </body>
+ </html>

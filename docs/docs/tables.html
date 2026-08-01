@@ -7,6 +7,7 @@
   <script src="../../JS/weoc-ui.js"></script>
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
   <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables.css">
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables-responsive.css">
   <link rel="stylesheet" href="../docs-style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,9 +16,9 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="tables">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
 
         <div class="docs-hero">
@@ -36,7 +37,7 @@
 
         <!-- ══════════════════════════ wui-table-standard ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_6"><span class="material-symbols-outlined">table_rows</span>wui-table-standard</div>
+          <div class="docs-section-title" id="wui-table-standard" data-wui-i18n-html="docs_tables_6"><span class="material-symbols-outlined">table_rows</span>wui-table-standard</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_7">Flat, bordered table with fixed column layout (<code>table-layout: fixed</code>) and a sticky header. Wrap in <code>wui-table-wrap</code> for horizontal scroll and container queries. Compose column widths on the <code>&lt;th&gt;</code>, cell utilities and row-state classes on the <code>&lt;tr&gt;</code>/<code>&lt;td&gt;</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tables_8">Base table — wrapper, header, actions column</div>
@@ -218,7 +219,7 @@
 
         <!-- ══════════════════════════ wui-table-cards ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_13"><span class="material-symbols-outlined">view_agenda</span>wui-table-cards</div>
+          <div class="docs-section-title" id="wui-table-cards" data-wui-i18n-html="docs_tables_13"><span class="material-symbols-outlined">view_agenda</span>wui-table-cards</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_14">Card-row variant: each <code>&lt;tr&gt;</code> reads as a spaced, rounded card floating on the page backdrop. Same column-width, cell-utility, and row-state classes as standard. Row surface defaults to <code>--color-30</code>; add <code>color-60</code> for the darker neutral (mirrors the <code>wui-plane</code> API). An empty last <code>&lt;th&gt;</code> is auto-treated as an actions column; a <code>wui-cell-center</code> last column gets its own sizing.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tables_15">Default surface — color-30</div>
@@ -355,7 +356,7 @@
 
         <!-- ══════════════════════════ wui-table-log ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_21"><span class="material-symbols-outlined">receipt_long</span>wui-table-log</div>
+          <div class="docs-section-title" id="wui-table-log" data-wui-i18n-html="docs_tables_21"><span class="material-symbols-outlined">receipt_long</span>wui-table-log</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_22">Dense, operator-grade incident list with click-to-expand rows. Each record is a <strong>pair</strong>: a data row <code>wui-log-row</code> (carrying <code>data-wui-row="true"</code>) followed by a <code>wui-log-detail-row</code>. The detail reveals when the data row has <code>is-open</code>. Zebra striping is automatic. Child cells use the short <code>wui-log-*</code> prefix: <code>wui-log-expand</code>, <code>wui-log-elapsed</code>, <code>wui-log-title-row</code>/<code>-title</code>/<code>-id</code>, <code>wui-log-class</code>, <code>wui-log-acks</code>, and inside the detail <code>wui-log-detail</code>/<code>-desc</code>/<code>-meta</code>/<code>-actions</code>. The color accent goes on the data row only; the detail inherits via the adjacent-sibling rule. Add <code>is-closed</code> to mute a resolved record.</p>
           <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
             <div class="wui-demo-preview">
@@ -489,7 +490,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Column widths ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_25"><span class="material-symbols-outlined">view_column</span>Column widths</div>
+          <div class="docs-section-title" id="column-widths" data-wui-i18n-html="docs_tables_25"><span class="material-symbols-outlined">view_column</span>Column widths</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_26">Put a width class on the <code>&lt;th&gt;</code>; under <code>table-layout: fixed</code> the matching <code>&lt;td&gt;</code> inherits it. Fixed px: <code>wui-col-sm</code> (80px) · <code>wui-col-index</code> (150px) · <code>wui-col-md</code> (180px). Proportional: <code>wui-col-primary</code> (40%) · <code>wui-col-secondary</code> (25%). <code>wui-col-actions</code> (80px, centered) for the icon-button column.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -564,7 +565,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Cell utilities ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_29"><span class="material-symbols-outlined">grid_on</span>Cell utilities</div>
+          <div class="docs-section-title" id="cell-utilities" data-wui-i18n-html="docs_tables_29"><span class="material-symbols-outlined">grid_on</span>Cell utilities</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_30">Attach to a <code>&lt;td&gt;</code> (or <code>&lt;th&gt;</code>) on any variant. <code>wui-cell-num</code> right-aligns tabular numerals · <code>wui-cell-center</code> centers · <code>wui-cell-muted</code> is smaller secondary text · <code>wui-cell-truncate</code> single-line ellipsis (wrap the text in a <code>&lt;span&gt;</code>) · <code>wui-cell-chips</code> is a flex-wrap row for multiple badges.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -622,7 +623,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Row color accents ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_31"><span class="material-symbols-outlined">label</span>Row color accents</div>
+          <div class="docs-section-title" id="row-color-accents" data-wui-i18n-html="docs_tables_31"><span class="material-symbols-outlined">label</span>Row color accents</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_32">A left-border accent: add one color class to any <code>&lt;tr&gt;</code>. On <code>wui-table-standard</code> and <code>wui-table-cards</code> it draws a 3px left border (cards also inherit the color into the hover borders via <code>--_row-accent</code>). On <code>wui-table-log</code> the same class drives <code>--_tier</code>, so the 4px border and the elapsed-time text color both update. Colors: <code>is-primary</code> · <code>is-success</code> · <code>is-info</code> · <code>is-warning</code> · <code>is-danger</code> · <code>is-secondary</code>.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -696,7 +697,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Row action buttons ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_34"><span class="material-symbols-outlined">more_horiz</span>Row action buttons</div>
+          <div class="docs-section-title" id="row-action-buttons" data-wui-i18n-html="docs_tables_34"><span class="material-symbols-outlined">more_horiz</span>Row action buttons</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_35">Wrap a set of icon buttons in <code>wui-table-actions</code> (centered flex group). Each button is a <code>wui-table-action-btn</code>; a color class tints it and its hover fill. Add <code>disabled</code> (or <code>is-disabled</code>) to block a single action. Drop the group into a <code>wui-col-actions</code> cell.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -722,7 +723,7 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
 
         <!-- ══════════════════════════ Density ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tables_36"><span class="material-symbols-outlined">density_medium</span>Density</div>
+          <div class="docs-section-title" id="density" data-wui-i18n-html="docs_tables_36"><span class="material-symbols-outlined">density_medium</span>Density</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_37">Tune vertical rhythm on the <code>&lt;table&gt;</code>: <code>is-compact</code> tightens padding (and the card row gap), <code>is-comfortable</code> loosens it. Base density (no class) sits between. Both modifiers work on <code>wui-table-standard</code> and <code>wui-table-cards</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tables_38">Standard — compact vs base vs comfortable</div>
@@ -788,10 +789,121 @@ document.querySelectorAll('[data-wui-row]').forEach(function (row) {
           </div>
         </div>
 
+        <!-- ══════════════════════════ Responsive column hiding ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="responsive-column-hiding" data-wui-i18n-html="docs_tables_40"><span class="material-symbols-outlined">view_week</span>Responsive column hiding</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tables_41">Mark a <code>&lt;th&gt;</code>/<code>&lt;td&gt;</code> pair <code>data-wui-hide-below="sm|md|lg|xl"</code> and the column hides once the table's own <code>wui-table-wrap</code> shrinks past that breakpoint &mdash; a real container query against the table's rendered width, not the browser viewport. That is the whole point: a details panel or split view squeezing the table triggers the hide even when the window itself never resizes, which a <code>@media</code> query cannot see. Same <code>sm/md/lg/xl</code> scale as <code>wui-col-sm</code>/<code>wui-col-md</code> and the grid system (576/768/992/1200) &mdash; no new vocabulary. Zero JS: each cell hides itself off its own attribute, nothing pairs the header to its column. Requires loading <code>weoc-tables-responsive.css</code> after <code>weoc-tables.css</code>. Standard table (<code>wui-table-standard</code>) only &mdash; <code>wui-table-cards</code> already has its own narrow-width behavior.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tables_42">Live example &mdash; resize the wrapper, not the window</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tables_43">Two columns below are marked <code>data-wui-hide-below</code>: <code>Created By</code> hides under the <code>md</code> breakpoint (768px), <code>Created At</code> hides under <code>sm</code> (576px). Drag the handle in the demo box's bottom-right corner, or use the width presets, to see each threshold cross independently of the browser window.</p>
+
+          <div style="display:flex; flex-wrap:wrap; gap:var(--space-2); margin-bottom:var(--space-3);" role="group" data-wui-i18n-attr="aria-label:docs_tables_44">
+            <button type="button" class="wui-btn wui-btn-sm outline primary is-active" data-hide-demo-width="900" data-wui-i18n="docs_tables_45">Wide (900px)</button>
+            <button type="button" class="wui-btn wui-btn-sm outline primary" data-hide-demo-width="700" data-wui-i18n="docs_tables_46">md breakpoint (700px)</button>
+            <button type="button" class="wui-btn wui-btn-sm outline primary" data-hide-demo-width="500" data-wui-i18n="docs_tables_47">sm breakpoint (500px)</button>
+          </div>
+
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div id="tables-hide-demo" style="resize:horizontal; overflow:auto; min-width:320px; max-width:100%; width:900px; border:1px dashed var(--color-border); border-radius:var(--border-radius); padding:var(--space-3);">
+                <div class="wui-table-wrap">
+                  <table class="wui-table-standard">
+                    <thead>
+                      <tr>
+                        <th class="wui-col-index">#</th>
+                        <th class="wui-col-primary">Facility</th>
+                        <th class="wui-col-md">Status</th>
+                        <th class="wui-col-md">Location</th>
+                        <th class="wui-col-md" data-wui-hide-below="md">Created By</th>
+                        <th class="wui-col-md" data-wui-hide-below="sm">Created At</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="wui-cell-num">26-004</td>
+                        <td>Central Warehouse</td>
+                        <td><span class="wui-badge success">Operational</span></td>
+                        <td>Bldg 4, Zone C</td>
+                        <td data-wui-hide-below="md">J. Rivera</td>
+                        <td data-wui-hide-below="sm">07/28/2026 14:02</td>
+                      </tr>
+                      <tr>
+                        <td class="wui-cell-num">26-011</td>
+                        <td>North Depot</td>
+                        <td><span class="wui-badge warning">Limited</span></td>
+                        <td>Bldg 1, Zone A</td>
+                        <td data-wui-hide-below="md">A. Chen</td>
+                        <td data-wui-hide-below="sm">07/29/2026 09:14</td>
+                      </tr>
+                      <tr>
+                        <td class="wui-cell-num">26-017</td>
+                        <td>Med Supply Cache</td>
+                        <td><span class="wui-badge danger">Closed</span></td>
+                        <td>Bldg 9, Zone F</td>
+                        <td data-wui-hide-below="md">S. Malik</td>
+                        <td data-wui-hide-below="sm">07/30/2026 22:47</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <template class="wui-demo-markup">
+&lt;div class="wui-table-wrap"&gt;
+  &lt;table class="wui-table-standard"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th class="wui-col-index"&gt;#&lt;/th&gt;
+        &lt;th class="wui-col-primary"&gt;Facility&lt;/th&gt;
+        &lt;th class="wui-col-md"&gt;Status&lt;/th&gt;
+        &lt;th class="wui-col-md"&gt;Location&lt;/th&gt;
+        &lt;th class="wui-col-md" data-wui-hide-below="md"&gt;Created By&lt;/th&gt;
+        &lt;th class="wui-col-md" data-wui-hide-below="sm"&gt;Created At&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td class="wui-cell-num"&gt;26-004&lt;/td&gt;
+        &lt;td&gt;Central Warehouse&lt;/td&gt;
+        &lt;td&gt;&lt;span class="wui-badge success"&gt;Operational&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;Bldg 4, Zone C&lt;/td&gt;
+        &lt;td data-wui-hide-below="md"&gt;J. Rivera&lt;/td&gt;
+        &lt;td data-wui-hide-below="sm"&gt;07/28/2026 14:02&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;!-- …more rows… --&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+            </template>
+          </div>
+
+          <div class="wui-callout info">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_tables_48">Opt-in module &mdash; load weoc-tables-responsive.css after weoc-tables.css</div>
+              <span data-wui-i18n-html="docs_tables_49">The hide hook ships in its own file. Add <code>&lt;link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables-responsive.css"&gt;</code> <em>after</em> <code>weoc-tables.css</code> on any table view. It reuses the <code>container-type: inline-size</code> context <code>weoc-tables.css</code> already establishes on <code>wui-table-wrap</code> &mdash; no extra markup beyond the wrapper you already use.</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('tables');</script>
+  <script>
+    (function () {
+      var box = document.getElementById('tables-hide-demo');
+      var btns = document.querySelectorAll('[data-hide-demo-width]');
+      if (!box || !btns.length) return;
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener('click', function (e) {
+          var btn = e.currentTarget;
+          box.style.width = btn.getAttribute('data-hide-demo-width') + 'px';
+          for (var j = 0; j < btns.length; j++) btns[j].classList.toggle('is-active', btns[j] === btn);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

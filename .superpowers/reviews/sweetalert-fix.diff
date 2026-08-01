@@ -1,0 +1,37 @@
+diff --git a/CSS/sweetalert2-weoc-theme.css b/CSS/sweetalert2-weoc-theme.css
+index b114895..311c550 100644
+--- a/CSS/sweetalert2-weoc-theme.css
++++ b/CSS/sweetalert2-weoc-theme.css
+@@ -71,7 +71,20 @@
+   /* ── Actions row / buttons — matches .wui-btn.primary/.secondary
+      (weoc-interactive.css). --swal2-action-button-hover/-active feed a
+      color-mix() as "<color> <percentage>" (confirmed from the vendored
+-     default `black 10%`), not a standalone paint — keep that shape. ──── */
++     default `black 10%`), not a standalone paint — keep that shape.
++     The "darken toward" color is var(--color-overlay), NOT a literal
++     `black` (zero-hardcoded-colors constraint) — it's the real weoc-ui
++     scrim/backdrop token (weoc-overlays.css modal backdrop, weoc-loader.css
++     busy overlay; already used below for --swal2-backdrop). Checked every
++     agency-theme*.css variant: --color-overlay is always a dark/black-ish
++     rgba in EVERY theme, including dark mode and every color variant
++     (airy, sand, slate, crimson, deep, emerald, graphite, daylight,
++     obsidian, compact) — unlike --color-text-primary, which flips to a
++     near-white value under [data-theme="dark"] and would invert this
++     into a LIGHTEN instead of a darken. --color-overlay carries its own
++     alpha (~0.45-0.65 depending on theme), so the effective darken is
++     slightly softer than an opaque `black` at the same percentage — still
++     directionally correct and verified below via computed-style. ──── */
+   --swal2-actions-margin: var(--space-5) auto 0 !important;
+   --swal2-actions-padding: 0 var(--space-5) !important;
+   --swal2-actions-justify-content: flex-end !important;
+@@ -94,8 +107,8 @@
+   --swal2-deny-button-border-radius: var(--border-radius) !important;
+   --swal2-deny-button-box-shadow: none !important;
+ 
+-  --swal2-action-button-hover: black 8% !important;
+-  --swal2-action-button-active: black 16% !important;
++  --swal2-action-button-hover: var(--color-overlay) 8% !important;
++  --swal2-action-button-active: var(--color-overlay) 16% !important;
+   --swal2-action-button-focus-box-shadow: 0 0 0 3px var(--color-10-light) !important;
+   --swal2-action-button-transition: background-color 0.15s ease, box-shadow 0.15s ease !important;
+ 

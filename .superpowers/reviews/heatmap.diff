@@ -1,0 +1,1075 @@
+diff --git a/.superpowers/heatmap-report.md b/.superpowers/heatmap-report.md
+new file mode 100644
+index 0000000..649fd94
+--- /dev/null
++++ b/.superpowers/heatmap-report.md
+@@ -0,0 +1,95 @@
++# Task B — Risk-grid heatmap (`WUI.heatmap`) — Report
++
++## What was built
++
++- **`JS/wui-heatmap.js`** — `WUI.heatmap(el, opts)` factory. `{ update, resize, destroy }` handle. Follows `wui-charts.js`'s established shape:
++  - `_tokenMap()` reads `--color-success` / `--color-warning` / `--color-danger` live via `getComputedStyle` on every render (create/update/resize/theme-change) — never cached.
++  - Own `_toRgbChannels` / `_mixColor` color helpers (private copies, since `wui-charts.js`'s equivalents live inside that file's closure and aren't exposed on `WUI`, per the plan's step 1 instruction).
++  - `_colorForValue(value, tokens)`: two-stage linear mix, success→warning for value 0–0.5, warning→danger for 0.5–1, so intermediate values get smooth intermediate colors (not a 3-swatch snap).
++  - `cells` shape decided at implementation time (spec left this open): array of `{ row, col, value, label, tooltip }`, addressed by their own `row`/`col` rather than required to be exhaustive/row-major. Any (row,col) missing from the array renders as an empty cell — this is what makes "missing/malformed cells → empty grid, no crash" fall out naturally rather than needing special-case code.
++  - Container element itself becomes the `.wui-heatmap` grid root (mirrors `WUI.barRow()`'s "container is the render target" pattern, not the canvas-wrapping chart types).
++  - `opts.type` defaults `'matrix'`; `'calendar'`/`'table'` are reserved and, like any other unrecognized value, `console.warn` + return `null` — never throws.
++  - Subscribes to `wui:themechange` once at module level (own registry, separate from `wui-charts.js`'s) and re-renders every registered heatmap inside one `requestAnimationFrame`, matching the chart family's theme-awareness convention. This was added proactively (not explicitly required by the spec's error-handling section) because the color scale is token-driven and would otherwise go stale on theme switch.
++  - ES5 throughout (`var`, function declarations, no arrow/template/destructuring), per the plan's Global Constraints.
++
++- **`CSS/weoc-ui/weoc-heatmap.css`** — grid layout (`--wui-heatmap-cols` JS-driven custom property, mirrors `.wui-bento`'s `--wui-bento-cols` convention), corner/row/col label styling, cell styling (`--wui-heatmap-cell-color` inline var, `--color-on-accent` for cell text), `:focus-visible` ring, and the tooltip.
++
++- **`docs/docs/heatmap.html`** — new doc page: hero, "real DOM not canvas" callout, overview, full API reference table, a real 5×5 Likelihood×Severity risk matrix (25 hand-authored EOC scenarios, e.g. "Almost Certain × Severe: confirmed Category 4 hurricane on a direct landfall track"), a 3×4 "Shift Coverage" demo (shelters × time blocks, staffing-gap coloring — deliberately a *different* domain, not just a smaller risk matrix, to make the configurability proof more convincing), a reserved-types/error-handling section with a live "try it" button, and a theme-awareness section. Tabbed Markup/JavaScript code panels via the existing `wui-demo`/`tabbedCode()` convention (auto-captured live markup + an authored `<template class="wui-demo-js">`, same as `charts.html`).
++
++- **`docs/i18n/heatmap.js`** — EN/AR pairs for all 24 `docs_heatmap_N` markers (hero, callout, overview, API table headers/prose, both example sections, error-handling section, theme-awareness section). `data-wui-i18n` (textContent) markers use literal Unicode characters (e.g. `×`), not HTML entities; `data-wui-i18n-html` (innerHTML) markers use entities — verified against `weoc-ui.js`'s `apply()` implementation (`textContent` vs `innerHTML` branches) to avoid a literal `&times;` leaking onto the page.
++
++- **`docs/docs-shell.js`**: added `'heatmap'` to `I18N_PAGES` (the plan-authorized direct edit). Note: this array was being edited concurrently by the Kanban agent's own `'kanban'` addition mid-task — re-read the file before editing and merged cleanly (`..., 'kpi-recipes', 'kanban', 'heatmap'];`). No other part of `docs-shell.js` was touched.
++
++## Design decisions made at implementation time (spec left open)
++
++1. **`cells` shape**: array of `{row, col, value, label, tooltip}` objects (not a flat row-major array). Chosen because it's exactly the spec's own illustrative example, it's order-independent/sparse-friendly, and it makes "missing (row,col) → empty cell" the natural default rather than requiring special handling.
++2. **Tooltip surface/text tokens**: the spec's illustrative CSS used `var(--color-surface-inverse, #1a1a1a)` / `var(--color-text-inverse, #fff)`, but grep confirmed neither `--color-surface-inverse` nor `--color-text-inverse` exists anywhere in `agency-theme.css` or any of the 7 theme variant files. Per the mid-task addition (zero hardcoded hex, real tokens only), the tooltip uses `background: var(--color-text-primary)` / `color: var(--color-bg)` — a deliberate **swap** of the page's own text/background pair. Because `--color-text-primary` is already the token guaranteed to contrast against `--color-bg` in every theme (that's its whole job), using it as the tooltip's background and the page background as the tooltip's text produces a real, theme-correct "inverse chip" with zero new tokens and zero hardcoded values. Verified in the browser: light theme → dark chip with light text; dark theme (`data-theme="light"` toggled and back — see verification) → still contrasts correctly since it's driven by the resolved theme, not a static rule.
++3. **`resize()`** is a real re-render (from current opts + freshly-read tokens), not a no-op — since the grid is fluid CSS, there's no pixel canvas to resize, but making it functionally equivalent to `update()`-with-same-data means it's a genuinely useful hook (e.g. after an external layout change) rather than a dead API surface.
++4. **No escaping of `label`/`tooltip`/labels in the innerHTML build** (except quote-escaping the `data-tooltip` attribute value) — matches the existing precedent in `wui-charts.js` where `WUI.pie`/`WUI.donut`/`WUI.barRow` also insert `label`/`value` into `innerHTML` unescaped (board-authored trusted strings, not user input). Documented inline in the JS file.
++
++## Verification performed (live browser, `claude-in-chrome`)
++
++Served via the existing `127.0.0.1:5500` static server already running against the vault root; loaded `http://127.0.0.1:5500/93_TEMP/contexts/weoc-ui/helper_files/weoc-ui-doc/docs/docs/heatmap.html`.
++
++- **5×5 risk matrix**: renders with correct color gradation, green (Rare/Negligible) through yellow/amber (Moderate) to orange/red (High/Critical) — confirmed visually via screenshot.
++- **3×4 shift-coverage demo**: renders correctly with a genuinely different row/col count and axis meaning — confirmed visually.
++- **Hover tooltip**: confirmed via screenshot — hovering a cell shows the dark chip with the correct scenario text.
++- **Keyboard-focus tooltip**: confirmed independently of the mouse — `element.focus()` via JS on a cell while the cursor was elsewhere still triggered the tooltip (`:focus-visible` rule working, not hover-dependent).
++- **`handle.destroy()`**: clicked the "Destroy" button on the 5×5 demo — grid removed from DOM, status text updated, confirmed via screenshot.
++- **Error path**: clicked the live "Try type: 'calendar'" button — status text read `WUI.heatmap({ type: "calendar" }) returned null — check the console for the warning.`; `read_console_messages` confirmed the exact `[wui-heatmap] WUI.heatmap(): type "calendar" is reserved for a future release...` warning, no thrown exception.
++- **Theme-switch live re-color**: toggled `data-theme` light↔dark via the header control. Verified via JS that `--color-success/-warning/-danger` changed to the light-theme hex values (`#16a34a`/`#ea7c14`/`#dc2626`) and, critically, that a live cell's `--wui-heatmap-cell-color` / computed `background-color` updated to `rgb(64,155,63)` — which is the exact mathematically-correct interpolation of the *new* light-theme tokens at that cell's `value: 0.10` (verified by hand: `22+(234-22)*0.2=64.4`, `163+(124-163)*0.2=155.2`, `74+(20-74)*0.2=63.2`). Confirms the color pipeline is genuinely live-token-driven, not cached at creation.
++- **RTL/Arabic i18n**: toggled the language switcher — page flipped to RTL, sidebar moved, all `docs_heatmap_N` prose translated correctly (spot-checked the 3×4 section heading and body), heatmap grid itself still rendered correctly under RTL, no console errors. Toggled back to English/LTR afterward.
++- **Console**: `read_console_messages` with `onlyErrors: true` checked after initial load, after both demos rendered, after the destroy click, after the error-path click, after both theme toggles, and after the language toggle — zero errors/exceptions at every checkpoint.
++- **Final grep**: `grep -nE '#[0-9a-fA-F]{3,8}|rgb\(\s*[0-9]' JS/wui-heatmap.js` and the same against `CSS/weoc-ui/weoc-heatmap.css` — both zero matches (exit 1 / no matches). No hardcoded hex or literal rgb() anywhere in either file.
++
++Not independently verified: the 7 named themes' exact swatch-by-swatch appearance (only the light/dark `data-theme` axis was toggled, since that's what the token values actually branch on for `--color-success/-warning/-danger`/`--color-text-primary`/`--color-bg` — the accent-color swatches in the header change `--color-10` etc., which this component doesn't use). Confirmed via direct file read that all 4 dedicated theme-variant files (`agency-theme-{crimson,emerald,sand,slate}.css`) redefine `--color-text-primary`/`--color-bg` as matching near-neutral contrast pairs, same as the base file — but did not click through each one live.
++
++## Self-review findings
++
++- No hardcoded colors (confirmed by grep).
++- No modification to `weoc-ui-core.css`'s `@import` list or `docs-shell.js`'s `ensureGlobalAssets()` asset-loading list, per the plan's Task B step 5 — see barrel-wiring notes below.
++- `heatmap.html` links `weoc-heatmap.css` and `wui-heatmap.js` directly in its own `<head>` (same defensive per-page pattern `charts.html` already uses for `wui-charts.js`) so the page is fully functional standalone before the controller wires the barrels.
++- Did not touch any file belonging to Task A (table column-hide) or Task C (kanban) — confirmed by `git status` before commit (see below) and by the clean concurrent-edit merge on `docs-shell.js`'s `I18N_PAGES` line.
++
++## Exact barrel-file lines for the controller
++
++**1. `CSS/weoc-ui/weoc-ui-core.css`** — add after the existing `@import url("weoc-charts.css");` line (currently the last `@import`, line 62):
++
++```css
++@import url("weoc-heatmap.css");
++```
++
++Also bump the header comment's module list (currently ends at item 21 `weoc-charts`) with a new item 22 line, e.g.:
++```
++    22. weoc-heatmap    wui-heatmap risk-grid (rows x cols, CSS grid) for WUI.heatmap() — JS engine: JS/wui-heatmap.js
++```
++
++**2. `docs/docs-shell.js`** — `ensureGlobalAssets()`'s `jobs2` array, immediately after the existing `wui-charts.js` line (around line 490 as of this writing — re-check, since Tasks A/C may have shifted line numbers by the time this lands):
++
++```js
++if (!window.WUI || !window.WUI.heatmap) jobs2.push(loadScript(shared + 'JS/wui-heatmap.js'));
++```
++
++Insert it right after:
++```js
++if (!window.WUI || !window.WUI.chart) jobs2.push(loadScript(shared + 'JS/wui-charts.js'));
++```
++
++(This mirrors the exact pattern `wui-charts.js` uses for its own global load — confirmed by reading `ensureGlobalAssets()` in full: `wui-charts.js` is loaded both directly in `charts.html`'s/`kpi-recipes.html`'s own `<head>` AND globally here; `wui-heatmap.js` should get the same double coverage once wired.)
++
++**3. `docs-shell.js`'s `NAV` array** — not mine to add per the plan (controller's job, step 4 of "Controller follow-up"), but for reference: a `Data Display` group already exists (containing `containers`, `interactive`, `indicators`, `tables`) — the plan explicitly suggests putting `heatmap` there "alongside Charts" (Charts is actually its own group, but `Data Display` is the closer semantic fit given `charts.html`'s existing "Charts" group is chart-specific). Suggested entry:
++```js
++{ key: 'heatmap', label: 'Heatmap', file: 'heatmap.html', kw: 'heatmap risk matrix grid cell severity tooltip' }
++```
++
++## Concerns
++
++None blocking. One judgment call worth flagging explicitly: the `--color-surface-inverse`/`--color-text-inverse` tokens named in the spec's illustrative CSS do not exist in this codebase (confirmed by grep across all of `CSS/weoc-ui/`). I used the `--color-text-primary`/`--color-bg` swap instead (see Design Decisions §2) rather than either inventing new tokens or leaving a literal hex fallback — this was verified live in-browser across both `data-theme` states and reads correctly in both.
++
++## Files changed
++
++- `JS/wui-heatmap.js` (new)
++- `CSS/weoc-ui/weoc-heatmap.css` (new)
++- `docs/docs/heatmap.html` (new)
++- `docs/i18n/heatmap.js` (new)
++- `docs/docs-shell.js` (modified — one-line additive `I18N_PAGES` entry only)
+diff --git a/CSS/weoc-ui/weoc-heatmap.css b/CSS/weoc-ui/weoc-heatmap.css
+new file mode 100644
+index 0000000..964d573
+--- /dev/null
++++ b/CSS/weoc-ui/weoc-heatmap.css
+@@ -0,0 +1,121 @@
++/* =============================================================================
++   weoc-heatmap.css  —  risk-grid heatmap (WUI.heatmap)
++
++   CSS-grid layout for a configurable rows x cols matrix. Cell background
++   color is set inline per-cell by wui-heatmap.js via --wui-heatmap-cell-color
++   (computed at render time by interpolating the live --color-success /
++   --color-warning / --color-danger tokens — never a hardcoded hex/rgb value,
++   so the whole grid stays correct across every theme without this file
++   needing to know about any of them).
++
++   --wui-heatmap-cols is set inline by the JS factory (same
++   "JS-driven grid sizing via a custom property" convention as .wui-bento's
++   --wui-bento-cols in weoc-grid.css).
++
++   JS engine: JS/wui-heatmap.js.
++   ============================================================================= */
++
++.wui-heatmap {
++  display: grid;
++  grid-template-columns: repeat(var(--wui-heatmap-cols, 1), minmax(0, 1fr));
++  gap: 2px;
++  background: var(--color-border);
++  border: 1px solid var(--color-border);
++  border-radius: var(--radius-sm);
++  overflow: hidden;
++  font-family: var(--font-body);
++}
++
++.wui-heatmap.has-row-labels {
++  grid-template-columns: auto repeat(var(--wui-heatmap-cols, 1), minmax(0, 1fr));
++}
++
++/* ── Corner + axis labels ─────────────────────────────────────────────────── */
++
++.wui-heatmap-corner {
++  background: var(--color-surface);
++}
++
++.wui-heatmap-col-label,
++.wui-heatmap-row-label {
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  text-align: center;
++  background: var(--color-surface);
++  color: var(--color-text-secondary);
++  font-size: var(--text-xs);
++  font-weight: var(--font-semibold);
++  line-height: var(--leading-snug);
++  padding: var(--space-2);
++}
++
++.wui-heatmap-row-label {
++  justify-content: flex-end;
++  text-align: end;
++  padding-inline-end: var(--space-3);
++  white-space: nowrap;
++}
++
++/* ── Cells ─────────────────────────────────────────────────────────────────── */
++
++.wui-heatmap-cell {
++  position: relative;
++  display: flex;
++  align-items: center;
++  justify-content: center;
++  text-align: center;
++  min-height: 3rem;
++  padding: var(--space-2);
++  background: var(--wui-heatmap-cell-color, var(--color-surface));
++  color: var(--color-on-accent);
++  font-size: var(--text-sm);
++  font-weight: var(--font-semibold);
++  line-height: var(--leading-snug);
++  cursor: default;
++  outline: none;
++}
++
++.wui-heatmap-cell.is-empty {
++  background: var(--color-surface);
++  color: var(--color-text-secondary);
++}
++
++/* Focus ring for keyboard users tabbing through cells — same visible-only
++   convention (:focus-visible) used across the rest of the library. */
++.wui-heatmap-cell:focus-visible {
++  box-shadow: inset 0 0 0 2px var(--color-10);
++  z-index: 5;
++}
++
++/* ── Tooltip ───────────────────────────────────────────────────────────────
++   Scoped, CSS-only tooltip local to this component (no dedicated tooltip
++   component exists elsewhere in weoc-ui). Background/text deliberately use
++   --color-text-primary / --color-bg SWAPPED (not a dedicated "inverse"
++   token family, which does not exist in agency-theme.css) — text-primary
++   is already the color guaranteed to read clearly against the page
++   background in every theme, so using it AS the tooltip's background and
++   the page background AS the tooltip's text color produces a real,
++   theme-correct high-contrast inversion with zero new tokens and zero
++   hardcoded hex, verified against agency-theme.css and every theme variant
++   file (agency-theme-{slate,sand,emerald,crimson,daylight,graphite,deep}.css
++   — all define both tokens as a matching near-neutral contrast pair). */
++.wui-heatmap-cell[data-tooltip]:hover::after,
++.wui-heatmap-cell[data-tooltip]:focus-visible::after {
++  content: attr(data-tooltip);
++  position: absolute;
++  bottom: 100%;
++  left: 50%;
++  transform: translateX(-50%);
++  margin-bottom: var(--space-1);
++  background: var(--color-text-primary);
++  color: var(--color-bg);
++  padding: var(--space-2) var(--space-3);
++  border-radius: var(--radius-sm);
++  font-size: var(--text-xs);
++  font-weight: var(--font-regular);
++  white-space: nowrap;
++  pointer-events: none;
++  z-index: 20;
++  box-shadow: var(--shadow-md);
++}
+diff --git a/JS/wui-heatmap.js b/JS/wui-heatmap.js
+new file mode 100644
+index 0000000..e1e7688
+--- /dev/null
++++ b/JS/wui-heatmap.js
+@@ -0,0 +1,400 @@
++/* =============================================================================
++   wui-heatmap.js  —  weoc-ui risk-grid heatmap
++
++   Configurable rows x cols grid rendered as real DOM (CSS grid — not canvas):
++   discrete, individually addressable cells that need real hover/focus state
++   and accessible text content, unlike the chart family's continuous/animated
++   canvas drawing. Board code calls WUI.heatmap() only.
++
++   ── Principles (mirrors wui-charts.js) ──────────────────────────────────────
++   • Token-driven: cell colors are interpolated across the library's existing
++     semantic severity tokens (--color-success / --color-warning /
++     --color-danger), read live via getComputedStyle(document.documentElement)
++     at every render — never cached, never hardcoded. Automatically consistent
++     across every theme (including future ones) with zero new tokens.
++   • Theme-aware: subscribes to wui:themechange once at module level and
++     re-renders every registered heatmap inside one requestAnimationFrame,
++     same as wui-charts.js's chart/pie/donut/gauge registry.
++   • WUI-shaped API: { update, resize, destroy } handle, console.warn + null
++     on bad config, never throws.
++   • IE11-adjacent compatibility: var, function declarations, no arrow
++     functions, no template literals, no destructuring — matches
++     wui-charts.js's existing style (WebEOC's embedded browser requires it).
++
++   ── API ──────────────────────────────────────────────────────────────────
++   WUI.heatmap(el, opts)
++     opts.type        'matrix' (default, only mode implemented in v1) |
++                       'calendar' | 'table' (reserved for future variants —
++                       validated option values that console.warn + return
++                       null rather than crash or silently no-op)
++     opts.rows        number — grid row count (configurable, not fixed)
++     opts.cols        number — grid column count
++     opts.rowLabels   Array<string> (optional) — one label per row
++     opts.colLabels   Array<string> (optional) — one label per column
++     opts.cells       Array<{ row, col, value, label, tooltip }>
++                       One entry per populated cell, addressed by its own
++                       row/col (not required to be exhaustive or ordered —
++                       any (row, col) missing from this array renders as an
++                       empty cell, so partial/malformed data never crashes).
++                       value: 0-1 float, interpolated success -> warning ->
++                       danger. label: short cell text. tooltip: hover/focus
++                       popup text (omit to render a cell with no tooltip).
++
++   Instance handle:
++     handle.update(newCells)   Feed a new cells array; re-renders in place.
++     handle.resize()           Re-render from current opts/tokens. The grid
++                                itself is fluid CSS (percentage columns via
++                                --wui-heatmap-cols), so nothing pixel-based
++                                needs recalculating — this exists for API
++                                parity with the rest of the WUI-shaped handle
++                                contract and as a hook for callers that just
++                                changed the container's layout.
++     handle.destroy()          Remove the rendered grid and unregister.
++
++   ── Error handling ───────────────────────────────────────────────────────
++   • opts.type outside 'matrix' / 'calendar' / 'table': console.warn, returns
++     null (matches WUI.chart()'s "no crash, returns null, logs a warning"
++     convention for its own window.uPlot missing-dependency case).
++   • opts.type set to the reserved-but-unimplemented 'calendar' / 'table':
++     same console.warn + null return, not a silent no-op and not a crash.
++   • Missing/malformed cells data: renders an empty grid with row/col labels
++     only (every cell slot empty), no crash.
++   ============================================================================= */
++
++(function (root) {
++  'use strict';
++
++  /* ── Ensure WUI namespace ─────────────────────────────────────────────────── */
++  if (!root.WUI) { root.WUI = {}; }
++
++  /* ── Private state ───────────────────────────────────────────────────────── */
++
++  var _registry   = {};
++  var _idCounter  = 0;
++  var _ATTR       = 'data-wui-heatmap-id';
++
++  /* 'matrix' is the only implemented mode. 'calendar'/'table' are reserved,
++   * validated values (documented in the spec) so the public API doesn't need
++   * a breaking change when those variants ship later. */
++  var _IMPLEMENTED_TYPES = { matrix: 1 };
++  var _RESERVED_TYPES    = { matrix: 1, calendar: 1, table: 1 };
++
++  /* ── Token reader ─────────────────────────────────────────────────────────── */
++
++  /*
++   * _tokenMap()
++   * Reads resolved values of the CSS custom properties the color scale needs.
++   * Called at every render (create/update/resize/re-theme) — never cached —
++   * so a theme switch always recomputes from the CURRENT theme's tokens.
++   */
++  function _tokenMap() {
++    var cs = getComputedStyle(document.documentElement);
++    function get(prop) { return cs.getPropertyValue(prop).trim(); }
++    return {
++      success: get('--color-success'),
++      warning: get('--color-warning'),
++      danger:  get('--color-danger')
++    };
++  }
++
++  /* ── Color helpers ────────────────────────────────────────────────────────── */
++
++  /*
++   * _toRgbChannels(colorStr)
++   * Best-effort parse to [r,g,b]. Handles #rrggbb, #rgb, rgb(), rgba() — the
++   * same set of formats a resolved CSS custom property can come back as.
++   * A private equivalent of wui-charts.js's own helper of the same name:
++   * that one lives inside wui-charts.js's closure (not exposed on WUI), so
++   * this file carries its own copy rather than reaching into that closure.
++   */
++  function _toRgbChannels(colorStr) {
++    if (!colorStr) { return [0, 0, 0]; }
++    if (colorStr.charAt(0) === '#' && colorStr.length === 7) {
++      return [
++        parseInt(colorStr.slice(1, 3), 16),
++        parseInt(colorStr.slice(3, 5), 16),
++        parseInt(colorStr.slice(5, 7), 16)
++      ];
++    }
++    if (colorStr.charAt(0) === '#' && colorStr.length === 4) {
++      return [
++        parseInt(colorStr[1] + colorStr[1], 16),
++        parseInt(colorStr[2] + colorStr[2], 16),
++        parseInt(colorStr[3] + colorStr[3], 16)
++      ];
++    }
++    var m = colorStr.match(/rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)/);
++    if (m) { return [parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3])]; }
++    return [0, 0, 0];
++  }
++
++  /*
++   * _mixColor(colorA, colorB, ratio)
++   * Linear-interpolates between two resolved token colors by `ratio` (0 =
++   * colorA, 1 = colorB). Both inputs are live getComputedStyle() results
++   * (never literals), so the returned rgb() string always reflects the
++   * CURRENT theme — this is what makes the heatmap re-color correctly on
++   * every wui:themechange without any hardcoded hex/rgb anywhere in this
++   * file.
++   */
++  function _mixColor(colorA, colorB, ratio) {
++    var a = _toRgbChannels(colorA);
++    var b = _toRgbChannels(colorB);
++    var r = Math.round(a[0] + (b[0] - a[0]) * ratio);
++    var g = Math.round(a[1] + (b[1] - a[1]) * ratio);
++    var bch = Math.round(a[2] + (b[2] - a[2]) * ratio);
++    return 'rgb(' + r + ',' + g + ',' + bch + ')';
++  }
++
++  /*
++   * _colorForValue(value, tokens)
++   * Interpolates a cell's 0-1 value across success -> warning -> danger:
++   * the lower half (0 - 0.5) mixes success toward warning, the upper half
++   * (0.5 - 1) mixes warning toward danger — a smooth three-stop ramp, not a
++   * literal 3-color lookup table, so intermediate values get intermediate
++   * colors (per the spec's decision, matching the neon-glow work's existing
++   * mix-between-two-tokens technique in wui-charts.js's _lightenColor).
++   */
++  function _colorForValue(value, tokens) {
++    var v = value;
++    if (typeof v !== 'number' || isNaN(v)) { v = 0; }
++    if (v < 0) { v = 0; }
++    if (v > 1) { v = 1; }
++    if (v <= 0.5) { return _mixColor(tokens.success, tokens.warning, v / 0.5); }
++    return _mixColor(tokens.warning, tokens.danger, (v - 0.5) / 0.5);
++  }
++
++  /* ── DOM helpers ──────────────────────────────────────────────────────────── */
++
++  function _resolveEl(el) {
++    return typeof el === 'string' ? document.querySelector(el) : (el || null);
++  }
++
++  /* Board-authored strings (labels/tooltips) are trusted content, same
++   * convention already used by WUI.pie/WUI.donut/WUI.barRow's label/value
++   * text in wui-charts.js (inserted via innerHTML with no escaping there
++   * either) — this file matches that existing precedent for consistency. */
++
++  /*
++   * _fillArray(n, val)
++   * ES5-safe equivalent of Array(n).fill(val) — this codebase targets
++   * WebEOC's embedded (IE11-adjacent) browser, no Array.prototype.fill.
++   */
++  function _fillArray(n, val) {
++    var arr = [];
++    for (var i = 0; i < n; i++) { arr.push(val); }
++    return arr;
++  }
++
++  /*
++   * _cellsToGrid(cells, rows, cols)
++   * Builds a rows x cols matrix of cell refs (or null for anything missing)
++   * from a flat cells array, reading each cell's own row/col — callers don't
++   * need to pre-sort or provide an exhaustive/row-major array. Any entry
++   * whose row/col falls outside the configured grid, or is malformed, is
++   * silently skipped (never crashes).
++   */
++  function _cellsToGrid(cells, rows, cols) {
++    var grid = [];
++    var r;
++    for (r = 0; r < rows; r++) { grid.push(_fillArray(cols, null)); }
++    if (cells) {
++      for (var i = 0; i < cells.length; i++) {
++        var cell = cells[i];
++        if (!cell) { continue; }
++        var cr = cell.row;
++        var cc = cell.col;
++        if (typeof cr === 'number' && typeof cc === 'number' &&
++            cr >= 0 && cr < rows && cc >= 0 && cc < cols) {
++          grid[cr][cc] = cell;
++        }
++      }
++    }
++    return grid;
++  }
++
++  /*
++   * _renderGrid(container, opts, tokens)
++   * Renders the full grid (corner + col labels + row labels + cells) into
++   * `container`, which itself becomes the `.wui-heatmap` grid root — same
++   * "container IS the rendered target" pattern WUI.barRow() uses in
++   * wui-charts.js (_drawBarRows sets container.innerHTML directly), not a
++   * wrapped child element like the canvas-based chart types.
++   */
++  function _renderGrid(container, opts, tokens) {
++    var rows       = opts.rows || 0;
++    var cols       = opts.cols || 0;
++    var rowLabels  = opts.rowLabels || [];
++    var colLabels  = opts.colLabels || [];
++    var hasRowLabels = rowLabels.length > 0;
++    var hasColLabels = colLabels.length > 0;
++    var grid = _cellsToGrid(opts.cells, rows, cols);
++
++    container.classList.add('wui-heatmap');
++    if (hasRowLabels) { container.classList.add('has-row-labels'); }
++    else { container.classList.remove('has-row-labels'); }
++    container.style.setProperty('--wui-heatmap-cols', cols);
++
++    var html = '';
++    var r, c;
++
++    if (hasColLabels) {
++      if (hasRowLabels) { html += '<div class="wui-heatmap-corner"></div>'; }
++      for (c = 0; c < cols; c++) {
++        html += '<div class="wui-heatmap-col-label">' + (colLabels[c] != null ? colLabels[c] : '') + '</div>';
++      }
++    }
++
++    for (r = 0; r < rows; r++) {
++      if (hasRowLabels) {
++        html += '<div class="wui-heatmap-row-label">' + (rowLabels[r] != null ? rowLabels[r] : '') + '</div>';
++      }
++      for (c = 0; c < cols; c++) {
++        var cell = grid[r][c];
++        if (!cell) {
++          html += '<div class="wui-heatmap-cell is-empty"></div>';
++          continue;
++        }
++        var color = _colorForValue(cell.value, tokens);
++        var attrs = ' tabindex="0" style="--wui-heatmap-cell-color:' + color + '"';
++        if (cell.tooltip) {
++          attrs += ' data-tooltip="' + String(cell.tooltip).replace(/"/g, '&quot;') + '"';
++        }
++        html += '<div class="wui-heatmap-cell"' + attrs + '>' +
++          (cell.label != null ? cell.label : '') + '</div>';
++      }
++    }
++
++    container.innerHTML = html;
++  }
++
++  /* ── Registry helpers ─────────────────────────────────────────────────────── */
++
++  function _register(id, entry) { _registry[id] = entry; }
++  function _unregister(id)      { delete _registry[id]; }
++  function _getEntry(id)        { return _registry[id] || null; }
++
++  /* ── Theme change handler (module-level, registered once) ─────────────────── */
++
++  var _themeHandlerBound = false;
++
++  function _onThemeChange() {
++    requestAnimationFrame(function () {
++      var tokens = _tokenMap();
++      var id;
++      for (id in _registry) {
++        if (!Object.prototype.hasOwnProperty.call(_registry, id)) { continue; }
++        var entry = _registry[id];
++        _renderGrid(entry.el, entry.opts, tokens);
++      }
++    });
++  }
++
++  function _ensureThemeListener() {
++    if (_themeHandlerBound) { return; }
++    document.documentElement.addEventListener('wui:themechange', _onThemeChange);
++    _themeHandlerBound = true;
++  }
++
++  /* ── Public API ───────────────────────────────────────────────────────────── */
++
++  /*
++   * WUI.heatmap(el, opts)
++   * ─────────────────────
++   * Create a risk-grid heatmap inside `el` (el itself becomes the grid root).
++   * Returns { update, resize, destroy }, or null if opts.type isn't
++   * implemented or el cannot be resolved.
++   */
++  function heatmap(el, opts) {
++    opts = opts || {};
++    var type = opts.type || 'matrix';
++
++    if (!_IMPLEMENTED_TYPES[type]) {
++      if (root.console && root.console.warn) {
++        if (_RESERVED_TYPES[type]) {
++          console.warn(
++            '[wui-heatmap] WUI.heatmap(): type "' + type + '" is reserved for a ' +
++            'future release and not implemented in this version. No heatmap was ' +
++            'created. Use type: "matrix" (the default) for now.'
++          );
++        } else {
++          console.warn(
++            '[wui-heatmap] WUI.heatmap(): unknown opts.type "' + type + '". ' +
++            'Expected "matrix" (default) — "calendar"/"table" are reserved for ' +
++            'future variants.'
++          );
++        }
++      }
++      return null;
++    }
++
++    var container = _resolveEl(el);
++    if (!container) {
++      if (root.console && root.console.warn) {
++        console.warn('[wui-heatmap] WUI.heatmap(): could not resolve element:', el);
++      }
++      return null;
++    }
++
++    var id = container.getAttribute(_ATTR);
++    if (!id) {
++      _idCounter++;
++      id = String(_idCounter);
++      container.setAttribute(_ATTR, id);
++    }
++
++    _renderGrid(container, opts, _tokenMap());
++    _register(id, { el: container, opts: opts });
++    _ensureThemeListener();
++
++    var handle = {
++      /*
++       * update(newCells)
++       * Feed a new cells array without recreating the grid. rows/cols/labels
++       * stay whatever they were set to at creation.
++       */
++      update: function (newCells) {
++        var e = _getEntry(id);
++        if (!e) { return; }
++        e.opts.cells = newCells;
++        _renderGrid(e.el, e.opts, _tokenMap());
++      },
++
++      /*
++       * resize()
++       * Re-renders from the current opts and freshly-read tokens. The grid
++       * is fluid CSS (percentage/1fr columns), so there is no pixel-based
++       * canvas to resize — this exists for handle-shape parity and as a
++       * hook after external layout changes.
++       */
++      resize: function () {
++        var e = _getEntry(id);
++        if (!e) { return; }
++        _renderGrid(e.el, e.opts, _tokenMap());
++      },
++
++      /*
++       * destroy()
++       * Removes the rendered grid and unregisters from the theme listener.
++       * The module-level wui:themechange listener stays alive (other
++       * heatmaps may still be registered) — same convention as
++       * wui-charts.js's handle.destroy().
++       */
++      destroy: function () {
++        var e = _getEntry(id);
++        if (!e) { return; }
++        e.el.innerHTML = '';
++        e.el.classList.remove('wui-heatmap', 'has-row-labels');
++        e.el.style.removeProperty('--wui-heatmap-cols');
++        e.el.removeAttribute(_ATTR);
++        _unregister(id);
++      }
++    };
++
++    return handle;
++  }
++
++  /* ── Attach to WUI namespace ──────────────────────────────────────────────── */
++  root.WUI.heatmap = heatmap;
++
++}(window));
+diff --git a/docs/docs-shell.js b/docs/docs-shell.js
+index 7ec8700..c19271e 100644
+--- a/docs/docs-shell.js
++++ b/docs/docs-shell.js
+@@ -354,17 +354,18 @@
+ 
+   /* Load the EN/AR translation store once (site-wide), then re-localize.
+      docs-i18n.js calls WUI.i18n.register([...]) at parse. Loaded via `root`
+      so it resolves at any page depth. */
+   var i18nStoreLoaded = false;
+   // Per-page translation files (chrome + several pages live in docs-i18n.js;
+   // the rest are one file each under i18n/ to keep them maintainable).
+   var I18N_PAGES = ['cards', 'calendar', 'tokens', 'motion', 'charts', 'containers',
+-    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes'];
++    'feedback', 'js-api', 'views', 'grid', 'forms', 'layout', 'home', 'conventions', 'kpi-recipes',
++    'kanban', 'heatmap'];
+   function ensureI18nStore(root) {
+     if (i18nStoreLoaded) return Promise.resolve();
+     i18nStoreLoaded = true;
+     var chain = loadScript(root + 'docs-i18n.js');
+     I18N_PAGES.forEach(function (p) {
+       chain = chain.then(function () { return loadScript(root + 'i18n/' + p + '.js'); });
+     });
+     return chain.then(function () {
+diff --git a/docs/docs/heatmap.html b/docs/docs/heatmap.html
+new file mode 100644
+index 0000000..9e11695
+--- /dev/null
++++ b/docs/docs/heatmap.html
+@@ -0,0 +1,375 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++  <meta charset="UTF-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <title>weoc-ui — Heatmap</title>
++  <script src="../../JS/weoc-ui.js"></script>
++  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
++  <!-- weoc-heatmap.css is not yet in weoc-ui-core.css's @import barrel (pending
++       controller wiring across all three parallel component tasks) — linked
++       directly here so this page works standalone in the meantime. -->
++  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-heatmap.css">
++  <link rel="stylesheet" href="../docs-style.css">
++  <link rel="preconnect" href="https://fonts.googleapis.com">
++  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
++  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
++  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
++  <!-- WUI heatmap engine — same "not yet in docs-shell.js's global asset list"
++       situation as the CSS above; linked directly so the page is self-sufficient. -->
++  <script src="../../JS/wui-heatmap.js"></script>
++</head>
++<body class="wui-body-shell">
++  <div id="docs-hdr"></div>
++  <div class="wui-split panel-start" id="docs-split">
++    <div class="wui-split-panel" id="docs-sidebar"></div>
++    <div class="wui-split-main wui-scroll-area" id="docs-main">
++      <div class="docs-page" x-data="heatmapPage()">
++  <style>
++    .demo-heatmap-wrap {
++      width: 100%;
++      box-sizing: border-box;
++      background: var(--color-surface);
++      border: 1px solid var(--color-border);
++      border-radius: var(--border-radius);
++      padding: var(--space-4);
++      margin-bottom: var(--space-4);
++    }
++    .demo-heatmap-actions {
++      display: flex;
++      align-items: center;
++      gap: var(--space-3);
++      margin-top: var(--space-3);
++      flex-wrap: wrap;
++    }
++    .demo-heatmap-status {
++      font-size: var(--text-sm);
++      color: var(--color-text-secondary);
++    }
++  </style>
++        <script>
++        (function () {
++          function registerHeatmapPage() {
++            Alpine.data('heatmapPage', function () {
++              return {
++                init: function () {
++                  window.DocShell.ready.then(function () {
++                    if (!window.WUI || !window.WUI.heatmap) return;
++
++                    /* ── 5x5 risk matrix demo ────────────────────────────────────────────
++                     * Likelihood (rows) x Severity (cols) — standard EOC risk-assessment
++                     * axes. value is a 0-1 float; the component interpolates the cell's
++                     * color across success -> warning -> danger from it. */
++                    var riskCells = [
++                      { row: 0, col: 0, value: 0.05, label: 'Low',      tooltip: 'Rare x Negligible: minor printer outage in the EOC, no operational impact' },
++                      { row: 0, col: 1, value: 0.12, label: 'Low',      tooltip: 'Rare x Minor: single non-critical radio channel drops for a shift' },
++                      { row: 0, col: 2, value: 0.20, label: 'Low',      tooltip: 'Rare x Moderate: backup generator fails a routine self-test' },
++                      { row: 0, col: 3, value: 0.30, label: 'Moderate', tooltip: 'Rare x Major: regional dam failure upstream of the county' },
++                      { row: 0, col: 4, value: 0.45, label: 'Moderate', tooltip: 'Rare x Severe: catastrophic seismic event striking the EOC facility itself' },
++
++                      { row: 1, col: 0, value: 0.10, label: 'Low',      tooltip: 'Unlikely x Negligible: volunteer check-in kiosk offline for an hour' },
++                      { row: 1, col: 1, value: 0.18, label: 'Low',      tooltip: 'Unlikely x Minor: WebEOC board slow to load during a shift change' },
++                      { row: 1, col: 2, value: 0.30, label: 'Moderate', tooltip: 'Unlikely x Moderate: a single shelter loses potable water supply' },
++                      { row: 1, col: 3, value: 0.45, label: 'Moderate', tooltip: 'Unlikely x Major: wildfire jumps its containment line near a populated area' },
++                      { row: 1, col: 4, value: 0.60, label: 'High',     tooltip: 'Unlikely x Severe: simultaneous failure of primary and backup EOC power feeds' },
++
++                      { row: 2, col: 0, value: 0.15, label: 'Low',      tooltip: 'Possible x Negligible: minor paperwork backlog in resource requests' },
++                      { row: 2, col: 1, value: 0.28, label: 'Moderate', tooltip: 'Possible x Minor: logistics section short-staffed during a routine event' },
++                      { row: 2, col: 2, value: 0.42, label: 'Moderate', tooltip: 'Possible x Moderate: flash flood closes two secondary roadways' },
++                      { row: 2, col: 3, value: 0.58, label: 'High',     tooltip: 'Possible x Major: regional hospital diverts ambulance traffic, over capacity' },
++                      { row: 2, col: 4, value: 0.72, label: 'High',     tooltip: 'Possible x Severe: mass-casualty transportation incident on the interstate' },
++
++                      { row: 3, col: 0, value: 0.20, label: 'Low',      tooltip: 'Likely x Negligible: routine radio static during storm season' },
++                      { row: 3, col: 1, value: 0.35, label: 'Moderate', tooltip: 'Likely x Minor: seasonal flooding closes a low-lying underpass' },
++                      { row: 3, col: 2, value: 0.50, label: 'High',     tooltip: 'Likely x Moderate: rolling power outages affect two neighborhoods during peak heat' },
++                      { row: 3, col: 3, value: 0.68, label: 'High',     tooltip: 'Likely x Major: Category 2 hurricane makes landfall within the county' },
++                      { row: 3, col: 4, value: 0.82, label: 'Critical', tooltip: 'Likely x Severe: wildland-urban interface fire threatens a residential subdivision' },
++
++                      { row: 4, col: 0, value: 0.30, label: 'Moderate', tooltip: 'Almost Certain x Negligible: daily minor call-volume increase at the 911 center' },
++                      { row: 4, col: 1, value: 0.45, label: 'Moderate', tooltip: 'Almost Certain x Minor: predictable winter road-icing incidents, on schedule' },
++                      { row: 4, col: 2, value: 0.60, label: 'High',     tooltip: 'Almost Certain x Moderate: seasonal river flooding overtops low-water crossings' },
++                      { row: 4, col: 3, value: 0.78, label: 'Critical', tooltip: 'Almost Certain x Major: annual severe thunderstorm outbreak, widespread outages' },
++                      { row: 4, col: 4, value: 0.95, label: 'Critical', tooltip: 'Almost Certain x Severe: confirmed Category 4 hurricane on a direct landfall track' }
++                    ];
++
++                    var riskEl = document.getElementById('demo-heatmap-risk');
++                    var riskHandle = null;
++                    if (riskEl) {
++                      riskHandle = window.WUI.heatmap(riskEl, {
++                        type: 'matrix',
++                        rows: 5,
++                        cols: 5,
++                        rowLabels: ['Rare', 'Unlikely', 'Possible', 'Likely', 'Almost Certain'],
++                        colLabels: ['Negligible', 'Minor', 'Moderate', 'Major', 'Severe'],
++                        cells: riskCells
++                      });
++                    }
++
++                    var destroyBtn = document.getElementById('demo-heatmap-destroy');
++                    var destroyStatus = document.getElementById('demo-heatmap-destroy-status');
++                    if (destroyBtn) {
++                      destroyBtn.addEventListener('click', function () {
++                        if (riskHandle) {
++                          riskHandle.destroy();
++                          if (destroyStatus) destroyStatus.textContent = 'Destroyed — grid removed from the DOM.';
++                        }
++                      });
++                    }
++
++                    /* ── 3x4 shift-coverage demo — proves configurability ────────────────
++                     * Different shape (3 rows x 4 cols) AND a different axis meaning
++                     * entirely (staffing gap, not risk), same component, same API. */
++                    var coverageCells = [
++                      { row: 0, col: 0, value: 0.10, label: 'Full',     tooltip: 'Primary Shelter, 0600-1200: 8/8 volunteers checked in' },
++                      { row: 0, col: 1, value: 0.20, label: 'Full',     tooltip: 'Primary Shelter, 1200-1800: 7/8 volunteers on shift' },
++                      { row: 0, col: 2, value: 0.50, label: 'Gap',      tooltip: 'Primary Shelter, 1800-0000: 4/8 volunteers, requesting relief' },
++                      { row: 0, col: 3, value: 0.75, label: 'Low',      tooltip: 'Primary Shelter, 0000-0600: 2/8 overnight staff, critical gap' },
++
++                      { row: 1, col: 0, value: 0.30, label: 'OK',       tooltip: 'Overflow Shelter, 0600-1200: 5/6 staff present' },
++                      { row: 1, col: 1, value: 0.15, label: 'Full',     tooltip: 'Overflow Shelter, 1200-1800: 6/6 staff present' },
++                      { row: 1, col: 2, value: 0.40, label: 'OK',       tooltip: 'Overflow Shelter, 1800-0000: 4/6 staff present' },
++                      { row: 1, col: 3, value: 0.90, label: 'Critical', tooltip: 'Overflow Shelter, 0000-0600: 1/6 overnight staff, shelter at risk' },
++
++                      { row: 2, col: 0, value: 0.05, label: 'Full',     tooltip: 'Warming Center, 0600-1200: 4/4 staff present' },
++                      { row: 2, col: 1, value: 0.20, label: 'Full',     tooltip: 'Warming Center, 1200-1800: 4/4 staff, one on break' },
++                      { row: 2, col: 2, value: 0.35, label: 'OK',       tooltip: 'Warming Center, 1800-0000: 3/4 staff present' },
++                      { row: 2, col: 3, value: 0.60, label: 'Gap',      tooltip: 'Warming Center, 0000-0600: 2/4 overnight staff' }
++                    ];
++
++                    var coverageEl = document.getElementById('demo-heatmap-coverage');
++                    if (coverageEl) {
++                      window.WUI.heatmap(coverageEl, {
++                        type: 'matrix',
++                        rows: 3,
++                        cols: 4,
++                        rowLabels: ['Primary Shelter', 'Overflow Shelter', 'Warming Center'],
++                        colLabels: ['0600-1200', '1200-1800', '1800-0000', '0000-0600'],
++                        cells: coverageCells
++                      });
++                    }
++
++                    /* ── Error-path demo — reserved/unknown opts.type ────────────────────
++                     * Exercises the exact console.warn()-then-null contract live, so it can
++                     * be verified in the browser without opening devtools and typing it by
++                     * hand (devtools console works too — this button just makes it a
++                     * one-click repeatable check during review). */
++                    var errBtn = document.getElementById('demo-heatmap-error-btn');
++                    var errStatus = document.getElementById('demo-heatmap-error-status');
++                    if (errBtn) {
++                      errBtn.addEventListener('click', function () {
++                        var scratch = document.createElement('div');
++                        var result = window.WUI.heatmap(scratch, { type: 'calendar', rows: 3, cols: 3, cells: [] });
++                        if (errStatus) {
++                          errStatus.textContent = 'WUI.heatmap({ type: "calendar" }) returned ' +
++                            (result === null ? 'null' : String(result)) +
++                            ' — check the console for the warning.';
++                        }
++                      });
++                    }
++                  });
++                }
++              };
++            });
++          }
++          if (window.Alpine) registerHeatmapPage();
++          else document.addEventListener('alpine:init', registerHeatmapPage);
++        })();
++        </script>
++
++        <div class="docs-hero">
++          <div class="docs-hero-eyebrow" data-wui-i18n="docs_heatmap_1">Data Display</div>
++          <div class="docs-hero-title" data-wui-i18n="docs_heatmap_2">Heatmap</div>
++          <div class="docs-hero-sub" data-wui-i18n-html="docs_heatmap_3">Configurable rows &times; cols risk-grid, rendered as real DOM (CSS grid) so every cell is individually addressable with accessible text, hover, and keyboard focus. Cell color is interpolated across the library's existing severity tokens &mdash; no new token family, no canvas.</div>
++        </div>
++
++        <div class="wui-callout primary">
++          <span class="material-symbols-outlined">grid_on</span>
++          <div class="wui-callout-body">
++            <div class="wui-callout-title" data-wui-i18n="docs_heatmap_4">Real DOM, not canvas</div>
++            <span data-wui-i18n-html="docs_heatmap_5">Unlike the chart family (<code>WUI.chart</code> / <code>WUI.pie</code> / <code>WUI.donut</code> / <code>WUI.gauge</code>), <code>WUI.heatmap()</code> renders plain <code>&lt;div&gt;</code> cells on a CSS grid. That is a deliberate choice: discrete, individually-addressable cells with real hover/focus state and screen-reader-visible text is what CSS grid is for, and the chart family's canvas approach fits continuous/animated line-drawing, not this.</span>
++          </div>
++        </div>
++
++        <!-- ── Overview ───────────────────────────────────────────────────── -->
++        <div class="docs-section">
++          <div class="docs-section-title" data-wui-i18n-html="docs_heatmap_6"><span class="material-symbols-outlined">info</span>Overview</div>
++          <p class="docs-desc" data-wui-i18n-html="docs_heatmap_7"><code>wui-heatmap.js</code> follows the same factory-function shape as the chart family: call <code>WUI.heatmap(el, opts)</code>, get back a <code>{ update, resize, destroy }</code> handle. <code>rows</code> and <code>cols</code> are fully configurable &mdash; there is no fixed 5&times;5 assumption anywhere in the component.</p>
++          <p class="docs-desc" data-wui-i18n-html="docs_heatmap_8">Each cell's background color is interpolated across <code>--color-success</code> &rarr; <code>--color-warning</code> &rarr; <code>--color-danger</code> by that cell's <code>value</code> (a 0-1 float): the lower half of the range mixes success toward warning, the upper half mixes warning toward danger, so intermediate values get smooth intermediate colors rather than snapping between three fixed swatches. Because those three tokens are read live at every render (creation, update, and on every theme change), the grid re-colors correctly and automatically across every theme in the library &mdash; no board code required.</p>
++        </div>
++
++        <!-- ── WUI.heatmap() API ─────────────────────────────────────────── -->
++        <div class="docs-section">
++          <div class="docs-section-title" data-wui-i18n-html="docs_heatmap_9"><span class="material-symbols-outlined">data_exploration</span>WUI.heatmap(el, opts)</div>
++          <p class="docs-desc" data-wui-i18n-html="docs_heatmap_10">Create a heatmap grid inside a container element (the element itself becomes the <code>.wui-heatmap</code> grid root — matching <code>WUI.barRow()</code>'s "plain DOM, container is the render target" pattern rather than the canvas-based chart types). Returns an instance handle, or <code>null</code> if <code>opts.type</code> isn't implemented or the element cannot be resolved.</p>
++
++          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_heatmap_11"><strong>Parameters</strong></p>
++          <table class="docs-api-table">
++            <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
++            <tbody>
++              <tr>
++                <td><span class="docs-api-method">el</span></td>
++                <td><span class="docs-api-type">Element | string</span></td>
++                <td>&mdash;</td>
++                <td>Container element or CSS selector. This element itself becomes the rendered grid.</td>
++              </tr>
++              <tr>
++                <td><span class="docs-api-method">opts.type</span></td>
++                <td><span class="docs-api-type">string</span></td>
++                <td><code>'matrix'</code></td>
++                <td>The only mode implemented in v1. <code>'calendar'</code> and <code>'table'</code> are reserved, validated values for future variants &mdash; passing them logs a warning and returns <code>null</code> rather than crashing or silently doing nothing.</td>
++              </tr>
++              <tr>
++                <td><span class="docs-api-method">opts.rows</span></td>
++                <td><span class="docs-api-type">number</span></td>
++                <td>&mdash;</td>
++                <td>Grid row count. Fully configurable, not fixed to any particular size.</td>
++              </tr>
++              <tr>
++                <td><span class="docs-api-method">opts.cols</span></td>
++                <td><span class="docs-api-type">number</span></td>
++                <td>&mdash;</td>
++                <td>Grid column count.</td>
++              </tr>
++              <tr>
++                <td><span class="docs-api-method">opts.rowLabels</span></td>
++                <td><span class="docs-api-type">Array&lt;string&gt;</span></td>
++                <td>&mdash;</td>
++                <td>Optional. One label per row, rendered in a left-hand label column. Omit to render a plain grid with no row-label column at all.</td>
++              </tr>
++              <tr>
++                <td><span class="docs-api-method">opts.colLabels</span></td>
++                <td><span class="docs-api-type">Array&lt;string&gt;</span></td>
++                <td>&mdash;</td>
++                <td>Optional. One label per column, rendered in a header row. Omit to render a plain grid with no header row.</td>
++              </tr>
++              <tr>
++                <td><span class="docs-api-method">opts.cells</span></td>
++                <td><span class="docs-api-type">Array&lt;{row, col, value, label, tooltip}&gt;</span></td>
++                <td><code>[]</code></td>
++                <td>One entry per populated cell, each addressed by its own <code>row</code>/<code>col</code> &mdash; not required to be exhaustive or in any particular order. Any (row, col) missing from this array renders as an empty cell instead of crashing. <code>value</code> is a 0-1 float driving the color; <code>label</code> is the short text shown in the cell; <code>tooltip</code> is optional hover/focus text (a cell with no <code>tooltip</code> renders with no popup).</td>
++              </tr>
++            </tbody>
++          </table>
++
++          <p class="docs-desc" style="margin-top:1.25rem" data-wui-i18n-html="docs_heatmap_12"><strong>Return value &mdash; instance handle</strong></p>
++          <table class="docs-api-table">
++            <thead><tr><th>Method</th><th>Description</th></tr></thead>
++            <tbody>
++              <tr>
++                <td><span class="docs-api-method">handle.update(newCells)</span></td>
++                <td>Feed a new <code>cells</code> array. <code>rows</code>/<code>cols</code>/labels stay whatever they were set to at creation; re-renders in place.</td>
++              </tr>
++              <tr>
++                <td><span class="docs-api-method">handle.resize()</span></td>
++                <td>Re-renders from the current options and freshly-read tokens. The grid is fluid CSS (percentage columns), so there is no pixel-based canvas to resize &mdash; this exists for handle-shape parity with the rest of the library and as a hook after external layout changes.</td>
++              </tr>
++              <tr>
++                <td><span class="docs-api-method">handle.destroy()</span></td>
++                <td>Removes the rendered grid from the DOM and unregisters the instance from the theme listener.</td>
++              </tr>
++            </tbody>
++          </table>
++        </div>
++
++        <!-- ── Live example: 5x5 risk matrix ──────────────────────────────── -->
++        <div class="docs-section">
++          <div class="docs-section-title" data-wui-i18n-html="docs_heatmap_13"><span class="material-symbols-outlined">grid_on</span>Example &mdash; 5&times;5 Risk Matrix</div>
++          <p class="docs-desc" data-wui-i18n="docs_heatmap_14">Likelihood (rows) &times; Severity (cols), the standard risk-assessment axes. Hover or tab-focus a cell to see its full scenario. Click "Destroy" to confirm the grid tears down cleanly.</p>
++
++          <div class="wui-demo" data-wui-demo>
++            <div class="wui-demo-preview">
++              <div class="demo-heatmap-wrap">
++                <!-- Heatmap host -->
++                <div id="demo-heatmap-risk"></div>
++                <div class="demo-heatmap-actions">
++                  <button class="wui-btn secondary" type="button" id="demo-heatmap-destroy" data-wui-i18n="docs_heatmap_15">Destroy</button>
++                  <span class="demo-heatmap-status" id="demo-heatmap-destroy-status"></span>
++                </div>
++              </div>
++            </div>
++            <template class="wui-demo-js">
++var riskCells = [
++  { row: 0, col: 0, value: 0.05, label: 'Low',      tooltip: 'Rare x Negligible: minor printer outage in the EOC, no operational impact' },
++  { row: 0, col: 4, value: 0.45, label: 'Moderate', tooltip: 'Rare x Severe: catastrophic seismic event striking the EOC facility itself' },
++  // ...remaining 23 cells, one per (row, col) pair, same shape
++  { row: 4, col: 4, value: 0.95, label: 'Critical', tooltip: 'Almost Certain x Severe: confirmed Category 4 hurricane on a direct landfall track' }
++];
++
++var handle = WUI.heatmap('#demo-heatmap-risk', {
++  type: 'matrix',
++  rows: 5,
++  cols: 5,
++  rowLabels: ['Rare', 'Unlikely', 'Possible', 'Likely', 'Almost Certain'],
++  colLabels: ['Negligible', 'Minor', 'Moderate', 'Major', 'Severe'],
++  cells: riskCells
++});
++
++// Later, when the container is removed from the DOM:
++handle.destroy();
++            </template>
++          </div>
++        </div>
++
++        <!-- ── Live example: 3x4 configurability proof ────────────────────── -->
++        <div class="docs-section">
++          <div class="docs-section-title" data-wui-i18n-html="docs_heatmap_16"><span class="material-symbols-outlined">grid_view</span>Example &mdash; 3&times;4 Shift Coverage</div>
++          <p class="docs-desc" data-wui-i18n-html="docs_heatmap_17">Same component, a completely different shape and a different axis meaning entirely: shelters (rows) &times; four-hour shift blocks (cols), colored by staffing gap instead of risk. Proves <code>rows</code>/<code>cols</code> are genuinely configurable, not a disguised fixed 5&times;5.</p>
++
++          <div class="wui-demo" data-wui-demo>
++            <div class="wui-demo-preview">
++              <div class="demo-heatmap-wrap">
++                <!-- Heatmap host -->
++                <div id="demo-heatmap-coverage"></div>
++              </div>
++            </div>
++            <template class="wui-demo-js">
++WUI.heatmap('#demo-heatmap-coverage', {
++  type: 'matrix',
++  rows: 3,
++  cols: 4,
++  rowLabels: ['Primary Shelter', 'Overflow Shelter', 'Warming Center'],
++  colLabels: ['0600-1200', '1200-1800', '1800-0000', '0000-0600'],
++  cells: coverageCells   // same { row, col, value, label, tooltip } shape
++});
++            </template>
++          </div>
++        </div>
++
++        <!-- ── Reserved types / error handling ─────────────────────────────── -->
++        <div class="docs-section">
++          <div class="docs-section-title" data-wui-i18n-html="docs_heatmap_18"><span class="material-symbols-outlined">warning</span>Reserved Types &amp; Error Handling</div>
++          <p class="docs-desc" data-wui-i18n-html="docs_heatmap_19"><code>opts.type</code> defaults to <code>'matrix'</code>, the only mode this version implements. <code>'calendar'</code> and <code>'table'</code> are already reserved, documented values for future variants: passing either one today does not crash and does not silently no-op &mdash; it logs a <code>console.warn</code> and returns <code>null</code>, the same contract <code>WUI.chart()</code> uses when <code>window.uPlot</code> is missing. Any other unrecognized string gets the same treatment.</p>
++
++          <pre class="docs-code">var handle = WUI.heatmap('#risk-grid', { type: 'calendar', rows: 3, cols: 3 });
++// console: [wui-heatmap] WUI.heatmap(): type "calendar" is reserved for a
++//          future release and not implemented in this version. No heatmap
++//          was created. Use type: "matrix" (the default) for now.
++// handle === null</pre>
++
++          <div class="wui-callout warning" style="margin-top: var(--space-4)">
++            <span class="material-symbols-outlined">warning</span>
++            <div class="wui-callout-body">
++              <div class="wui-callout-title" data-wui-i18n="docs_heatmap_20">Missing or malformed cells</div>
++              <span data-wui-i18n-html="docs_heatmap_21">An omitted, empty, or partially-populated <code>opts.cells</code> array never crashes. Any (row, col) with no matching entry simply renders as an empty cell &mdash; row/col labels (if provided) still render normally.</span>
++            </div>
++          </div>
++
++          <div class="demo-heatmap-actions" style="margin-top: var(--space-4)">
++            <button class="wui-btn secondary" type="button" id="demo-heatmap-error-btn" data-wui-i18n="docs_heatmap_22">Try type: 'calendar' (see console)</button>
++            <span class="demo-heatmap-status" id="demo-heatmap-error-status"></span>
++          </div>
++        </div>
++
++        <!-- ── Theme awareness ─────────────────────────────────────────────── -->
++        <div class="docs-section">
++          <div class="docs-section-title" data-wui-i18n-html="docs_heatmap_23"><span class="material-symbols-outlined">dark_mode</span>Theme Awareness</div>
++          <p class="docs-desc" data-wui-i18n-html="docs_heatmap_24">No board code is needed for theme support. Like the chart family, <code>wui-heatmap.js</code> subscribes to <code>wui:themechange</code> once at module load; every registered heatmap re-reads <code>--color-success</code> / <code>--color-warning</code> / <code>--color-danger</code> and re-renders inside one <code>requestAnimationFrame</code> whenever the theme switches. Try the theme switcher in the header while looking at the grids above.</p>
++        </div>
++
++      </div>
++    </div>
++  </div>
++  <script src="../docs-shell.js"></script>
++  <script>DocShell.init('heatmap');</script>
++</body>
++</html>
+diff --git a/docs/i18n/heatmap.js b/docs/i18n/heatmap.js
+new file mode 100644
+index 0000000..e8a60d8
+--- /dev/null
++++ b/docs/i18n/heatmap.js
+@@ -0,0 +1,30 @@
++/* weoc-ui docs i18n — heatmap */
++(function () {
++  if (!window.WUI || !window.WUI.i18n) return;
++  WUI.i18n.register([
++    { lang:'en', id:'docs_heatmap_1', value:'Data Display' }, { lang:'ar', id:'docs_heatmap_1', value:'عرض البيانات' },
++    { lang:'en', id:'docs_heatmap_2', value:'Heatmap' }, { lang:'ar', id:'docs_heatmap_2', value:'الخريطة الحرارية' },
++    { lang:'en', id:'docs_heatmap_3', value:'Configurable rows &times; cols risk-grid, rendered as real DOM (CSS grid) so every cell is individually addressable with accessible text, hover, and keyboard focus. Cell color is interpolated across the library\'s existing severity tokens &mdash; no new token family, no canvas.' }, { lang:'ar', id:'docs_heatmap_3', value:'شبكة مخاطر قابلة للتهيئة بعدد صفوف &times; أعمدة، تُعرض كعناصر DOM حقيقية (CSS grid) بحيث تكون كل خلية قابلة للوصول بشكل فردي مع نص مقروء وتفعيل بالتحويم وبالتركيز عبر لوحة المفاتيح. يُشتق لون الخلية بالمزج بين رموز الشدة الموجودة أصلًا في المكتبة، دون أي عائلة رموز جديدة ودون canvas.' },
++    { lang:'en', id:'docs_heatmap_4', value:'Real DOM, not canvas' }, { lang:'ar', id:'docs_heatmap_4', value:'عناصر DOM حقيقية، وليست canvas' },
++    { lang:'en', id:'docs_heatmap_5', value:'Unlike the chart family (<code>WUI.chart</code> / <code>WUI.pie</code> / <code>WUI.donut</code> / <code>WUI.gauge</code>), <code>WUI.heatmap()</code> renders plain <code>&lt;div&gt;</code> cells on a CSS grid. That is a deliberate choice: discrete, individually-addressable cells with real hover/focus state and screen-reader-visible text is what CSS grid is for, and the chart family\'s canvas approach fits continuous/animated line-drawing, not this.' }, { lang:'ar', id:'docs_heatmap_5', value:'بخلاف عائلة المخططات (<code>WUI.chart</code> / <code>WUI.pie</code> / <code>WUI.donut</code> / <code>WUI.gauge</code>)، يعرض <code>WUI.heatmap()</code> خلايا <code>&lt;div&gt;</code> عادية على شبكة CSS. هذا اختيار مقصود: الخلايا المنفصلة القابلة للوصول فرديًا مع حالة تحويم/تركيز حقيقية ونص مرئي لقارئ الشاشة هو بالضبط ما صُممت له شبكة CSS، بينما يناسب أسلوب canvas في عائلة المخططات الرسم الخطي المستمر/المتحرك، لا هذا.' },
++    { lang:'en', id:'docs_heatmap_6', value:'<span class="material-symbols-outlined">info</span>Overview' }, { lang:'ar', id:'docs_heatmap_6', value:'<span class="material-symbols-outlined">info</span>نظرة عامة' },
++    { lang:'en', id:'docs_heatmap_7', value:'<code>wui-heatmap.js</code> follows the same factory-function shape as the chart family: call <code>WUI.heatmap(el, opts)</code>, get back a <code>{ update, resize, destroy }</code> handle. <code>rows</code> and <code>cols</code> are fully configurable &mdash; there is no fixed 5&times;5 assumption anywhere in the component.' }, { lang:'ar', id:'docs_heatmap_7', value:'يتبع <code>wui-heatmap.js</code> نمط دالة المصنع نفسه المستخدم في عائلة المخططات: استدعِ <code>WUI.heatmap(el, opts)</code> واحصل على مقبض <code>{ update, resize, destroy }</code>. عددا <code>rows</code> و <code>cols</code> قابلان للتهيئة بالكامل، ولا يوجد أي افتراض بشبكة ثابتة 5&times;5 في أي مكان بالمكوّن.' },
++    { lang:'en', id:'docs_heatmap_8', value:'Each cell\'s background color is interpolated across <code>--color-success</code> &rarr; <code>--color-warning</code> &rarr; <code>--color-danger</code> by that cell\'s <code>value</code> (a 0-1 float): the lower half of the range mixes success toward warning, the upper half mixes warning toward danger, so intermediate values get smooth intermediate colors rather than snapping between three fixed swatches. Because those three tokens are read live at every render (creation, update, and on every theme change), the grid re-colors correctly and automatically across every theme in the library &mdash; no board code required.' }, { lang:'ar', id:'docs_heatmap_8', value:'يُشتق لون خلفية كل خلية بالمزج بين <code>--color-success</code> &rarr; <code>--color-warning</code> &rarr; <code>--color-danger</code> حسب قيمة <code>value</code> الخاصة بتلك الخلية (رقم عشري بين 0 و1): يمزج النصف الأدنى من المدى النجاح نحو التحذير، ويمزج النصف الأعلى التحذير نحو الخطر، فتحصل القيم الوسيطة على ألوان وسيطة سلسة بدلًا من القفز بين ثلاث درجات ثابتة. ولأن هذه الرموز الثلاثة تُقرأ حيًا عند كل عرض (الإنشاء والتحديث وعند كل تغيير للسمة)، تُعاد تلوين الشبكة تلقائيًا وبشكل صحيح عبر كل سمة في المكتبة، دون أي كود من جهة اللوحة.' },
++    { lang:'en', id:'docs_heatmap_9', value:'<span class="material-symbols-outlined">data_exploration</span>WUI.heatmap(el, opts)' }, { lang:'ar', id:'docs_heatmap_9', value:'<span class="material-symbols-outlined">data_exploration</span>WUI.heatmap(el, opts)' },
++    { lang:'en', id:'docs_heatmap_10', value:'Create a heatmap grid inside a container element (the element itself becomes the <code>.wui-heatmap</code> grid root — matching <code>WUI.barRow()</code>\'s "plain DOM, container is the render target" pattern rather than the canvas-based chart types). Returns an instance handle, or <code>null</code> if <code>opts.type</code> isn\'t implemented or the element cannot be resolved.' }, { lang:'ar', id:'docs_heatmap_10', value:'ينشئ شبكة خريطة حرارية داخل عنصر حاوٍ (يصبح العنصر نفسه جذر الشبكة <code>.wui-heatmap</code>، بما يطابق نمط <code>WUI.barRow()</code> في "DOM عادي، والحاوية هي هدف العرض" بدلًا من أنواع المخططات القائمة على canvas). يعيد مقبض النسخة، أو <code>null</code> إذا كان <code>opts.type</code> غير مطبَّق أو تعذّر تحديد العنصر.' },
++    { lang:'en', id:'docs_heatmap_11', value:'<strong>Parameters</strong>' }, { lang:'ar', id:'docs_heatmap_11', value:'<strong>المعامِلات</strong>' },
++    { lang:'en', id:'docs_heatmap_12', value:'<strong>Return value — instance handle</strong>' }, { lang:'ar', id:'docs_heatmap_12', value:'<strong>القيمة المعادة: مقبض النسخة</strong>' },
++    { lang:'en', id:'docs_heatmap_13', value:'<span class="material-symbols-outlined">grid_on</span>Example — 5&times;5 Risk Matrix' }, { lang:'ar', id:'docs_heatmap_13', value:'<span class="material-symbols-outlined">grid_on</span>مثال: مصفوفة مخاطر 5&times;5' },
++    { lang:'en', id:'docs_heatmap_14', value:'Likelihood (rows) × Severity (cols), the standard risk-assessment axes. Hover or tab-focus a cell to see its full scenario. Click "Destroy" to confirm the grid tears down cleanly.' }, { lang:'ar', id:'docs_heatmap_14', value:'الاحتمالية (الصفوف) × الشدة (الأعمدة)، وهما المحوران المعياريان لتقييم المخاطر. مرّر المؤشر فوق أي خلية أو ركّز عليها بمفتاح Tab لرؤية سيناريوها الكامل. انقر "حذف" للتأكد من أن الشبكة تُزال بشكل نظيف.' },
++    { lang:'en', id:'docs_heatmap_15', value:'Destroy' }, { lang:'ar', id:'docs_heatmap_15', value:'حذف' },
++    { lang:'en', id:'docs_heatmap_16', value:'<span class="material-symbols-outlined">grid_view</span>Example — 3&times;4 Shift Coverage' }, { lang:'ar', id:'docs_heatmap_16', value:'<span class="material-symbols-outlined">grid_view</span>مثال: تغطية النوبات 3&times;4' },
++    { lang:'en', id:'docs_heatmap_17', value:'Same component, a completely different shape and a different axis meaning entirely: shelters (rows) × four-hour shift blocks (cols), colored by staffing gap instead of risk. Proves <code>rows</code>/<code>cols</code> are genuinely configurable, not a disguised fixed 5&times;5.' }, { lang:'ar', id:'docs_heatmap_17', value:'المكوّن نفسه، لكن بشكل مختلف تمامًا ومعنى محاور مختلف كليًا: الملاجئ (الصفوف) × فترات نوبات مدتها أربع ساعات (الأعمدة)، ملوّنة حسب نقص التوظيف بدلًا من المخاطر. يثبت ذلك أن <code>rows</code>/<code>cols</code> قابلان للتهيئة فعليًا، وليسا شبكة ثابتة 5&times;5 متخفية.' },
++    { lang:'en', id:'docs_heatmap_18', value:'<span class="material-symbols-outlined">warning</span>Reserved Types &amp; Error Handling' }, { lang:'ar', id:'docs_heatmap_18', value:'<span class="material-symbols-outlined">warning</span>الأنواع المحجوزة ومعالجة الأخطاء' },
++    { lang:'en', id:'docs_heatmap_19', value:'<code>opts.type</code> defaults to <code>\'matrix\'</code>, the only mode this version implements. <code>\'calendar\'</code> and <code>\'table\'</code> are already reserved, documented values for future variants: passing either one today does not crash and does not silently no-op &mdash; it logs a <code>console.warn</code> and returns <code>null</code>, the same contract <code>WUI.chart()</code> uses when <code>window.uPlot</code> is missing. Any other unrecognized string gets the same treatment.' }, { lang:'ar', id:'docs_heatmap_19', value:'تكون القيمة الافتراضية لـ <code>opts.type</code> هي <code>\'matrix\'</code>، وهي الوضع الوحيد المطبَّق في هذا الإصدار. القيمتان <code>\'calendar\'</code> و <code>\'table\'</code> محجوزتان وموثّقتان مسبقًا لمتغيرات مستقبلية: تمرير أي منهما اليوم لا يتسبب في تعطّل ولا يمر بصمت دون فعل شيء، بل يسجّل <code>console.warn</code> ويعيد <code>null</code>، وهو العقد نفسه الذي يستخدمه <code>WUI.chart()</code> عند غياب <code>window.uPlot</code>. أي نص آخر غير معروف يُعامَل المعاملة نفسها.' },
++    { lang:'en', id:'docs_heatmap_20', value:'Missing or malformed cells' }, { lang:'ar', id:'docs_heatmap_20', value:'خلايا مفقودة أو غير صحيحة' },
++    { lang:'en', id:'docs_heatmap_21', value:'An omitted, empty, or partially-populated <code>opts.cells</code> array never crashes. Any (row, col) with no matching entry simply renders as an empty cell &mdash; row/col labels (if provided) still render normally.' }, { lang:'ar', id:'docs_heatmap_21', value:'لا يتسبب حذف مصفوفة <code>opts.cells</code> أو تركها فارغة أو ملء جزء منها فقط في أي تعطّل. أي زوج (صف، عمود) دون مُدخل مطابق يُعرض ببساطة كخلية فارغة، بينما تُعرض تسميات الصفوف/الأعمدة (إن وُجدت) بشكل طبيعي.' },
++    { lang:'en', id:'docs_heatmap_22', value:'Try type: \'calendar\' (see console)' }, { lang:'ar', id:'docs_heatmap_22', value:'جرّب type: \'calendar\' (راجع وحدة التحكم)' },
++    { lang:'en', id:'docs_heatmap_23', value:'<span class="material-symbols-outlined">dark_mode</span>Theme Awareness' }, { lang:'ar', id:'docs_heatmap_23', value:'<span class="material-symbols-outlined">dark_mode</span>إدراك السمة' },
++    { lang:'en', id:'docs_heatmap_24', value:'No board code is needed for theme support. Like the chart family, <code>wui-heatmap.js</code> subscribes to <code>wui:themechange</code> once at module load; every registered heatmap re-reads <code>--color-success</code> / <code>--color-warning</code> / <code>--color-danger</code> and re-renders inside one <code>requestAnimationFrame</code> whenever the theme switches. Try the theme switcher in the header while looking at the grids above.' }, { lang:'ar', id:'docs_heatmap_24', value:'لا حاجة إلى أي كود لوحة لدعم السمة. مثل عائلة المخططات، يشترك <code>wui-heatmap.js</code> في حدث <code>wui:themechange</code> مرة واحدة عند تحميل الوحدة؛ وتعيد كل خريطة حرارية مسجَّلة قراءة <code>--color-success</code> / <code>--color-warning</code> / <code>--color-danger</code> وتُعاد رسمها خلال <code>requestAnimationFrame</code> واحد عند كل تبديل للسمة. جرّب مبدّل السمات في الترويسة أثناء النظر إلى الشبكات أعلاه.' }
++  ]);
++})();

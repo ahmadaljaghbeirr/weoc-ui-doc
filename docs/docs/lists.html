@@ -14,10 +14,189 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="lists">
-      <div class="docs-page">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="listsPage()">
+        <script>
+        (function () {
+          function registerListsPage() {
+            Alpine.data('listsPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    if (!window.EOCLists || !window.TomSelect) return;
+
+                    // ── Flat list demo — Priority ─────────────────────────────────────────
+                    var flatSel = document.getElementById('demo-list-flat');
+                    var flatOut = document.getElementById('demo-list-flat-out');
+                    var flatChips = document.getElementById('demo-list-flat-chips');
+                    if (flatSel) {
+                      EOCLists.populate(flatSel, 'Priority');
+                      var flatTs = new TomSelect(flatSel, {
+                        plugins: ['clear_button'],
+                        placeholder: '— Select priority —',
+                        allowEmptyOption: true
+                      });
+                      var PRIORITY_VARIANTS = { Critical: 'danger', High: 'warning', Medium: 'primary', Low: 'success' };
+                      flatTs.on('change', function (val) {
+                        if (flatOut) {
+                          var v = PRIORITY_VARIANTS[val] || '';
+                          flatOut.className = val ? 'wui-badge ' + v : 'wui-badge bordered secondary';
+                          flatOut.textContent = val || 'None';
+                        }
+                      });
+                      // Render all items as badge chips below the select
+                      if (flatChips) {
+                        EOCLists.get('Priority').forEach(function (item) {
+                          var chip = document.createElement('span');
+                          chip.className = 'wui-badge ' + (PRIORITY_VARIANTS[item.value] || 'secondary');
+                          chip.textContent = item.text;
+                          chip.style.cursor = 'pointer';
+                          chip.addEventListener('click', function () { flatTs.setValue(item.value); });
+                          flatChips.appendChild(chip);
+                        });
+                      }
+                    }
+
+                    // ── Cascading demo — Resource Category → Sub-category ────────────────
+                    var catSel = document.getElementById('demo-list-cat');
+                    var subSel = document.getElementById('demo-list-sub');
+                    var cascadeOut = document.getElementById('demo-list-cascade-out');
+                    if (catSel && subSel) {
+                      EOCLists.populate(catSel, 'Resource Category');
+                      var catTs = new TomSelect(catSel, {
+                        plugins: ['clear_button'],
+                        placeholder: '— Select category —',
+                        allowEmptyOption: true
+                      });
+                      var subTs = new TomSelect(subSel, {
+                        plugins: ['clear_button'],
+                        placeholder: '— Select category first —',
+                        allowEmptyOption: true
+                      });
+                      subTs.disable();
+
+                      function updateCascadeOut(cat, sub) {
+                        if (!cascadeOut) return;
+                        cascadeOut.innerHTML = '';
+                        if (cat) {
+                          var c = document.createElement('span');
+                          c.className = 'wui-badge primary';
+                          c.textContent = cat;
+                          cascadeOut.appendChild(c);
+                        }
+                        if (cat && sub) {
+                          var arr = document.createElement('span');
+                          arr.className = 'material-symbols-outlined';
+                          arr.style.fontSize = '18px';
+                          arr.style.color = 'var(--color-text-secondary)';
+                          arr.textContent = 'arrow_forward';
+                          cascadeOut.appendChild(arr);
+                          var s = document.createElement('span');
+                          s.className = 'wui-badge info';
+                          s.textContent = sub;
+                          cascadeOut.appendChild(s);
+                        }
+                      }
+
+                      catTs.on('change', function (val) {
+                        subTs.clear(true);
+                        subTs.clearOptions();
+                        if (val) {
+                          EOCLists.getChildren('Resource Category', val).forEach(function (item) {
+                            subTs.addOption({ value: item.value, text: item.text });
+                          });
+                          subTs.enable();
+                          subTs.refreshOptions(false);
+                          updateCascadeOut(val, null);
+                        } else {
+                          subTs.disable();
+                          updateCascadeOut(null, null);
+                        }
+                      });
+                      subTs.on('change', function (val) {
+                        updateCascadeOut(catTs.getValue(), val);
+                      });
+                    }
+
+                    // ── Registry grid — all built-in lists ───────────────────────────────
+                    var grid = document.getElementById('demo-list-registry-grid');
+                    if (grid) {
+                      EOCLists.list().forEach(function (name) {
+                        var items = EOCLists.get(name);
+                        var isTree = EOCLists.hasChildren(name);
+
+                        var card = document.createElement('div');
+                        card.className = 'wui-card';
+                        card.style.cssText = 'min-width:220px;flex:1 1 220px;max-width:320px';
+
+                        var hdr = document.createElement('div');
+                        hdr.className = 'wui-card-hdr';
+                        hdr.innerHTML =
+                          '<div class="wui-card-hdr-left">' +
+                            '<span class="wui-card-label" style="font-size:var(--font-sm)">' + name + '</span>' +
+                          '</div>' +
+                          '<div class="wui-card-hdr-right">' +
+                            '<span class="wui-badge ' + (isTree ? 'info' : 'secondary') + ' bordered" style="font-size:11px">' +
+                              (isTree ? 'tree' : 'flat') +
+                            '</span>' +
+                          '</div>';
+
+                        var body = document.createElement('div');
+                        body.className = 'wui-card-body';
+                        body.style.cssText = 'padding-top:0;display:flex;flex-direction:column;gap:4px';
+
+                        items.slice(0, 5).forEach(function (item) {
+                          var row = document.createElement('div');
+                          row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:var(--space-2)';
+                          row.innerHTML =
+                            '<span style="font-size:var(--font-sm);color:var(--color-text-primary)">' + item.text + '</span>' +
+                            '<code style="font-size:11px;color:var(--color-text-secondary)">' + item.value + '</code>';
+                          body.appendChild(row);
+                          if (isTree) {
+                            var children = EOCLists.getChildren(name, item.value);
+                            if (children.length) {
+                              var sub = document.createElement('div');
+                              sub.style.cssText = 'padding-left:var(--space-3);display:flex;flex-wrap:wrap;gap:4px;margin-bottom:2px';
+                              children.slice(0, 3).forEach(function (c) {
+                                var chip = document.createElement('span');
+                                chip.style.cssText = 'font-size:10px;padding:1px 6px;background:var(--color-60);border-radius:var(--radius-full);color:var(--color-text-secondary)';
+                                chip.textContent = c.text;
+                                sub.appendChild(chip);
+                              });
+                              if (children.length > 3) {
+                                var more = document.createElement('span');
+                                more.style.cssText = 'font-size:10px;color:var(--color-text-secondary)';
+                                more.textContent = '+' + (children.length - 3) + ' more';
+                                sub.appendChild(more);
+                              }
+                              body.appendChild(sub);
+                            }
+                          }
+                        });
+
+                        if (items.length > 5) {
+                          var more = document.createElement('div');
+                          more.style.cssText = 'font-size:var(--font-xs);color:var(--color-text-secondary);padding-top:var(--space-1)';
+                          more.textContent = '+ ' + (items.length - 5) + ' more items';
+                          body.appendChild(more);
+                        }
+
+                        card.appendChild(hdr);
+                        card.appendChild(body);
+                        grid.appendChild(card);
+                      });
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerListsPage();
+          else document.addEventListener('alpine:init', registerListsPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_lists_1">Reference</div>
@@ -54,7 +233,7 @@
 
         <!-- ── Load order ────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_6"><span class="material-symbols-outlined">bolt</span>Load Order</div>
+          <div class="docs-section-title" id="load-order" data-wui-i18n-html="docs_lists_6"><span class="material-symbols-outlined">bolt</span>Load Order</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_7">
             Include <code>eoc-lists.js</code> in the board's <code>&lt;head&gt;</code> before any script
             that references <code>EOCLists</code>.
@@ -74,7 +253,7 @@
 
         <!-- ── API ───────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_8"><span class="material-symbols-outlined">code</span>API — <code>window.EOCLists</code></div>
+          <div class="docs-section-title" id="api-window-eoclists" data-wui-i18n-html="docs_lists_8"><span class="material-symbols-outlined">code</span>API — <code>window.EOCLists</code></div>
 
           <table class="docs-api-table">
             <thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead>
@@ -123,7 +302,7 @@
 
         <!-- ── Defining lists ────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_9"><span class="material-symbols-outlined">data_object</span>Defining Lists</div>
+          <div class="docs-section-title" id="defining-lists" data-wui-i18n-html="docs_lists_9"><span class="material-symbols-outlined">data_object</span>Defining Lists</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_10">
             All lists live in <code>eoc-lists.js</code>. Two formats — flat and tree.
             Add new lists to the file; boards pick them up automatically on next deploy.
@@ -173,7 +352,7 @@ EOCLists.register('My Board Status', [
 
         <!-- ── Demo: Flat list ───────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_11"><span class="material-symbols-outlined">format_list_bulleted</span>Demo — Flat List</div>
+          <div class="docs-section-title" id="demo-flat-list" data-wui-i18n-html="docs_lists_11"><span class="material-symbols-outlined">format_list_bulleted</span>Demo — Flat List</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_12">
             <code>EOCLists.populate()</code> fills a native <code>&lt;select&gt;</code>. Pass it to TomSelect.
             The Priority list ships in <code>eoc-lists.js</code> — no WebEOC list needed.
@@ -213,7 +392,7 @@ ts.on('change', function (val) {
 
         <!-- ── Demo: Cascading ───────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_13"><span class="material-symbols-outlined">account_tree</span>Demo — Cascading (Sub-List)</div>
+          <div class="docs-section-title" id="demo-cascading-sub-list" data-wui-i18n-html="docs_lists_13"><span class="material-symbols-outlined">account_tree</span>Demo — Cascading (Sub-List)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_14">
             Tree lists define parent items and a <code>children</code> map.
             When the parent changes, call <code>EOCLists.getChildren()</code> to reload the child TomSelect.
@@ -262,7 +441,7 @@ catTs.on('change', function (val) {
 
         <!-- ── Board integration ─────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_15"><span class="material-symbols-outlined">integration_instructions</span>Board Integration Pattern</div>
+          <div class="docs-section-title" id="board-integration-pattern" data-wui-i18n-html="docs_lists_15"><span class="material-symbols-outlined">integration_instructions</span>Board Integration Pattern</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_16">
             In a WebEOC board's <code>initialize()</code>, populate registry-backed selects
             <strong>before</strong> <code>TomSelectFactory.init()</code>.
@@ -310,7 +489,7 @@ catTs.on('change', function (val) {
 
         <!-- ── Registry reference ─────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_lists_18"><span class="material-symbols-outlined">inventory_2</span>Built-in Lists</div>
+          <div class="docs-section-title" id="built-in-lists" data-wui-i18n-html="docs_lists_18"><span class="material-symbols-outlined">inventory_2</span>Built-in Lists</div>
           <p class="docs-desc" data-wui-i18n-html="docs_lists_19">
             All lists defined in <code>eoc-lists.js</code> as shipped.
             Add new lists to the file for any domain; use <code>EOCLists.register()</code> for board-specific
@@ -318,6 +497,203 @@ catTs.on('change', function (val) {
           </p>
 
           <div id="demo-list-registry-grid" style="display:flex;flex-wrap:wrap;gap:var(--space-3)"></div>
+        </div>
+
+        <!-- ── REST-Live API ────────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="rest-live-api-window-eoclistsapi" data-wui-i18n-html="docs_lists_20"><span class="material-symbols-outlined">cloud_sync</span>REST-Live API — <code>window.EOCListsAPI</code></div>
+          <p class="docs-desc" data-wui-i18n-html="docs_lists_21">
+            <code>EOCLists</code> above is a static, portable registry — data baked into <code>eoc-lists.js</code>
+            at deploy time, no network calls. <code>EOCListsAPI</code> is a different, independent object in the
+            same file: it talks directly to the live WebEOC Nexus REST API's <code>/lists</code> endpoints,
+            reading and writing the environment's own list catalog at runtime. Use the static registry to ship
+            list data that travels with a board package; use <code>EOCListsAPI</code> when a board needs to read
+            or seed lists that actually live in WebEOC admin. The two are unrelated — a name registered in one is
+            not visible to the other.
+          </p>
+
+          <div class="wui-callout info">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body" data-wui-i18n-html="docs_lists_22">
+              <div class="wui-callout-title">Setup — no separate login call</div>
+              The base URL is resolved once from the current page's own <code>window.location.href</code>: a
+              board view's URL is <code>&lt;scheme&gt;://&lt;host&gt;/&lt;instance&gt;/boards/...</code>, so
+              <code>EOCListsAPI</code> cuts at <code>/boards</code> to get the instance root and appends
+              <code>/api/rest.svc</code> (falls back to <code>location.origin</code> if <code>/boards</code>
+              isn't found). Requests are same-origin and cookie-authenticated using the board's own
+              already-logged-in WebEOC session — no separate REST login/token call is needed from inside a board
+              view.
+            </div>
+          </div>
+
+          <div class="wui-callout danger">
+            <span class="material-symbols-outlined">error</span>
+            <div class="wui-callout-body" data-wui-i18n-html="docs_lists_23">
+              <div class="wui-callout-title">POST /lists is not an upsert — confirmed the hard way</div>
+              <code>createList()</code> (bare <code>POST /lists</code>) is safe <strong>only</strong> to create a
+              list that does not exist yet. Calling it again on an existing list does not update it — it blindly
+              appends the subitems as new duplicate top-level items, and using it to add a single item to an
+              already-existing list (the shape WebEOC's own docs describe) creates a spurious unrelated
+              top-level list named after the item <em>and</em> corrupts the target list's own
+              <code>getList()</code> afterward. <code>addItem()</code>'s URL-path style is the only
+              confirmed-safe way to add to an existing list, at any depth.
+            </div>
+          </div>
+
+          <table class="docs-api-table">
+            <thead><tr><th>Method</th><th>Returns</th><th>Status</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.getLists()</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge success bordered wui-badge-sm">Confirmed live</span></td>
+                <td><code>GET /lists</code> — every list name in the catalog.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.getList(listName)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge success bordered wui-badge-sm">Confirmed live</span></td>
+                <td><code>GET /lists/[listName]</code> — the full recursive tree: <code>{ color, name, subitems }</code>. <code>subitems</code> nests all the way down; no separate "get sub items" call needed.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.createList(listName, subitems, color?)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge success bordered wui-badge-sm">Confirmed live</span></td>
+                <td><code>POST /lists</code> — creates a brand-new list with its full initial tree in one call. Safe only when <code>listName</code> doesn't exist yet (see the gotcha above).</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.addItem(segments, color?)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge success bordered wui-badge-sm">Confirmed live</span></td>
+                <td><code>POST /lists/[seg1]/.../[newName]</code> — adds ONE item to an existing list at any depth. <code>segments[0]</code> is the list name; the new item's name is always the last segment. One call per node — no bulk-add endpoint exists for an existing list.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.editItem(segments, changes)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge warning bordered wui-badge-sm">Not verified</span></td>
+                <td>POST to the item's own path with a replacement body. WebEOC Nexus's REST API only documents GET / POST / DELETE (no PUT/PATCH), so this is modeled as a POST by convention — the request/response shape has not been tested against a live instance.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.deleteList(listName)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge warning bordered wui-badge-sm">Not verified</span></td>
+                <td><code>DELETE /lists/[listName]</code>. Destructive and untested — confirm with throwaway data before relying on it.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.deleteItem(segments)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge warning bordered wui-badge-sm">Not verified</span></td>
+                <td><code>DELETE /lists/[seg1]/.../[itemName]</code> — remove one item/sub-item at any depth. Same caveat as <code>deleteList()</code>.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.findNode(tree, segments)</span></td>
+                <td><span class="docs-api-type">Object|null</span></td>
+                <td><span class="wui-badge secondary bordered wui-badge-sm">Local helper</span></td>
+                <td>Walks an already-fetched tree (from <code>getList()</code>) down to a nested node, e.g. <code>findNode(tree, ['Hazmat', 'Chemical Spill'])</code>. No network call — pure client-side lookup.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.summarize(list)</span></td>
+                <td><span class="docs-api-type">Object</span></td>
+                <td><span class="wui-badge secondary bordered wui-badge-sm">Local helper</span></td>
+                <td>Classifies an already-fetched list: <code>{ itemCount, isTree }</code> — top-level item count, and whether any top-level item has children of its own. No network call.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.ensureList(listName, desiredNodes, onProgress?)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge info bordered wui-badge-sm">Composite</span></td>
+                <td>Create-or-diff-and-fill a whole tree in one call: creates the list if it doesn't exist yet, or recursively adds only the missing nodes if it does. Built entirely from <code>getList()</code>, <code>createList()</code> and <code>addItem()</code> — as reliable as those three, not independently tested beyond them.</td>
+              </tr>
+              <tr>
+                <td><span class="docs-api-method">EOCListsAPI.ensureNodes(listName, parentPath, existingSiblings, desiredNodes, onProgress?)</span></td>
+                <td><span class="docs-api-type">Promise</span></td>
+                <td><span class="wui-badge info bordered wui-badge-sm">Composite</span></td>
+                <td>The recursive worker <code>ensureList()</code> calls internally; exposed for callers that already have both trees fetched and just want the diff-and-fill step.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ── Usage: read/write ────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="usage-reading-writing-lists" data-wui-i18n-html="docs_lists_24"><span class="material-symbols-outlined">swap_horiz</span>Usage — Reading &amp; Writing Lists</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_lists_25">
+            <code>getLists()</code>, <code>getList()</code>, <code>createList()</code> and <code>addItem()</code>
+            are the four confirmed-working entry points — everything else in <code>EOCListsAPI</code> is built on
+            top of them. All four return a <code>Promise</code>; there is no callback form.
+          </p>
+          <pre class="docs-code">// Seed the "Facility Types" list once, if this environment doesn't have it yet
+EOCListsAPI.getLists().then(function (lists) {
+  if (lists.indexOf('Facility Types') === -1) {
+    return EOCListsAPI.createList('Facility Types', [
+      { name: 'EOC',           subitems: [] },
+      { name: 'Shelter',       subitems: [] },
+      { name: 'Staging Area',  subitems: [] }
+    ]);
+  }
+});
+
+// List already exists on this environment — add ONE new top-level item.
+// Never call createList() again on an existing list (see the gotcha above).
+EOCListsAPI.addItem(['Facility Types', 'Reception Centre']).then(function () {
+  console.log('added');
+});
+
+// Add a child under an existing tree list, e.g. Incident Categories → Hazmat → Chemical Spill
+EOCListsAPI.addItem(['Incident Categories', 'Hazmat', 'Chemical Spill']);
+
+// Read a tree back and inspect it with the local (no-network) helpers
+EOCListsAPI.getList('Incident Categories').then(function (tree) {
+  var hazmat = EOCListsAPI.findNode(tree, ['Hazmat']);
+  var stats  = EOCListsAPI.summarize(tree);
+  console.log(hazmat, stats.itemCount, stats.isTree);
+});</pre>
+        </div>
+
+        <!-- ── Usage: ensureList ────────────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="usage-ensurelist-seed-deploy-helper" data-wui-i18n-html="docs_lists_26"><span class="material-symbols-outlined">playlist_add_check</span>Usage — <code>ensureList()</code> (Seed/Deploy Helper)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_lists_27">
+            A single idempotent call for board-deploy scripts: creates the list if it's missing, or diffs against
+            what's already there and adds only the missing nodes if it exists, at any depth, one targeted call
+            per missing node. Any <code>getList()</code> failure is treated as "doesn't exist" — WebEOC's own API
+            throws the same generic error for a missing list as for a genuinely broken one, so there's no clean
+            404 to distinguish them (confirmed live).
+          </p>
+          <pre class="docs-code">EOCListsAPI.ensureList('Incident Categories', [
+  { name: 'Fire',   subitems: [] },
+  { name: 'Hazmat', subitems: [
+    { name: 'Chemical Spill', subitems: [] },
+    { name: 'Gas Leak',       subitems: [] }
+  ] }
+], function (progress) {
+  // progress: { type: 'create'|'exists'|'add', depth, listName, name }
+  console.log(progress.type, progress.name);
+});</pre>
+        </div>
+
+        <!-- ── Usage: unverified writes ─────────────────────────────────────── -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="usage-edititem-deletelist-deleteitem-not-verified" data-wui-i18n-html="docs_lists_28"><span class="material-symbols-outlined">edit_note</span>Usage — <code>editItem()</code> / <code>deleteList()</code> / <code>deleteItem()</code> (Not Verified)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_lists_29">
+            These three exist in <code>eoc-lists.js</code> and are wired up the way the REST API is documented to
+            work, but unlike the four methods above, they were not exercised against a live WebEOC instance.
+            Read them as "present in code, shape not confirmed" rather than "working."
+          </p>
+          <div class="wui-callout warning">
+            <span class="material-symbols-outlined">warning</span>
+            <div class="wui-callout-body" data-wui-i18n-html="docs_lists_30">
+              <div class="wui-callout-title">Test with throwaway data first</div>
+              <code>deleteList()</code> and <code>deleteItem()</code> are destructive and unverified. Try them
+              against a disposable test list on a non-production environment before using them in a real board
+              workflow.
+            </div>
+          </div>
+          <pre class="docs-code">// Modeled as POST to the item's own path — shape not confirmed live
+EOCListsAPI.editItem(['Facility Types', 'Reception Centre'], { name: 'Reception Center', color: '' });
+
+// Destructive, unverified — throwaway data only
+EOCListsAPI.deleteItem(['Facility Types', 'Reception Centre']);
+EOCListsAPI.deleteList('Facility Types Test');</pre>
         </div>
 
       </div>

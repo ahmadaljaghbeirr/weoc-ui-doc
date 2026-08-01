@@ -1,0 +1,392 @@
+diff --git a/CSS/sweetalert2-weoc-theme.css b/CSS/sweetalert2-weoc-theme.css
+new file mode 100644
+index 0000000..b114895
+--- /dev/null
++++ b/CSS/sweetalert2-weoc-theme.css
+@@ -0,0 +1,193 @@
++/* =============================================================================
++   sweetalert2-weoc-theme.css — weoc-ui theme override for vendored SweetAlert2
++
++   Placed FLAT under CSS/ (NOT CSS/weoc-ui/) per explicit user instruction —
++   see docs/superpowers/specs/2026-07-31-sweetalert-design.md. Load order:
++     1. sweetalert2.min.css   (vendored, unmodified)
++     2. sweetalert2-weoc-theme.css   (this file)
++     3. sweetalert2.all.min.js, then wui-alert.js
++
++   SweetAlert2 v11 already exposes most of its own visual language as
++   --swal2-* custom properties on :root (confirmed by reading the real
++   vendored sweetalert2.min.css, not guessed/invented) — so most of this
++   file just remaps those variables onto weoc-ui's own design tokens
++   (CSS/weoc-ui/agency-theme.css). Values are matched against real
++   components: .wui-modal-dialog (weoc-overlays.css) for the popup shell,
++   .wui-btn.primary/.secondary (weoc-interactive.css) for action buttons,
++   .form-control (weoc-forms.css) for the rare prompt-style input.
++
++   A handful of things are hardcoded hex/px in SweetAlert2's own CSS rather
++   than exposed as variables (icon ring colors, close-button hover tint) —
++   those are overridden directly on the real class selectors below instead,
++   confirmed against the vendored file's actual class names (.swal2-success,
++   .swal2-error, .swal2-warning, .swal2-info, .swal2-question, .swal2-close,
++   etc). All such class-selector overrides here are deliberately WRITTEN
++   MORE SPECIFICALLY than SweetAlert2's own rules (e.g. `.swal2-icon.swal2-
++   success` — two classes — beats their `div:where(.swal2-container)
++   h2:where(.swal2-title)`-style selectors, since :where() always
++   contributes zero specificity) — so these win on specificity alone,
++   regardless of source order, no !important needed.
++
++   ── Why the :root block below IS !important (verified, not precautionary) ─
++   sweetalert2.all.min.js (the "all" UMD bundle) embeds its OWN copy of
++   sweetalert2.min.css and injects it as a fresh <style> element into
++   <head> at script-load time — confirmed by live inspection (a ~30KB
++   injected <style> appears, byte-identical in size to the vendored CSS
++   file). That injected block always lands AFTER any static <link> in the
++   document, including this file, so its `:root { --swal2-confirm-button-
++   background-color: #7066e0; ... }` etc. would otherwise win the cascade
++   on pure source order (same `:root` selector = identical specificity on
++   both sides — specificity can't break the tie, only order can, and the
++   JS-injected copy is always later). Every declaration in the :root block
++   below is therefore !important, which beats a same-origin non-important
++   declaration regardless of order. The class-selector overrides above/
++   below do NOT need this (their higher specificity already wins outright,
++   independent of order), so !important stays scoped to :root only.
++
++   ── Re-theming ───────────────────────────────────────────────────────────
++   SweetAlert2 popups are recreated fresh on every .fire() call (no
++   persistent DOM to keep in sync) — WUI.alert()/WUI.confirm() just read
++   whatever the CURRENT resolved --swal2-* / agency-theme.css token values
++   are at call time. Switching theme (data-theme="dark", or an agency
++   palette swap) "just works" for the NEXT popup with no JS re-theme
++   listener needed — unlike wui-charts.js's persistent-canvas case, which
++   has to subscribe to wui:themechange and redraw in place.
++   ============================================================================= */
++
++:root {
++  /* ── Popup shell — matches .wui-modal-dialog (weoc-overlays.css) ────── */
++  --swal2-width: 30em !important;
++  --swal2-padding: 0 0 var(--space-5) !important;
++  --swal2-border: 1px solid var(--color-border) !important;
++  --swal2-border-radius: var(--border-radius) !important;
++  --swal2-background: var(--color-30) !important;
++  --swal2-color: var(--color-text-primary) !important;
++  --swal2-container-padding: var(--space-4) !important;
++  --swal2-backdrop: var(--color-overlay) !important;
++  --swal2-outline: 0 0 0 3px var(--color-10-light) !important;
++  --swal2-title-padding: var(--space-5) var(--space-5) var(--space-2) !important;
++  --swal2-html-container-padding: var(--space-2) var(--space-5) 0 !important;
++
++  /* ── Actions row / buttons — matches .wui-btn.primary/.secondary
++     (weoc-interactive.css). --swal2-action-button-hover/-active feed a
++     color-mix() as "<color> <percentage>" (confirmed from the vendored
++     default `black 10%`), not a standalone paint — keep that shape. ──── */
++  --swal2-actions-margin: var(--space-5) auto 0 !important;
++  --swal2-actions-padding: 0 var(--space-5) !important;
++  --swal2-actions-justify-content: flex-end !important;
++  --swal2-actions-width: auto !important;
++  --swal2-actions-background: transparent !important;
++  --swal2-actions-border-radius: 0 !important;
++
++  --swal2-confirm-button-background-color: var(--color-10) !important;
++  --swal2-confirm-button-color: var(--color-on-accent) !important;
++  --swal2-confirm-button-border-radius: var(--border-radius) !important;
++  --swal2-confirm-button-box-shadow: none !important;
++
++  --swal2-cancel-button-background-color: var(--color-60) !important;
++  --swal2-cancel-button-color: var(--color-text-ui) !important;
++  --swal2-cancel-button-border-radius: var(--border-radius) !important;
++  --swal2-cancel-button-box-shadow: none !important;
++
++  --swal2-deny-button-background-color: var(--color-danger) !important;
++  --swal2-deny-button-color: var(--color-on-accent) !important;
++  --swal2-deny-button-border-radius: var(--border-radius) !important;
++  --swal2-deny-button-box-shadow: none !important;
++
++  --swal2-action-button-hover: black 8% !important;
++  --swal2-action-button-active: black 16% !important;
++  --swal2-action-button-focus-box-shadow: 0 0 0 3px var(--color-10-light) !important;
++  --swal2-action-button-transition: background-color 0.15s ease, box-shadow 0.15s ease !important;
++
++  /* ── Close button ─────────────────────────────────────────────────────── */
++  --swal2-close-button-color: var(--color-text-secondary) !important;
++  --swal2-close-button-focus-box-shadow: 0 0 0 3px var(--color-10-light) !important;
++
++  /* ── Prompt-style inputs — matches .form-control (weoc-forms.css) ──── */
++  --swal2-input-background: transparent !important;
++  --swal2-input-border: 1px solid var(--color-border) !important;
++  --swal2-input-border-radius: var(--border-radius) !important;
++  --swal2-input-box-shadow: none !important;
++  --swal2-input-focus-border: 1px solid var(--color-10) !important;
++  --swal2-input-focus-box-shadow: 0 0 0 3px var(--color-10-light) !important;
++  --swal2-input-hover-box-shadow: none !important;
++  --swal2-input-transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
++
++  /* ── Footer / timer / validation / progress-step ─────────────────────── */
++  --swal2-footer-background: transparent !important;
++  --swal2-footer-border-color: var(--color-border) !important;
++  --swal2-footer-color: var(--color-text-secondary) !important;
++  --swal2-timer-progress-bar-background: var(--color-10-muted) !important;
++  --swal2-validation-message-background: var(--color-danger-light) !important;
++  --swal2-validation-message-color: var(--color-danger-text) !important;
++  --swal2-progress-step-background: var(--color-border) !important;
++
++  /* ── Toast variant ────────────────────────────────────────────────────── */
++  --swal2-toast-border: 1px solid var(--color-border) !important;
++  --swal2-toast-box-shadow: var(--shadow-md) !important;
++}
++
++/* ── Icon ring colors ─────────────────────────────────────────────────────
++   SweetAlert2 hardcodes these as literal hex on .swal2-success/-error/
++   -warning/-info/-question (confirmed: no --swal2-* variable covers them
++   in the vendored CSS), so they're remapped directly here onto weoc-ui's
++   severity tokens instead. Same selectors as the vendored rule, later in
++   the cascade → wins without !important.
++   'question' has no dedicated severity token in this library —
++   --color-secondary (neutral, non-alarming) is the closest real match,
++   same reasoning wui-charts.js's _DEFAULT_PALETTE uses 'secondary' as a
++   neutral filler entry. */
++.swal2-icon.swal2-success  { border-color: var(--color-success); color: var(--color-success); }
++.swal2-icon.swal2-success .swal2-success-ring { border-color: var(--color-success-muted); }
++.swal2-icon.swal2-error    { border-color: var(--color-danger);  color: var(--color-danger); }
++.swal2-icon.swal2-warning  { border-color: var(--color-warning); color: var(--color-warning); }
++.swal2-icon.swal2-info     { border-color: var(--color-info);    color: var(--color-info); }
++.swal2-icon.swal2-question { border-color: var(--color-secondary); color: var(--color-secondary); }
++
++/* ── Typography ──────────────────────────────────────────────────────────
++   SweetAlert2 sets no font-family of its own anywhere (confirmed: zero
++   font-family declarations in the vendored CSS) — it just inherits from
++   the page. Declared explicitly anyway so WUI.alert()/WUI.confirm() still
++   render correctly themed even called from a bare board page that hasn't
++   loaded weoc-typography.css. */
++.swal2-popup {
++  font-family: var(--font-body);
++}
++
++h2.swal2-title {
++  font-size: var(--text-lg);
++  font-weight: var(--font-semibold);
++  color: var(--color-text-primary);
++}
++
++.swal2-html-container {
++  font-size: var(--text-sm);
++  color: var(--color-text-secondary);
++  line-height: var(--leading-normal);
++}
++
++/* ── Action buttons ──────────────────────────────────────────────────────
++   Matches .wui-btn's own box (weoc-interactive.css: min-height/padding/
++   font) rather than SweetAlert2's stock button proportions. */
++button.swal2-styled {
++  min-height: 2.375rem;
++  padding: var(--space-1) var(--space-4);
++  font-family: var(--font-ui);
++  font-size: var(--text-base);
++  font-weight: var(--font-medium);
++  box-shadow: none !important;
++}
++
++button.swal2-styled:focus-visible {
++  outline: none;
++}
++
++/* ── Close button ────────────────────────────────────────────────────────
++   Vendored CSS hardcodes a red hover tint (#f27474) on .swal2-close — not
++   exposed as a variable — overridden to the same neutral hover
++   .wui-modal-close uses (weoc-overlays.css: var(--color-60) bg,
++   var(--color-text-primary) icon). */
++.swal2-close:hover {
++  color: var(--color-text-primary);
++  background: var(--color-60);
++}
+diff --git a/JS/wui-alert.js b/JS/wui-alert.js
+new file mode 100644
+index 0000000..8ad524c
+--- /dev/null
++++ b/JS/wui-alert.js
+@@ -0,0 +1,169 @@
++/* =============================================================================
++   wui-alert.js  —  weoc-ui alert/confirm adapter
++
++   Thin wrapper around SweetAlert2, matching this library's WUI.<name>(opts)
++   factory convention (see wui-charts.js's WUI.chart/WUI.pie/WUI.donut —
++   opts-driven, token-read-at-call-time, console.warn + graceful fallback
++   instead of throwing). Board code never calls Swal.fire() directly — only
++   WUI.alert()/WUI.confirm() — so every theming/override detail lives in one
++   place instead of leaking SweetAlert2-specific knowledge to every call site.
++
++   Unlike WUI.chart(el, opts)/WUI.heatmap(el, opts)/WUI.kanban(el, opts),
++   these two factories take NO host element — a SweetAlert2 popup is a
++   global, self-positioning overlay, not something mounted inside a
++   caller-supplied container, so there is nothing for an `el` argument to
++   do. This is a deliberate, spec-driven exception to the (el, opts) shape,
++   not an oversight.
++
++   ── Engine ───────────────────────────────────────────────────────────────
++   SweetAlert2 v11.x (self-contained "all" UMD bundle — CSS is separate).
++   Must be loaded BEFORE this file:
++     <link  rel="stylesheet" href="path/to/sweetalert2.min.css">
++     <link  rel="stylesheet" href="path/to/sweetalert2-weoc-theme.css">
++     <script src="path/to/sweetalert2.all.min.js"></script>
++
++   ── API index ────────────────────────────────────────────────────────────
++   WUI.alert(opts)              Fire an informational popup (single OK
++                                 button). Returns SweetAlert2's own
++                                 Promise<SweetAlertResult> unchanged — an
++                                 alert has only one real outcome, nothing to
++                                 normalize.
++     opts.title                 string
++     opts.text                  string (plain text body)
++     opts.html                  string (rich body — passed straight to
++                                 SweetAlert2's own `html` option; caller
++                                 owns sanitization, same trust boundary as
++                                 every other *-html i18n marker in this
++                                 library)
++     opts.icon                  'success' | 'error' | 'warning' | 'info' |
++                                 'question' (omit for a plain popup, no icon)
++     ...any other real SweetAlert2 option — passed through verbatim.
++
++   WUI.confirm(opts)            Fire a confirm/cancel popup (two buttons).
++                                 Resolves a PLAIN BOOLEAN — true only when
++                                 the user pressed Confirm; false for Cancel,
++                                 backdrop click, Esc, or the close button.
++                                 Deliberately NARROWED vs SweetAlert2's own
++                                 richer { isConfirmed, isDismissed,
++                                 dismiss, ... } result shape, matching what
++                                 callers like WUI.kanban()'s
++                                 opts.onBeforeMove(card, from, to) already
++                                 expect (return/resolve a boolean).
++     opts.confirmText            Alias for SweetAlert2's confirmButtonText.
++     opts.cancelText              Alias for SweetAlert2's cancelButtonText.
++     ...same title/text/html/icon/etc as WUI.alert, passed through verbatim.
++
++   ── Fallback ─────────────────────────────────────────────────────────────
++   If window.Swal is undefined when called (SweetAlert2 failed to load —
++   same class of failure as any other missing script dependency in this
++   codebase, e.g. WUI.chart() when window.uPlot is missing): console.warn
++   once, then fall back to native window.alert()/window.confirm() so the
++   caller's flow never silently breaks or hangs. Matches the "graceful
++   degradation, never a silent no-op, never a crash" pattern already
++   established for the docs search feature's index-fetch-failure case.
++
++   ── IE11-adjacent compatibility ─────────────────────────────────────────
++   var, function declarations, no arrow functions, no template literals, no
++   destructuring — matches wui-charts.js's stated constraint (WebEOC's
++   embedded browser requires it).
++   ============================================================================= */
++
++(function (root) {
++  'use strict';
++
++  /* ── Ensure WUI namespace ─────────────────────────────────────────────── */
++  if (!root.WUI) { root.WUI = {}; }
++
++  /*
++   * _copyOpts(opts)
++   * Shallow-copies the caller's opts so mutating it below (stripping the
++   * confirmText/cancelText aliases, adding showCancelButton) never touches
++   * the object the caller still holds a reference to.
++   */
++  function _copyOpts(opts) {
++    var out = {};
++    for (var k in opts) {
++      if (Object.prototype.hasOwnProperty.call(opts, k)) { out[k] = opts[k]; }
++    }
++    return out;
++  }
++
++  /*
++   * _fallbackMessage(opts)
++   * Best-effort flattening of {title, text} into a single string for the
++   * native alert()/confirm() fallback path — those APIs take one string,
++   * not SweetAlert2's structured opts.
++   */
++  function _fallbackMessage(opts) {
++    var msg = opts.title || '';
++    if (opts.text) { msg = msg ? (msg + '\n\n' + opts.text) : opts.text; }
++    return msg;
++  }
++
++  function _warnMissing(fnName, nativeName) {
++    if (root.console && root.console.warn) {
++      console.warn(
++        '[wui-alert] WUI.' + fnName + '() called but window.Swal is not defined. ' +
++        'Load SweetAlert2 before wui-alert.js:\n' +
++        '  <script src="path/to/sweetalert2.all.min.js"><\/script>\n' +
++        'Falling back to native window.' + nativeName + '().'
++      );
++    }
++  }
++
++  /*
++   * WUI.alert(opts)
++   * ────────────────
++   * See header for the full option list. Returns SweetAlert2's own
++   * Promise<SweetAlertResult>, or a Promise resolving a stand-in
++   * { isConfirmed: true, isDenied: false, isDismissed: false } shape when
++   * falling back to native window.alert() (kept Promise-shaped so callers
++   * don't need an `if (window.Swal)` branch of their own).
++   */
++  function alert(opts) {
++    opts = opts || {};
++
++    if (typeof root.Swal === 'undefined') {
++      _warnMissing('alert', 'alert');
++      root.alert(_fallbackMessage(opts));
++      return Promise.resolve({ isConfirmed: true, isDenied: false, isDismissed: false });
++    }
++
++    var fireOpts = _copyOpts(opts);
++    return root.Swal.fire(fireOpts);
++  }
++
++  /*
++   * WUI.confirm(opts)
++   * ──────────────────
++   * See header for the full option list. Resolves a plain boolean, never
++   * SweetAlert2's own result object — true for Confirm, false for
++   * anything else (Cancel, backdrop click, Esc, close button). Falls back
++   * to native window.confirm() (synchronous, but still wrapped in a
++   * Promise for a uniform call shape) if SweetAlert2 isn't loaded.
++   */
++  function confirm(opts) {
++    opts = opts || {};
++
++    if (typeof root.Swal === 'undefined') {
++      _warnMissing('confirm', 'confirm');
++      return Promise.resolve(root.confirm(_fallbackMessage(opts)));
++    }
++
++    var fireOpts = _copyOpts(opts);
++    fireOpts.showCancelButton = true;
++    if (opts.confirmText) { fireOpts.confirmButtonText = opts.confirmText; }
++    if (opts.cancelText)  { fireOpts.cancelButtonText  = opts.cancelText; }
++    delete fireOpts.confirmText;
++    delete fireOpts.cancelText;
++
++    return root.Swal.fire(fireOpts).then(function (result) {
++      return !!(result && result.isConfirmed);
++    });
++  }
++
++  /* ── Attach to WUI namespace ──────────────────────────────────────────── */
++  root.WUI.alert   = alert;
++  root.WUI.confirm = confirm;
++
++}(window));
+diff --git a/docs/i18n/kanban.js b/docs/i18n/kanban.js
+index 5eb92ee..9d93ea2 100644
+--- a/docs/i18n/kanban.js
++++ b/docs/i18n/kanban.js
+@@ -32,11 +32,12 @@
+     { lang:'en', id:'docs_kanban_23', value:'On drop, <code>wui-kanban.js</code> moves the card\'s DOM node into the target column FIRST (mirroring the reference board\'s own "move visually first, cancel reverts" approach), THEN calls <code>opts.onBeforeMove</code>. If the result — or the value a returned <code>Promise</code> resolves to — is exactly <code>false</code>, the card animates back to its original position in its original column and gets a brief rejection cue. Anything else commits the move.' }, { lang:'ar', id:'docs_kanban_23', value:'عند الإفلات، ينقل <code>wui-kanban.js</code> عقدة DOM الخاصة بالبطاقة إلى العمود الهدف أولًا (بما يطابق أسلوب اللوحة المرجعية نفسه: "انقل بصريًا أولًا، والإلغاء يُرجع النقل")، ثم يستدعي <code>opts.onBeforeMove</code>. إذا كانت النتيجة، أو القيمة التي يتحلّل إليها <code>Promise</code> معاد، تساوي <code>false</code> تمامًا، تعود البطاقة متحركةً إلى موضعها الأصلي في عمودها الأصلي وتحصل على إشارة رفض موجزة. أي قيمة أخرى تُثبّت النقل.' },
+     { lang:'en', id:'docs_kanban_24', value:'This library never shows its own modal' }, { lang:'ar', id:'docs_kanban_24', value:'هذه المكتبة لا تعرض نافذتها المنبثقة الخاصة أبدًا' },
+     { lang:'en', id:'docs_kanban_25', value:'The demo above calls <code>WUI.confirm()</code> — the vendored, weoc-ui-themed SweetAlert2 wrapper (see <code>wui-alert.js</code>) — instead of a raw browser <code>confirm()</code>. A real board can go further still and swap in its own dedicated modal or a REST call inside <code>onBeforeMove</code>, returning a <code>Promise</code> that resolves once the board knows whether the move should stick — exactly matching <code>TaskManagement</code>\'s real <code>openKanbanStatusModal()</code> pattern, without this library baking in that board-specific UX.' }, { lang:'ar', id:'docs_kanban_25', value:'يستدعي المثال أعلاه <code>WUI.confirm()</code> — غلاف SweetAlert2 المُجهّز والمُنسّق بمظهر weoc-ui (راجع <code>wui-alert.js</code>) — بدلًا من نافذة <code>confirm()</code> الأصلية للمتصفح. يمكن للوحة حقيقية أن تذهب أبعد من ذلك وتستبدلها بنافذة تأكيد مخصصة خاصة بها أو باستدعاء REST داخل <code>onBeforeMove</code>، يعيد <code>Promise</code> يتحلّل بمجرد أن تعرف اللوحة ما إذا كان يجب أن يستقر النقل، بما يطابق تمامًا نمط <code>openKanbanStatusModal()</code> الفعلي في <code>TaskManagement</code>، دون أن تضمّن هذه المكتبة تلك الواجهة الخاصة باللوحة.' },
+     { lang:'en', id:'docs_kanban_26', value:'<span class="material-symbols-outlined">view_column</span>Example — A Different Column Set' }, { lang:'ar', id:'docs_kanban_26', value:'<span class="material-symbols-outlined">view_column</span>مثال: مجموعة أعمدة مختلفة' },
+     { lang:'en', id:'docs_kanban_27', value:'Same component, a completely different <code>opts.columns</code> — a plain 3-column To Do / Doing / Done board, proving <code>WUI.kanban()</code> is not secretly hardcoded to <code>TaskManagement</code>\'s exact 4 statuses. No <code>onBeforeMove</code> here — omitted means every move commits unconditionally.' }, { lang:'ar', id:'docs_kanban_27', value:'المكوّن نفسه، مع <code>opts.columns</code> مختلف تمامًا — لوحة بسيطة من ثلاثة أعمدة: قيد الانتظار / قيد التنفيذ / منجز، لإثبات أن <code>WUI.kanban()</code> ليس مقيّدًا سرًا بحالات <code>TaskManagement</code> الأربع الفعلية. لا يوجد <code>onBeforeMove</code> هنا؛ حذفه يعني أن كل نقل يُثبّت دون قيد.' },
+     { lang:'en', id:'docs_kanban_28', value:'<span class="material-symbols-outlined">error_outline</span>Error Handling' }, { lang:'ar', id:'docs_kanban_28', value:'<span class="material-symbols-outlined">error_outline</span>معالجة الأخطاء' },
+     { lang:'en', id:'docs_kanban_29', value:'Matches the chart family\'s no-crash convention: bad configuration logs a warning and returns null (or silently skips the one bad item), it never throws.' }, { lang:'ar', id:'docs_kanban_29', value:'يطابق اتفاقية عدم التعطّل نفسها لعائلة المخططات: يسجّل الإعداد الخاطئ تحذيرًا ويعيد قيمة فارغة (أو يتخطى العنصر الخاطئ بصمت)، ولا يتعطّل أبدًا.' },
+     { lang:'en', id:'docs_kanban_30', value:'<span class="material-symbols-outlined">delete</span>destroy()' }, { lang:'ar', id:'docs_kanban_30', value:'<span class="material-symbols-outlined">delete</span>destroy()' },
+-    { lang:'en', id:'docs_kanban_31', value:'Call <code>handle.destroy()</code> when the board\'s container is removed from the DOM (a split panel closing, an <code>updatesection</code> refresh replacing the whole board region on a WebEOC view, etc). It unbinds the drag-and-drop listeners bound on the container and clears its contents — the container element itself is left in place, ready for a fresh <code>WUI.kanban()</code> call if needed.' }, { lang:'ar', id:'docs_kanban_31', value:'استدعِ <code>handle.destroy()</code> عند إزالة حاوية اللوحة من DOM (إغلاق لوحة مقسومة، أو تحديث <code>updatesection</code> يستبدل منطقة اللوحة بأكملها في عرض WebEOC، إلخ). يزيل ربط مستمعي السحب والإفلات المرتبطة بالحاوية ويمسح محتوياتها؛ يبقى عنصر الحاوية نفسه في مكانه، جاهزًا لاستدعاء جديد لـ <code>WUI.kanban()</code> عند الحاجة.' }
++    { lang:'en', id:'docs_kanban_31', value:'Call <code>handle.destroy()</code> when the board\'s container is removed from the DOM (a split panel closing, an <code>updatesection</code> refresh replacing the whole board region on a WebEOC view, etc). It unbinds the drag-and-drop listeners bound on the container and clears its contents — the container element itself is left in place, ready for a fresh <code>WUI.kanban()</code> call if needed.' }, { lang:'ar', id:'docs_kanban_31', value:'استدعِ <code>handle.destroy()</code> عند إزالة حاوية اللوحة من DOM (إغلاق لوحة مقسومة، أو تحديث <code>updatesection</code> يستبدل منطقة اللوحة بأكملها في عرض WebEOC، إلخ). يزيل ربط مستمعي السحب والإفلات المرتبطة بالحاوية ويمسح محتوياتها؛ يبقى عنصر الحاوية نفسه في مكانه، جاهزًا لاستدعاء جديد لـ <code>WUI.kanban()</code> عند الحاجة.' },
++    { lang:'en', id:'docs_kanban_37', value:'The Task Board demo below also uses <code>WUI.confirm()</code> for its reject-confirmation gate — a themed wrapper (<code>wui-alert.js</code>) around the vendored SweetAlert2 library. That needs its own stylesheet pair and scripts loaded first, in this order:' }, { lang:'ar', id:'docs_kanban_37', value:'يستخدم عرض لوحة المهام أدناه أيضًا <code>WUI.confirm()</code> كبوابة تأكيد الرفض — وهو غلاف مُنسّق بمظهر weoc-ui (<code>wui-alert.js</code>) حول مكتبة SweetAlert2 المجهّزة. يتطلب ذلك تحميل زوج أوراق الأنماط الخاصة به والبرمجيات النصية أولًا، بهذا الترتيب:' }
+   ]);
+ })();

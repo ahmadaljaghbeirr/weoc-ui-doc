@@ -16,10 +16,105 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="motion">
-      <div class="docs-page">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="motionPage()">
+        <script>
+        (function () {
+          function registerMotionPage() {
+            Alpine.data('motionPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    if (!window.WUIAnim) return;
+                    var A = window.WUIAnim;
+
+                    // ── ring() demo ──────────────────────────────────────────────────────
+                    var ring1 = document.getElementById('demo-ring-1');
+                    var ringPlay = document.getElementById('ring-play');
+                    var ringReset = document.getElementById('ring-reset');
+                    if (ring1 && ringPlay) {
+                      ringPlay.addEventListener('click', function () { A.ring(ring1, 75); });
+                    }
+                    if (ring1 && ringReset) {
+                      ringReset.addEventListener('click', function () { A.ring(ring1, 0, { duration: 0.5 }); });
+                    }
+
+                    // ── sectionEntrance() demo ───────────────────────────────────────────
+                    var sectionContainer = document.getElementById('demo-section-container');
+                    var sectionPlay = document.getElementById('section-play');
+                    function resetSectionRings() {
+                      if (!sectionContainer) return;
+                      sectionContainer.querySelectorAll('.wui-progress-ring-fill').forEach(function (fill) {
+                        fill.style.strokeDashoffset = '326.73';
+                      });
+                      sectionContainer.querySelectorAll('.wui-progress-ring-pct').forEach(function (el) {
+                        el.textContent = '0%';
+                      });
+                    }
+                    if (sectionContainer && sectionPlay) {
+                      resetSectionRings();
+                      sectionPlay.addEventListener('click', function () {
+                        resetSectionRings();
+                        setTimeout(function () { A.sectionEntrance(sectionContainer); }, 50);
+                      });
+                    }
+
+                    // ── completion() demo ────────────────────────────────────────────────
+                    var ringCompletion = document.getElementById('demo-ring-completion');
+                    var completionPlay = document.getElementById('completion-play');
+                    var completionReset = document.getElementById('completion-reset');
+                    if (ringCompletion && completionPlay) {
+                      completionPlay.addEventListener('click', function () { A.completion(ringCompletion); });
+                    }
+                    if (ringCompletion && completionReset) {
+                      completionReset.addEventListener('click', function () {
+                        A.ring(ringCompletion, 50, { duration: 0.5 });
+                      });
+                    }
+
+                    // ── counter() demo ───────────────────────────────────────────────────
+                    var ctr1 = document.getElementById('demo-counter-1');
+                    var ctr2 = document.getElementById('demo-counter-2');
+                    var ctr3 = document.getElementById('demo-counter-3');
+                    var ctrPlay = document.getElementById('counter-play');
+                    function resetCounters() {
+                      if (ctr1) ctr1.textContent = '0';
+                      if (ctr2) ctr2.textContent = '0';
+                      if (ctr3) ctr3.textContent = '0%';
+                    }
+                    if (ctrPlay) {
+                      ctrPlay.addEventListener('click', function () {
+                        resetCounters();
+                        if (ctr1) A.counter(ctr1, 0, 142, { duration: 0.9 });
+                        if (ctr2) A.counter(ctr2, 0, 117, { duration: 0.9 });
+                        if (ctr3) A.counter(ctr3, 0, 83, { duration: 0.9, suffix: '%' });
+                      });
+                    }
+
+                    // ── bar() demo ───────────────────────────────────────────────────────
+                    var bar = document.getElementById('demo-bar');
+                    function wireBar(id, pct) {
+                      var btn = document.getElementById(id);
+                      if (btn && bar) btn.addEventListener('click', function () { A.bar(bar, pct); });
+                    }
+                    wireBar('bar-play-40', 40);
+                    wireBar('bar-play-75', 75);
+                    wireBar('bar-play-100', 100);
+                    var barReset = document.getElementById('bar-reset');
+                    if (barReset && bar) {
+                      barReset.addEventListener('click', function () { A.bar(bar, 0, { duration: 0.4 }); });
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerMotionPage();
+          else document.addEventListener('alpine:init', registerMotionPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_motion_1">Recipes</div>
@@ -29,7 +124,7 @@
 
         <!-- ── Setup ────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_motion_4"><span class="material-symbols-outlined">download</span>Setup</div>
+          <div class="docs-section-title" id="setup" data-wui-i18n-html="docs_motion_4"><span class="material-symbols-outlined">download</span>Setup</div>
           <p class="docs-desc" data-wui-i18n-html="docs_motion_5">Deploy <code>weoc-anim.js</code> and <code>gsap.min.js</code> together in the same server folder. The board only needs two script tags — <code>weoc-anim.js</code> self-loads GSAP from its sibling directory at runtime. If GSAP fails to load, every method silently becomes a no-op; boards never need their own guard.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <template class="wui-demo-js">
@@ -57,7 +152,7 @@
 
         <!-- ── ring() ────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_motion_8"><span class="material-symbols-outlined">donut_large</span>WUIAnim.ring(el, toPct, opts)</div>
+          <div class="docs-section-title" id="wuianim-ring-el-topct-opts" data-wui-i18n-html="docs_motion_8"><span class="material-symbols-outlined">donut_large</span>WUIAnim.ring(el, toPct, opts)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_motion_9">Tween a <code>.wui-progress-ring</code> from its current rendered value to <code>toPct</code>. The pct text (<code>.wui-progress-ring-pct</code>) animates in sync by default.</p>
 
           <table class="docs-api-table">
@@ -111,7 +206,7 @@ WUIAnim.ring(ring, 100, { onComplete: () => console.log('done') });
 
         <!-- ── ringEntrance() ─────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_motion_11"><span class="material-symbols-outlined">north_east</span>WUIAnim.ringEntrance(el, opts)</div>
+          <div class="docs-section-title" id="wuianim-ringentrance-el-opts" data-wui-i18n-html="docs_motion_11"><span class="material-symbols-outlined">north_east</span>WUIAnim.ringEntrance(el, opts)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_motion_12">Animate a freshly-injected ring from 0 to its target value. Reads the target from <code>data-target-pct</code> (preferred — set by XSL) or from the rendered <code>stroke-dashoffset</code>. Use for single-ring injections; for bulk post-reload use <code>sectionEntrance()</code>.</p>
 
           <table class="docs-api-table">
@@ -154,7 +249,7 @@ WUIAnim.ringEntrance(ring, { from: 42 });
 
         <!-- ── sectionEntrance() ──────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_motion_14"><span class="material-symbols-outlined">grid_view</span>WUIAnim.sectionEntrance(containerEl, opts)</div>
+          <div class="docs-section-title" id="wuianim-sectionentrance-containerel-opts" data-wui-i18n-html="docs_motion_14"><span class="material-symbols-outlined">grid_view</span>WUIAnim.sectionEntrance(containerEl, opts)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_motion_15">Animate all <code>.wui-progress-ring</code> elements inside a container after a section reload or innerHTML swap. Each ring sweeps from empty to its target with a stagger — so a table of ten rings fills in left-to-right rather than all at once.</p>
 
           <table class="docs-api-table">
@@ -236,7 +331,7 @@ WUIAnim.sectionEntrance(container, { stagger: 0.10, delay: 0.2 });
 
         <!-- ── completion() ───────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_motion_17"><span class="material-symbols-outlined">check_circle</span>WUIAnim.completion(el, opts)</div>
+          <div class="docs-section-title" id="wuianim-completion-el-opts" data-wui-i18n-html="docs_motion_17"><span class="material-symbols-outlined">check_circle</span>WUIAnim.completion(el, opts)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_motion_18">Animate a ring to 100% with a completion flourish: the arc sweeps with a spring overshoot, then the wrapper scales up and bounces back. Reserve this for moments that deserve emphasis — status transitions to "Complete", KPI modals hitting 100%. For regular value changes use <code>ring()</code>.</p>
 
           <table class="docs-api-table">
@@ -280,7 +375,7 @@ WUIAnim.completion(ring, {
 
         <!-- ── counter() ──────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_motion_20"><span class="material-symbols-outlined">123</span>WUIAnim.counter(el, from, to, opts)</div>
+          <div class="docs-section-title" id="wuianim-counter-el-from-to-opts" data-wui-i18n-html="docs_motion_20"><span class="material-symbols-outlined">123</span>WUIAnim.counter(el, from, to, opts)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_motion_21">Standalone numeric ticker for any text element — independent of progress rings. Useful for KPI stat cards, elapsed time readouts, or any number that changes on reload.</p>
 
           <table class="docs-api-table">
@@ -340,7 +435,7 @@ WUIAnim.counter(stat, oldVal, newVal, { duration: 0.5 });
 
         <!-- ── bar() ──────────────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_motion_23"><span class="material-symbols-outlined">linear_scale</span>WUIAnim.bar(el, toPct, opts)</div>
+          <div class="docs-section-title" id="wuianim-bar-el-topct-opts" data-wui-i18n-html="docs_motion_23"><span class="material-symbols-outlined">linear_scale</span>WUIAnim.bar(el, toPct, opts)</div>
           <p class="docs-desc" data-wui-i18n-html="docs_motion_24">Animate a <code>.wui-progress-bar-fill</code> width from its current value to <code>toPct</code>. Pass either the <code>.wui-progress-bar</code> wrapper or the fill element directly.</p>
 
           <table class="docs-api-table">
@@ -384,7 +479,7 @@ WUIAnim.bar(bar, newPct, { duration: 0.6, onComplete: refreshLabel });
 
         <!-- ── Constants & Internals ──────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_motion_26"><span class="material-symbols-outlined">tune</span>Constants &amp; internals</div>
+          <div class="docs-section-title" id="constants-internals" data-wui-i18n-html="docs_motion_26"><span class="material-symbols-outlined">tune</span>Constants &amp; internals</div>
           <p class="docs-desc" data-wui-i18n-html="docs_motion_27">Exposed on <code>WUIAnim</code> for extension or consistency — pull these into your own board code rather than hardcoding values.</p>
 
           <table class="docs-api-table">

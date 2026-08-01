@@ -15,10 +15,28 @@
 <body class="wui-main-div">
   <div id="docs-hdr"></div>
 
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="home">
-      <div class="docs-page">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="homePage()">
+        <script>
+        (function () {
+          function registerHomePage() {
+            Alpine.data('homePage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    var el = document.getElementById('theme-display');
+                    if (el && window.WUI) el.textContent = window.WUI.getTheme();
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerHomePage();
+          else document.addEventListener('alpine:init', registerHomePage);
+        })();
+        </script>
 
         <!-- Hero -->
         <div class="docs-hero">
@@ -30,13 +48,13 @@
           </div>
           <div style="margin-top:var(--space-5);display:flex;gap:var(--space-3);flex-wrap:wrap">
             <a href="./docs/tokens.html" class="wui-btn primary" data-wui-i18n="docs_home_4">Get Started</a>
-            <a href="./docs/interactive.html" class="wui-btn outline primary" data-wui-i18n="docs_home_5">Browse Components</a>
+            <a href="./docs/browse.html" class="wui-btn outline primary" data-wui-i18n="docs_home_5">Browse Components</a>
           </div>
         </div>
 
         <!-- Get Started -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_6">
+          <div class="docs-section-title" id="get-started" data-wui-i18n-html="docs_home_6">
             <span class="material-symbols-outlined">rocket_launch</span>
             Get Started
           </div>
@@ -79,7 +97,7 @@
 
         <!-- Theming -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_13">
+          <div class="docs-section-title" id="theming" data-wui-i18n-html="docs_home_13">
             <span class="material-symbols-outlined">palette</span>
             Theming
           </div>
@@ -95,7 +113,7 @@
                 <div class="wui-card-sub" data-wui-i18n="docs_home_15">Colors, spacing, radius, typography — all CSS custom properties.</div>
               </div>
             </a>
-            <a href="./docs/tier-colors.html" class="wui-card is-interactive" style="text-decoration:none">
+            <a href="./docs/tokens.html#tier-color-variants" class="wui-card is-interactive" style="text-decoration:none">
               <div class="wui-card-hdr">
                 <div class="wui-card-hdr-left">
                   <div class="wui-icon-bubble danger"><span class="material-symbols-outlined">emergency</span></div>
@@ -111,7 +129,7 @@
 
         <!-- Layout -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_18">
+          <div class="docs-section-title" id="layout" data-wui-i18n-html="docs_home_18">
             <span class="material-symbols-outlined">dashboard</span>
             Layout
           </div>
@@ -134,8 +152,30 @@
                 </div>
               </div>
               <div class="wui-card-body">
-                <div class="wui-card-label" data-wui-i18n="docs_home_21">Grid &amp; Flex</div>
-                <div class="wui-card-sub" data-wui-i18n="docs_home_22">Container, 12-col rows, flex + gap utilities (Bootstrap-aligned).</div>
+                <div class="wui-card-label" data-wui-i18n="docs_home_21">Grid</div>
+                <div class="wui-card-sub" data-wui-i18n="docs_home_22">12-col rows, CSS grid helpers, and the bento dashboard grid.</div>
+              </div>
+            </a>
+            <a href="./docs/flex.html" class="wui-card is-interactive" style="text-decoration:none">
+              <div class="wui-card-hdr">
+                <div class="wui-card-hdr-left">
+                  <div class="wui-icon-bubble info"><span class="material-symbols-outlined">view_column</span></div>
+                </div>
+              </div>
+              <div class="wui-card-body">
+                <div class="wui-card-label" data-wui-i18n="docs_home_85">Flex</div>
+                <div class="wui-card-sub" data-wui-i18n="docs_home_86">Flexbox direction, wrap, justify, align, sizing, and gap utilities.</div>
+              </div>
+            </a>
+            <a href="./docs/container.html" class="wui-card is-interactive" style="text-decoration:none">
+              <div class="wui-card-hdr">
+                <div class="wui-card-hdr-left">
+                  <div class="wui-icon-bubble info"><span class="material-symbols-outlined">width</span></div>
+                </div>
+              </div>
+              <div class="wui-card-body">
+                <div class="wui-card-label" data-wui-i18n="docs_home_87">Containers</div>
+                <div class="wui-card-sub" data-wui-i18n="docs_home_88">Centered wui-container and full-width wui-container-fluid.</div>
               </div>
             </a>
           </div>
@@ -143,7 +183,7 @@
 
         <!-- Inputs -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_23">
+          <div class="docs-section-title" id="inputs" data-wui-i18n-html="docs_home_23">
             <span class="material-symbols-outlined">edit_note</span>
             Inputs
           </div>
@@ -175,12 +215,12 @@
 
         <!-- Combobox -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_28">
+          <div class="docs-section-title" id="combobox" data-wui-i18n-html="docs_home_28">
             <span class="material-symbols-outlined">expand_more</span>
             Combobox
           </div>
           <div class="docs-feature-grid">
-            <a href="./docs/combobox.html" class="wui-card is-interactive" style="text-decoration:none">
+            <a href="./docs/forms.html#select-combobox-tomselect" class="wui-card is-interactive" style="text-decoration:none">
               <div class="wui-card-hdr">
                 <div class="wui-card-hdr-left">
                   <div class="wui-icon-bubble primary"><span class="material-symbols-outlined">expand_more</span></div>
@@ -196,7 +236,7 @@
 
         <!-- Buttons -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_31">
+          <div class="docs-section-title" id="buttons" data-wui-i18n-html="docs_home_31">
             <span class="material-symbols-outlined">smart_button</span>
             Buttons
           </div>
@@ -217,7 +257,7 @@
 
         <!-- Navigation -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_34">
+          <div class="docs-section-title" id="navigation" data-wui-i18n-html="docs_home_34">
             <span class="material-symbols-outlined">tab</span>
             Navigation
           </div>
@@ -225,12 +265,23 @@
             <a href="./docs/navigation.html" class="wui-card is-interactive" style="text-decoration:none">
               <div class="wui-card-hdr">
                 <div class="wui-card-hdr-left">
-                  <div class="wui-icon-bubble secondary"><span class="material-symbols-outlined">tab</span></div>
+                  <div class="wui-icon-bubble secondary"><span class="material-symbols-outlined">web_asset</span></div>
                 </div>
               </div>
               <div class="wui-card-body">
                 <div class="wui-card-label" data-wui-i18n="docs_home_35">Navigation</div>
-                <div class="wui-card-sub" data-wui-i18n="docs_home_36">Header bar, tabs, and the band-wrap stat strip.</div>
+                <div class="wui-card-sub" data-wui-i18n="docs_home_36">Header bar, inline link, and the band-wrap stat strip.</div>
+              </div>
+            </a>
+            <a href="./docs/tabs.html" class="wui-card is-interactive" style="text-decoration:none">
+              <div class="wui-card-hdr">
+                <div class="wui-card-hdr-left">
+                  <div class="wui-icon-bubble secondary"><span class="material-symbols-outlined">tab</span></div>
+                </div>
+              </div>
+              <div class="wui-card-body">
+                <div class="wui-card-label" data-wui-i18n="docs_home_81">Tabs</div>
+                <div class="wui-card-sub" data-wui-i18n="docs_home_82">Scrollable wui-hdr-tabs strip, static and interactive tab-switching demos.</div>
               </div>
             </a>
           </div>
@@ -238,7 +289,7 @@
 
         <!-- Feedback -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_37">
+          <div class="docs-section-title" id="feedback" data-wui-i18n-html="docs_home_37">
             <span class="material-symbols-outlined">notifications</span>
             Feedback
           </div>
@@ -270,7 +321,7 @@
 
         <!-- Overlays -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_42">
+          <div class="docs-section-title" id="overlays" data-wui-i18n-html="docs_home_42">
             <span class="material-symbols-outlined">layers</span>
             Overlays
           </div>
@@ -291,7 +342,7 @@
 
         <!-- Data Display -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_45">
+          <div class="docs-section-title" id="data-display" data-wui-i18n-html="docs_home_45">
             <span class="material-symbols-outlined">dataset</span>
             Data Display
           </div>
@@ -345,12 +396,12 @@
 
         <!-- Dates -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_54">
+          <div class="docs-section-title" id="dates" data-wui-i18n-html="docs_home_54">
             <span class="material-symbols-outlined">event</span>
             Dates
           </div>
           <div class="docs-feature-grid">
-            <a href="./docs/dates.html" class="wui-card is-interactive" style="text-decoration:none">
+            <a href="./docs/forms.html#date-time-flatpickr" class="wui-card is-interactive" style="text-decoration:none">
               <div class="wui-card-hdr">
                 <div class="wui-card-hdr-left">
                   <div class="wui-icon-bubble primary"><span class="material-symbols-outlined">calendar_month</span></div>
@@ -366,7 +417,7 @@
 
         <!-- Charts -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_57">
+          <div class="docs-section-title" id="charts" data-wui-i18n-html="docs_home_57">
             <span class="material-symbols-outlined">show_chart</span>
             Charts
           </div>
@@ -387,7 +438,7 @@
 
         <!-- Schedule -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_60">
+          <div class="docs-section-title" id="schedule" data-wui-i18n-html="docs_home_60">
             <span class="material-symbols-outlined">calendar_month</span>
             Schedule
           </div>
@@ -408,7 +459,7 @@
 
         <!-- Typography -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_63">
+          <div class="docs-section-title" id="typography" data-wui-i18n-html="docs_home_63">
             <span class="material-symbols-outlined">format_size</span>
             Typography
           </div>
@@ -440,12 +491,12 @@
 
         <!-- Patterns -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_68">
+          <div class="docs-section-title" id="patterns" data-wui-i18n-html="docs_home_68">
             <span class="material-symbols-outlined">dashboard_customize</span>
             Patterns
           </div>
           <div class="docs-feature-grid">
-            <a href="./docs/views.html" class="wui-card is-interactive" style="text-decoration:none">
+            <a href="./docs/layout.html#board-views" class="wui-card is-interactive" style="text-decoration:none">
               <div class="wui-card-hdr">
                 <div class="wui-card-hdr-left">
                   <div class="wui-icon-bubble secondary"><span class="material-symbols-outlined">dashboard_customize</span></div>
@@ -472,7 +523,7 @@
 
         <!-- Load order -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_73">
+          <div class="docs-section-title" id="load-order-critical" data-wui-i18n-html="docs_home_73">
             <span class="material-symbols-outlined">bolt</span>
             Load Order (Critical)
           </div>
@@ -502,7 +553,7 @@
 
         <!-- Theme toggle demo -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_76">
+          <div class="docs-section-title" id="theme" data-wui-i18n-html="docs_home_76">
             <span class="material-symbols-outlined">dark_mode</span>
             Theme
           </div>
@@ -541,7 +592,7 @@ document.documentElement.addEventListener('wui:themechange', e =&gt; {
 
         <!-- WebEOC XML constraint -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_home_78">
+          <div class="docs-section-title" id="webeoc-xml-constraint" data-wui-i18n-html="docs_home_78">
             <span class="material-symbols-outlined">gavel</span>
             WebEOC XML Constraint
           </div>

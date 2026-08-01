@@ -14,9 +14,9 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="tokens">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
 
         <div class="docs-hero">
@@ -27,7 +27,7 @@
 
         <!-- ══════════════════════════ Brand Palette ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_4"><span class="material-symbols-outlined">palette</span>Brand Palette</div>
+          <div class="docs-section-title" id="brand-palette" data-wui-i18n-html="docs_tokens_4"><span class="material-symbols-outlined">palette</span>Brand Palette</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_5">The surface and accent triad plus text/border tokens. <code>--color-10</code> is the primary accent; <code>--color-30</code>/<code>--color-60</code> are the surface and background. Each carries <code>-light</code>/<code>-muted</code>/<code>-glow</code> sub-tokens for tints and focus rings.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_6">Surface &amp; accent</div>
@@ -81,7 +81,7 @@
 
         <!-- ══════════════════════════ Semantic Colors ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_11"><span class="material-symbols-outlined">category</span>Semantic Colors</div>
+          <div class="docs-section-title" id="semantic-colors" data-wui-i18n-html="docs_tokens_11"><span class="material-symbols-outlined">category</span>Semantic Colors</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_12">Six intent colors, each with a solid value plus <code>-glow</code>, <code>-light</code>, <code>-muted</code>, and <code>-text</code> sub-tokens. All values re-resolve automatically in dark mode.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_13">Solid values</div>
@@ -120,7 +120,7 @@
 
         <!-- ══════════════════════════ EOC Tier Colors ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_16"><span class="material-symbols-outlined">shield</span>EOC Tier Colors</div>
+          <div class="docs-section-title" id="eoc-tier-colors" data-wui-i18n-html="docs_tokens_16"><span class="material-symbols-outlined">shield</span>EOC Tier Colors</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_17">Events-Reporting activation tiers. Each tier follows the same 5-token pattern as semantic colors: <code>--tier-N-color</code>, <code>-glow</code>, <code>-light</code>, <code>-muted</code>, <code>-text</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_18">Tier solids</div>
@@ -152,9 +152,335 @@
           </div>
         </div>
 
+        <!-- ══════════════════════════ Tier Color Variants ══════════════════════════ -->
+        <div class="docs-section" id="tier-color-variants">
+          <div class="docs-section-title" id="tier-color-variants" data-wui-i18n-html="docs_tokens_51"><span class="material-symbols-outlined">widgets</span>Tier Color Variants</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tokens_52">Agency activation-tier variants (<code>tier-1</code> … <code>tier-4</code>) layered onto components owned elsewhere: <code>wui-badge</code>, <code>wui-chip</code>, <code>wui-status-dot</code>, <code>wui-icon-bubble</code>, <code>wui-callout</code>, <code>wui-banner</code>, <code>wui-card</code>, and <code>wui-lvl</code>. Tier 1 = standby (green), Tier 2 = partial (amber), Tier 3 = full (red-orange), Tier 4 = MACC (critical red). Add the tier class alongside the component's own classes.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_53">wui-badge</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tokens_54">Tier variants for badges. Soft (default) uses the tier tint; add <code>solid</code> for a filled high-visibility pill; add <code>animate</code> for a pulsing live-activation badge. Owned by <code>weoc-labels.css</code>; tiers added by <code>weoc-tier-colors.css</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_55">Soft (default) — tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <span class="wui-badge tier-1">Tier 1 · Standby</span>
+              <!-- tier-2 -->
+              <span class="wui-badge tier-2">Tier 2 · Partial</span>
+              <!-- tier-3 -->
+              <span class="wui-badge tier-3">Tier 3 · Full</span>
+              <!-- tier-4 -->
+              <span class="wui-badge tier-4">Tier 4 · MACC</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_56">Solid — tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <span class="wui-badge solid tier-1">Tier 1 · Standby</span>
+              <!-- tier-2 -->
+              <span class="wui-badge solid tier-2">Tier 2 · Partial</span>
+              <!-- tier-3 -->
+              <span class="wui-badge solid tier-3">Tier 3 · Full</span>
+              <!-- tier-4 -->
+              <span class="wui-badge solid tier-4">Tier 4 · MACC</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_57">Animated (pulsing live state) — tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <span class="wui-badge tier-1 animate">Tier 1 · Live</span>
+              <!-- tier-2 -->
+              <span class="wui-badge tier-2 animate">Tier 2 · Live</span>
+              <!-- tier-3 -->
+              <span class="wui-badge tier-3 animate">Tier 3 · Live</span>
+              <!-- tier-4 -->
+              <span class="wui-badge tier-4 animate">Tier 4 · Live</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_58">wui-chip</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tokens_59">Tier variants for chips. Each tier drives the chip's <code>--wui-chip-bg</code>, <code>--wui-chip-border</code>, and <code>--wui-chip-text</code> custom properties, so the tint, border, and text color all shift together. Owned by <code>weoc-labels.css</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_60">tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <span class="wui-chip tier-1">Tier 1 · Standby</span>
+              <!-- tier-2 -->
+              <span class="wui-chip tier-2">Tier 2 · Partial</span>
+              <!-- tier-3 -->
+              <span class="wui-chip tier-3">Tier 3 · Full</span>
+              <!-- tier-4 -->
+              <span class="wui-chip tier-4">Tier 4 · MACC</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_61">wui-status-dot</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tokens_62">Tier variants for status dots. The base tier class fills the dot with the tier color; add <code>live</code> for a tier-tinted pulsing ring. Owned by <code>weoc-indicators.css</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_63">Solid — tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-status-dot tier-1"></div>
+              <!-- tier-2 -->
+              <div class="wui-status-dot tier-2"></div>
+              <!-- tier-3 -->
+              <div class="wui-status-dot tier-3"></div>
+              <!-- tier-4 -->
+              <div class="wui-status-dot tier-4"></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_64">Live (pulsing) — tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-status-dot live tier-1"></div>
+              <!-- tier-2 -->
+              <div class="wui-status-dot live tier-2"></div>
+              <!-- tier-3 -->
+              <div class="wui-status-dot live tier-3"></div>
+              <!-- tier-4 -->
+              <div class="wui-status-dot live tier-4"></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_65">wui-icon-bubble</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tokens_66">Tier variants for icon bubbles across all three fills: soft (default tint), <code>solid</code> (filled), and <code>bordered</code> (tier-colored ring). Owned by <code>weoc-indicators.css</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_67">Soft (default) — tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-icon-bubble tier-1"><span class="material-symbols-outlined">shield</span></div>
+              <!-- tier-2 -->
+              <div class="wui-icon-bubble tier-2"><span class="material-symbols-outlined">warning</span></div>
+              <!-- tier-3 -->
+              <div class="wui-icon-bubble tier-3"><span class="material-symbols-outlined">local_fire_department</span></div>
+              <!-- tier-4 -->
+              <div class="wui-icon-bubble tier-4"><span class="material-symbols-outlined">crisis_alert</span></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_68">Solid — tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-icon-bubble solid tier-1"><span class="material-symbols-outlined">shield</span></div>
+              <!-- tier-2 -->
+              <div class="wui-icon-bubble solid tier-2"><span class="material-symbols-outlined">warning</span></div>
+              <!-- tier-3 -->
+              <div class="wui-icon-bubble solid tier-3"><span class="material-symbols-outlined">local_fire_department</span></div>
+              <!-- tier-4 -->
+              <div class="wui-icon-bubble solid tier-4"><span class="material-symbols-outlined">crisis_alert</span></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_69">Bordered — tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-icon-bubble bordered tier-1"><span class="material-symbols-outlined">shield</span></div>
+              <!-- tier-2 -->
+              <div class="wui-icon-bubble bordered tier-2"><span class="material-symbols-outlined">warning</span></div>
+              <!-- tier-3 -->
+              <div class="wui-icon-bubble bordered tier-3"><span class="material-symbols-outlined">local_fire_department</span></div>
+              <!-- tier-4 -->
+              <div class="wui-icon-bubble bordered tier-4"><span class="material-symbols-outlined">crisis_alert</span></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_70">wui-callout</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tokens_71">Tier variants for callouts. Each tier sets the tint background, border color, and the internal <code>--_accent</code> (icon + title color). Structure: leading icon, then a <code>wui-callout-body</code> with a <code>wui-callout-title</code> and body text. Owned by <code>weoc-feedback.css</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_72">tier-1 → tier-4</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-callout tier-1">
+                <span class="material-symbols-outlined">shield</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Tier 1 — Standby</div>
+                  Normal operations. Monitoring only, no activation required.
+                </div>
+              </div>
+              <!-- tier-2 -->
+              <div class="wui-callout tier-2">
+                <span class="material-symbols-outlined">warning</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Tier 2 — Partial Activation</div>
+                  Selected functions activated. Duty officers on standby for escalation.
+                </div>
+              </div>
+              <!-- tier-3 -->
+              <div class="wui-callout tier-3">
+                <span class="material-symbols-outlined">local_fire_department</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Tier 3 — Full Activation</div>
+                  EOC fully staffed. All command functions operational.
+                </div>
+              </div>
+              <!-- tier-4 -->
+              <div class="wui-callout tier-4">
+                <span class="material-symbols-outlined">crisis_alert</span>
+                <div class="wui-callout-body">
+                  <div class="wui-callout-title">Tier 4 — MACC Activated</div>
+                  Multi-Agency Command Centre engaged. All available resources mobilized.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_73">wui-banner</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tokens_74">Tier variants for banners. Each tier sets the tint background, a solid tier-colored border, and the internal <code>--_accent</code>. Structure: a <code>wui-banner-body</code> holding a leading icon and the <code>wui-banner-text</code> (with optional <code>wui-banner-sub</code>). Owned by <code>weoc-feedback.css</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_75">tier-1 → tier-4</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-banner tier-1">
+                <div class="wui-banner-body">
+                  <span class="material-symbols-outlined">shield</span>
+                  <div>
+                    <div class="wui-banner-text">Tier 1 — Standby / Normal Ops</div>
+                    <div class="wui-banner-sub">Routine monitoring in effect. No activation is currently required.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- tier-2 -->
+              <div class="wui-banner tier-2">
+                <div class="wui-banner-body">
+                  <span class="material-symbols-outlined">warning</span>
+                  <div>
+                    <div class="wui-banner-text">Tier 2 — Partial Activation</div>
+                    <div class="wui-banner-sub">Selected EOC functions have been activated. Duty officers on standby.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- tier-3 -->
+              <div class="wui-banner tier-3">
+                <div class="wui-banner-body">
+                  <span class="material-symbols-outlined">local_fire_department</span>
+                  <div>
+                    <div class="wui-banner-text">Tier 3 — Full Activation</div>
+                    <div class="wui-banner-sub">EOC fully staffed. All command and coordination functions operational.</div>
+                  </div>
+                </div>
+              </div>
+              <!-- tier-4 -->
+              <div class="wui-banner tier-4">
+                <div class="wui-banner-body">
+                  <span class="material-symbols-outlined">crisis_alert</span>
+                  <div>
+                    <div class="wui-banner-text">Tier 4 — MACC Activated</div>
+                    <div class="wui-banner-sub">Multi-Agency Command Centre engaged. All available resources mobilized.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_76">wui-card</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tokens_77">Tier variants for cards, on both the accent bar (<code>has-accent</code> + <code>tier-N</code>, tints the top edge via <code>::before</code>) and the side column (<code>has-side</code> with a <code>wui-card-side</code> + <code>tier-N</code>). Owned by <code>weoc-containers.css</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_78">Accent bar (.has-accent) — tier-1 → tier-4</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-card has-accent tier-1" style="width:180px"><div class="wui-card-body"><div class="wui-card-label">Tier 1</div><div class="wui-card-sub">Standby</div></div></div>
+              <!-- tier-2 -->
+              <div class="wui-card has-accent tier-2" style="width:180px"><div class="wui-card-body"><div class="wui-card-label">Tier 2</div><div class="wui-card-sub">Partial</div></div></div>
+              <!-- tier-3 -->
+              <div class="wui-card has-accent tier-3" style="width:180px"><div class="wui-card-body"><div class="wui-card-label">Tier 3</div><div class="wui-card-sub">Full</div></div></div>
+              <!-- tier-4 -->
+              <div class="wui-card has-accent tier-4" style="width:180px"><div class="wui-card-body"><div class="wui-card-label">Tier 4</div><div class="wui-card-sub">MACC</div></div></div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_79">Side column (.has-side .wui-card-side) — tier-1 → tier-4</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-card has-side" style="max-width:400px">
+                <div class="wui-card-side tier-1"></div>
+                <div class="wui-card-body"><div class="wui-card-label">Tier 1 — Standby</div><div class="wui-card-sub">Normal operations, monitoring only.</div></div>
+              </div>
+              <!-- tier-2 -->
+              <div class="wui-card has-side" style="max-width:400px">
+                <div class="wui-card-side tier-2"></div>
+                <div class="wui-card-body"><div class="wui-card-label">Tier 2 — Partial</div><div class="wui-card-sub">Selected functions activated.</div></div>
+              </div>
+              <!-- tier-3 -->
+              <div class="wui-card has-side" style="max-width:400px">
+                <div class="wui-card-side tier-3"></div>
+                <div class="wui-card-body"><div class="wui-card-label">Tier 3 — Full</div><div class="wui-card-sub">EOC fully staffed and operational.</div></div>
+              </div>
+              <!-- tier-4 -->
+              <div class="wui-card has-side" style="max-width:400px">
+                <div class="wui-card-side tier-4"></div>
+                <div class="wui-card-body"><div class="wui-card-label">Tier 4 — MACC</div><div class="wui-card-sub">Multi-Agency Command Centre engaged.</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_80">wui-lvl</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tokens_81">Tier variants for the level bar. The tier class colors every lit segment (<code>wui-lvl-seg.on</code>) with the tier glow, animates the current segment (<code>.on.current</code>), and tints the <code>wui-lvl-count</code>. Owned by <code>weoc-indicators.css</code>. Here each level is shown filled to match its tier number.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tokens_82">tier-1 → tier-4</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- tier-1 -->
+              <div class="wui-lvl tier-1">
+                <div class="wui-lvl-inner">
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on current"></div></div>
+                  <div class="wui-lvl-bar"></div>
+                  <div class="wui-lvl-bar"></div>
+                  <div class="wui-lvl-bar"></div>
+                </div>
+                <div class="wui-lvl-count">1</div>
+              </div>
+              <!-- tier-2 -->
+              <div class="wui-lvl tier-2">
+                <div class="wui-lvl-inner">
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on"></div></div>
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on current"></div></div>
+                  <div class="wui-lvl-bar"></div>
+                  <div class="wui-lvl-bar"></div>
+                </div>
+                <div class="wui-lvl-count">2</div>
+              </div>
+              <!-- tier-3 -->
+              <div class="wui-lvl tier-3">
+                <div class="wui-lvl-inner">
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on"></div></div>
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on"></div></div>
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on current"></div></div>
+                  <div class="wui-lvl-bar"></div>
+                </div>
+                <div class="wui-lvl-count">3</div>
+              </div>
+              <!-- tier-4 -->
+              <div class="wui-lvl tier-4">
+                <div class="wui-lvl-inner">
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on"></div></div>
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on"></div></div>
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on"></div></div>
+                  <div class="wui-lvl-bar"><div class="wui-lvl-seg on current"></div></div>
+                </div>
+                <div class="wui-lvl-count">4</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- ══════════════════════════ Surface & Widget Tokens ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_20"><span class="material-symbols-outlined">dashboard</span>Surface &amp; Widget Tokens</div>
+          <div class="docs-section-title" id="surface-widget-tokens" data-wui-i18n-html="docs_tokens_20"><span class="material-symbols-outlined">dashboard</span>Surface &amp; Widget Tokens</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_21">Semantic surface aliases used by page chrome, widgets and edit-mode banners. They resolve to the brand palette so a single retheme cascades everywhere.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_22">Surfaces</div>
@@ -182,7 +508,7 @@
 
         <!-- ══════════════════════════ Spacing Scale ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_24"><span class="material-symbols-outlined">space_bar</span>Spacing Scale</div>
+          <div class="docs-section-title" id="spacing-scale" data-wui-i18n-html="docs_tokens_24"><span class="material-symbols-outlined">space_bar</span>Spacing Scale</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_25">Numeric steps <code>--space-0</code> to <code>--space-12</code> span 0 to 8rem. Bar width equals the token value so the ramp is literal.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_26">Numeric scale (--space-0 … --space-12)</div>
@@ -240,7 +566,7 @@
 
         <!-- ══════════════════════════ Typography ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_28"><span class="material-symbols-outlined">text_fields</span>Typography</div>
+          <div class="docs-section-title" id="typography" data-wui-i18n-html="docs_tokens_28"><span class="material-symbols-outlined">text_fields</span>Typography</div>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tokens_29">Font families (--font-*)</div>
           <div class="wui-demo stacked" data-wui-demo>
@@ -362,7 +688,7 @@
 
         <!-- ══════════════════════════ Border Radius ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_36"><span class="material-symbols-outlined">rounded_corner</span>Border Radius</div>
+          <div class="docs-section-title" id="border-radius" data-wui-i18n-html="docs_tokens_36"><span class="material-symbols-outlined">rounded_corner</span>Border Radius</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_37"><code>--border-radius</code> (0.5rem) is the base corner; <code>--radius-md</code> aliases it. Change <code>--border-radius</code> to retheme every standard corner at once.</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -390,7 +716,7 @@
 
         <!-- ══════════════════════════ Border Thickness ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_38"><span class="material-symbols-outlined">line_weight</span>Border Thickness</div>
+          <div class="docs-section-title" id="border-thickness" data-wui-i18n-html="docs_tokens_38"><span class="material-symbols-outlined">line_weight</span>Border Thickness</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_39">Border-width tokens in rem — use instead of raw <code>px</code> on borders, outlines and scrollbar widths. Each bar's height is the token value.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -414,7 +740,7 @@
 
         <!-- ══════════════════════════ Shadow Scale ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_40"><span class="material-symbols-outlined">layers</span>Shadow Scale</div>
+          <div class="docs-section-title" id="shadow-scale" data-wui-i18n-html="docs_tokens_40"><span class="material-symbols-outlined">layers</span>Shadow Scale</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_41">Shadow tokens resolve to stronger values in dark mode automatically, so components need no manual <code>[data-theme="dark"]</code> overrides.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -436,7 +762,7 @@
 
         <!-- ══════════════════════════ Interaction Tokens ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_42"><span class="material-symbols-outlined">touch_app</span>Interaction Tokens</div>
+          <div class="docs-section-title" id="interaction-tokens" data-wui-i18n-html="docs_tokens_42"><span class="material-symbols-outlined">touch_app</span>Interaction Tokens</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_43">Overlay and hover surfaces used across interactive components. <code>--color-hover</code> is a translucent wash layered over any surface; <code>--color-overlay</code> is the modal/drawer backdrop; <code>--color-switch-thumb</code> fills toggle knobs.</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">
@@ -452,7 +778,7 @@
 
         <!-- ══════════════════════════ Scrollbar Tokens ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_44"><span class="material-symbols-outlined">unfold_more</span>Scrollbar Tokens</div>
+          <div class="docs-section-title" id="scrollbar-tokens" data-wui-i18n-html="docs_tokens_44"><span class="material-symbols-outlined">unfold_more</span>Scrollbar Tokens</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_45">One source of truth for every overflow surface. <code>--scrollbar-size</code> is the track width (4px, aliasing <code>--border-md</code>); thumb colours reference theme tokens so they follow light/dark automatically. The box below applies them directly.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -473,7 +799,7 @@
 
         <!-- ══════════════════════════ Bootstrap Overrides ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_tokens_48"><span class="material-symbols-outlined">swap_horiz</span>Bootstrap Overrides</div>
+          <div class="docs-section-title" id="bootstrap-overrides" data-wui-i18n-html="docs_tokens_48"><span class="material-symbols-outlined">swap_horiz</span>Bootstrap Overrides</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tokens_49">The theme remaps Bootstrap and Tom Select variables onto agency tokens so legacy WebEOC chrome inherits the palette. These are pass-through aliases, not new values.</p>
           <div class="wui-demo" data-wui-demo>
             <div class="wui-demo-preview">

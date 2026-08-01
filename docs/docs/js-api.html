@@ -14,9 +14,9 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="js-api">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
 
         <div class="docs-hero">
@@ -35,7 +35,7 @@
 
         <!-- ── Theme API ──────────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_js-api_6"><span class="material-symbols-outlined">dark_mode</span>Theme API</div>
+          <div class="docs-section-title" id="theme-api" data-wui-i18n-html="docs_js-api_6"><span class="material-symbols-outlined">dark_mode</span>Theme API</div>
 
           <table class="docs-api-table">
             <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
@@ -74,7 +74,7 @@ document.documentElement.addEventListener('wui:themechange', e => {
 
         <!-- ── Utility functions ───────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_js-api_7"><span class="material-symbols-outlined">build</span>Utility Functions</div>
+          <div class="docs-section-title" id="utility-functions" data-wui-i18n-html="docs_js-api_7"><span class="material-symbols-outlined">build</span>Utility Functions</div>
 
           <table class="docs-api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
@@ -116,7 +116,7 @@ container.addEventListener('scroll', onScroll);</pre>
 
         <!-- ── Section Observer & Refresh ────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_js-api_8"><span class="material-symbols-outlined">sync</span>Section Observer &amp; Refresh</div>
+          <div class="docs-section-title" id="section-observer-refresh" data-wui-i18n-html="docs_js-api_8"><span class="material-symbols-outlined">sync</span>Section Observer &amp; Refresh</div>
           <p class="docs-desc" data-wui-i18n-html="docs_js-api_9">Utilities for reacting to WebEOC <code>updatesection</code> DOM refreshes and triggering programmatic section reloads via AJAX.</p>
 
           <table class="docs-api-table">
@@ -234,7 +234,7 @@ WUI.refreshSection('#record-list', {
 
         <!-- ── Overlay lifecycle ───────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_js-api_15"><span class="material-symbols-outlined">layers</span>Overlay Lifecycle</div>
+          <div class="docs-section-title" id="overlay-lifecycle" data-wui-i18n-html="docs_js-api_15"><span class="material-symbols-outlined">layers</span>Overlay Lifecycle</div>
 
           <table class="docs-api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
@@ -270,7 +270,7 @@ drawer.addEventListener('wui:close', () => {
 
         <!-- ── Toast / Snackbar ────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_js-api_16"><span class="material-symbols-outlined">notifications</span>Toast &amp; Snackbar</div>
+          <div class="docs-section-title" id="toast-snackbar" data-wui-i18n-html="docs_js-api_16"><span class="material-symbols-outlined">notifications</span>Toast &amp; Snackbar</div>
           <p class="docs-desc" data-wui-i18n-html="docs_js-api_17">Transient notifications, created imperatively. The library builds and tears down the DOM; skinned by <code>weoc-feedback.css</code>. See the <a href="feedback.html">Feedback</a> page for live demos.</p>
 
           <table class="docs-api-table">
@@ -319,7 +319,7 @@ document.addEventListener('wui:toast:action', e => {
 
         <!-- ── Class helpers ───────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_js-api_19"><span class="material-symbols-outlined">style</span>Class Helpers</div>
+          <div class="docs-section-title" id="class-helpers" data-wui-i18n-html="docs_js-api_19"><span class="material-symbols-outlined">style</span>Class Helpers</div>
 
           <table class="docs-api-table">
             <thead><tr><th>Method</th><th>Description</th></tr></thead>
@@ -354,7 +354,7 @@ WUI.showView('#board', 'incidents');
 
         <!-- ── Anchor positioning ──────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_js-api_20"><span class="material-symbols-outlined">location_on</span>Anchor Positioning</div>
+          <div class="docs-section-title" id="anchor-positioning" data-wui-i18n-html="docs_js-api_20"><span class="material-symbols-outlined">location_on</span>Anchor Positioning</div>
           <p class="docs-desc" data-wui-i18n="docs_js-api_21">Position a floating element relative to a trigger, with viewport collision detection.</p>
 
           <table class="docs-api-table">
@@ -379,7 +379,7 @@ WUI.anchor(floating, trigger, {
 
         <!-- ── Declarative attributes ──────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_js-api_22"><span class="material-symbols-outlined">data_object</span>Declarative Attributes</div>
+          <div class="docs-section-title" id="declarative-attributes" data-wui-i18n-html="docs_js-api_22"><span class="material-symbols-outlined">data_object</span>Declarative Attributes</div>
           <p class="docs-desc" data-wui-i18n-html="docs_js-api_23">Auto-wired by <code>weoc-ui.js</code> on <code>DOMContentLoaded</code>. All boolean values must use <code>="true"</code> or <code>=""</code> in WebEOC XML.</p>
 
           <table class="docs-api-table">
@@ -471,7 +471,7 @@ WUI.anchor(floating, trigger, {
 
         <!-- ── Custom events ───────────────────────────────────────────────── -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_js-api_24"><span class="material-symbols-outlined">bolt</span>Custom Events</div>
+          <div class="docs-section-title" id="custom-events" data-wui-i18n-html="docs_js-api_24"><span class="material-symbols-outlined">bolt</span>Custom Events</div>
 
           <table class="docs-api-table">
             <thead><tr><th>Event</th><th>Fired on</th><th>detail</th></tr></thead>

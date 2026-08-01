@@ -454,9 +454,9 @@
 
 /* code region */
 .wui-demo-code-group { border-top: 1px solid var(--color-border); }
-/* preview-less demo (code-only, e.g. views.html reference skeletons): the code
-   group is the first child, so drop its top border to avoid doubling the demo's
-   own border. */
+/* preview-less demo (code-only, e.g. the Board Views reference skeletons on
+   layout.html): the code group is the first child, so drop its top border to
+   avoid doubling the demo's own border. */
 .wui-demo > .wui-demo-code-group:first-child { border-top: 0; }
 
 .wui-demo-codebar {
@@ -609,10 +609,18 @@
 .docs-search-results.is-open { display: block; }
 
 .docs-search-hit {
+  /* Column, not row: .docs-search-hit-snippet (added when a hit is a
+     section-kind result with a match snippet) is `display:block` and
+     `margin-top`, both of which are no-ops on a flex ROW item -- they only
+     stack visually with the label above them once the container itself is
+     a column. .docs-search-hit is only ever used for these search-result
+     anchors (see docs-shell.js renderSearchResults) so this isn't shared
+     with any other row-shaped consumer that would need to stay row-flex. */
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0;
   text-decoration: none;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
@@ -635,6 +643,77 @@
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
   text-align: center;
+}
+
+.docs-search-group + .docs-search-group { border-top: 1px solid var(--color-border); margin-top: var(--space-2); padding-top: var(--space-2); }
+.docs-search-group-title {
+  font-size: var(--text-2xs); font-weight: var(--font-semibold); text-transform: uppercase;
+  letter-spacing: .04em; color: var(--color-text-secondary); padding: var(--space-1) var(--space-3);
+}
+.docs-search-hit-snippet {
+  display: block; font-size: var(--text-xs); color: var(--color-text-secondary);
+  white-space: normal; line-height: 1.35; margin-top: 2px;
+}
+.docs-search-hit-snippet mark { background: var(--color-10-light); color: var(--color-10); border-radius: 2px; padding: 0 2px; }
+.docs-search-input-disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Deep-search result navigation: brief highlight flash on the section the
+   user just jumped to (cross-page nav via applySwappedPage, or a same-page
+   scroll from the click handler in bindSearch()). */
+@keyframes docsSearchFlash { 0%, 100% { box-shadow: none; } 50% { box-shadow: 0 0 0 2px var(--color-10); } }
+.docs-search-target-flash { animation: docsSearchFlash 0.6s ease 2; }
+
+/* ─── Per-page "on this page" TOC ────────────────────────────────
+   Pilot: docs/superpowers/specs/2026-07-31-per-page-toc-design.md.
+   Trigger is a plain .wui-fab.wui-fab-fixed-br; panel is a plain .wui-dropdown
+   (data-wui-anchor="top-end" so it opens upward, hugging the same bottom-right
+   corner as the trigger). Entries reuse .docs-nav-item as-is -- same visual
+   language as the sidebar nav, zero new item styling needed. Only the panel
+   shell (heading row + scrollable list, for pages with 20+ sections) is new. */
+.docs-toc-panel {
+  width: 280px;
+  max-width: calc(100vw - 2 * var(--space-5));
+}
+
+.docs-toc-panel-hd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2);
+  margin-bottom: var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--color-text-secondary);
+}
+
+.docs-toc-panel-hd .material-symbols-outlined {
+  font-size: var(--text-sm);
+  color: var(--color-10);
+}
+
+.docs-toc-list {
+  max-height: min(60vh, 420px);
+  overflow-y: auto;
+  padding: 0 var(--space-1);
+}
+
+/* Entries reuse .docs-nav-item's colors/hover/active states verbatim; only
+   the layout needs a scoped override so the leading section icon (copied
+   straight from each .docs-section-title's own i18n value) sits inline with
+   the label instead of stacking under .docs-nav-item's plain `display:block`. */
+.docs-toc-list .docs-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.docs-toc-list .docs-nav-item .material-symbols-outlined {
+  font-size: var(--text-base);
+  color: var(--color-10);
+  flex-shrink: 0;
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────*/

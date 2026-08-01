@@ -15,9 +15,9 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="maps">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
 
         <div class="docs-hero">
@@ -36,7 +36,7 @@
 
         <!-- ══════════════════════════ wui-map-wrap / wui-map-view ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_maps_6"><span class="material-symbols-outlined">map</span>wui-map-wrap &amp; wui-map-view</div>
+          <div class="docs-section-title" id="wui-map-wrap-wui-map-view" data-wui-i18n-html="docs_maps_6"><span class="material-symbols-outlined">map</span>wui-map-wrap &amp; wui-map-view</div>
           <p class="docs-desc" data-wui-i18n-html="docs_maps_7"><code>wui-map-wrap</code> is the positioned root (fills its parent, <code>position:relative</code>). <code>wui-map-view</code> fills the wrap and holds the map engine canvas. Because both are <code>width/height:100%</code>, the wrap needs a sized parent — here a fixed-height box supplies it. The control overlay and any popover are absolutely-positioned children of the wrap.</p>
           <div class="wui-demo stacked" data-wui-demo>
             <div class="wui-demo-preview">
@@ -54,7 +54,7 @@
 
         <!-- ══════════════════════════ wui-map-controls / wui-map-btn ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_maps_8"><span class="material-symbols-outlined">tune</span>wui-map-controls &amp; wui-map-btn</div>
+          <div class="docs-section-title" id="wui-map-controls-wui-map-btn" data-wui-i18n-html="docs_maps_8"><span class="material-symbols-outlined">tune</span>wui-map-controls &amp; wui-map-btn</div>
           <p class="docs-desc" data-wui-i18n-html="docs_maps_9"><code>wui-map-controls-overlay</code> pins its children to the bottom-left of the wrap (<code>position:absolute</code>). Inside, <code>wui-map-controls</code> stacks <code>wui-map-btn</code> vertically. Each <code>wui-map-btn</code> is a 36×37 square; add <code>active</code> for the selected state. Buttons hold either a Material icon or a short text label. Wire actions with <code>data-wui-action</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_maps_10">Overlay in context — zoom rail pinned to the wrap</div>
@@ -96,7 +96,7 @@
 
         <!-- ══════════════════════════ wui-basemap-group / wui-basemap-tools ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_maps_12"><span class="material-symbols-outlined">layers</span>wui-basemap-group &amp; wui-basemap-tools</div>
+          <div class="docs-section-title" id="wui-basemap-group-wui-basemap-tools" data-wui-i18n-html="docs_maps_12"><span class="material-symbols-outlined">layers</span>wui-basemap-group &amp; wui-basemap-tools</div>
           <p class="docs-desc" data-wui-i18n-html="docs_maps_13"><code>wui-basemap-group</code> lays a toggle <code>wui-map-btn</code> beside a collapsible <code>wui-basemap-tools</code> rail. The rail is collapsed by default (<code>max-width:0; opacity:0</code>); adding <code>open</code> expands it (and add <code>active</code> to the toggle). Both states are shown below so the collapsed and expanded chrome are visible side by side.</p>
 
           <div class="docs-subsection-title" data-wui-i18n-html="docs_maps_14">Collapsed (default) — no <code>open</code></div>
@@ -141,7 +141,7 @@
 
         <!-- ══════════════════════════ wui-map-point-popover ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_maps_18"><span class="material-symbols-outlined">location_on</span>wui-map-point-popover</div>
+          <div class="docs-section-title" id="wui-map-point-popover" data-wui-i18n-html="docs_maps_18"><span class="material-symbols-outlined">location_on</span>wui-map-point-popover</div>
           <p class="docs-desc" data-wui-i18n-html="docs_maps_19">Floating card shown when a map point is clicked. Structure top to bottom: accent bar (<code>wui-map-pop-accent</code>) → header (<code>wui-map-pop-header</code>: icon wrap + titles + close) → divider → body rows (<code>wui-map-pop-row</code>) → footer (badges left, actions right). It is <code>display:none</code> and <code>position:absolute</code> by default; JS positions it over the point and reveals it. Demos below force <code>position:relative;display:block</code> so the card renders inline.</p>
 
           <div class="docs-subsection-title" data-wui-i18n-html="docs_maps_20">Full popover — accent colour set inline on <code>wui-map-pop-accent</code></div>
@@ -259,7 +259,7 @@
 
         <!-- ══════════════════════════ Fullscreen & layout states ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_maps_29"><span class="material-symbols-outlined">fullscreen</span>Layout &amp; fullscreen states</div>
+          <div class="docs-section-title" id="layout-fullscreen-states" data-wui-i18n-html="docs_maps_29"><span class="material-symbols-outlined">fullscreen</span>Layout &amp; fullscreen states</div>
           <p class="docs-desc" data-wui-i18n="docs_maps_30">These classes govern placement inside a larger app shell and the fullscreen toggle. They only make sense against a real grid or a fullscreen action, so they are documented rather than rendered inline (a live demo would either need a parent grid or cover the whole docs page).</p>
           <div class="wui-callout info">
             <span class="material-symbols-outlined">info</span>

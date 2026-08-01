@@ -3,6 +3,20 @@
    Agency-wide CSS custom properties (design tokens).
    Load this FIRST on every WebEOC page before any
    other stylesheet.
+
+   Surface ramp — "Lifted slate" (Option C)
+   One cool-neutral hue family (hue ~225, chroma ~0.012)
+   across four elevation steps, light and dark:
+
+     --color-60       app canvas / body background
+     --color-30       cards, widgets, panels, modals, table body
+     --color-surface  raised: table headers, inputs, popovers, hover
+     --color-border   hairlines
+
+   Dark canvas is deliberately lifted off black (#1A212B)
+   so dense screens read as a lit surface, not a void.
+   Status, tier and chart tokens are unchanged and still
+   land correctly on this ramp.
    ============================================= */
 
 /* Start: Root */
@@ -102,19 +116,19 @@
       Brand Pallete
       ============================================ */
   /* Theme */
-  --color-60: #f8f8f8;
+  --color-60: #f4f6f9;
   --color-30: #ffffff;
-  --color-10: #185fa5;
-  --color-10-light: rgba(24, 95, 165, 0.08);
-  --color-10-muted: rgba(24, 95, 165, 0.15);
-  --color-10-glow: rgba(24, 95, 165, 0.85);
+  --color-10: #1a5fb4;
+  --color-10-light: rgba(26, 95, 180, 0.08);
+  --color-10-muted: rgba(26, 95, 180, 0.16);
+  --color-10-glow: rgba(26, 95, 180, 0.85);
   /* text/icons ON a solid accent fill (primary, danger, success, info). NOT a surface
      token — fixed contrast so it stays white in dark mode instead of following color-30. */
   --color-on-accent: #ffffff;
 
-  --color-border: #ebebeb;
-  --color-text-primary: #1a1a1a;
-  --color-text-ui: #555555;
+  --color-border: #e2e6ec;
+  --color-text-primary: #161a20;
+  --color-text-ui: #717d8c;
 
   /* success */
   --color-success: #16a34a;
@@ -147,7 +161,7 @@
   --color-secondary-glow: rgba(100, 116, 139, 0.85);
   --color-secondary-light: rgba(100, 116, 139, 0.08);
   --color-secondary-muted: rgba(100, 116, 139, 0.15);
-  --color-text-secondary: #888888;
+  --color-text-secondary: #5b6675;
 
   /* Events Reporting specific: Tier Colors */
 
@@ -201,7 +215,7 @@
       ============================================ */
 
   --bs-primary: var(--color-10);
-  --bs-primary-rgb: 24, 95, 165;
+  --bs-primary-rgb: 26, 95, 180;
 
   --bs-success: var(--color-success);
   --bs-success-rgb: 22, 163, 74;
@@ -266,7 +280,7 @@
   /* ============================================
       Interaction Tokens
       ============================================ */
-  --color-hover:        rgba(128, 128, 128, 0.06);
+  --color-hover:        rgba(26, 95, 180, 0.05);
   --color-overlay:      rgba(0, 0, 0, 0.45);
   --color-switch-thumb: var(--color-on-accent);
 
@@ -290,16 +304,16 @@
   /* ============================================
       Colors
       ============================================ */
-  --color-border: #3a3a3a;
-  --color-text-primary: #f1f1f1;
-  --color-text-secondary: #b3b3b3;
-  --color-text-ui: #8a8a8a;
+  --color-border: #3a4557;
+  --color-text-primary: #eef2f7;
+  --color-text-secondary: #aebac9;
+  --color-text-ui: #94a2b4;
 
   /* primary */
-  --color-10: #3a80e0;
-  --color-10-glow: rgba(58, 128, 224, 0.9);
-  --color-10-light: rgba(58, 128, 224, 0.12);
-  --color-10-muted: rgba(58, 128, 224, 0.20);
+  --color-10: #4a8fe7;
+  --color-10-glow: rgba(74, 143, 231, 0.9);
+  --color-10-light: rgba(74, 143, 231, 0.12);
+  --color-10-muted: rgba(74, 143, 231, 0.22);
   --color-on-accent: #ffffff;   /* stays white — color-10 is still a saturated blue in dark mode */
 
   /* danger */
@@ -365,16 +379,17 @@
   /* ============================================
       Backgrounds
       ============================================ */
-  --color-60: #161616;
-  --color-30: #282828;
-  --color-surface: #1d2125;
+  /* Lifted slate ramp — canvas is off-black, not black */
+  --color-60: #1a212b;
+  --color-30: #242d3a;
+  --color-surface: #2e3846;
   --color-bg-primary: var(--color-surface);
 
   /* ============================================
       Bootstrap Overrides
       ============================================ */
   --bs-primary: var(--color-10);
-  --bs-primary-rgb: 58, 128, 224;
+  --bs-primary-rgb: 74, 143, 231;
   --bs-body-bg: var(--color-60);
   --bs-body-color: var(--color-text-primary);
   --bs-border-color: var(--color-border);
@@ -382,9 +397,10 @@
   /* ============================================
       Widget
       ============================================ */
-  --widget-bg: #0b1422;
-  --widget-header-bg: #0f1b2e;
-  --widget-border: rgba(255, 255, 255, 0.07);
+  /* widgets inherit the ramp — no separate navy family */
+  --widget-bg: var(--color-30);
+  --widget-header-bg: var(--color-surface);
+  --widget-border: var(--color-border);
 
   /* ============================================
       Shadow Scale (dark overrides)
@@ -398,7 +414,7 @@
   /* ============================================
       Interaction Tokens (dark overrides)
       ============================================ */
-  --color-hover: rgba(255, 255, 255, 0.06);
+  --color-hover: rgba(255, 255, 255, 0.05);
 
   /* ============================================
       Edit Mode

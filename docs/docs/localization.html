@@ -14,10 +14,52 @@
 </head>
 <body class="wui-body-shell">
   <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+  <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="localization">
-      <div class="docs-page">
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page" x-data="localizationPage()">
+        <script>
+        (function () {
+          function registerLocalizationPage() {
+            Alpine.data('localizationPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    var W = window.WUI;
+                    if (!W || !W.i18n) return;
+                    W.i18n.register([
+                      { lang: 'en', id: 'Demo_Save', value: 'Save' }, { lang: 'ar', id: 'Demo_Save', value: 'حفظ' },
+                      { lang: 'en', id: 'Demo_Cancel', value: 'Cancel' }, { lang: 'ar', id: 'Demo_Cancel', value: 'إلغاء' },
+                      { lang: 'en', id: 'Demo_Delete', value: 'Delete' }, { lang: 'ar', id: 'Demo_Delete', value: 'حذف' },
+                      { lang: 'en', id: 'Demo_Tier1', value: 'Tier 1' }, { lang: 'ar', id: 'Demo_Tier1', value: 'المستوى 1' },
+                      { lang: 'en', id: 'Demo_Row', value: 'Generated row' }, { lang: 'ar', id: 'Demo_Row', value: 'صف مُولَّد' }
+                    ]);
+                    var list = document.getElementById('demo-js-list');
+                    if (list) {
+                      list.innerHTML = '';
+                      for (var i = 1; i <= 3; i++) {
+                        var li = document.createElement('li');
+                        W.i18n.mark(li, 'Demo_Row');
+                        list.appendChild(li);
+                      }
+                    }
+                    var tpl = document.getElementById('demo-tpl');
+                    var host = document.getElementById('demo-tpl-host');
+                    if (tpl && host && tpl.content) {
+                      host.innerHTML = '';
+                      host.appendChild(tpl.content.cloneNode(true));
+                      W.i18n.apply(host);
+                    }
+                    W.i18n.apply(document);
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerLocalizationPage();
+          else document.addEventListener('alpine:init', registerLocalizationPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_localization_1">Get Started</div>
@@ -26,7 +68,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_4"><span class="material-symbols-outlined">translate</span>Live language toggle</div>
+          <div class="docs-section-title" id="live-language-toggle" data-wui-i18n-html="docs_localization_4"><span class="material-symbols-outlined">translate</span>Live language toggle</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_5">Use the translate button in the header, or the button below. Nothing reloads. The idempotent <code>WUI.i18n.apply()</code> pass re-resolves every marked node from its stable key.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -36,7 +78,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_7"><span class="material-symbols-outlined">label</span>Static markers</div>
+          <div class="docs-section-title" id="static-markers" data-wui-i18n-html="docs_localization_7"><span class="material-symbols-outlined">label</span>Static markers</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_8"><code>data-wui-i18n="Key"</code> labels resolve on load and re-resolve on every toggle.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -48,7 +90,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_9"><span class="material-symbols-outlined">code</span>JS-generated content</div>
+          <div class="docs-section-title" id="js-generated-content" data-wui-i18n-html="docs_localization_9"><span class="material-symbols-outlined">code</span>JS-generated content</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_10">These list items are built in JavaScript with <code>WUI.i18n.mark(el, id)</code>. Because each node carries its key, they flip on toggle just like static markup, fixing the "frozen until refresh" bug.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview"><ul id="demo-js-list"></ul></div>
@@ -56,7 +98,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_11"><span class="material-symbols-outlined">content_copy</span>Cloned template</div>
+          <div class="docs-section-title" id="cloned-template" data-wui-i18n-html="docs_localization_11"><span class="material-symbols-outlined">content_copy</span>Cloned template</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_12">This card is cloned from a <code>&lt;template&gt;</code> after load, then localized with <code>WUI.i18n.apply(node)</code>. It re-localizes on toggle, fixing the "template resources never resolve" bug.</p>
           <div class="wui-demo center" data-wui-demo>
             <div class="wui-demo-preview">
@@ -69,7 +111,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_localization_13"><span class="material-symbols-outlined">api</span>API</div>
+          <div class="docs-section-title" id="api" data-wui-i18n-html="docs_localization_13"><span class="material-symbols-outlined">api</span>API</div>
           <p class="docs-desc" data-wui-i18n-html="docs_localization_14">All methods hang off the global <code>WUI.i18n</code>.</p>
           <table class="wui-table">
             <thead><tr><th>Member</th><th>Purpose</th></tr></thead>

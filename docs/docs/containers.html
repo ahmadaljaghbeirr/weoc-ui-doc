@@ -11,6 +11,44 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main">
+      <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC (pilot) ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_containers_64">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_containers_64">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_containers_64">
+            <a href="#wui-card" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_4"><span class="material-symbols-outlined">dashboard</span>wui-card</a>
+            <a href="#wui-plane" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_32"><span class="material-symbols-outlined">crop_square</span>wui-plane</a>
+            <a href="#wui-panel" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_36"><span class="material-symbols-outlined">dock_to_right</span>wui-panel</a>
+            <a href="#wui-embed" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_40"><span class="material-symbols-outlined">open_in_browser</span>wui-embed</a>
+            <a href="#wui-person" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_42"><span class="material-symbols-outlined">person</span>wui-person</a>
+            <a href="#wui-person-card" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_44"><span class="material-symbols-outlined">badge</span>wui-person-card</a>
+            <a href="#wui-info-grid" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_46"><span class="material-symbols-outlined">table_rows</span>wui-info-grid</a>
+            <a href="#wui-widget" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_50"><span class="material-symbols-outlined">widgets</span>wui-widget</a>
+            <a href="#wui-update-entry" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_52"><span class="material-symbols-outlined">history</span>wui-update-entry</a>
+            <a href="#wui-collapsible" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_54"><span class="material-symbols-outlined">expand_more</span>wui-collapsible</a>
+            <a href="#wui-section-collapse" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_56"><span class="material-symbols-outlined">horizontal_rule</span>wui-section-collapse</a>
+            <a href="#wui-collapse-panel" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_containers_58"><span class="material-symbols-outlined">web_asset</span>wui-collapse-panel</a>
+          </nav>
+        </div>
+
   <style>
     /* ── TRIAL: no-desc spacing candidates (page-local until one is chosen). ──
        Base .no-desc (in weoc-containers.css) only caps the name column; these
@@ -40,13 +78,6 @@
       min-width: 0;
     }
   </style>
-</head>
-<body class="wui-body-shell">
-  <div id="docs-hdr"></div>
-  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
-    <div class="wui-split-panel" id="docs-sidebar"></div>
-    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="containers">
-      <div class="docs-page">
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_containers_1">Data Display</div>
@@ -56,7 +87,7 @@
 
         <!-- ══════════════════════════ wui-card ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_4"><span class="material-symbols-outlined">dashboard</span>wui-card</div>
+          <div class="docs-section-title" id="wui-card" data-wui-i18n-html="docs_containers_4"><span class="material-symbols-outlined">dashboard</span>wui-card</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_5">A three-layer system. <strong>Layer 1</strong> is the surface (<code>wui-card</code>) with states, density, accent, and side-column modifiers. <strong>Layer 2</strong> is a template that shapes the layout: <code>is-metric</code>, <code>is-record</code>, <code>is-item</code>. <strong>Layer 3</strong> is the atoms (<code>wui-card-hdr</code>, <code>wui-card-body</code>, <code>wui-card-value</code>, etc.) you drop inside. Density is set with <code>is-compact</code> / <code>is-comfortable</code>; the surface publishes <code>--wui-surface</code> for descendants such as sticky headers.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_containers_6">Base surface + atoms (hdr / body / footer)</div>
@@ -675,7 +706,7 @@
 
         <!-- ══════════════════════════ wui-plane ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_32"><span class="material-symbols-outlined">crop_square</span>wui-plane</div>
+          <div class="docs-section-title" id="wui-plane" data-wui-i18n-html="docs_containers_32"><span class="material-symbols-outlined">crop_square</span>wui-plane</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_33">A flat surface container with border and radius, driven by a local <code>--_bg</code> / <code>--_border</code> token pair so each color variant is a one-word modifier. Default (no modifier) equals <code>.color-60</code>. Neutrals: <code>color-60</code>, <code>color-30</code>. Semantic tints (<code>-light</code> fill + <code>-muted</code> border): <code>primary</code>, <code>success</code>, <code>warning</code>, <code>danger</code>, <code>info</code>, <code>secondary</code>.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_containers_34">Surface neutrals</div>
@@ -770,7 +801,7 @@
 
         <!-- ══════════════════════════ wui-panel ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_36"><span class="material-symbols-outlined">dock_to_right</span>wui-panel</div>
+          <div class="docs-section-title" id="wui-panel" data-wui-i18n-html="docs_containers_36"><span class="material-symbols-outlined">dock_to_right</span>wui-panel</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_37">Framed content shell with header, body, footer, and actions regions. Default is <code>flex: 0 0 auto</code> (sizes to content). Add <code>.is-scrollable</code> so the panel fills its container and the body scrolls. The header carries a title (<code>wui-panel-title</code> with optional leading icon), a subtitle (<code>wui-panel-sub</code>), and an actions cluster (<code>wui-panel-hdr-actions</code>).</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_containers_38">Header · body · footer · actions</div>
@@ -833,7 +864,7 @@
 
         <!-- ══════════════════════════ wui-embed ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_40"><span class="material-symbols-outlined">open_in_browser</span>wui-embed</div>
+          <div class="docs-section-title" id="wui-embed" data-wui-i18n-html="docs_containers_40"><span class="material-symbols-outlined">open_in_browser</span>wui-embed</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_41">Shell for embedding iframes, maps, or external content with a consistent header/body/footer. The outer <code>wui-embed-wrap</code> supplies the border and clipping; the inner <code>wui-embed</code> is the flex column. The body scrolls by default; add <code>.no-scroll</code> to let it grow. Wrap padded body content in <code>wui-embed-body-wrap</code>.</p>
 
           <div class="wui-demo" data-wui-demo>
@@ -867,7 +898,7 @@
 
         <!-- ══════════════════════════ wui-person ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_42"><span class="material-symbols-outlined">person</span>wui-person</div>
+          <div class="docs-section-title" id="wui-person" data-wui-i18n-html="docs_containers_42"><span class="material-symbols-outlined">person</span>wui-person</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_43">Compact identity block: avatar + stacked info (optional label, name, sub). Size axis: default (md) or <code>.sm</code>. Parts: <code>wui-person-info</code>, <code>wui-person-label</code>, <code>wui-person-name</code>, <code>wui-person-sub</code>.</p>
 
           <div class="wui-demo stacked" data-wui-demo>
@@ -895,7 +926,7 @@
 
         <!-- ══════════════════════════ wui-person-card ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_44"><span class="material-symbols-outlined">badge</span>wui-person-card</div>
+          <div class="docs-section-title" id="wui-person-card" data-wui-i18n-html="docs_containers_44"><span class="material-symbols-outlined">badge</span>wui-person-card</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_45">Bordered contact card: circular icon avatar + body with name, a dot-separated meta row (<code>wui-person-card-role</code> / <code>wui-person-card-unit</code>), a highlighted contact line, and an optional date. Meta children auto-insert a bullet separator between items.</p>
 
           <div class="wui-demo stacked" data-wui-demo>
@@ -929,7 +960,7 @@
 
         <!-- ══════════════════════════ wui-info-grid ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_46"><span class="material-symbols-outlined">table_rows</span>wui-info-grid</div>
+          <div class="docs-section-title" id="wui-info-grid" data-wui-i18n-html="docs_containers_46"><span class="material-symbols-outlined">table_rows</span>wui-info-grid</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_47">Read-only label/value grid for detail views and panels. Default is 2 columns; column modifiers: <code>.col1</code>, <code>.col3</code>, <code>.col4</code> (all collapse to one column under 576px). Item modifiers: <code>.span-all</code>, <code>.spaced</code>. Value modifiers: <code>.muted</code>, <code>.prose</code>, <code>.is-empty</code> (renders a "No data available" placeholder).</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_containers_48">Default 2-column + item/value modifiers</div>
@@ -1002,7 +1033,7 @@
 
         <!-- ══════════════════════════ wui-widget ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_50"><span class="material-symbols-outlined">widgets</span>wui-widget</div>
+          <div class="docs-section-title" id="wui-widget" data-wui-i18n-html="docs_containers_50"><span class="material-symbols-outlined">widgets</span>wui-widget</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_51">Dashboard widget shell for GridStack layouts. The header (<code>wui-widget-hdr</code>) and drag handle (<code>wui-widget-drag</code>) are hidden until the grid container enters edit mode (board CSS toggles them); <code>wui-widget-body</code> flexes to fill. The demo below forces both visible via inline overrides so you can see every part.</p>
 
           <div class="wui-demo stacked" data-wui-demo>
@@ -1024,7 +1055,7 @@
 
         <!-- ══════════════════════════ wui-update-entry ══════════════════════════ -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_52"><span class="material-symbols-outlined">history</span>wui-update-entry</div>
+          <div class="docs-section-title" id="wui-update-entry" data-wui-i18n-html="docs_containers_52"><span class="material-symbols-outlined">history</span>wui-update-entry</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_53">A single timestamped row in an update feed: a description (<code>wui-update-desc</code>) over muted meta (<code>wui-update-meta</code>). Stack several inside a panel body to form an activity stream.</p>
 
           <div class="wui-demo stacked" data-wui-demo>
@@ -1052,7 +1083,7 @@
           Chevron = .wui-collapsible-chevron (rotates via [data-wui-collapsible].is-open).
         -->
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_54"><span class="material-symbols-outlined">expand_more</span>wui-collapsible</div>
+          <div class="docs-section-title" id="wui-collapsible" data-wui-i18n-html="docs_containers_54"><span class="material-symbols-outlined">expand_more</span>wui-collapsible</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_55">Boxed minimal accordion. Container carries <code>data-wui-collapsible</code>; the header button carries <code>data-wui-collapse</code>. weoc-ui.js toggles <code>.is-open</code> on click (delegated document handler, loaded in head). Start open by adding <code>.is-open</code>. The body animates via a <code>0fr → 1fr</code> grid row, so keep padding on your own content, not on <code>wui-collapsible-content</code>.</p>
 
           <div class="wui-demo stacked" data-wui-demo>
@@ -1089,7 +1120,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_56"><span class="material-symbols-outlined">horizontal_rule</span>wui-section-collapse</div>
+          <div class="docs-section-title" id="wui-section-collapse" data-wui-i18n-html="docs_containers_56"><span class="material-symbols-outlined">horizontal_rule</span>wui-section-collapse</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_57">Ghost inline section header — no box, blends into the page. Good for grouping fields inside a panel or card body. The header (<code>wui-section-collapse-hdr</code>) is a full-width labeled separator; its bottom border fades when open. Same <code>data-wui-collapsible</code> / <code>data-wui-collapse</code> mechanism.</p>
 
           <div class="wui-demo stacked" data-wui-demo>
@@ -1126,7 +1157,7 @@
         </div>
 
         <div class="docs-section">
-          <div class="docs-section-title" data-wui-i18n-html="docs_containers_58"><span class="material-symbols-outlined">web_asset</span>wui-collapse-panel</div>
+          <div class="docs-section-title" id="wui-collapse-panel" data-wui-i18n-html="docs_containers_58"><span class="material-symbols-outlined">web_asset</span>wui-collapse-panel</div>
           <p class="docs-desc" data-wui-i18n-html="docs_containers_59">Card-shaped collapsible with an optional top accent stripe via color variant: <code>.primary</code>, <code>.success</code>, <code>.warning</code>, <code>.danger</code>, <code>.secondary</code>. Header holds an optional leading icon (<code>wui-collapse-panel-icon</code>, tinted by variant) plus a stacked title/subtitle (<code>wui-collapse-panel-titles</code> → <code>-title</code> / <code>-sub</code>). Same <code>data-wui-collapsible</code> / <code>data-wui-collapse</code> mechanism.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_containers_60">No accent</div>
