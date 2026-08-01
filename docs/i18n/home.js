@@ -87,7 +87,6 @@
     { lang:'en', id:'docs_home_85', value:'Flex' }, { lang:'ar', id:'docs_home_85', value:'المرونة' },
     { lang:'en', id:'docs_home_86', value:'Flexbox direction, wrap, justify, align, sizing, and gap utilities.' }, { lang:'ar', id:'docs_home_86', value:'أدوات flexbox: الاتجاه، والالتفاف، والتوزيع، والمحاذاة، والتحجيم، والفجوة.' },
     { lang:'en', id:'docs_home_87', value:'Containers' }, { lang:'ar', id:'docs_home_87', value:'الحاويات' },
-    { lang:'en', id:'docs_home_88', value:'Centered wui-container and full-width wui-container-fluid.' }, { lang:'ar', id:'docs_home_88', value:'wui-container المركزية و wui-container-fluid كاملة العرض.' },
-    { lang:'en', id:'docs_home_89', value:'On this page' }, { lang:'ar', id:'docs_home_89', value:'في هذه الصفحة' }
+    { lang:'en', id:'docs_home_88', value:'Centered wui-container and full-width wui-container-fluid.' }, { lang:'ar', id:'docs_home_88', value:'wui-container المركزية و wui-container-fluid كاملة العرض.' }
   ]);
 })();
