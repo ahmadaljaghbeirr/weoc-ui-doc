@@ -9,7 +9,10 @@
 !CSS/**
 !docs/
 !docs/**
+!docs-llm/
+!docs-llm/**
 !Fonts/
 !Fonts/**
+!_headers
 !JS/
 !JS/**

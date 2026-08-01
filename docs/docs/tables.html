@@ -495,15 +495,6 @@
                 </tbody>
               </table>
             </div>
-            <template class="wui-demo-js">
-// weoc-ui.js auto-binds [data-wui-row]; this fallback wires click-to-expand
-// for the isolated demo iframe in case the global binder has not run.
-document.querySelectorAll('[data-wui-row]').forEach(function (row) {
-  row.addEventListener('click', function () {
-    row.classList.toggle('is-open');
-  });
-});
-            </template>
           </div>
 
           <div class="wui-callout warning">
