@@ -46,5 +46,6 @@
     { lang:'en', id:'docs_feedback_42', value:'Compact' }, { lang:'ar', id:'docs_feedback_42', value:'مضغوط' },
     { lang:'en', id:'docs_feedback_43', value:'Dashed — with .wui-empty-sub' }, { lang:'ar', id:'docs_feedback_43', value:'متقطّع: مع .wui-empty-sub' },
     { lang:'en', id:'docs_feedback_44', value:'wui-empty-section — inline text-only' }, { lang:'ar', id:'docs_feedback_44', value:'wui-empty-section: نص مضمّن فقط' },
+    { lang:'en', id:'docs_feedback_45', value:'On this page' }, { lang:'ar', id:'docs_feedback_45', value:'في هذه الصفحة' }
   ]);
 })();

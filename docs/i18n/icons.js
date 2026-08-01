@@ -13,6 +13,7 @@
     { lang:'en', id:'docs_icons_9', value:'Sizes — sm / md / lg' }, { lang:'ar', id:'docs_icons_9', value:'الأحجام: sm / md / lg' },
     { lang:'en', id:'docs_icons_10', value:'Circle shape — soft, solid, solid + lg' }, { lang:'ar', id:'docs_icons_10', value:'شكل دائري (circle): soft، solid، solid + lg' },
     { lang:'en', id:'docs_icons_11', value:'Bordered — all colors (add alongside any variant)' }, { lang:'ar', id:'docs_icons_11', value:'Bordered: جميع الألوان (يُضاف إلى جانب أي نمط)' },
-    { lang:'en', id:'docs_icons_12', value:'Ripple (double-ring halo, for solid on colored surfaces)' }, { lang:'ar', id:'docs_icons_12', value:'Ripple (هالة بحلقتين، للنمط solid على الأسطح الملونة)' }
+    { lang:'en', id:'docs_icons_12', value:'Ripple (double-ring halo, for solid on colored surfaces)' }, { lang:'ar', id:'docs_icons_12', value:'Ripple (هالة بحلقتين، للنمط solid على الأسطح الملونة)' },
+    { lang:'en', id:'docs_icons_13', value:'On this page' }, { lang:'ar', id:'docs_icons_13', value:'في هذه الصفحة' }
   ]);
 })();

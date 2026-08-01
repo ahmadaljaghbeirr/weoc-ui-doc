@@ -84,6 +84,7 @@
     { lang:'en', id:'docs_tokens_79', value:'Side column (.has-side .wui-card-side) — tier-1 → tier-4' }, { lang:'ar', id:'docs_tokens_79', value:'العمود الجانبي (.has-side .wui-card-side): tier-1 ← tier-4' },
     { lang:'en', id:'docs_tokens_80', value:'wui-lvl' }, { lang:'ar', id:'docs_tokens_80', value:'wui-lvl' },
     { lang:'en', id:'docs_tokens_81', value:'Tier variants for the level bar. The tier class colors every lit segment (<code>wui-lvl-seg.on</code>) with the tier glow, animates the current segment (<code>.on.current</code>), and tints the <code>wui-lvl-count</code>. Owned by <code>weoc-indicators.css</code>. Here each level is shown filled to match its tier number.' }, { lang:'ar', id:'docs_tokens_81', value:'أنماط المستويات لشريط المستوى. صنف المستوى يلوّن كل مقطع مضاء (<code>wui-lvl-seg.on</code>) بتوهج المستوى، ويحرّك المقطع الحالي (<code>.on.current</code>)، ويلوّن <code>wui-lvl-count</code>. مملوكة من <code>weoc-indicators.css</code>. هنا يُعرض كل مستوى ممتلئًا بما يطابق رقم مستواه.' },
-    { lang:'en', id:'docs_tokens_82', value:'tier-1 → tier-4' }, { lang:'ar', id:'docs_tokens_82', value:'tier-1 ← tier-4' }
+    { lang:'en', id:'docs_tokens_82', value:'tier-1 → tier-4' }, { lang:'ar', id:'docs_tokens_82', value:'tier-1 ← tier-4' },
+    { lang:'en', id:'docs_tokens_83', value:'On this page' }, { lang:'ar', id:'docs_tokens_83', value:'في هذه الصفحة' }
   ]);
 })();

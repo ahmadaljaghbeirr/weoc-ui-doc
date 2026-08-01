@@ -18,6 +18,35 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page" x-data="listsPage()">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_lists_31">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_lists_31">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_lists_31">
+            <a href="#load-order" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_6"><span class="material-symbols-outlined">bolt</span>Load Order</a>
+            <a href="#api-window-eoclists" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_8"><span class="material-symbols-outlined">code</span>API — <code>window.EOCLists</code></a>
+            <a href="#defining-lists" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_9"><span class="material-symbols-outlined">data_object</span>Defining Lists</a>
+            <a href="#demo-flat-list" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_11"><span class="material-symbols-outlined">format_list_bulleted</span>Demo — Flat List</a>
+            <a href="#demo-cascading-sub-list" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_13"><span class="material-symbols-outlined">account_tree</span>Demo — Cascading (Sub-List)</a>
+            <a href="#board-integration-pattern" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_15"><span class="material-symbols-outlined">integration_instructions</span>Board Integration Pattern</a>
+            <a href="#built-in-lists" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_18"><span class="material-symbols-outlined">inventory_2</span>Built-in Lists</a>
+            <a href="#rest-live-api-window-eoclistsapi" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_20"><span class="material-symbols-outlined">cloud_sync</span>REST-Live API — <code>window.EOCListsAPI</code></a>
+            <a href="#usage-reading-writing-lists" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_24"><span class="material-symbols-outlined">swap_horiz</span>Usage — Reading &amp; Writing Lists</a>
+            <a href="#usage-ensurelist-seed-deploy-helper" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_26"><span class="material-symbols-outlined">playlist_add_check</span>Usage — <code>ensureList()</code> (Seed/Deploy Helper)</a>
+            <a href="#usage-edititem-deletelist-deleteitem-not-verified" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_lists_28"><span class="material-symbols-outlined">edit_note</span>Usage — <code>editItem()</code> / <code>deleteList()</code> / <code>deleteItem()</code> (Not Verified)</a>
+          </nav>
+        </div>
         <script>
         (function () {
           function registerListsPage() {

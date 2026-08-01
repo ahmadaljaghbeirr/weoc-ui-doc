@@ -18,6 +18,28 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_typography_17">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_typography_17">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_typography_17">
+            <a href="#type-scale" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_typography_4"><span class="material-symbols-outlined">format_size</span>Type scale</a>
+            <a href="#font-weights" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_typography_7"><span class="material-symbols-outlined">line_weight</span>Font weights</a>
+            <a href="#text-colors" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_typography_10"><span class="material-symbols-outlined">palette</span>Text colors</a>
+            <a href="#wui-truncate" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_typography_13"><span class="material-symbols-outlined">more_horiz</span>wui-truncate</a>
+          </nav>
+        </div>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_typography_1">Typography</div>

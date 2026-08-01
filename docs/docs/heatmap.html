@@ -25,6 +25,30 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page" x-data="heatmapPage()">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_heatmap_25">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_heatmap_25">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_heatmap_25">
+            <a href="#overview" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_heatmap_6"><span class="material-symbols-outlined">info</span>Overview</a>
+            <a href="#wui-heatmap-el-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_heatmap_9"><span class="material-symbols-outlined">data_exploration</span>WUI.heatmap(el, opts)</a>
+            <a href="#example-mdash-5-times-5-risk-matrix" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_heatmap_13"><span class="material-symbols-outlined">grid_on</span>Example &mdash; 5&times;5 Risk Matrix</a>
+            <a href="#example-mdash-3-times-4-shift-coverage" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_heatmap_16"><span class="material-symbols-outlined">grid_view</span>Example &mdash; 3&times;4 Shift Coverage</a>
+            <a href="#reserved-types-error-handling" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_heatmap_18"><span class="material-symbols-outlined">warning</span>Reserved Types &amp; Error Handling</a>
+            <a href="#theme-awareness" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_heatmap_23"><span class="material-symbols-outlined">dark_mode</span>Theme Awareness</a>
+          </nav>
+        </div>
   <style>
     .demo-heatmap-wrap {
       width: 100%;

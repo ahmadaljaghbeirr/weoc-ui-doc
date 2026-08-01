@@ -10,6 +10,7 @@
     { lang:'en', id:'docs_container_4', value:'<span class="material-symbols-outlined">width</span>wui-container' }, { lang:'ar', id:'docs_container_4', value:'<span class="material-symbols-outlined">width</span>wui-container' },
     { lang:'en', id:'docs_container_5', value:'Centered, responsive content column with side gutters (<code>padding-inline: var(--space-4)</code>). <code>wui-container</code> steps through Bootstrap max-widths (540 / 720 / 960 / 1140px); <code>wui-container-fluid</code> is always full width with the same gutters. The dashed frame below marks the container edges.' }, { lang:'ar', id:'docs_container_5', value:'عمود محتوى مركزي ومتجاوب مع هوامش جانبية (<code>padding-inline: var(--space-4)</code>). تتدرّج <code>wui-container</code> عبر عروض Bootstrap القصوى (540 / 720 / 960 / 1140px)؛ أما <code>wui-container-fluid</code> فتكون دائماً بعرض كامل مع الهوامش نفسها. يحدّد الإطار المتقطّع أدناه حواف الحاوية.' },
     { lang:'en', id:'docs_container_6', value:'wui-container (stepped max-width)' }, { lang:'ar', id:'docs_container_6', value:'wui-container (عرض أقصى متدرّج)' },
-    { lang:'en', id:'docs_container_7', value:'wui-container-fluid (full width)' }, { lang:'ar', id:'docs_container_7', value:'wui-container-fluid (عرض كامل)' }
+    { lang:'en', id:'docs_container_7', value:'wui-container-fluid (full width)' }, { lang:'ar', id:'docs_container_7', value:'wui-container-fluid (عرض كامل)' },
+    { lang:'en', id:'docs_container_8', value:'On this page' }, { lang:'ar', id:'docs_container_8', value:'في هذه الصفحة' }
   ]);
 })();

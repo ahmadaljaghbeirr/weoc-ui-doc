@@ -20,6 +20,32 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page" x-data="motionPage()">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_motion_31">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_motion_31">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_motion_31">
+            <a href="#setup" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_motion_4"><span class="material-symbols-outlined">download</span>Setup</a>
+            <a href="#wuianim-ring-el-topct-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_motion_8"><span class="material-symbols-outlined">donut_large</span>WUIAnim.ring(el, toPct, opts)</a>
+            <a href="#wuianim-ringentrance-el-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_motion_11"><span class="material-symbols-outlined">north_east</span>WUIAnim.ringEntrance(el, opts)</a>
+            <a href="#wuianim-sectionentrance-containerel-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_motion_14"><span class="material-symbols-outlined">grid_view</span>WUIAnim.sectionEntrance(containerEl, opts)</a>
+            <a href="#wuianim-completion-el-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_motion_17"><span class="material-symbols-outlined">check_circle</span>WUIAnim.completion(el, opts)</a>
+            <a href="#wuianim-counter-el-from-to-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_motion_20"><span class="material-symbols-outlined">123</span>WUIAnim.counter(el, from, to, opts)</a>
+            <a href="#wuianim-bar-el-topct-opts" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_motion_23"><span class="material-symbols-outlined">linear_scale</span>WUIAnim.bar(el, toPct, opts)</a>
+            <a href="#constants-internals" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_motion_26"><span class="material-symbols-outlined">tune</span>Constants &amp; internals</a>
+          </nav>
+        </div>
         <script>
         (function () {
           function registerMotionPage() {

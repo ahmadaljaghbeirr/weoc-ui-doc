@@ -23,6 +23,7 @@
     { lang:'en', id:'docs_navigation_19', value:'Basic band — segments, dividers, spacer, actions' }, { lang:'ar', id:'docs_navigation_19', value:'شريط أساسي: مقاطع، فواصل، مباعِد، إجراءات' },
     { lang:'en', id:'docs_navigation_20', value:'Stacked segment (wui-band-seg-stack) — label over value' }, { lang:'ar', id:'docs_navigation_20', value:'مقطع مكدّس (wui-band-seg-stack): التسمية فوق القيمة' },
     { lang:'en', id:'docs_navigation_21', value:'Multiple rows (wui-band-row + wui-band-row)' }, { lang:'ar', id:'docs_navigation_21', value:'صفوف متعددة (wui-band-row + wui-band-row)' },
-    { lang:'en', id:'docs_navigation_22', value:'Stripe variants — all 5 colors (.stripe.{color})' }, { lang:'ar', id:'docs_navigation_22', value:'نسخ الشريط المخطّط: الألوان الخمسة كافّة (.stripe.{color})' }
+    { lang:'en', id:'docs_navigation_22', value:'Stripe variants — all 5 colors (.stripe.{color})' }, { lang:'ar', id:'docs_navigation_22', value:'نسخ الشريط المخطّط: الألوان الخمسة كافّة (.stripe.{color})' },
+    { lang:'en', id:'docs_navigation_23', value:'On this page' }, { lang:'ar', id:'docs_navigation_23', value:'في هذه الصفحة' }
   ]);
 })();

@@ -5,6 +5,9 @@ node_modules/
 # Isolated worktree workspaces (e.g. weoc-ui-angular-port)
 .worktrees/
 
+# Per-agent isolation worktrees created by the Agent tool during this session
+.claude/worktrees/
+
 # Wrangler local state and development secrets (not the deploy configuration).
 .wrangler/
 .dev.vars*

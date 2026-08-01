@@ -20,6 +20,33 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_tables_50">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_tables_50">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_tables_50">
+            <a href="#wui-table-standard" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tables_6"><span class="material-symbols-outlined">table_rows</span>wui-table-standard</a>
+            <a href="#wui-table-cards" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tables_13"><span class="material-symbols-outlined">view_agenda</span>wui-table-cards</a>
+            <a href="#wui-table-log" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tables_21"><span class="material-symbols-outlined">receipt_long</span>wui-table-log</a>
+            <a href="#column-widths" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tables_25"><span class="material-symbols-outlined">view_column</span>Column widths</a>
+            <a href="#cell-utilities" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tables_29"><span class="material-symbols-outlined">grid_on</span>Cell utilities</a>
+            <a href="#row-color-accents" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tables_31"><span class="material-symbols-outlined">label</span>Row color accents</a>
+            <a href="#row-action-buttons" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tables_34"><span class="material-symbols-outlined">more_horiz</span>Row action buttons</a>
+            <a href="#density" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tables_36"><span class="material-symbols-outlined">density_medium</span>Density</a>
+            <a href="#responsive-column-hiding" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tables_40"><span class="material-symbols-outlined">view_week</span>Responsive column hiding</a>
+          </nav>
+        </div>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_tables_1">Data Display</div>

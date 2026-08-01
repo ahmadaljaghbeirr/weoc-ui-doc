@@ -19,6 +19,29 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_progress_32">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_progress_32">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_progress_32">
+            <a href="#wui-progress-ring" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_progress_4"><span class="material-symbols-outlined">donut_large</span>wui-progress-ring</a>
+            <a href="#wui-progress-bar" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_progress_13"><span class="material-symbols-outlined">linear_scale</span>wui-progress-bar</a>
+            <a href="#wui-progress-legend" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_progress_22"><span class="material-symbols-outlined">legend_toggle</span>wui-progress-legend</a>
+            <a href="#usage-in-a-table" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_progress_26"><span class="material-symbols-outlined">table</span>Usage in a table</a>
+            <a href="#neon-glow-neon" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_progress_28"><span class="material-symbols-outlined">flare</span>Neon glow — .neon</a>
+          </nav>
+        </div>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_progress_1">Feedback</div>

@@ -18,6 +18,37 @@
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
       <div class="docs-page">
+        <!-- ═══════════════ Per-page TOC ═══════════════
+             Trigger + panel are both plain declarative weoc-ui overlay
+             primitives (wui-fab + wui-dropdown) -- open/close needs no page
+             script at all. Only the click on an entry needs help: that's
+             handled centrally in docs-shell.js (bindTocLinks), via
+             [data-toc-link], the same way search-hit anchors are.
+             See docs/superpowers/specs/2026-07-31-per-page-toc-design.md. -->
+        <button type="button" class="wui-fab primary wui-fab-fixed-br" data-wui-toggle="#docs-toc-panel" aria-haspopup="true" aria-expanded="false" data-wui-i18n-attr="aria-label:docs_tokens_83">
+          <span class="material-symbols-outlined">toc</span>
+        </button>
+        <div id="docs-toc-panel" class="wui-dropdown docs-toc-panel" data-wui-open-class="show" data-wui-anchor="top-end" hx-boost="false">
+          <div class="docs-toc-panel-hd">
+            <span class="material-symbols-outlined">toc</span>
+            <span data-wui-i18n="docs_tokens_83">On this page</span>
+          </div>
+          <nav class="docs-toc-list" data-wui-i18n-attr="aria-label:docs_tokens_83">
+            <a href="#brand-palette" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_4"><span class="material-symbols-outlined">palette</span>Brand Palette</a>
+            <a href="#semantic-colors" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_11"><span class="material-symbols-outlined">category</span>Semantic Colors</a>
+            <a href="#eoc-tier-colors" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_16"><span class="material-symbols-outlined">shield</span>EOC Tier Colors</a>
+            <a href="#tier-color-variants" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_51"><span class="material-symbols-outlined">widgets</span>Tier Color Variants</a>
+            <a href="#surface-widget-tokens" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_20"><span class="material-symbols-outlined">dashboard</span>Surface &amp; Widget Tokens</a>
+            <a href="#spacing-scale" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_24"><span class="material-symbols-outlined">space_bar</span>Spacing Scale</a>
+            <a href="#typography" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_28"><span class="material-symbols-outlined">text_fields</span>Typography</a>
+            <a href="#border-radius" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_36"><span class="material-symbols-outlined">rounded_corner</span>Border Radius</a>
+            <a href="#border-thickness" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_38"><span class="material-symbols-outlined">line_weight</span>Border Thickness</a>
+            <a href="#shadow-scale" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_40"><span class="material-symbols-outlined">layers</span>Shadow Scale</a>
+            <a href="#interaction-tokens" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_42"><span class="material-symbols-outlined">touch_app</span>Interaction Tokens</a>
+            <a href="#scrollbar-tokens" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_44"><span class="material-symbols-outlined">unfold_more</span>Scrollbar Tokens</a>
+            <a href="#bootstrap-overrides" class="docs-nav-item" data-toc-link data-wui-dismiss="" data-wui-i18n-html="docs_tokens_48"><span class="material-symbols-outlined">swap_horiz</span>Bootstrap Overrides</a>
+          </nav>
+        </div>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_tokens_1">Foundations</div>
