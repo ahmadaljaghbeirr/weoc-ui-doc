@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Badges &amp; Chips</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="interactive">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_interactive_1">Data Display</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_interactive_2">Badges &amp; Chips</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_interactive_3">Compact status and metadata labels: the square status <code>wui-badge</code> and the rounded pill <code>wui-chip</code>. Every size, color, icon, and state is shown below with its exact markup.</div>
+        </div>
+
+        <!-- ══════════════════════════ wui-badge ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_interactive_4"><span class="material-symbols-outlined">sell</span>wui-badge</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_interactive_5">Uppercase status label. The base <code>wui-badge</code> is neutral until you add a <em>color</em> (<code>primary</code> … <code>info</code>). Add a <em>size</em> (<code>wui-badge-sm</code> … <code>wui-badge-xl</code>), <code>bordered</code> for an outline, <code>icon-only</code>, <code>is-interactive</code> for hover/press feedback, or <code>animate</code> for a pulsing status ring.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_6">Base (neutral, no color)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Base -->
+              <span class="wui-badge">Badge</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_7">Colors — all</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-badge primary">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-badge secondary">Secondary</span>
+              <!-- Success -->
+              <span class="wui-badge success">Success</span>
+              <!-- Warning -->
+              <span class="wui-badge warning">Warning</span>
+              <!-- Danger -->
+              <span class="wui-badge danger">Danger</span>
+              <!-- Info -->
+              <span class="wui-badge info">Info</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_8">Sizes — sm → xl (base has no size class)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-badge wui-badge-sm primary">SM</span>
+              <!-- base (no size class) -->
+              <span class="wui-badge primary">Base</span>
+              <!-- md -->
+              <span class="wui-badge wui-badge-md primary">MD</span>
+              <!-- lg -->
+              <span class="wui-badge wui-badge-lg primary">LG</span>
+              <!-- xl -->
+              <span class="wui-badge wui-badge-xl primary">XL</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_9">Bordered — all colors</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-badge bordered primary">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-badge bordered secondary">Secondary</span>
+              <!-- Success -->
+              <span class="wui-badge bordered success">Success</span>
+              <!-- Warning -->
+              <span class="wui-badge bordered warning">Warning</span>
+              <!-- Danger -->
+              <span class="wui-badge bordered danger">Danger</span>
+              <!-- Info -->
+              <span class="wui-badge bordered info">Info</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_10">With icon</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Leading icon -->
+              <span class="wui-badge success"><span class="material-symbols-outlined">check_circle</span>Approved</span>
+              <!-- Trailing icon -->
+              <span class="wui-badge warning">Pending<span class="material-symbols-outlined">schedule</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_11">Icon scale — grows with size</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-badge wui-badge-sm info"><span class="material-symbols-outlined">bolt</span>SM</span>
+              <!-- md -->
+              <span class="wui-badge wui-badge-md info"><span class="material-symbols-outlined">bolt</span>MD</span>
+              <!-- lg -->
+              <span class="wui-badge wui-badge-lg info"><span class="material-symbols-outlined">bolt</span>LG</span>
+              <!-- xl -->
+              <span class="wui-badge wui-badge-xl info"><span class="material-symbols-outlined">bolt</span>XL</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_12">Icon-only — all sizes</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-badge wui-badge-sm icon-only primary"><span class="material-symbols-outlined">star</span></span>
+              <!-- base (icon-only) -->
+              <span class="wui-badge icon-only primary"><span class="material-symbols-outlined">star</span></span>
+              <!-- md -->
+              <span class="wui-badge wui-badge-md icon-only primary"><span class="material-symbols-outlined">star</span></span>
+              <!-- lg -->
+              <span class="wui-badge wui-badge-lg icon-only primary"><span class="material-symbols-outlined">star</span></span>
+              <!-- xl -->
+              <span class="wui-badge wui-badge-xl icon-only primary"><span class="material-symbols-outlined">star</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_13">Interactive — hover &amp; press</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- is-interactive -->
+              <span class="wui-badge primary is-interactive">Clickable</span>
+              <!-- is-interactive + icon -->
+              <span class="wui-badge danger is-interactive"><span class="material-symbols-outlined">close</span>Remove</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_14">Animate — pulsing status ring (per color)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-badge primary animate">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-badge secondary animate">Secondary</span>
+              <!-- Success -->
+              <span class="wui-badge success animate">Success</span>
+              <!-- Warning -->
+              <span class="wui-badge warning animate">Warning</span>
+              <!-- Danger -->
+              <span class="wui-badge danger animate">Danger</span>
+              <!-- Info -->
+              <span class="wui-badge info animate">Info</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_23">Neon — outer glow, per color</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-badge primary neon">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-badge secondary neon">Secondary</span>
+              <!-- Success -->
+              <span class="wui-badge success neon">Success</span>
+              <!-- Warning -->
+              <span class="wui-badge warning neon">Warning</span>
+              <!-- Danger -->
+              <span class="wui-badge danger neon">Danger</span>
+              <!-- Info -->
+              <span class="wui-badge info neon">Info</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-chip ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_interactive_15"><span class="material-symbols-outlined">label</span>wui-chip</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_interactive_16">Rounded pill for tags, filters, and metadata. The base <code>wui-chip</code> defaults to the primary tint; override with a <em>color</em> (<code>primary</code> … <code>info</code>). Add a <em>size</em> (<code>wui-chip-xs</code> … <code>wui-chip-2xl</code>), an icon, or <code>icon-only</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_17">Base (primary tint by default)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Base -->
+              <span class="wui-chip">Chip</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_18">Colors — all</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-chip primary">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-chip secondary">Secondary</span>
+              <!-- Success -->
+              <span class="wui-chip success">Success</span>
+              <!-- Warning -->
+              <span class="wui-chip warning">Warning</span>
+              <!-- Danger -->
+              <span class="wui-chip danger">Danger</span>
+              <!-- Info -->
+              <span class="wui-chip info">Info</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_19">Sizes — xs → 2xl (base = md)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- xs -->
+              <span class="wui-chip wui-chip-xs primary">XS</span>
+              <!-- sm -->
+              <span class="wui-chip wui-chip-sm primary">SM</span>
+              <!-- base (md) -->
+              <span class="wui-chip primary">Base</span>
+              <!-- md -->
+              <span class="wui-chip wui-chip-md primary">MD</span>
+              <!-- lg -->
+              <span class="wui-chip wui-chip-lg primary">LG</span>
+              <!-- xl -->
+              <span class="wui-chip wui-chip-xl primary">XL</span>
+              <!-- 2xl -->
+              <span class="wui-chip wui-chip-2xl primary">2XL</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_20">With icon</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Leading icon -->
+              <span class="wui-chip success"><span class="material-symbols-outlined">done</span>Verified</span>
+              <!-- Trailing icon (removable pattern) -->
+              <span class="wui-chip info">Filter<span class="material-symbols-outlined">close</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_21">Icon scale — grows with size</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- xs -->
+              <span class="wui-chip wui-chip-xs info"><span class="material-symbols-outlined">tag</span>XS</span>
+              <!-- sm -->
+              <span class="wui-chip wui-chip-sm info"><span class="material-symbols-outlined">tag</span>SM</span>
+              <!-- md -->
+              <span class="wui-chip wui-chip-md info"><span class="material-symbols-outlined">tag</span>MD</span>
+              <!-- lg -->
+              <span class="wui-chip wui-chip-lg info"><span class="material-symbols-outlined">tag</span>LG</span>
+              <!-- xl -->
+              <span class="wui-chip wui-chip-xl info"><span class="material-symbols-outlined">tag</span>XL</span>
+              <!-- 2xl -->
+              <span class="wui-chip wui-chip-2xl info"><span class="material-symbols-outlined">tag</span>2XL</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_22">Icon-only — all sizes</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- xs -->
+              <span class="wui-chip wui-chip-xs icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- sm -->
+              <span class="wui-chip wui-chip-sm icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- base (icon-only) -->
+              <span class="wui-chip icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- md -->
+              <span class="wui-chip wui-chip-md icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- lg -->
+              <span class="wui-chip wui-chip-lg icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- xl -->
+              <span class="wui-chip wui-chip-xl icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+              <!-- 2xl -->
+              <span class="wui-chip wui-chip-2xl icon-only primary"><span class="material-symbols-outlined">favorite</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_interactive_24">Neon — outer glow, per color</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-chip primary neon">Primary</span>
+              <!-- Secondary -->
+              <span class="wui-chip secondary neon">Secondary</span>
+              <!-- Success -->
+              <span class="wui-chip success neon">Success</span>
+              <!-- Warning -->
+              <span class="wui-chip warning neon">Warning</span>
+              <!-- Danger -->
+              <span class="wui-chip danger neon">Danger</span>
+              <!-- Info -->
+              <span class="wui-chip info neon">Info</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('interactive');</script>
+</body>
+</html>

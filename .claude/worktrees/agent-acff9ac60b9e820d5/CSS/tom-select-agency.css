@@ -1,0 +1,591 @@
+/* Tom Select - Agency theme overrides */
+/* Load AFTER tom-select.css. All colors map to agency-theme tokens so the
+   control follows light/dark automatically (incl. the chevron / plus / clear
+   icons, which are drawn with CSS masks tinted by a theme token). */
+
+:root {
+  /* ── Tom Select tokens (mapped to agency-theme) ─────────── */
+  --ts-bg:             var(--color-30);
+  --ts-bg-soft:        var(--color-60);
+  --ts-fg:             var(--color-text-secondary);
+  --ts-primary:        var(--color-text-primary);
+  --ts-accent:         var(--color-10);
+  --ts-accent-soft:    var(--color-10-light);
+  --ts-accent-muted:   var(--color-10-muted);
+  --ts-border:         var(--color-border);
+  --ts-muted:          var(--color-text-secondary);
+  --ts-placeholder:    var(--color-text-ui);
+  --ts-danger:         var(--color-danger);
+  --ts-danger-soft:    var(--color-danger-light);
+
+  --ts-radius:         var(--border-radius);
+  --ts-gap-xs:         var(--space-xs);
+  --ts-gap-small:      var(--space-sm);
+  --ts-gap-medium:     var(--space-3);
+
+  /* Right-rail geometry. The rail holds (right → left): the indicator
+     (chevron for single / plus for multi) and, when there is a selection,
+     the clear-all button to its left. --ts-rail is the total right padding
+     so chips / text never slide under either control. */
+  --ts-caret-inset:    var(--space-md);
+  --ts-caret-size:     0.8rem;
+  --ts-clear-size:     1.25rem;
+  --ts-rail-gap:       var(--space-sm);
+  --ts-rail: calc(var(--ts-caret-inset) + var(--ts-caret-size) + var(--ts-rail-gap) + var(--ts-clear-size) + var(--ts-rail-gap));
+
+  --ts-motion:         160ms;
+  --ts-focus-ring-color: var(--color-10-muted);
+  --ts-focus-ring-width: var(--border-sm);
+  --ts-shadow:         var(--shadow-lg);
+
+  /* Icons are used as masks (alpha only) — the fill/stroke color in the data
+     URI is irrelevant; the visible color comes from background-color. */
+  --ts-chevron-icon: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+  --ts-plus-icon: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z'/%3E%3C/svg%3E");
+  --ts-clear-icon: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M18.3 5.71 12 12.01l-6.3-6.3-1.41 1.41 6.3 6.3-6.3 6.3 1.41 1.41 6.3-6.3 6.3 6.3 1.41-1.41-6.3-6.3 6.3-6.3z'/%3E%3C/svg%3E");
+}
+
+/* ─────────────────────────────────────────────────────────
+   Control (the "select" box)
+   ───────────────────────────────────────────────────────── */
+
+.ts-wrapper:focus,
+.ts-wrapper *:focus {
+  outline: none;
+}
+
+/* Control matches form-control (text-xs / 12px); dropdown keeps text-sm for
+   option readability. Base sets 13px on all three — override both selectors. */
+.ts-control,
+.ts-control input {
+  font-size: var(--text-xs);    /* matches .form-control (0.75rem / 12px) */
+}
+.ts-dropdown {
+  font-size: var(--text-sm);    /* base 13px → --text-sm (0.875rem / 14px), closest token */
+}
+
+.ts-control {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ts-gap-xs);
+  width: 100%;
+  min-height: 2.5rem;
+  /* left: text padding · right: the rail (indicator + clear button) */
+  padding: var(--ts-gap-small) var(--ts-rail) var(--ts-gap-small) var(--ts-gap-medium);
+  border: 1px solid var(--ts-border);
+  border-radius: var(--ts-radius);
+  background-color: transparent;
+  color: var(--ts-fg);
+  box-shadow: none;
+  overflow: hidden;
+  cursor: pointer !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus ring (wrapper gets .focus) */
+.ts-wrapper.focus .ts-control {
+  border-color: var(--ts-accent);
+  box-shadow: 0 0 0 var(--ts-focus-ring-width) var(--ts-focus-ring-color);
+}
+
+/* Keep the control transparent in every state. Tom Select base flips it to
+   #fff on `.full` and `single.input-active` (specificity 0,2,0 / 0,3,0) —
+   re-assert transparent so the control never goes opaque. */
+.full .ts-control,
+.ts-wrapper.single.input-active .ts-control,
+.ts-wrapper.single.focus .ts-control,
+.ts-wrapper.single.dropdown-active .ts-control {
+  background-color: transparent;
+}
+
+/* Reserve the right rail (indicator + clear). Base sets padding-right with
+   !important via --ts-pr-* maths, so match its selector + !important. */
+.ts-control:not(.rtl) { padding-right: var(--ts-rail) !important; }
+.ts-control.rtl       { padding-left:  var(--ts-rail) !important; }
+
+/* Control input */
+.ts-control > input {
+  color: inherit !important;
+  font-family: inherit;
+}
+
+.ts-control > input::placeholder {
+  color: var(--ts-placeholder);
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Indicator: chevron (single) / plus (multi)
+   Drawn as a CSS mask tinted with --ts-fg → follows the theme.
+   ───────────────────────────────────────────────────────── */
+
+.ts-wrapper.single .ts-control::after,
+.ts-wrapper.multi .ts-control::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: var(--ts-caret-inset);
+  width: var(--ts-caret-size);
+  height: var(--ts-caret-size);
+  transform: translateY(-50%);
+  background-color: var(--ts-fg);
+  -webkit-mask: var(--_ts-ind) center / contain no-repeat;
+          mask: var(--_ts-ind) center / contain no-repeat;
+  pointer-events: none;
+  transition: background-color 0.2s ease;
+}
+
+.ts-wrapper.single .ts-control::after { --_ts-ind: var(--ts-chevron-icon); }
+.ts-wrapper.multi  .ts-control::after { --_ts-ind: var(--ts-plus-icon); }
+
+/* Indicator turns accent on focus / open */
+.ts-wrapper.focus .ts-control::after,
+.ts-wrapper.dropdown-active .ts-control::after {
+  background-color: var(--ts-accent);
+}
+
+/* RTL: move the rail to the left edge */
+.cRTL .ts-wrapper.single .ts-control,
+.cRTL .ts-wrapper.multi .ts-control {
+  padding-right: var(--ts-gap-medium);
+  padding-left: var(--ts-rail);
+}
+
+.cRTL .ts-wrapper.single .ts-control::after,
+.cRTL .ts-wrapper.multi .ts-control::after {
+  right: auto;
+  left: var(--ts-caret-inset);
+}
+
+/* ─────────────────────────────────────────────────────────
+   Clear-all button (clear_button plugin)
+   Sits just left of the indicator, with a comfortable hit area.
+   ───────────────────────────────────────────────────────── */
+
+/* High specificity (matches the plugin's own .plugin-clear_button.single/.multi
+   .clear-button rules, loaded later so it wins) — otherwise the plugin pins the
+   button to the far-right edge, on top of the chevron. */
+.ts-wrapper.plugin-clear_button .clear-button {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--ts-caret-inset) + var(--ts-caret-size) + var(--ts-rail-gap));
+  left: auto;
+  width: var(--ts-clear-size);
+  height: var(--ts-clear-size);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  font-size: 0;            /* hide the plugin's &times; text glyph */
+  color: transparent;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  opacity: 0;                /* hidden until there is a selection (.has-items) */
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+/* × drawn as a CSS mask (same approach as the indicator icons) so any SVG
+   the plugin might inject is fully suppressed via font-size:0 / color:transparent
+   on the parent, while this pseudo renders cleanly in all browsers. */
+.ts-wrapper.plugin-clear_button .clear-button::before {
+  content: "";
+  display: block;
+  width: var(--ts-clear-size);
+  height: var(--ts-clear-size);
+  background-color: var(--ts-fg);
+  -webkit-mask: var(--ts-clear-icon) center / contain no-repeat;
+          mask: var(--ts-clear-icon) center / contain no-repeat;
+  transition: background-color 0.15s ease;
+}
+
+/* Show only when an item is selected (Tom Select toggles .has-items) */
+.ts-wrapper.plugin-clear_button.has-items .clear-button {
+  opacity: 0.75;
+}
+
+.ts-wrapper.plugin-clear_button.has-items .clear-button:hover {
+  opacity: 1;
+  background: var(--ts-accent-soft);
+}
+
+.ts-wrapper.plugin-clear_button.has-items .clear-button:hover::before {
+  background-color: var(--ts-accent);
+}
+
+.cRTL .ts-wrapper.plugin-clear_button .clear-button {
+  right: auto;
+  left: calc(var(--ts-caret-inset) + var(--ts-caret-size) + var(--ts-rail-gap));
+}
+
+/* ─────────────────────────────────────────────────────────
+   Selected item chips (multi) + per-chip remove (remove_button)
+   ───────────────────────────────────────────────────────── */
+
+.ts-wrapper.multi .ts-control > div {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ts-gap-xs);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--ts-accent);
+  background: color-mix(in srgb, var(--ts-accent) 18%, transparent);
+  color: var(--ts-primary);
+  padding: var(--ts-gap-xs) var(--ts-gap-small);
+  transition: background 0.15s ease, color 0.15s ease;
+  font-size: var(--text-2xs);
+}
+
+.ts-wrapper.multi .ts-control > div.active {
+  background: color-mix(in srgb, var(--ts-accent) 30%, transparent);
+}
+
+.ts-wrapper.multi .ts-control > div .remove {
+  margin-left: var(--ts-gap-xs);
+  padding: 0 0.2rem;
+  border: 0;
+  color: var(--ts-fg);
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.ts-wrapper.multi .ts-control > div .remove:hover {
+  background: var(--ts-danger-soft);
+  color: var(--ts-danger);
+}
+
+/* ─────────────────────────────────────────────────────────
+   Remove-button plugin (remove_button)
+   Per-chip × for multi; single-item × for single mode.
+   Every base rule covered with agency-theme tokens.
+   ───────────────────────────────────────────────────────── */
+
+/* Single-select ×: replaces the chevron when an item is selected */
+.ts-wrapper.plugin-remove_button .remove-single {
+  font-size: var(--text-xl);        /* base 23px → --text-xl (1.5rem / 24px), closest token */
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+/* Chip item: inline-flex with centred content (base structural rule) */
+.ts-wrapper.plugin-remove_button .item {
+  align-items: center;
+  display: inline-flex;
+}
+
+/* Chip × button: pill-match right radius; inherit text color */
+.ts-wrapper.plugin-remove_button .item .remove {
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;   /* base 0 2px 2px 0 → pill right to match chip */
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Chip × hover: danger feedback via tokens */
+.ts-wrapper.plugin-remove_button .item .remove:hover {
+  background: var(--ts-danger-soft); /* base rgba(0,0,0,.05) → token */
+  color: var(--ts-danger);
+}
+
+/* Disabled chip × hover: suppress feedback */
+.ts-wrapper.plugin-remove_button.disabled .item .remove:hover {
+  background: none;
+  color: inherit;
+}
+
+/* LTR: drop chip's right padding so × sits flush at the pill edge */
+.ts-wrapper.plugin-remove_button:not(.rtl) .item {
+  padding-right: 0 !important;
+}
+
+/* LTR chip ×: no divider border; gap via token margin */
+.ts-wrapper.plugin-remove_button:not(.rtl) .item .remove {
+  border-left: 0;                    /* base 1px solid #d0d0d0 → none (agency: no divider) */
+  margin: 0 var(--ts-gap-xs);     /* base 6px → --space-xs (0.25rem / 4px), closest token */
+}
+
+/* LTR active chip ×: accent border if border is ever re-enabled */
+.ts-wrapper.plugin-remove_button:not(.rtl) .item.active .remove {
+  border-left-color: var(--ts-accent);   /* base #cacaca → accent token */
+}
+
+/* LTR disabled chip × */
+.ts-wrapper.plugin-remove_button:not(.rtl).disabled .item .remove {
+  border-left-color: var(--ts-bg);       /* base #fff → surface bg token */
+}
+
+/* RTL: drop chip's left padding */
+.ts-wrapper.plugin-remove_button.rtl .item {
+  padding-left: 0 !important;
+}
+
+/* RTL chip ×: no divider border; gap via token margin */
+.ts-wrapper.plugin-remove_button.rtl .item .remove {
+  border-right: 0;                   /* base 1px solid #d0d0d0 → none (agency: no divider) */
+  margin-right: var(--ts-gap-xs);    /* base 6px → --space-xs (0.25rem / 4px), closest token */
+}
+
+/* RTL active chip × */
+.ts-wrapper.plugin-remove_button.rtl .item.active .remove {
+  border-right-color: var(--ts-accent);  /* base #cacaca → accent token */
+}
+
+/* RTL disabled chip × */
+.ts-wrapper.plugin-remove_button.rtl.disabled .item .remove {
+  border-right-color: var(--ts-bg);      /* base #fff → surface bg token */
+}
+
+/* ─────────────────────────────────────────────────────────
+   Dropdown Menu
+   ───────────────────────────────────────────────────────── */
+
+.ts-dropdown {
+  border: var(--border-xs) solid var(--ts-border);
+  border-radius: calc(var(--ts-radius) + 2px);
+  background: var(--ts-bg);
+  box-shadow: var(--ts-shadow);
+  z-index: 1060;
+}
+
+/* Dropdown list scrollbar — inherits the library-wide scrollbar system
+   (--scrollbar-* tokens, see weoc-reset.css). Kept explicit because the
+   dropdown is teleported to <body> and this file may load without the
+   component being under a themed ancestor; values resolve identically. */
+.ts-dropdown-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.ts-dropdown-content::-webkit-scrollbar { width: var(--scrollbar-size); }
+.ts-dropdown-content::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+.ts-dropdown-content::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-radius);
+}
+.ts-dropdown-content::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+.ts-dropdown .option,
+.ts-dropdown .optgroup-header,
+.ts-dropdown .no-results,
+.ts-dropdown .create {
+  padding: var(--ts-gap-small) var(--ts-gap-medium);
+}
+
+.ts-dropdown .optgroup-header {
+  background: var(--ts-bg-soft);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--ts-accent);
+  line-height: var(--leading-none);
+  padding-top: var(--ts-gap-medium);
+  padding-bottom: var(--ts-gap-medium);
+  border-top: var(--border-sm) solid var(--ts-border);
+  border-bottom: var(--border-xs) solid var(--ts-border);
+  cursor: default;
+}
+
+.ts-dropdown .optgroup:first-child .optgroup-header {
+  border-top: none;
+}
+
+/* optgroup_columns plugin: vendor base hardcodes #f2f2f2 for the
+   between-column divider — not theme-aware, same class of bug as the
+   optgroup-header background above. Map to the theme border token instead. */
+.ts-dropdown.plugin-optgroup_columns .optgroup {
+  border-right-color: var(--ts-border);
+}
+
+/* optgroup_columns plugin: vendor base gives every column flex-basis:0 +
+   min-width:0 (so N columns always divide the available width evenly) but
+   sets no white-space/overflow safeguard on the option text itself. With
+   enough columns, a column can end up narrower than a single option's
+   label — text then wraps or overflows into its neighbour instead of
+   being clipped cleanly, which reads as outright garbled/interleaved
+   fragments once a longer translated string (e.g. Arabic) pushes an
+   already-tight column over the edge. Force single-line + ellipsis so
+   any column that's too narrow truncates predictably instead. */
+.ts-dropdown.plugin-optgroup_columns .option,
+.ts-dropdown.plugin-optgroup_columns .optgroup-header {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-dropdown .option {
+  border: 1px solid transparent;
+  color: var(--ts-fg);
+}
+
+.ts-dropdown [data-selectable].option:hover,
+.ts-dropdown .active {
+  border-color: var(--ts-accent);
+  background: color-mix(in srgb, var(--ts-accent) 18%, transparent);
+  color: var(--ts-primary);
+}
+
+.ts-dropdown .option:last-child:hover {
+  border-radius: 0 0 calc(var(--ts-radius) + 2px) calc(var(--ts-radius) + 2px);
+}
+
+.ts-dropdown [data-selectable] .highlight {
+  background: color-mix(in srgb, var(--ts-accent) 30%, transparent);
+  color: var(--ts-primary);
+  border-radius: var(--radius-2xs);
+}
+
+.plugin-dropdown_input.focus.dropdown-active .ts-control {
+  border-color: var(--ts-border);
+  box-shadow: none;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Dropdown slots (mountDropdownSlots — plug-and-apply header/footer)
+   .ts-dropdown-slot is the staged, hidden source node in the page;
+   on mount it becomes a header/footer sibling of .ts-dropdown-content.
+   Header sits above the scrolling option list, so it stays pinned.
+   ───────────────────────────────────────────────────────── */
+
+.ts-dropdown-slot { display: none; }
+
+.ts-dropdown-header,
+.ts-dropdown-footer {
+  padding: var(--ts-gap-small) var(--ts-gap-medium);
+  background: var(--ts-bg);
+}
+
+.ts-dropdown-header { border-bottom: 1px solid var(--ts-border); }
+.ts-dropdown-footer { border-top: 1px solid var(--ts-border); }
+
+/* ─────────────────────────────────────────────────────────
+   Dropdown Search Input (dropdown_input plugin)
+   ───────────────────────────────────────────────────────── */
+
+.plugin-dropdown_input .dropdown-input-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plugin-dropdown_input .dropdown-input {
+  padding: var(--space-sm);
+  margin: var(--space-xs);
+  border-radius: var(--ts-radius);
+  border: var(--border-xs) solid var(--ts-border);
+  background: var(--ts-bg);
+  color: var(--ts-primary);
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.plugin-dropdown_input .dropdown-input:focus {
+  outline: none;
+  border-color: var(--ts-accent);
+  box-shadow: 0 0 0 var(--ts-focus-ring-width) var(--ts-focus-ring-color);
+}
+
+/* ─────────────────────────────────────────────────────────
+   Dropdown Show/Hide Animation
+   ───────────────────────────────────────────────────────── */
+
+.ts-wrapper .ts-dropdown {
+  display: block !important;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition:
+    opacity var(--ts-motion) ease,
+    transform var(--ts-motion) ease,
+    visibility 0s linear var(--ts-motion);
+  will-change: opacity, transform;
+}
+
+.ts-wrapper.dropdown-active .ts-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition:
+    opacity var(--ts-motion) ease,
+    transform var(--ts-motion) ease,
+    visibility 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ts-wrapper .ts-dropdown,
+  .ts-wrapper.dropdown-active .ts-dropdown {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   Custom Option Renderers (e.g., person select)
+   ───────────────────────────────────────────────────────── */
+
+.ts-person-option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.ts-person-name {
+  font-size: var(--text-sm);   /* 13px → --text-sm (14px), closest token */
+  font-weight: var(--font-medium);
+  color: var(--ts-primary);
+}
+
+.ts-person-meta {
+  font-size: var(--text-xs);   /* 11px → --text-xs (12px), closest token */
+  color: var(--ts-muted);
+}
+
+/* ─────────────────────────────────────────────────────────
+   Accessibility & Utilities
+   ───────────────────────────────────────────────────────── */
+
+.ts-wrapper.disabled .ts-control {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--ts-bg);
+}
+
+.ts-control.is-invalid {
+  border-color: var(--ts-danger);
+}
+
+.ts-control.is-invalid:focus {
+  box-shadow: 0 0 0 var(--ts-focus-ring-width) var(--ts-danger-soft);
+}
+
+/* ─────────────────────────────────────────────────────────
+   Readonly — same visual language as form-control[readonly]:
+   dashed border, muted surface, text readable + copyable.
+   Apply .is-readonly on the .ts-wrapper after init:
+     TomSelectFactory.get('key').wrapper.classList.add('is-readonly');
+   ───────────────────────────────────────────────────────── */
+.ts-wrapper.is-readonly .ts-control {
+  background-color: var(--color-secondary-light) !important;
+  border-style: dashed !important;
+  border-color: var(--ts-border) !important;
+  color: var(--ts-muted) !important;
+  cursor: default !important;
+  box-shadow: none !important;
+  pointer-events: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.ts-wrapper.is-readonly .ts-control::after,
+.ts-wrapper.is-readonly .clear-button {
+  display: none !important;
+}

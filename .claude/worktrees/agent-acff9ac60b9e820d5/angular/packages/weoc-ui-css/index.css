@@ -1,0 +1,15 @@
+/* =============================================
+   weoc-ui-css
+   Framework-agnostic CSS + design tokens for weoc-ui.
+   Import this single file once in your app; every
+   wui-* class and --token becomes available globally.
+   Works with Angular, PrimeNG, plain HTML, anything.
+   ============================================= */
+
+@import "./tokens/agency-theme.css";
+@import "./tokens/weoc-reset.css";
+@import "./tokens/weoc-typography.css";
+@import "./tokens/weoc-fonts.css";
+@import "./tokens/weoc-grid.css";
+@import "./tokens/weoc-utilities.css";
+@import "./components/buttons.css";

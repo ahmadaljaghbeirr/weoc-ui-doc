@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>weoc-ui — wui-tile Facility Dashboard (devtools resize test)</title>
+<link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+<link rel="stylesheet" href="../../CSS/weoc-ui/agency-theme-obsidian.css">
+<link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css">
+<link rel="stylesheet" href="../../CSS/uPlot.min.css">
+<link rel="stylesheet" href="wui-tile-dashboard.css">
+</head>
+<body>
+  <div class="harness-toolbar">
+    <button data-wui-theme-toggle class="wui-btn secondary sm">Toggle theme</button>
+    <span class="harness-hint">Drag any tile's bottom-right corner (resize handle), or select a
+      <code>.wui-bento-tile</code> in DevTools and edit its size/grid placement directly — watch
+      whether the <code>.wui-tile</code> inside (hdr/body/footer) expands, scrolls, or clips.</span>
+  </div>
+
+  <div class="showcase-cols">
+    <section class="showcase-col" data-col="left">
+      <h2 class="showcase-col-title">Left — Facility Profile / Readiness / Drills</h2>
+
+      <div class="wui-bento cell-lg cols-2 showcase-bento">
+        <div class="wui-bento-tile wui-w-2x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-hdr flush">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title"><span class="material-symbols-outlined">factory</span>Facility Profile</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap">
+                <div class="wui-text-sm wui-semibold">Jebel Ali Power &amp; Water Complex</div>
+                <div class="wui-text-xs wui-text-secondary">Operational for 6 years &middot; Maintained by TAQA O&amp;M</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-hdr">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Overall Readiness</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body" id="tile-overall-readiness"></div>
+            <div class="wui-tile-footer flush">
+              <span class="wui-text-2xs wui-text-secondary">Updated 2 min ago</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <!-- body-only tile: no hdr, no footer -->
+          <div class="wui-tile">
+            <div class="wui-tile-body" id="tile-facility-readiness"></div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-hdr">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">In Progress Exercises</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap wui-tile-kpi-value">3</div>
+            </div>
+            <div class="wui-tile-footer justify-end">
+              <button class="wui-btn ghost primary wui-btn-sm">View all</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <!-- fully flush: bordered box, but no internal seams -->
+          <div class="wui-tile">
+            <div class="wui-tile-hdr flush">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Open Improvements</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap wui-tile-kpi-value warning">7</div>
+            </div>
+            <div class="wui-tile-footer flush justify-end">
+              <button class="wui-btn ghost warning wui-btn-sm">Review</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase-col" data-col="middle">
+      <h2 class="showcase-col-title">Middle — Incidents / Resources / Damage / Alerts / Tasks</h2>
+
+      <div class="wui-bento cell-lg cols-3 showcase-bento">
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap">
+                <div class="wui-text-xs wui-text-secondary">Total Events</div>
+                <div class="wui-tile-kpi-value">20</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap">
+                <div class="wui-text-xs wui-text-secondary">Active Events</div>
+                <div class="wui-tile-kpi-value danger">4</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap">
+                <div class="wui-text-xs wui-text-secondary">Closed Events</div>
+                <div class="wui-tile-kpi-value success">16</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-2x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-hdr">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Events by Classification</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body" id="tile-events-by-classification"></div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <!-- body+footer, no header -->
+          <div class="wui-tile">
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap">
+                <div class="wui-text-xs wui-text-secondary">Critical Vehicles Unavailable</div>
+                <div class="wui-tile-kpi-value danger">2</div>
+              </div>
+            </div>
+            <div class="wui-tile-footer justify-end">
+              <button class="wui-btn ghost danger wui-btn-sm">Investigate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-3x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-hdr flush">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Event Timeline</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body" id="tile-event-timeline"></div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-2x1 showcase-tile">
+          <div class="wui-tile is-scrollable">
+            <div class="wui-tile-hdr">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Resources &amp; Capabilities</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body" id="tile-resources-stacked"></div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-2x1 showcase-tile">
+          <div class="wui-tile is-scrollable">
+            <div class="wui-tile-hdr flush">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Alert Severity</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body" id="tile-alert-severity"></div>
+            <div class="wui-tile-footer justify-end">
+              <button class="wui-btn ghost primary wui-btn-sm">View all alerts</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-hdr">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">SLA Compliance</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body" id="tile-sla-compliance"></div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-2x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-hdr">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Tasks Overview</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body" id="tile-tasks-stacked"></div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile is-scrollable">
+            <div class="wui-tile-hdr">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Hazmat Heatmap</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap wui-text-xs wui-text-secondary">
+                Not yet a weoc-ui component &mdash; candidate for future porting (see
+                conventions.html &sect; Component promotion). Shrink this tile to see the body
+                scroll instead of clipping this placeholder paragraph.
+              </div>
+            </div>
+            <div class="wui-tile-footer flush">
+              <span class="wui-text-2xs wui-text-secondary">Backlog</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap wui-text-xs wui-text-secondary">
+                Evacuation Zones Map &mdash; placeholder. Real map uses <code>WeocMap.create()</code>.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="showcase-col" data-col="right">
+      <h2 class="showcase-col-title">Right — HR</h2>
+
+      <div class="wui-bento cell-lg cols-1 showcase-bento">
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap">
+                <div class="wui-text-xs wui-text-secondary">Total Employees</div>
+                <div class="wui-tile-kpi-value">312</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-hdr">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Workforce Availability</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body" id="tile-workforce-availability"></div>
+            <div class="wui-tile-footer">
+              <span class="wui-text-2xs wui-text-secondary">vs. required headcount</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-body">
+              <div class="wui-content-wrap">
+                <div class="wui-text-xs wui-text-secondary">Mobilizable Employees</div>
+                <div class="wui-tile-kpi-value">245</div>
+              </div>
+            </div>
+            <div class="wui-tile-footer flush">
+              <span class="wui-text-2xs wui-text-secondary">within 30 min</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wui-bento-tile wui-w-1x1 showcase-tile">
+          <div class="wui-tile">
+            <div class="wui-tile-hdr flush">
+              <div class="wui-tile-title-wrap">
+                <h3 class="wui-tile-title">Critical-Role Coverage</h3>
+              </div>
+            </div>
+            <div class="wui-tile-body" id="tile-critical-role-coverage"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="../../JS/uPlot.iife.min.js"></script>
+  <script src="../../JS/weoc-ui.js"></script>
+  <script src="../../JS/wui-charts.js"></script>
+  <script>
+    // Left
+    WUI.gauge('#tile-overall-readiness', { value: 78, status: 'Partially Ready', height: 140 });
+    WUI.gauge('#tile-facility-readiness', { value: 91, status: 'Ready', height: 140 });
+
+    // Middle
+    (function () {
+      var now = Math.floor(Date.now() / 1000);
+      var ts = [];
+      for (var i = 0; i < 7; i++) { ts.push(now - (6 - i) * 86400); }
+      WUI.chart('#tile-event-timeline', { type: 'line', height: 160, series: [{ label: 'Events', color: 'primary' }], data: [ts, [12,15,11,18,14,20,17]] });
+    })();
+    WUI.donut('#tile-events-by-classification', { height: 160, data: [
+      { label: 'Fire & Safety', value: 8, color: 'danger' },
+      { label: 'Security', value: 5, color: 'warning' },
+      { label: 'Operational', value: 12, color: 'primary' },
+      { label: 'Environmental', value: 3, color: 'success' }
+    ]});
+    WUI.barRow('#tile-resources-stacked', { rows: [
+      { label: 'Vehicles', value: 100, segments: [{ pct: 62, color: 'success' }, { pct: 23, color: 'warning' }, { pct: 15, color: 'danger' }] },
+      { label: 'Chemicals', value: 100, segments: [{ pct: 71, color: 'success' }, { pct: 12, color: 'primary' }, { pct: 17, color: 'danger' }] },
+      { label: 'Personnel', value: 100, segments: [{ pct: 80, color: 'success' }, { pct: 20, color: 'danger' }] }
+    ]});
+    WUI.barRow('#tile-alert-severity', { rows: [
+      { label: 'Critical', value: 100, segments: [{ pct: 100, color: 'danger' }] },
+      { label: 'High', value: 100, segments: [{ pct: 100, color: 'warning' }] },
+      { label: 'Medium', value: 100, segments: [{ pct: 100, color: 'primary' }] },
+      { label: 'Low', value: 100, segments: [{ pct: 100, color: 'success' }] }
+    ]});
+    WUI.gauge('#tile-sla-compliance', { value: 88, status: 'On Target', height: 140 });
+    WUI.barRow('#tile-tasks-stacked', { rows: [
+      { label: 'Tasks', value: 100, segments: [{ pct: 40, color: 'primary' }, { pct: 35, color: 'success' }, { pct: 25, color: 'secondary' }] }
+    ]});
+
+    // Right
+    WUI.gauge('#tile-workforce-availability', { value: 82, status: 'Healthy', height: 140 });
+    WUI.gauge('#tile-critical-role-coverage', { value: 65, status: 'At Risk', height: 140 });
+  </script>
+</body>
+</html>

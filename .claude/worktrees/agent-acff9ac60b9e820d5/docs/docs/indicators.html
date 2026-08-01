@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Indicators</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="indicators">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_indicators_1">Data Display</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_indicators_2">Indicators</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_indicators_3">Compact visual state indicators: the <code>wui-status-dot</code>, the semantic <code>wui-icon-bubble</code>, the segmented <code>wui-lvl</code> level bar, the identity <code>wui-avatar</code>, and the <code>wui-elapsed</code> duration display. Every variant, size, and state is shown below with its exact markup.</div>
+        </div>
+
+        <!-- ══════════════════════════ wui-status-dot ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_indicators_4"><span class="material-symbols-outlined">circle</span>wui-status-dot</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_indicators_5">Tiny round status marker (base <code>0.5rem</code>). Compose the base with one <em>color</em> (<code>primary</code> … <code>info</code>) and an optional <em>size</em> (<code>wui-status-dot-sm</code>/<code>-lg</code>/<code>-xl</code>). Add <code>live</code> alongside a color for an infinite pulsing halo.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_6">All colors (base size)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-status-dot primary"></span>
+              <!-- Secondary -->
+              <span class="wui-status-dot secondary"></span>
+              <!-- Success -->
+              <span class="wui-status-dot success"></span>
+              <!-- Warning -->
+              <span class="wui-status-dot warning"></span>
+              <!-- Danger -->
+              <span class="wui-status-dot danger"></span>
+              <!-- Info -->
+              <span class="wui-status-dot info"></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_7">Sizes — sm → xl (base has no size class)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-status-dot primary wui-status-dot-sm"></span>
+              <!-- base (md) -->
+              <span class="wui-status-dot primary"></span>
+              <!-- lg -->
+              <span class="wui-status-dot primary wui-status-dot-lg"></span>
+              <!-- xl -->
+              <span class="wui-status-dot primary wui-status-dot-xl"></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_8">Live (pulsing) — all colors</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Live primary -->
+              <span class="wui-status-dot live primary wui-status-dot-lg"></span>
+              <!-- Live secondary -->
+              <span class="wui-status-dot live secondary wui-status-dot-lg"></span>
+              <!-- Live success -->
+              <span class="wui-status-dot live success wui-status-dot-lg"></span>
+              <!-- Live warning -->
+              <span class="wui-status-dot live warning wui-status-dot-lg"></span>
+              <!-- Live danger -->
+              <span class="wui-status-dot live danger wui-status-dot-lg"></span>
+              <!-- Live info -->
+              <span class="wui-status-dot live info wui-status-dot-lg"></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_9">In context (with a label)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Dot + text, operational -->
+              <span style="display:inline-flex;align-items:center;gap:var(--space-2)"><span class="wui-status-dot live success"></span>Operational</span>
+              <!-- Dot + text, incident -->
+              <span style="display:inline-flex;align-items:center;gap:var(--space-2)"><span class="wui-status-dot live danger"></span>Incident active</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-icon-bubble ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_indicators_10"><span class="material-symbols-outlined">interests</span>wui-icon-bubble</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_indicators_11">Semantic icon container, rounded-square by default (<code>36px</code>). Compose with one <em>size</em> (<code>sm</code> 28px / <code>md</code> 36px / <code>lg</code> 44px), an optional <em>shape</em> (<code>circle</code>), one <em>color</em>, and a <em>variant</em>: soft (default), <code>solid</code>, or <code>solid-reverse</code>, plus the opt-in <code>bordered</code> and <code>ripple</code> modifiers.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_12">Soft (default) — all colors</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-icon-bubble primary"><span class="material-symbols-outlined">bolt</span></span>
+              <!-- Info -->
+              <span class="wui-icon-bubble info"><span class="material-symbols-outlined">info</span></span>
+              <!-- Success -->
+              <span class="wui-icon-bubble success"><span class="material-symbols-outlined">check</span></span>
+              <!-- Warning -->
+              <span class="wui-icon-bubble warning"><span class="material-symbols-outlined">warning</span></span>
+              <!-- Danger -->
+              <span class="wui-icon-bubble danger"><span class="material-symbols-outlined">error</span></span>
+              <!-- Secondary -->
+              <span class="wui-icon-bubble secondary"><span class="material-symbols-outlined">more_horiz</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_13">Solid — all colors</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-icon-bubble solid primary"><span class="material-symbols-outlined">bolt</span></span>
+              <!-- Info -->
+              <span class="wui-icon-bubble solid info"><span class="material-symbols-outlined">info</span></span>
+              <!-- Success -->
+              <span class="wui-icon-bubble solid success"><span class="material-symbols-outlined">check</span></span>
+              <!-- Warning -->
+              <span class="wui-icon-bubble solid warning"><span class="material-symbols-outlined">warning</span></span>
+              <!-- Danger -->
+              <span class="wui-icon-bubble solid danger"><span class="material-symbols-outlined">error</span></span>
+              <!-- Secondary -->
+              <span class="wui-icon-bubble solid secondary"><span class="material-symbols-outlined">more_horiz</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_14">Solid-reverse (white bubble, colored icon) — all colors</div>
+          <div class="wui-demo center" data-wui-demo style="background:var(--color-30)">
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-icon-bubble solid-reverse primary"><span class="material-symbols-outlined">bolt</span></span>
+              <!-- Info -->
+              <span class="wui-icon-bubble solid-reverse info"><span class="material-symbols-outlined">info</span></span>
+              <!-- Success -->
+              <span class="wui-icon-bubble solid-reverse success"><span class="material-symbols-outlined">check</span></span>
+              <!-- Warning -->
+              <span class="wui-icon-bubble solid-reverse warning"><span class="material-symbols-outlined">warning</span></span>
+              <!-- Danger -->
+              <span class="wui-icon-bubble solid-reverse danger"><span class="material-symbols-outlined">error</span></span>
+              <!-- Secondary -->
+              <span class="wui-icon-bubble solid-reverse secondary"><span class="material-symbols-outlined">more_horiz</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_15">Sizes — sm / md / lg</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-icon-bubble solid primary sm"><span class="material-symbols-outlined">bolt</span></span>
+              <!-- md (default) -->
+              <span class="wui-icon-bubble solid primary md"><span class="material-symbols-outlined">bolt</span></span>
+              <!-- lg -->
+              <span class="wui-icon-bubble solid primary lg"><span class="material-symbols-outlined">bolt</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_16">Circle shape — soft, solid, solid + lg</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Circle soft -->
+              <span class="wui-icon-bubble circle info"><span class="material-symbols-outlined">person</span></span>
+              <!-- Circle solid -->
+              <span class="wui-icon-bubble circle solid success"><span class="material-symbols-outlined">check</span></span>
+              <!-- Circle solid lg -->
+              <span class="wui-icon-bubble circle solid danger lg"><span class="material-symbols-outlined">priority_high</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_17">Bordered — all colors (add alongside any variant)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-icon-bubble bordered primary"><span class="material-symbols-outlined">bolt</span></span>
+              <!-- Info -->
+              <span class="wui-icon-bubble bordered info"><span class="material-symbols-outlined">info</span></span>
+              <!-- Success -->
+              <span class="wui-icon-bubble bordered success"><span class="material-symbols-outlined">check</span></span>
+              <!-- Warning -->
+              <span class="wui-icon-bubble bordered warning"><span class="material-symbols-outlined">warning</span></span>
+              <!-- Danger -->
+              <span class="wui-icon-bubble bordered danger"><span class="material-symbols-outlined">error</span></span>
+              <!-- Secondary -->
+              <span class="wui-icon-bubble bordered secondary"><span class="material-symbols-outlined">more_horiz</span></span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_18">Ripple (double-ring halo, for solid on colored surfaces)</div>
+          <div class="wui-demo center" data-wui-demo style="background:var(--color-30)">
+            <div class="wui-demo-preview">
+              <!-- Ripple solid primary -->
+              <span class="wui-icon-bubble solid primary ripple"><span class="material-symbols-outlined">bolt</span></span>
+              <!-- Ripple solid circle success -->
+              <span class="wui-icon-bubble solid circle success ripple"><span class="material-symbols-outlined">check</span></span>
+              <!-- Ripple solid lg danger -->
+              <span class="wui-icon-bubble solid danger lg ripple"><span class="material-symbols-outlined">error</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-lvl ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_indicators_19"><span class="material-symbols-outlined">bar_chart</span>wui-lvl</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_indicators_20">Segmented level / severity bar. Root <code>wui-lvl</code> holds a <code>wui-lvl-bar</code> of <code>wui-lvl-seg</code> segments and an optional <code>wui-lvl-count</code>. Light a segment with <code>on</code>; mark the leading lit segment with <code>on current</code> for an infinite pulse. Default color is warning; add a color class on the root (<code>danger</code>, <code>success</code>, <code>info</code>, <code>primary</code>, <code>warning</code>, <code>secondary</code>) to recolor segments, glow, and count together. <code>wui-lvl-inner</code> stacks a caption over the bar.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_21">Structure — bar + count (default warning)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- 3 of 5 lit, leading one pulsing (on current) -->
+              <div class="wui-lvl">
+                <div class="wui-lvl-bar">
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on current"></span>
+                  <span class="wui-lvl-seg"></span>
+                  <span class="wui-lvl-seg"></span>
+                </div>
+                <span class="wui-lvl-count">3</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_22">Stacked inner (wui-lvl-inner)</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- wui-lvl-inner wraps the bar in a column -->
+              <div class="wui-lvl danger">
+                <div class="wui-lvl-inner">
+                  <div class="wui-lvl-bar">
+                    <span class="wui-lvl-seg on"></span>
+                    <span class="wui-lvl-seg on"></span>
+                    <span class="wui-lvl-seg on"></span>
+                    <span class="wui-lvl-seg on current"></span>
+                    <span class="wui-lvl-seg"></span>
+                  </div>
+                </div>
+                <span class="wui-lvl-count">4</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_23">Color variants (each with lit + current segment)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Danger -->
+              <div class="wui-lvl danger">
+                <div class="wui-lvl-bar">
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on current"></span>
+                  <span class="wui-lvl-seg"></span>
+                  <span class="wui-lvl-seg"></span>
+                </div>
+                <span class="wui-lvl-count">3</span>
+              </div>
+              <!-- Warning (default) -->
+              <div class="wui-lvl warning">
+                <div class="wui-lvl-bar">
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on current"></span>
+                  <span class="wui-lvl-seg"></span>
+                  <span class="wui-lvl-seg"></span>
+                </div>
+                <span class="wui-lvl-count">3</span>
+              </div>
+              <!-- Success -->
+              <div class="wui-lvl success">
+                <div class="wui-lvl-bar">
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on current"></span>
+                  <span class="wui-lvl-seg"></span>
+                  <span class="wui-lvl-seg"></span>
+                </div>
+                <span class="wui-lvl-count">3</span>
+              </div>
+              <!-- Info -->
+              <div class="wui-lvl info">
+                <div class="wui-lvl-bar">
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on current"></span>
+                  <span class="wui-lvl-seg"></span>
+                  <span class="wui-lvl-seg"></span>
+                </div>
+                <span class="wui-lvl-count">3</span>
+              </div>
+              <!-- Primary -->
+              <div class="wui-lvl primary">
+                <div class="wui-lvl-bar">
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on current"></span>
+                  <span class="wui-lvl-seg"></span>
+                  <span class="wui-lvl-seg"></span>
+                </div>
+                <span class="wui-lvl-count">3</span>
+              </div>
+              <!-- Secondary -->
+              <div class="wui-lvl secondary">
+                <div class="wui-lvl-bar">
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on"></span>
+                  <span class="wui-lvl-seg on current"></span>
+                  <span class="wui-lvl-seg"></span>
+                  <span class="wui-lvl-seg"></span>
+                </div>
+                <span class="wui-lvl-count">3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-avatar ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_indicators_24"><span class="material-symbols-outlined">account_circle</span>wui-avatar</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_indicators_25">Circular identity chip for initials or an icon. Compose the base with one <em>color</em> (gradient-filled) and an optional <em>size</em> (<code>wui-avatar-sm</code>/base/<code>-lg</code>/<code>-xl</code>). Use <code>icon</code> for a tinted icon avatar instead of initials.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_26">Initials — all colors</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary -->
+              <span class="wui-avatar primary">AD</span>
+              <!-- Info -->
+              <span class="wui-avatar info">JR</span>
+              <!-- Success -->
+              <span class="wui-avatar success">MK</span>
+              <!-- Warning -->
+              <span class="wui-avatar warning">SL</span>
+              <!-- Danger -->
+              <span class="wui-avatar danger">TB</span>
+              <!-- Secondary -->
+              <span class="wui-avatar secondary">EO</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_27">Sizes — sm → xl (base has no size class)</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-avatar primary wui-avatar-sm">AD</span>
+              <!-- base (md) -->
+              <span class="wui-avatar primary">AD</span>
+              <!-- lg -->
+              <span class="wui-avatar primary wui-avatar-lg">AD</span>
+              <!-- xl -->
+              <span class="wui-avatar primary wui-avatar-xl">AD</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_28">Icon variant — all sizes</div>
+          <div class="wui-demo center" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-avatar icon wui-avatar-sm"><span class="material-symbols-outlined">person</span></span>
+              <!-- base (md) -->
+              <span class="wui-avatar icon"><span class="material-symbols-outlined">person</span></span>
+              <!-- lg -->
+              <span class="wui-avatar icon wui-avatar-lg"><span class="material-symbols-outlined">person</span></span>
+              <!-- xl -->
+              <span class="wui-avatar icon wui-avatar-xl"><span class="material-symbols-outlined">person</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-elapsed ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_indicators_29"><span class="material-symbols-outlined">timer</span>wui-elapsed</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_indicators_30">Inline elapsed-time / duration display. Base color is primary; add one <em>color</em> (<code>success</code>, <code>warning</code>, <code>danger</code>, <code>secondary</code>, <code>info</code>) and an optional <em>size</em> (<code>sm</code> / default / <code>lg</code>). Lead with a material-symbols icon such as <code>history</code> or <code>timer</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_31">All colors (default size)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default (primary) -->
+              <span class="wui-elapsed"><span class="material-symbols-outlined">history</span>2 hr : 14 min : 33 sec</span>
+              <!-- Success -->
+              <span class="wui-elapsed success"><span class="material-symbols-outlined">history</span>0 hr : 04 min : 12 sec</span>
+              <!-- Warning -->
+              <span class="wui-elapsed warning"><span class="material-symbols-outlined">history</span>6 hr : 41 min : 09 sec</span>
+              <!-- Danger -->
+              <span class="wui-elapsed danger"><span class="material-symbols-outlined">timer</span>18 day : 21 hr : 50 min</span>
+              <!-- Secondary -->
+              <span class="wui-elapsed secondary"><span class="material-symbols-outlined">history</span>closed after 3 day</span>
+              <!-- Info -->
+              <span class="wui-elapsed info"><span class="material-symbols-outlined">history</span>1 hr : 02 min : 55 sec</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_indicators_32">Sizes — sm / default / lg</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- sm -->
+              <span class="wui-elapsed sm danger"><span class="material-symbols-outlined">timer</span>2 hr : 14 min : 33 sec</span>
+              <!-- default -->
+              <span class="wui-elapsed danger"><span class="material-symbols-outlined">timer</span>2 hr : 14 min : 33 sec</span>
+              <!-- lg -->
+              <span class="wui-elapsed lg danger"><span class="material-symbols-outlined">timer</span>2 hr : 14 min : 33 sec</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('indicators');</script>
+</body>
+</html>

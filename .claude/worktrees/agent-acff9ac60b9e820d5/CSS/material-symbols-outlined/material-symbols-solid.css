@@ -1,0 +1,26 @@
+/* Material Symbols — SOLID (filled) variant. OPTIONAL: not linked by default.
+   Link this instead of / alongside material-symbols-outlined.css and use the
+   .material-symbols-solid class to render filled icons. Both fonts carry the
+   custom `eoc` glyph (solid here, outline in the outlined font). */
+@font-face {
+  font-family: 'Material Symbols Solid';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./material-symbols-solid.woff2?v=eoc1') format('woff2');
+}
+
+.material-symbols-solid {
+  font-family: 'Material Symbols Solid';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}

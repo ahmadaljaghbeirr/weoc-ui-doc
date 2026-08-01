@@ -1,0 +1,597 @@
+/* =============================================
+   weoc-progress.css
+   Progress indicators — ring (radial) and bar (linear) variants.
+
+   Ring: SVG-based radial progress.
+         viewBox="0 0 120 120"  cx="60" cy="60"  r="52"
+         Circumference: 326.73  (2π × 52).
+         Animate stroke-dashoffset via JS: RING_CIRC × (1 − pct/100).
+
+   Bar: CSS-based horizontal progress.
+        Set fill width via inline style or JS on .wui-progress-bar-fill.
+
+   Color variants (place on the root element):
+     .primary  .secondary  .success  .warning  .danger  .info
+   ============================================= */
+
+/* ── Ring ─────────────────────────────────── */
+
+.wui-progress-ring {
+    position: relative;
+    flex-shrink: 0;
+    width: clamp(2.25rem, 20cqw, 13.75rem);
+    height: clamp(2.25rem, 20cqw, 13.75rem);
+    aspect-ratio: 1 / 1;
+}
+
+.wui-progress-ring > svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.wui-progress-ring-track {
+    fill: none;
+    stroke: var(--color-border);
+    stroke-width: 10;
+}
+
+.wui-progress-ring-fill {
+    fill: none;
+    stroke: var(--color-secondary);
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke-dasharray: 326.73;
+    stroke-dashoffset: 326.73;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: rotate(-90deg);
+    transition:
+        stroke-dashoffset 0.85s cubic-bezier(0.4, 0, 0.2, 1),
+        stroke 0.3s ease;
+}
+
+.wui-progress-ring.primary   .wui-progress-ring-fill { stroke: var(--color-10); }
+.wui-progress-ring.secondary .wui-progress-ring-fill { stroke: var(--color-secondary); }
+.wui-progress-ring.success   .wui-progress-ring-fill { stroke: var(--color-success); }
+.wui-progress-ring.warning   .wui-progress-ring-fill { stroke: var(--color-warning-text); }
+.wui-progress-ring.danger    .wui-progress-ring-fill { stroke: var(--color-danger); }
+.wui-progress-ring.info      .wui-progress-ring-fill { stroke: var(--color-info); }
+
+.wui-progress-ring-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1875rem;
+    pointer-events: none;
+}
+
+.wui-progress-ring-pct {
+    font-size: 1.75rem;
+    font-weight: var(--font-extrabold);
+    color: var(--color-text-primary);
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.wui-progress-ring-label {
+    font-size: var(--text-2xs);
+    font-weight: var(--font-bold);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* ── Ring size modifiers ──────────────────── */
+/*
+   xs  36px  — table cells, tight indicators (label hidden)
+   sm  56px  — compact cards / secondary metrics (label hidden)
+   md  96px  — medium card widget
+   lg  176px — hero / featured card
+   xl  220px — large display panel
+*/
+
+.wui-progress-ring.xs { width: 2.25rem;  height: 2.25rem;  }
+.wui-progress-ring.sm { width: 3.5rem;   height: 3.5rem;   }
+.wui-progress-ring.md { width: 6rem;     height: 6rem;     }
+.wui-progress-ring.lg { width: 11rem;    height: 11rem;    }
+.wui-progress-ring.xl { width: 13.75rem; height: 13.75rem; }
+
+/* XL: ring is large enough that stroke-width=10 SVG units (~18px visual) looks heavy */
+.wui-progress-ring.xl .wui-progress-ring-track,
+.wui-progress-ring.xl .wui-progress-ring-fill { stroke-width: 8; }
+
+/* percentage counter */
+.wui-progress-ring.xs .wui-progress-ring-pct { font-size: 0.4375rem; }
+.wui-progress-ring.sm .wui-progress-ring-pct { font-size: var(--text-xs); }
+.wui-progress-ring.md .wui-progress-ring-pct { font-size: var(--text-lg); }
+.wui-progress-ring.lg .wui-progress-ring-pct { font-size: var(--text-3xl); }
+.wui-progress-ring.xl .wui-progress-ring-pct { font-size: 2.75rem; }
+
+/* label line */
+.wui-progress-ring.xs .wui-progress-ring-label { display: none; }
+.wui-progress-ring.sm .wui-progress-ring-label { display: none; }
+.wui-progress-ring.md .wui-progress-ring-label { font-size: 0.5625rem; }
+.wui-progress-ring.lg .wui-progress-ring-label { font-size: 0.6875rem; }
+.wui-progress-ring.xl .wui-progress-ring-label { font-size: var(--text-xs); }
+
+/* tighten center gap at small sizes */
+.wui-progress-ring.xs .wui-progress-ring-center,
+.wui-progress-ring.sm .wui-progress-ring-center { gap: 0.0625rem; }
+
+/* Fluid font/stroke scaling for the base (no xs/sm/md/lg/xl pin) case —
+   tracks the same clamp() range as the ring's own width/height above. */
+.wui-progress-ring:not(.xs):not(.sm):not(.md):not(.lg):not(.xl) .wui-progress-ring-pct {
+  font-size: clamp(0.4375rem, 5cqw, var(--text-3xl));
+}
+.wui-progress-ring:not(.xs):not(.sm):not(.md):not(.lg):not(.xl) .wui-progress-ring-label {
+  font-size: clamp(0.5rem, 2.2cqw, var(--text-xs));
+}
+.wui-progress-ring:not(.xs):not(.sm):not(.md):not(.lg):not(.xl) .wui-progress-ring-track,
+.wui-progress-ring:not(.xs):not(.sm):not(.md):not(.lg):not(.xl) .wui-progress-ring-fill {
+  stroke-width: clamp(6, 4.5cqw, 10);
+}
+
+/* ── Ring neon glow (opt-in) ──────────────── */
+/*
+   Add .neon alongside a severity class to glow the fill stroke.
+   Uses filter: drop-shadow (not box-shadow) — the visible shape is an
+   SVG stroke, and drop-shadow follows the actual rendered path, unlike
+   box-shadow which follows the element's box. Tokens match the
+   .neon-outline convention in weoc-interactive.css.
+*/
+
+.wui-progress-ring.neon.primary   .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-10-glow)); }
+.wui-progress-ring.neon.secondary .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-secondary-glow)); }
+.wui-progress-ring.neon.success   .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-success-glow)); }
+.wui-progress-ring.neon.warning   .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-warning-glow)); }
+.wui-progress-ring.neon.danger    .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-danger-glow)); }
+.wui-progress-ring.neon.info      .wui-progress-ring-fill { filter: drop-shadow(0 0 4px var(--color-info-glow)); }
+
+/* ── Bar ──────────────────────────────────── */
+
+.wui-progress-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    width: 100%;
+}
+
+.wui-progress-bar-track {
+    width: 100%;
+    height: var(--space-2);
+    background: var(--color-border);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+}
+
+.wui-progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--color-secondary);
+    border-radius: var(--radius-pill);
+    transition: width 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wui-progress-bar.primary   .wui-progress-bar-fill { background: var(--color-10); }
+.wui-progress-bar.secondary .wui-progress-bar-fill { background: var(--color-secondary); }
+.wui-progress-bar.success   .wui-progress-bar-fill { background: var(--color-success); }
+.wui-progress-bar.warning   .wui-progress-bar-fill { background: var(--color-warning-text); }
+.wui-progress-bar.danger    .wui-progress-bar-fill { background: var(--color-danger); }
+.wui-progress-bar.info      .wui-progress-bar-fill { background: var(--color-info); }
+
+.wui-progress-bar-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.wui-progress-bar-pct {
+    font-size: 0.8125rem;
+    font-weight: var(--font-bold);
+    color: var(--color-text-primary);
+    line-height: 1;
+}
+
+.wui-progress-bar-label {
+    font-size: 0.6875rem;
+    font-weight: var(--font-semibold);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* ── Bar size modifiers ───────────────────── */
+/*
+   xs  3px  — inline / subtle progress line (decorative)
+   sm  5px  — compact / tight layouts
+   lg  12px — prominent bar in cards
+   xl  16px — hero / featured bar
+*/
+
+.wui-progress-bar.xs .wui-progress-bar-track { height: 0.1875rem; }
+.wui-progress-bar.sm .wui-progress-bar-track { height: 0.3125rem; }
+.wui-progress-bar.lg .wui-progress-bar-track { height: var(--space-3); }
+.wui-progress-bar.xl .wui-progress-bar-track { height: var(--space-4); }
+
+/* ── Bar neon glow (opt-in) ───────────────── */
+/*
+   Add .neon alongside a severity class to glow the fill. Uses
+   filter: drop-shadow rather than box-shadow so the glow hugs the
+   fill's own rounded-pill shape (including when it's shorter than
+   the track). Tokens match the .neon-outline convention in
+   weoc-interactive.css.
+*/
+
+.wui-progress-bar.neon.primary   .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-10-glow)); }
+.wui-progress-bar.neon.secondary .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-secondary-glow)); }
+.wui-progress-bar.neon.success   .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-success-glow)); }
+.wui-progress-bar.neon.warning   .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-warning-glow)); }
+.wui-progress-bar.neon.danger    .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-danger-glow)); }
+.wui-progress-bar.neon.info      .wui-progress-bar-fill { filter: drop-shadow(0 0 4px var(--color-info-glow)); }
+
+/* ── Segmented (multi-color) ring ─────────── */
+/*
+   Each arc is a <circle> with:
+     stroke-dasharray = "ARC_LEN CIRC"   — draws only the arc, gaps the rest
+     transform = "rotate(DEG 60 60)"     — positions the arc start angle
+
+   Start angle for segment N:
+     -90 + (sum of previous segments' pct) × 3.6
+
+   Arc length for segment N:
+     CIRC × (segment_pct / 100)   where CIRC = 326.73
+
+   Uses stroke-linecap: butt for clean segment joins.
+   No transition — animate externally (WUIAnim / JS).
+*/
+
+.wui-progress-ring-segment {
+    fill: none;
+    stroke: var(--color-border);
+    stroke-width: 10;
+    stroke-linecap: butt;
+}
+
+.wui-progress-ring-segment.primary   { stroke: var(--color-10); }
+.wui-progress-ring-segment.secondary { stroke: var(--color-secondary); }
+.wui-progress-ring-segment.success   { stroke: var(--color-success); }
+.wui-progress-ring-segment.warning   { stroke: var(--color-warning-text); }
+.wui-progress-ring-segment.danger    { stroke: var(--color-danger); }
+.wui-progress-ring-segment.info      { stroke: var(--color-info); }
+
+/* xl ring: match the thinner stroke used on .wui-progress-ring-fill */
+.wui-progress-ring.xl .wui-progress-ring-segment { stroke-width: 8; }
+
+/* neon glow (opt-in) — same convention as .wui-progress-ring-fill above */
+.wui-progress-ring-segment.neon.primary   { filter: drop-shadow(0 0 4px var(--color-10-glow)); }
+.wui-progress-ring-segment.neon.secondary { filter: drop-shadow(0 0 4px var(--color-secondary-glow)); }
+.wui-progress-ring-segment.neon.success   { filter: drop-shadow(0 0 4px var(--color-success-glow)); }
+.wui-progress-ring-segment.neon.warning   { filter: drop-shadow(0 0 4px var(--color-warning-glow)); }
+.wui-progress-ring-segment.neon.danger    { filter: drop-shadow(0 0 4px var(--color-danger-glow)); }
+.wui-progress-ring-segment.neon.info      { filter: drop-shadow(0 0 4px var(--color-info-glow)); }
+
+/* ── Segmented (multi-color) bar ─────────── */
+/*
+   Add .multi to .wui-progress-bar-track.
+   Each .wui-progress-bar-fill child gets its own color class + width %.
+   Widths should sum to ≤ 100 — remaining space shows the track background.
+   All .wui-progress-bar size modifiers (xs/sm/lg/xl) apply as-is.
+*/
+
+.wui-progress-bar-track.multi {
+    display: flex;
+    overflow: hidden;
+}
+
+.wui-progress-bar-track.multi .wui-progress-bar-fill {
+    flex-shrink: 0;
+    border-radius: 0;
+    height: 100%;
+    transition: width 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wui-progress-bar-track.multi .wui-progress-bar-fill:first-child {
+    border-start-start-radius: var(--radius-pill);
+    border-end-start-radius: var(--radius-pill);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+
+.wui-progress-bar-track.multi .wui-progress-bar-fill:last-child {
+    border-start-end-radius: var(--radius-pill);
+    border-end-end-radius: var(--radius-pill);
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+}
+
+/* Per-fill color classes (specificity 0,3,0 beats the parent-scoped defaults at 0,2,0) */
+.wui-progress-bar-track.multi .wui-progress-bar-fill.primary   { background: var(--color-10); }
+.wui-progress-bar-track.multi .wui-progress-bar-fill.secondary { background: var(--color-secondary); }
+.wui-progress-bar-track.multi .wui-progress-bar-fill.success   { background: var(--color-success); }
+.wui-progress-bar-track.multi .wui-progress-bar-fill.warning   { background: var(--color-warning-text); }
+.wui-progress-bar-track.multi .wui-progress-bar-fill.danger    { background: var(--color-danger); }
+.wui-progress-bar-track.multi .wui-progress-bar-fill.info      { background: var(--color-info); }
+
+/* ── Progress legend (color key for multi-variant) ── */
+
+.wui-progress-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin-top: 0.375rem;
+}
+
+.wui-progress-legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.wui-progress-legend-dot {
+    width: var(--space-2);
+    height: var(--space-2);
+    border-radius: var(--radius-pill);
+    flex-shrink: 0;
+    background: var(--color-border);
+}
+
+.wui-progress-legend-dot.primary   { background: var(--color-10); }
+.wui-progress-legend-dot.secondary { background: var(--color-secondary); }
+.wui-progress-legend-dot.success   { background: var(--color-success); }
+.wui-progress-legend-dot.warning   { background: var(--color-warning-text); }
+.wui-progress-legend-dot.danger    { background: var(--color-danger); }
+.wui-progress-legend-dot.info      { background: var(--color-info); }
+
+.wui-progress-legend-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+}
+
+.wui-progress-legend-value {
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--color-text-primary);
+    margin-inline-start: 0.125rem;
+}
+
+/* ── Horizontal stepper ─────────────────────────────────────────────────── */
+
+.weoc-progress {
+    --weoc-progress-indicator-size: var(--space-6);
+    --weoc-progress-connector-size: var(--border-md);
+    --weoc-progress-column-min: 10rem;
+    --weoc-progress-current: 50%;
+    --weoc-progress-upcoming: var(--color-10-muted);
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block-end: var(--space-2);
+}
+
+.weoc-progress-list {
+    display: flex;
+    align-items: flex-start;
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.weoc-progress-step {
+    flex: 1 0 var(--weoc-progress-column-min);
+    min-width: var(--weoc-progress-column-min);
+    margin: 0;
+    padding: 0;
+}
+
+.weoc-progress-track {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--weoc-progress-indicator-size);
+}
+
+.weoc-progress-indicator {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    flex: 0 0 var(--weoc-progress-indicator-size);
+    align-items: center;
+    justify-content: center;
+    width: var(--weoc-progress-indicator-size);
+    height: var(--weoc-progress-indicator-size);
+    box-sizing: border-box;
+    overflow: hidden;
+    color: transparent;
+    background: var(--weoc-progress-upcoming);
+    border: var(--border-xs) solid transparent;
+    border-radius: var(--radius-pill);
+    will-change: transform;
+}
+
+.weoc-progress-connector {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(50% + (var(--weoc-progress-indicator-size) / 2) + var(--space-2));
+    inset-inline-end: calc(-50% + (var(--weoc-progress-indicator-size) / 2) + var(--space-2));
+    height: var(--weoc-progress-connector-size);
+    overflow: hidden;
+    background: var(--weoc-progress-upcoming);
+    border-radius: var(--radius-pill);
+    transform: translateY(-50%);
+}
+
+.weoc-progress-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    min-width: 0;
+    padding: var(--space-3) var(--space-2) 0;
+    text-align: center;
+}
+
+.weoc-progress-eyebrow {
+    color: var(--color-text-secondary);
+    font-size: var(--text-2xs);
+    font-weight: var(--font-semibold);
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.weoc-progress-title {
+    max-width: 100%;
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.weoc-progress-status {
+    color: var(--color-text-secondary);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    line-height: 1.4;
+}
+
+.weoc-progress-step.completed .weoc-progress-indicator {
+    color: var(--color-on-accent);
+    background: var(--color-success);
+}
+
+.weoc-progress-step.completed .weoc-progress-connector {
+    background: var(--color-success);
+}
+
+.weoc-progress-step.completed .weoc-progress-status {
+    color: var(--color-success-text);
+}
+
+.weoc-progress-step.current .weoc-progress-indicator {
+    background: var(--color-surface);
+    border-color: var(--color-10);
+}
+
+.weoc-progress-step.current .weoc-progress-indicator::before {
+    width: var(--space-3);
+    height: var(--space-3);
+    content: "";
+    background: var(--color-10);
+    border-radius: var(--radius-pill);
+}
+
+.weoc-progress-step.current .weoc-progress-connector {
+    background: var(--weoc-progress-upcoming);
+}
+
+.weoc-progress-step.current .weoc-progress-connector::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: var(--weoc-progress-current);
+    content: "";
+    background: var(--color-10);
+    border-radius: inherit;
+}
+
+.weoc-progress-step.current .weoc-progress-status {
+    color: var(--color-10);
+}
+
+.weoc-progress-step.disabled .weoc-progress-indicator {
+    color: var(--color-text-secondary);
+    background: var(--color-border);
+    opacity: 0.7;
+}
+
+.weoc-progress-step.disabled .weoc-progress-connector {
+    background: var(--color-border);
+    opacity: 0.7;
+}
+
+.weoc-progress-step.disabled .weoc-progress-content {
+    opacity: 0.7;
+}
+
+.weoc-progress-icon.material-symbols-outlined {
+    font-size: var(--icon-sm);
+    font-variation-settings: "FILL" 1, "wght" 700, "GRAD" 0, "opsz" 20;
+    line-height: 1;
+}
+
+/* =============================================================================
+   wui-bar-row (WUI.barRow() companion styles)
+
+   Compact single-row progress bar. The colored bar is the row's own
+   background (a hard-stop linear-gradient written inline by
+   WUI.barRow() — see wui-charts.js's _drawBarRows), not a separate
+   track/fill element; segmented (tiered) bars are just more color stops
+   in the same gradient, zero extra DOM per segment.
+
+   Scales down inside narrow bento tiles via the `wui-tile` container
+   query (see weoc-grid.css's `.wui-bento.is-page > *`).
+   ============================================================================= */
+
+.wui-bar-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  flex-shrink: 0;
+  padding: 0 var(--space-2);
+  border-radius: var(--border-radius);
+  background: var(--color-30);
+  overflow: hidden;
+  gap: var(--space-2);
+}
+
+.wui-bar-row + .wui-bar-row {
+  margin-top: var(--space-1);
+}
+
+.wui-bar-row .fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.wui-bar-row .name {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wui-bar-row .val {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  color: var(--color-text-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+}
+
+@container wui-tile (max-width: 220px) {
+  .wui-bar-row {
+    height: 19px;
+  }
+  .wui-bar-row .name,
+  .wui-bar-row .val {
+    font-size: var(--text-2xs);
+  }
+}

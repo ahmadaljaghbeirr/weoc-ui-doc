@@ -1,0 +1,485 @@
+/* =============================================
+   agency-theme-daylight.css
+   Option D — "Daylight slate". Drop-in alternative to
+   agency-theme.css: same tokens, the lightest workable
+   dark ramp — for bright EOC floors and projectors.
+   Status and tier colours are darkened one step so they
+   keep their punch on the lighter field.
+
+   Surface ramp — "Daylight slate" (Option D)
+   One cool-neutral hue family (hue ~225, chroma ~0.012)
+   across four elevation steps, light and dark:
+
+     --color-60       app canvas / body background
+     --color-30       cards, widgets, panels, modals, table body
+     --color-surface  raised: table headers, inputs, popovers, hover
+     --color-border   hairlines
+
+   Dark canvas is deliberately lifted off black (#1A212B)
+   so dense screens read as a lit surface, not a void.
+   Status, tier and chart tokens are unchanged and still
+   land correctly on this ramp.
+   ============================================= */
+
+/* Start: Root */
+:root {
+  /* ============================================
+      SPACING SCALE
+      ============================================ */
+  --space-0: 0rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.5rem;
+  --space-8: 3rem;
+  --space-9: 4rem;
+  --space-10: 5rem;
+  --space-11: 6rem;
+  --space-12: 8rem;
+
+  /* Semantic aliases */
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
+  --space-lg: var(--space-6);
+  --space-xl: var(--space-8);
+  --space-2xl: var(--space-10);
+  --space-3xl: var(--space-12);
+
+  /* ============================================
+      TYPOGRAPHY
+      ============================================ */
+  /* Font families */
+
+  --font-cairo: "Cairo", system-ui, sans-serif;
+  --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "SF Mono", SFMono-Regular, ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+  --font-display: var(--font-cairo);
+  --font-body: var(--font-cairo);
+  --font-ui: var(--font-cairo);
+
+  /* Font sizes */
+  --text-2xs: 0.625rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.125rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.875rem;
+  --text-3xl: 2.25rem;
+  --text-4xl: 3rem;
+  --text-5xl: 3.75rem;
+  --text-6xl: 4.5rem;
+
+  /* Font weights */
+  --font-extralight: 200;
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+
+  /* Line heights */
+  --leading-none: 1;
+  /* Headings, display text */
+  --leading-tight: 1.25;
+  /* Large headings, UI text */
+  --leading-snug: 1.375;
+  /* Subheadings, small headings */
+  --leading-normal: 1.5;
+  /* Body text (default) */
+  --leading-relaxed: 1.625;
+  /* Long-form reading */
+  --leading-loose: 2;
+  /* Accessibility, large print */
+
+  /* Letter spacing */
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+  /* Uppercase labels */
+
+  /* Icon sizes (Material Symbols / any inline icon) */
+  --icon-xs: 1rem;
+  --icon-sm: 1.125rem;
+  --icon-md: 1.25rem;
+  --icon-lg: 1.5rem;
+  --icon-xl: 2rem;
+
+  /* ============================================
+      Brand Pallete
+      ============================================ */
+  /* Theme */
+  --color-60: #f4f6f9;
+  --color-30: #ffffff;
+  --color-10: #1a5fb4;
+  --color-10-light: rgba(26, 95, 180, 0.08);
+  --color-10-muted: rgba(26, 95, 180, 0.16);
+  --color-10-glow: rgba(26, 95, 180, 0.85);
+  /* text/icons ON a solid accent fill (primary, danger, success, info). NOT a surface
+     token — fixed contrast so it stays white in dark mode instead of following color-30. */
+  --color-on-accent: #ffffff;
+
+  --color-border: #e2e6ec;
+  --color-text-primary: #161a20;
+  --color-text-ui: #717d8c;
+
+  /* success */
+  --color-success: #16a34a;
+  --color-success-glow: rgba(22, 163, 74, 0.85);
+  --color-success-light: rgba(22, 163, 74, 0.08);
+  --color-success-muted: rgba(22, 163, 74, 0.15);
+  --color-success-text: #15803d;
+  /* warning */
+  --color-warning: #ea7c14;
+  --color-warning-glow: rgba(234, 124, 20, 0.85);
+  --color-warning-light: rgba(234, 124, 20, 0.08);
+  --color-warning-muted: rgba(234, 124, 20, 0.15);
+  --color-warning-text: #c2610f;
+  /* danger */
+  --color-danger: #dc2626;
+  --color-danger-glow: rgba(220, 38, 38, 0.85);
+  --color-danger-light: rgba(220, 38, 38, 0.08);
+  --color-danger-muted: rgba(220, 38, 38, 0.15);
+  --color-danger-text: #b91c1c;
+
+  /* info */
+  --color-info: #0284c7;
+  --color-info-glow: rgba(2, 132, 199, 0.85);
+  --color-info-light: rgba(2, 132, 199, 0.08);
+  --color-info-muted: rgba(2, 132, 199, 0.15);
+  --color-info-text: #0369a1;
+
+  /* secondary */
+  --color-secondary: #64748b;
+  --color-secondary-glow: rgba(100, 116, 139, 0.85);
+  --color-secondary-light: rgba(100, 116, 139, 0.08);
+  --color-secondary-muted: rgba(100, 116, 139, 0.15);
+  --color-text-secondary: #5b6675;
+
+  /* Events Reporting specific: Tier Colors */
+
+  --tier-1-color: #6ab143;
+  --tier-1-glow: rgba(106, 177, 67, 0.85);
+  --tier-1-light: rgba(106, 177, 67, 0.08);
+  --tier-1-muted: rgba(106, 177, 67, 0.15);
+  --tier-1-text: #4d8a2e;
+
+  --tier-2-color: #db9739;
+  --tier-2-glow: rgba(219, 151, 57, 0.85);
+  --tier-2-light: rgba(219, 151, 57, 0.08);
+  --tier-2-muted: rgba(219, 151, 57, 0.15);
+  --tier-2-text: #a06d1e;
+
+  --tier-3-color: #f95639;
+  --tier-3-glow: rgba(249, 86, 57, 0.85);
+  --tier-3-light: rgba(249, 86, 57, 0.08);
+  --tier-3-muted: rgba(249, 86, 57, 0.15);
+  --tier-3-text: #c73420;
+
+  --tier-4-color: #cf1717;
+  --tier-4-glow: rgba(207, 23, 23, 0.85);
+  --tier-4-light: rgba(207, 23, 23, 0.08);
+  --tier-4-muted: rgba(207, 23, 23, 0.15);
+  --tier-4-text: #a01010;
+
+  /* Border radius scale (base = 0.5rem / 8px) */
+  --radius-none: 0;
+  --radius-2xs: 0.125rem;
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --border-radius: 0.5rem;
+  --radius-md: var(--border-radius);
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-pill: 9999px;
+
+  /* Border thickness scale */
+  --border-2xs: 0.0625rem;
+  --border-xs:  0.125rem;
+  --border-sm:  0.1875rem;
+  --border-md:  0.25rem;
+  --border-lg:  0.375rem;
+  --border-xl:  0.5rem;
+  --border-2xl: 0.75rem;
+
+  /* ============================================
+      Bootstrap Toekn Overrides
+      ============================================ */
+
+  --bs-primary: var(--color-10);
+  --bs-primary-rgb: 26, 95, 180;
+
+  --bs-success: var(--color-success);
+  --bs-success-rgb: 22, 163, 74;
+
+  --bs-warning: var(--color-warning);
+  --bs-warning-rgb: 234, 124, 20;
+
+  --bs-danger: var(--color-danger);
+  --bs-danger-rgb: 220, 38, 38;
+
+  --bs-body-font-family: var(--font-body);
+  --bs-body-font-size: var(--text-base);
+  --bs-body-font-weight: var(--font-regular);
+  --bs-body-line-height: var(--leading-normal);
+  --bs-body-color: var(--color-text-primary);
+  --bs-body-bg: var(--color-30);
+
+  --bs-border-color: var(--color-border);
+  /* Tom Select / legacy search chrome */
+  --ts-border: var(--color-border);
+  /* Optional semantic aliases (Bootstrap-adjacent UIs) */
+  --color-primary: var(--color-10);
+  --color-primary-light: var(--color-10-light);
+  --bs-border-radius: var(--border-radius);
+  --bs-border-radius-sm: var(--radius-xs);
+  --bs-border-radius-lg: var(--radius-lg);
+  --bs-border-radius-xl: var(--radius-xl);
+  --bs-border-radius-xxl: var(--radius-2xl);
+  --bs-border-radius-2xl: var(--bs-border-radius-xxl);
+  --bs-border-radius-pill: var(--radius-pill);
+
+  --bs-secondary-color: var(--color-text-secondary);
+  --bs-tertiary-color: var(--color-text-ui);
+  --bs-tertiary-bg: var(--color-60);
+  --bs-secondary-bg: var(--color-30);
+
+  /* ============================================
+      Activation / Widget Surface Tokens (light defaults)
+      ============================================ */
+  --color-bg: var(--color-60);
+  --color-bg-secondary: var(--color-30);
+  /* Alias for table cells and inline fields (use with agency tokens) */
+  --color-bg-primary: var(--color-surface);
+  --color-surface: var(--color-30);
+  --widget-bg: var(--color-30);
+  --widget-header-bg: var(--color-60);
+  --widget-border: rgba(0, 0, 0, 0.08);
+  --widget-shadow: var(--shadow-sm);
+  --edit-banner-bg: rgba(234, 124, 20, 0.08);
+  --edit-banner-border: var(--color-warning);
+  --edit-banner-text: var(--color-warning-text);
+
+  /* ============================================
+      Shadow Scale
+      ============================================ */
+  --shadow-xs: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.06);
+  --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.06), 0 0 0 0.0625rem rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.10), 0 0 0 0.0625rem rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.14), 0 0 0 0.0625rem rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 1.5rem 4rem rgba(0, 0, 0, 0.28);
+
+  /* ============================================
+      Interaction Tokens
+      ============================================ */
+  --color-hover:        rgba(26, 95, 180, 0.05);
+  --color-overlay:      rgba(0, 0, 0, 0.45);
+  --color-switch-thumb: var(--color-on-accent);
+
+  /* ============================================
+      Scrollbars — one source of truth for EVERY
+      overflow surface (see weoc-reset.css global
+      rule). Thumb/hover reference theme tokens, so
+      they follow light/dark automatically.
+      ============================================ */
+  --scrollbar-size:        var(--border-md);              /* 4px — library standard */
+  --scrollbar-track:       transparent;
+  --scrollbar-thumb:       var(--color-border);
+  --scrollbar-thumb-hover: var(--color-text-ui);
+  --scrollbar-radius:      calc(var(--border-radius) / 2);
+}
+
+/* End: Root */
+
+/* Start: Dark Theme */
+[data-theme="dark"] {
+  /* ============================================
+      Colors
+      ============================================ */
+  --color-border: #465163;
+  --color-text-primary: #f2f5f9;
+  --color-text-secondary: #b7c2d0;
+  --color-text-ui: #9caabd;
+
+  /* primary */
+  --color-10: #3d84e0;
+  --color-10-glow: rgba(61, 132, 224, 0.9);
+  --color-10-light: rgba(61, 132, 224, 0.16);
+  --color-10-muted: rgba(61, 132, 224, 0.26);
+  --color-on-accent: #ffffff;   /* stays white — color-10 is still a saturated blue in dark mode */
+
+  /* danger */
+  --color-danger: #e8404f;
+  --color-danger-glow: rgba(232, 64, 79, 0.9);
+  --color-danger-light: rgba(232, 64, 79, 0.16);
+  --color-danger-muted: rgba(232, 64, 79, 0.26);
+  --color-danger-text: #f5909c;
+
+  /* warning */
+  --color-warning: #e08526;
+  --color-warning-glow: rgba(224, 133, 38, 0.9);
+  --color-warning-light: rgba(224, 133, 38, 0.16);
+  --color-warning-muted: rgba(224, 133, 38, 0.26);
+  --color-warning-text: #f0b478;
+
+  /* success */
+  --color-success: #2eb972;
+  --color-success-glow: rgba(46, 185, 114, 0.9);
+  --color-success-light: rgba(46, 185, 114, 0.16);
+  --color-success-muted: rgba(46, 185, 114, 0.26);
+  --color-success-text: #7fd6ab;
+
+  /* info */
+  --color-info: #2b9ad4;
+  --color-info-glow: rgba(43, 154, 212, 0.9);
+  --color-info-light: rgba(43, 154, 212, 0.16);
+  --color-info-muted: rgba(43, 154, 212, 0.26);
+  --color-info-text: #8ad2f0;
+
+  /* secondary */
+  --color-secondary: #94a3b8;
+  --color-secondary-glow: rgba(148, 163, 184, 0.9);
+  --color-secondary-light: rgba(148, 163, 184, 0.10);
+  --color-secondary-muted: rgba(148, 163, 184, 0.18);
+
+  /* Events Reporting specific: Tier Colors */
+
+  --tier-1-color: #64b83c;
+  --tier-1-light: rgba(100, 184, 60, 0.16);
+  --tier-1-muted: rgba(100, 184, 60, 0.26);
+  --tier-1-text: #9ad471;
+  --tier-1-glow: rgba(100, 184, 60, 0.90);
+
+  --tier-2-color: #d9942f;
+  --tier-2-light: rgba(217, 148, 47, 0.16);
+  --tier-2-muted: rgba(217, 148, 47, 0.26);
+  --tier-2-text: #eec27a;
+  --tier-2-glow: rgba(217, 148, 47, 0.90);
+
+  --tier-3-color: #ec5636;
+  --tier-3-light: rgba(236, 86, 54, 0.16);
+  --tier-3-muted: rgba(236, 86, 54, 0.26);
+  --tier-3-text: #ff9070;
+  --tier-3-glow: rgba(236, 86, 54, 0.90);
+
+  --tier-4-color: #d92626;
+  --tier-4-light: rgba(217, 38, 38, 0.16);
+  --tier-4-muted: rgba(217, 38, 38, 0.26);
+  --tier-4-text: #f07070;
+  --tier-4-glow: rgba(217, 38, 38, 0.90);
+
+  /* ============================================
+      Backgrounds
+      ============================================ */
+  /* Daylight ramp — lightest dark theme that still holds AA */
+  --color-60: #222b36;
+  --color-30: #2c3644;
+  --color-surface: #384454;
+  --color-bg-primary: var(--color-surface);
+
+  /* ============================================
+      Bootstrap Overrides
+      ============================================ */
+  --bs-primary: var(--color-10);
+  --bs-primary-rgb: 61, 132, 224;
+  --bs-body-bg: var(--color-60);
+  --bs-body-color: var(--color-text-primary);
+  --bs-border-color: var(--color-border);
+
+  /* ============================================
+      Widget
+      ============================================ */
+  /* widgets inherit the ramp — no separate navy family */
+  --widget-bg: var(--color-30);
+  --widget-header-bg: var(--color-surface);
+  --widget-border: var(--color-border);
+
+  /* ============================================
+      Shadow Scale (dark overrides)
+      ============================================ */
+  --shadow-xs: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.30);
+  --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.40), 0 0 0 0.0625rem rgba(255, 255, 255, 0.05);
+  --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.45), 0 0 0 0.0625rem rgba(255, 255, 255, 0.06);
+  --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.50), 0 0 0 0.0625rem rgba(255, 255, 255, 0.06);
+  --shadow-xl: 0 1.5rem 4rem rgba(0, 0, 0, 0.55);
+
+  /* ============================================
+      Interaction Tokens (dark overrides)
+      ============================================ */
+  --color-hover: rgba(255, 255, 255, 0.05);
+
+  /* ============================================
+      Edit Mode
+      ============================================ */
+  --edit-banner-bg: rgba(224, 133, 38, 0.14);
+  --edit-banner-border: #e08526;
+  --edit-banner-text: #f0b478;
+}
+
+/* End: Dark Theme */
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('../../Fonts/Cairo/static/Cairo-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('../../Fonts/Cairo/static/Cairo-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('../../Fonts/Cairo/static/Cairo-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('../../Fonts/Cairo/static/Cairo-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('../../Fonts/Cairo/static/Cairo-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('../../Fonts/Cairo/static/Cairo-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('../../Fonts/Cairo/static/Cairo-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cairo';
+  src: url('../../Fonts/Cairo/static/Cairo-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}

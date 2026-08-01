@@ -1,0 +1,1041 @@
+/* =============================================
+   primeng-weoc-ui-bridge.css
+   Demonstrates restyling PrimeNG's Aura theme with
+   weoc-ui-css design tokens. Overrides PrimeNG's own
+   global CSS custom properties — no PrimeNG component
+   source is touched.
+
+   Real PrimeNG (Aura, @primeng/themes 21.0.4 / primeng
+   22.0.0) global token names, confirmed by reading
+   node_modules/@primeuix/themes/dist/aura/base/index.mjs
+   (the semantic token object underlying the Aura preset):
+     semantic.colorScheme.light.primary.color        -> --p-primary-color
+     semantic.colorScheme.light.primary.contrastColor -> --p-primary-contrast-color
+     semantic.content.borderRadius                    -> --p-content-border-radius
+     semantic.formField.borderRadius                   -> --p-form-field-border-radius
+     semantic.focusRing.color                          -> --p-focus-ring-color
+
+   Real weoc-ui-css token names, confirmed by reading
+   angular/packages/weoc-ui-css/tokens/agency-theme.css:
+     --color-10          (brand primary, #185fa5 light / #3a80e0 dark)
+     --color-on-accent   (white text/icons on a solid accent fill)
+     --radius-md          (alias of --border-radius, 0.5rem)
+     --color-30           (surface/background, #ffffff light / #282828 dark)
+     --color-border       (#ebebeb light / #3a3a3a dark)
+     --color-text-primary (there is no `--color-text` token in
+                            agency-theme.css; the real primary body-text
+                            token is `--color-text-primary`, #1a1a1a light
+                            / #f1f1f1 dark — used below in place of it)
+     --shadow-md          (elevation shadow, tuned per light/dark)
+     --space-3, --space-4 (0.75rem / 1rem)
+
+   Popover (primeng/popover) real global tokens, confirmed by reading
+   node_modules/@primeuix/styles/dist/popover/index.mjs:
+     --p-popover-background, --p-popover-color, --p-popover-border-color,
+     --p-popover-border-radius, --p-popover-shadow,
+     --p-popover-content-padding. (--p-popover-gutter controls the arrow
+     size/spacing and is left at its Aura default.)
+
+   Dialog (primeng/dialog) real global tokens, confirmed by reading
+   node_modules/@primeuix/styles/dist/dialog/index.mjs, mapped against the
+   original WebEOC `wui-modal` CSS (CSS/weoc-ui/weoc-overlays.css,
+   .wui-modal-dialog / -header / -title / -body / -footer rules):
+     --p-dialog-border-radius, --p-dialog-shadow, --p-dialog-background,
+     --p-dialog-border-color, --p-dialog-color, --p-dialog-content-padding,
+     --p-dialog-header-padding, --p-dialog-title-font-weight,
+     --p-dialog-title-font-size, --p-dialog-footer-padding,
+     --p-dialog-footer-gap, --p-dialog-header-gap.
+   One of these (--p-dialog-border-color) has no direct 1:1 WebEOC source —
+   .wui-modal-dialog itself has no visible outer border, only its
+   header/footer have internal divider borders. It is filled with a
+   reasonable neutral default noted inline below. --p-dialog-header-gap DOES
+   have a direct source: .wui-modal-header sets `gap: var(--space-3)`
+   separately from its `padding: var(--space-3)` (same token, distinct
+   property) — mapped exactly below, not defaulted.
+
+   NOTE on !important: PrimeNG's ThemeService injects its own generated
+   `:root { --p-* : ... }` rule (plus an OS-driven
+   `@media (prefers-color-scheme: dark)` variant) into <head> via <style>
+   tags at runtime, AFTER the Angular build already placed this stylesheet's
+   <link> earlier in <head>. At equal specificity the later rule in source
+   order wins the cascade, so a plain override here is silently beaten by
+   PrimeNG's own injected values (confirmed empirically: without
+   `!important`, --p-primary-color stayed the Aura default emerald
+   `#34d399` instead of resolving to `--color-10`). `!important` is the
+   correct, minimal fix for a bridge stylesheet whose only job is to win
+   against a third-party runtime style injector — it is not being used to
+   override anything else here.
+   ============================================= */
+
+:root {
+  --p-primary-color: var(--color-10) !important;
+  --p-primary-contrast-color: var(--color-on-accent) !important;
+  --p-content-border-radius: var(--radius-md) !important;
+  --p-form-field-border-radius: var(--radius-md) !important;
+  --p-focus-ring-color: var(--color-10) !important;
+
+  /* Popover — same !important justification as above: PrimeNG's
+     ThemeService injects its own :root { --p-* } rule at runtime, after
+     this stylesheet, so a plain override loses the cascade. */
+  --p-popover-background: var(--color-30) !important;
+  --p-popover-color: var(--color-text-primary) !important;
+  --p-popover-border-color: var(--color-border) !important;
+  --p-popover-border-radius: var(--border-radius) !important;
+  --p-popover-shadow: var(--shadow-md) !important;
+  --p-popover-content-padding: var(--space-3) var(--space-4) !important;
+
+  /* Dialog — same !important justification as above. Modal shadow is
+     intentionally --shadow-xl (more elevated than Popover's --shadow-md);
+     content padding is intentionally --space-2, smaller than the
+     header/footer padding, matching .wui-modal-body in the source WebEOC
+     CSS exactly. --p-dialog-border-color has no hard 1:1 WebEOC source (see
+     header comment above) and uses --color-border as a reasonable neutral
+     default; --p-dialog-header-gap DOES have a direct source
+     (.wui-modal-header's own `gap: var(--space-3)`, distinct from its
+     `padding: var(--space-3)` — same token, different property). */
+  --p-dialog-border-radius: var(--border-radius) !important;
+  --p-dialog-shadow: var(--shadow-xl) !important;
+  --p-dialog-background: var(--color-30) !important;
+  --p-dialog-border-color: var(--color-border) !important;
+  --p-dialog-color: var(--color-text-primary) !important;
+  --p-dialog-content-padding: var(--space-2) !important;
+  --p-dialog-header-padding: var(--space-3) !important;
+  --p-dialog-title-font-weight: var(--font-semibold) !important;
+  --p-dialog-title-font-size: var(--text-md) !important;
+  --p-dialog-footer-padding: var(--space-4) var(--space-5) !important;
+  --p-dialog-footer-gap: var(--space-2) !important;
+  --p-dialog-header-gap: var(--space-3) !important;
+}
+
+/* =============================================
+   Drawer (primeng/drawer) real global tokens, confirmed by reading
+   node_modules/@primeuix/styles/dist/drawer/index.mjs, mapped against the
+   original WebEOC `wui-drawer` CSS (CSS/weoc-ui/weoc-overlays.css,
+   .wui-drawer-panel / -header / -title / -body / -footer rules):
+     --p-drawer-background, --p-drawer-color, --p-drawer-border-color,
+     --p-drawer-shadow, --p-drawer-content-padding, --p-drawer-header-padding,
+     --p-drawer-footer-padding, --p-drawer-title-font-weight,
+     --p-drawer-title-font-size.
+
+   All nine values below are hard-sourced from the .wui-drawer-* rules read
+   directly in weoc-overlays.css, EXCEPT --p-drawer-border-color, which is
+   soft-defaulted: .wui-drawer-panel itself carries no outer border (only
+   box-shadow + border-radius) — only its header/footer regions have their
+   own internal `border-bottom`/`border-top: 1px solid var(--color-border)`
+   dividers. There is no 1:1 source for a panel-level border-color, so
+   --color-border is reused here as a reasonable neutral default (the same
+   token the header/footer dividers already use nearby), same rationale as
+   --p-dialog-border-color above — not asserted as a hard source.
+
+   Confirmed distinct from the other two overlays already styled in this
+   file: shadow is --shadow-lg (Popover uses --shadow-md, Dialog uses
+   --shadow-xl — three different elevation levels, verified by re-reading
+   each source rule rather than copied from memory); header padding is the
+   two-value `var(--space-4) var(--space-5)` (Dialog's header padding is the
+   single value `var(--space-3)` — these are NOT the same, confirmed by
+   reading .wui-drawer-header vs .wui-modal-header directly).
+
+   There is no --p-drawer-border-radius token in PrimeNG's Drawer CSS (a
+   drawer sits flush against a screen edge, no rounded corners by default),
+   so none is set here.
+
+   Same !important justification as the blocks above: PrimeNG's ThemeService
+   injects its own :root { --p-* } rule at runtime, after this stylesheet. */
+:root {
+  --p-drawer-background: var(--color-30) !important;
+  --p-drawer-color: var(--color-text-primary) !important;
+  --p-drawer-border-color: var(--color-border) !important;
+  --p-drawer-shadow: var(--shadow-lg) !important;
+  --p-drawer-content-padding: var(--space-2) !important;
+  --p-drawer-header-padding: var(--space-4) var(--space-5) !important;
+  --p-drawer-footer-padding: var(--space-4) var(--space-5) !important;
+  --p-drawer-title-font-weight: var(--font-semibold) !important;
+  --p-drawer-title-font-size: var(--text-md) !important;
+}
+
+/* =============================================
+   Button (primeng/button) — the largest token surface bridged so far.
+   Real global tokens confirmed by grepping every dt('button.*') call in
+   node_modules/@primeuix/styles/dist/button/index.mjs (not re-derived here,
+   used as given), cross-checked against the actual Aura preset defaults in
+   node_modules/@primeuix/themes/dist/aura/button/index.mjs to see which
+   per-severity tokens Aura itself ships (all six severities: primary,
+   secondary, success, info, warn, danger — each with root/outlined/text
+   variants), and mapped against the real, already-ported weoc-ui-css rules
+   in angular/packages/weoc-ui-css/components/buttons.css:
+     .wui-btn (base), .wui-btn:focus-visible, .wui-btn-sm, .wui-btn-lg
+       -> shared button.* tokens
+     .wui-btn.{color}                 (solid)   -> button.{severity}.*
+     .wui-btn.outline.{color}         (outline) -> button.outlined.{severity}.*
+     .wui-btn.ghost.{color}           (ghost)   -> button.text.{severity}.*
+       (PrimeNG's Text style = no border, no fill until hover/active — the
+       closest conceptual match to weoc-ui's "ghost" modifier, not an exact
+       naming match, hence the explicit mapping call-out.)
+
+   *** warn <-> warning naming mismatch ***
+   PrimeNG spells its sixth severity `warn` (button.warn.*, .p-button-warn).
+   weoc-ui-css spells the same semantic color `warning` (.wui-btn.warning,
+   --color-warning*). Every --p-button-warn-* custom property below is
+   intentionally filled from weoc-ui's `warning` tokens (var(--color-warning),
+   var(--color-warning-text), etc.) — this is a deliberate name translation,
+   not a naming coincidence and not a skipped/forgotten severity.
+
+   *** Explicitly OUT of scope (no weoc-ui-css equivalent, do not add) ***
+     - button.help.*                  (Aura-only severity, no weoc-ui color)
+     - button.contrast.*              (Aura-only severity, no weoc-ui color)
+     - button.outlined.plain.*        (neutral outlined variant, no weoc-ui color)
+     - button.text.plain.*            (neutral text variant, no weoc-ui color)
+     - button.link.*                  (underline-link style, no weoc-ui equivalent)
+     - button.badge.size              (PrimeNG-only sub-feature, no wui-btn badge concept)
+   Per the task brief, these are real PrimeNG tokens being deliberately left
+   unbridged, not an oversight.
+
+   *** Two structural mismatches, resolved and documented once here rather
+   than repeated on every severity below ***
+   1) hover/active color reuse: .wui-btn's solid severities (primary,
+      success, warning, danger, info — NOT secondary) implement their hover
+      state purely as `filter: brightness(N)` applied to the whole element,
+      not as a distinct swapped-in color. A PrimeNG dt() token can only hold
+      a flat color value, not a filter function, so button.{severity}.hover.*
+      below reuses the exact same background/border/color var as the resting
+      state for those five severities (secondary is the one exception — see
+      below). This trades away wui-btn's live brightness lift but keeps the
+      hover state color-true to the same var — no invented/brightened hex is
+      introduced, consistent with "use var() references, not hardcoded
+      colors." Likewise, none of the six solid severities defines a distinct
+      :active rule in buttons.css (only secondary's :hover changes actual
+      color/background) — so button.{severity}.active.* below reuses each
+      severity's hover.* value (which for five of the six is itself just the
+      resting value; secondary is the only case where hover.* is a genuinely
+      different color, and active.* reuses that same hover color).
+   2) focus.ring.color: .wui-btn:focus-visible always outlines in
+      var(--color-10), regardless of the button's own color — there is no
+      literal per-severity focus source on plain .wui-btn. However,
+      buttons.css DOES establish a per-severity focus-outline convention on
+      the neon-outline variant, but only for danger/success/warning/info
+      (e.g. `.wui-btn.neon-outline.danger:focus-visible { outline-color:
+      var(--color-danger); }`) — primary and secondary have no neon-outline
+      override and fall through to the shared --color-10 default there too.
+      button.{severity}.focus.ring.color below extends that per-color
+      convention to all six severities (each severity's own color var)
+      rather than hard-defaulting every severity to --color-10; for
+      primary/secondary specifically this is an extrapolation beyond a
+      literal source, not a direct 1:1 match, though it lines up with Aura's
+      own real per-severity focus-ring defaults (confirmed in
+      aura/button/index.mjs — e.g. secondary's is a distinct surface color,
+      not primary's).
+      button.{severity}.focus.ring.shadow is set to `none` for every
+      severity — this is not a gap-filler default, it is an exact match: the
+      real Aura preset itself sets focusRing.shadow: "none" for all six
+      severities (confirmed in aura/button/index.mjs), and wui-btn's own
+      focus-visible rule is outline-only with no box-shadow either, so the
+      two sources agree exactly.
+
+   Outlined tokens also have one sub-mismatch: PrimeNG's `outlined.*` group
+   has no hover.border.color / active.* border/color tokens (only color,
+   border.color, hover.background, active.background exist per the real dt()
+   list) — so the border-color intensification .wui-btn.outline.{color} does
+   on :hover (muted -> full color) is not representable here; only the
+   background-fill half of that hover effect is bridged. active.background
+   reuses hover.background (buttons.css defines no distinct outline :active
+   rule).
+
+   Same !important justification as every block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  /* ── Shared (not per-severity) — sourced from .wui-btn, :focus-visible,
+     .wui-btn-sm, .wui-btn-lg ── */
+  --p-button-border-radius: var(--border-radius) !important;
+  --p-button-padding-x: var(--space-3) !important;
+  --p-button-padding-y: var(--space-1) !important;
+  --p-button-font-size: var(--text-base) !important;
+  --p-button-label-font-weight: var(--font-regular) !important;
+  --p-button-gap: var(--space-xs) !important;
+  /* No rem-based weoc-ui spacing token lands exactly on 2.375rem; this is
+     the literal, hard-sourced width/height of .wui-btn.icon-only itself
+     (not a soft default — it is copied verbatim from the real rule). */
+  --p-button-icon-only-width: 2.375rem !important;
+  /* Literal, hard-sourced from .wui-btn's own `transition: ... 0.15s ease`;
+     weoc-ui-css has no dedicated --duration-* token to reference instead. */
+  --p-button-transition-duration: 0.15s !important;
+  --p-button-focus-ring-width: 2px !important;
+  --p-button-focus-ring-style: solid !important;
+  --p-button-focus-ring-offset: 2px !important;
+  --p-button-sm-font-size: var(--text-sm) !important;
+  --p-button-sm-padding-x: var(--space-2) !important;
+  --p-button-sm-padding-y: var(--space-1) !important;
+  --p-button-sm-icon-only-width: 1.9375rem !important; /* literal, .wui-btn-sm.icon-only */
+  --p-button-lg-font-size: var(--text-lg) !important;
+  --p-button-lg-padding-x: var(--space-4) !important;
+  --p-button-lg-padding-y: var(--space-2) !important;
+  --p-button-lg-icon-only-width: 3rem !important; /* literal, .wui-btn-lg.icon-only */
+  /* "Rounded" = a fully pill-shaped button. wui-btn has no rounded modifier
+     of its own, but weoc-ui-css already has exactly this concept as
+     --radius-pill (used by .wui-fab-extended) — reused here as the natural
+     equivalent rather than a made-up value. */
+  --p-button-rounded-border-radius: var(--radius-pill) !important;
+  /* "Raised" = an elevated drop shadow with no color/border change. wui-btn
+     has no raised modifier; reusing --shadow-md, the same elevation token
+     already established for Popover earlier in this file, as a reasonable
+     soft default. */
+  --p-button-raised-shadow: var(--shadow-md) !important;
+
+  /* ── Solid (.p-button default look) — sourced from .wui-btn.{color} ── */
+
+  /* primary: hover is filter:brightness(1.05) only (no color swap in the
+     source) -> hover/active reuse the resting values, see mismatch #1 above */
+  --p-button-primary-background: var(--color-10) !important;
+  --p-button-primary-border-color: var(--color-10) !important;
+  --p-button-primary-color: var(--color-on-accent) !important;
+  --p-button-primary-hover-background: var(--color-10) !important;
+  --p-button-primary-hover-border-color: var(--color-10) !important;
+  --p-button-primary-hover-color: var(--color-on-accent) !important;
+  --p-button-primary-active-background: var(--color-10) !important;
+  --p-button-primary-active-border-color: var(--color-10) !important;
+  --p-button-primary-active-color: var(--color-on-accent) !important;
+  --p-button-primary-focus-ring-color: var(--color-10) !important;
+  --p-button-primary-focus-ring-shadow: none !important;
+
+  /* secondary: the ONE solid severity with a real, distinct :hover rule
+     (background + color actually change, not just a filter) */
+  --p-button-secondary-background: var(--color-60) !important;
+  --p-button-secondary-border-color: var(--color-border) !important;
+  --p-button-secondary-color: var(--color-text-ui) !important;
+  --p-button-secondary-hover-background: var(--color-border) !important;
+  --p-button-secondary-hover-border-color: var(--color-border) !important;
+  --p-button-secondary-hover-color: var(--color-text-primary) !important;
+  --p-button-secondary-active-background: var(--color-border) !important;
+  --p-button-secondary-active-border-color: var(--color-border) !important;
+  --p-button-secondary-active-color: var(--color-text-primary) !important;
+  --p-button-secondary-focus-ring-color: var(--color-secondary) !important;
+  --p-button-secondary-focus-ring-shadow: none !important;
+
+  /* success: hover is filter:brightness(1.05) only -> reuse resting values */
+  --p-button-success-background: var(--color-success) !important;
+  --p-button-success-border-color: var(--color-success) !important;
+  --p-button-success-color: var(--color-on-accent) !important;
+  --p-button-success-hover-background: var(--color-success) !important;
+  --p-button-success-hover-border-color: var(--color-success) !important;
+  --p-button-success-hover-color: var(--color-on-accent) !important;
+  --p-button-success-active-background: var(--color-success) !important;
+  --p-button-success-active-border-color: var(--color-success) !important;
+  --p-button-success-active-color: var(--color-on-accent) !important;
+  --p-button-success-focus-ring-color: var(--color-success) !important;
+  --p-button-success-focus-ring-shadow: none !important;
+
+  /* info: hover is filter:brightness(1.05) only -> reuse resting values */
+  --p-button-info-background: var(--color-info) !important;
+  --p-button-info-border-color: var(--color-info) !important;
+  --p-button-info-color: var(--color-on-accent) !important;
+  --p-button-info-hover-background: var(--color-info) !important;
+  --p-button-info-hover-border-color: var(--color-info) !important;
+  --p-button-info-hover-color: var(--color-on-accent) !important;
+  --p-button-info-active-background: var(--color-info) !important;
+  --p-button-info-active-border-color: var(--color-info) !important;
+  --p-button-info-active-color: var(--color-on-accent) !important;
+  --p-button-info-focus-ring-color: var(--color-info) !important;
+  --p-button-info-focus-ring-shadow: none !important;
+
+  /* warn -> weoc-ui's `warning`. hover is filter:brightness(1.03) only ->
+     reuse resting values (see the naming-mismatch and mismatch #1 notes
+     above — this is intentional, not a mistaken skip of "warn"). */
+  --p-button-warn-background: var(--color-warning) !important;
+  --p-button-warn-border-color: var(--color-warning) !important;
+  --p-button-warn-color: var(--color-on-accent) !important;
+  --p-button-warn-hover-background: var(--color-warning) !important;
+  --p-button-warn-hover-border-color: var(--color-warning) !important;
+  --p-button-warn-hover-color: var(--color-on-accent) !important;
+  --p-button-warn-active-background: var(--color-warning) !important;
+  --p-button-warn-active-border-color: var(--color-warning) !important;
+  --p-button-warn-active-color: var(--color-on-accent) !important;
+  --p-button-warn-focus-ring-color: var(--color-warning) !important;
+  --p-button-warn-focus-ring-shadow: none !important;
+
+  /* danger: hover is filter:brightness(1.06) only -> reuse resting values */
+  --p-button-danger-background: var(--color-danger) !important;
+  --p-button-danger-border-color: var(--color-danger) !important;
+  --p-button-danger-color: var(--color-on-accent) !important;
+  --p-button-danger-hover-background: var(--color-danger) !important;
+  --p-button-danger-hover-border-color: var(--color-danger) !important;
+  --p-button-danger-hover-color: var(--color-on-accent) !important;
+  --p-button-danger-active-background: var(--color-danger) !important;
+  --p-button-danger-active-border-color: var(--color-danger) !important;
+  --p-button-danger-active-color: var(--color-on-accent) !important;
+  --p-button-danger-focus-ring-color: var(--color-danger) !important;
+  --p-button-danger-focus-ring-shadow: none !important;
+
+  /* ── Outlined ([outlined]="true") — sourced from .wui-btn.outline.{color} ──
+     Per the note above: only color/border.color/hover.background/
+     active.background exist as real dt() tokens; the hover border-color
+     intensification wui-btn does (muted -> full color) has no token to land
+     in, so only the background fill is bridged. active.background reuses
+     hover.background (no distinct outline :active rule in the source). */
+  --p-button-outlined-primary-color: var(--color-10) !important;
+  --p-button-outlined-primary-border-color: var(--color-10) !important;
+  --p-button-outlined-primary-hover-background: var(--color-10-light) !important;
+  --p-button-outlined-primary-active-background: var(--color-10-light) !important;
+
+  --p-button-outlined-secondary-color: var(--color-text-secondary) !important;
+  --p-button-outlined-secondary-border-color: var(--color-secondary-muted) !important;
+  --p-button-outlined-secondary-hover-background: var(--color-secondary-light) !important;
+  --p-button-outlined-secondary-active-background: var(--color-secondary-light) !important;
+
+  --p-button-outlined-success-color: var(--color-success-text) !important;
+  --p-button-outlined-success-border-color: var(--color-success-muted) !important;
+  --p-button-outlined-success-hover-background: var(--color-success-light) !important;
+  --p-button-outlined-success-active-background: var(--color-success-light) !important;
+
+  --p-button-outlined-info-color: var(--color-info-text) !important;
+  --p-button-outlined-info-border-color: var(--color-info-muted) !important;
+  --p-button-outlined-info-hover-background: var(--color-info-light) !important;
+  --p-button-outlined-info-active-background: var(--color-info-light) !important;
+
+  /* warn -> weoc-ui's `warning`, same mapping rationale as the solid group */
+  --p-button-outlined-warn-color: var(--color-warning-text) !important;
+  --p-button-outlined-warn-border-color: var(--color-warning-muted) !important;
+  --p-button-outlined-warn-hover-background: var(--color-warning-light) !important;
+  --p-button-outlined-warn-active-background: var(--color-warning-light) !important;
+
+  --p-button-outlined-danger-color: var(--color-danger-text) !important;
+  --p-button-outlined-danger-border-color: var(--color-danger-muted) !important;
+  --p-button-outlined-danger-hover-background: var(--color-danger-light) !important;
+  --p-button-outlined-danger-active-background: var(--color-danger-light) !important;
+
+  /* button.outlined.plain.* intentionally NOT set — no weoc-ui equivalent,
+     see scope note in the header comment above. */
+
+  /* ── Text ([text]="true") — sourced from .wui-btn.ghost.{color} ──
+     ("Ghost" is weoc-ui's name for a no-border, no-fill-until-interaction
+     button — the closest real match to PrimeNG's Text style.) active.
+     background reuses hover.background (no distinct ghost :active rule in
+     the source). */
+  --p-button-text-primary-color: var(--color-10) !important;
+  --p-button-text-primary-hover-background: var(--color-10-light) !important;
+  --p-button-text-primary-active-background: var(--color-10-light) !important;
+
+  --p-button-text-secondary-color: var(--color-text-secondary) !important;
+  --p-button-text-secondary-hover-background: var(--color-secondary-light) !important;
+  --p-button-text-secondary-active-background: var(--color-secondary-light) !important;
+
+  --p-button-text-success-color: var(--color-success-text) !important;
+  --p-button-text-success-hover-background: var(--color-success-light) !important;
+  --p-button-text-success-active-background: var(--color-success-light) !important;
+
+  --p-button-text-info-color: var(--color-info-text) !important;
+  --p-button-text-info-hover-background: var(--color-info-light) !important;
+  --p-button-text-info-active-background: var(--color-info-light) !important;
+
+  /* warn -> weoc-ui's `warning`, same mapping rationale as the solid group */
+  --p-button-text-warn-color: var(--color-warning-text) !important;
+  --p-button-text-warn-hover-background: var(--color-warning-light) !important;
+  --p-button-text-warn-active-background: var(--color-warning-light) !important;
+
+  --p-button-text-danger-color: var(--color-danger-text) !important;
+  --p-button-text-danger-hover-background: var(--color-danger-light) !important;
+  --p-button-text-danger-active-background: var(--color-danger-light) !important;
+
+  /* button.text.plain.* and button.link.* intentionally NOT set — no
+     weoc-ui equivalent, see scope note in the header comment above. */
+}
+
+/* =============================================
+   ConfirmDialog (primeng/confirmdialog) — the smallest token surface bridged
+   so far. Real global tokens confirmed by reading
+   node_modules/@primeuix/styles/dist/confirmdialog/index.mjs: it only adds
+   six of its own custom properties on top of Dialog —
+   --p-confirmdialog-content-gap, --p-confirmdialog-icon-color,
+   --p-confirmdialog-icon-size, --p-confirmdialog-message-color,
+   --p-confirmdialog-message-font-weight, --p-confirmdialog-message-font-size.
+   Everything else (background, border-radius, shadow, header, footer,
+   buttons) is the `.p-dialog` markup ConfirmDialog renders into, so it is
+   already fully bridged by the Dialog block above — nothing further to add
+   for those.
+
+   *** Honesty note: unlike every block above, NONE of these six tokens has
+   a hard 1:1 WebEOC source. Read in full: WUI.confirm()'s buildConfirmModal
+   in JS/weoc-ui.js (repo root) builds only a `.wui-modal-title` +
+   `<p data-wui-confirm-msg-el>` inside `.wui-modal-body` + ghost-secondary
+   Cancel / primary OK buttons in `.wui-modal-footer` — there is no icon
+   element at all, and the message `<p>` carries no inline style or class of
+   its own. So every value below is either a soft default (no equivalent
+   exists to source from) or an inferred default (derived from what actually
+   renders via inheritance, not from an explicit rule) — never a literal
+   copied property value. Each is labeled individually: ***
+
+     --p-confirmdialog-content-gap: var(--space-3)
+       Soft default. This is the gap between the icon and the message text.
+       weoc-ui's confirm modal has no icon, so there is nothing to measure an
+       icon-to-message gap from. --space-3 (0.75rem) is reused because it is
+       the same rhythm value already used for header/footer internal spacing
+       elsewhere in this file's Dialog block — a reasonable, not sourced,
+       choice.
+
+     --p-confirmdialog-icon-color: var(--color-warning)
+       Soft default. weoc-ui's confirm modal renders no icon at all, so there
+       is no color to copy. --color-warning is chosen because it is
+       semantically the right tone for a confirm/warning prompt (and is the
+       exact token this file's Button block already bridges for PrimeNG's
+       `warn` severity), not because any weoc-ui confirm-icon rule says so.
+
+     --p-confirmdialog-icon-size: var(--icon-lg)
+       Soft default, same reasoning as icon-color — no icon exists in the
+       source to size against. --icon-lg (1.5rem) is confirmed to exist in
+       agency-theme.css and picked as a reasonable icon scale for a modal
+       header, not derived from any real rule.
+
+     --p-confirmdialog-message-color: var(--color-text-primary)
+       Inferred default. buildConfirmModal's message `<p>` has no color rule
+       of its own, and .wui-modal-body (CSS/weoc-ui/weoc-overlays.css) sets
+       none either — confirmed by reading both. The color actually rendered
+       is inherited all the way from `body { color: var(--color-text-primary)
+       }` in CSS/weoc-ui/weoc-reset.css. So this value matches real rendered
+       behavior, but there is no explicit confirm-dialog-specific rule to
+       point to — it is inheritance, not a targeted source.
+
+     --p-confirmdialog-message-font-weight: var(--font-regular)
+       Inferred default, same inheritance chain as message-color. No
+       font-weight rule exists on the message `<p>`, `.wui-modal-body`, or
+       any `p` element reset in weoc-reset.css — the browser's normal-weight
+       default is what actually renders. --font-regular (400) is confirmed to
+       exist in agency-theme.css and matches that rendered default weight,
+       not an explicit source rule.
+
+     --p-confirmdialog-message-font-size: var(--text-base)
+       Inferred default — CORRECTED from an initially suggested
+       --text-sm after actually reading the cascade: .wui-modal-body sets no
+       font-size, and weoc-reset.css defines no `p` element reset either
+       (confirmed by reading both files in full). The only font-size rule in
+       the whole chain is `body { font-size: var(--text-base) }` in
+       weoc-reset.css, which the message `<p>` inherits directly. --text-base
+       (1rem) is therefore what the message text actually renders at in
+       practice — --text-sm would have been a smaller, wrong value with no
+       basis in the real cascade.
+
+   Same !important justification as every block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  --p-confirmdialog-content-gap: var(--space-3) !important;
+  --p-confirmdialog-icon-color: var(--color-warning) !important;
+  --p-confirmdialog-icon-size: var(--icon-lg) !important;
+  --p-confirmdialog-message-color: var(--color-text-primary) !important;
+  --p-confirmdialog-message-font-weight: var(--font-regular) !important;
+  --p-confirmdialog-message-font-size: var(--text-base) !important;
+}
+
+/* =============================================
+   Toast (primeng/toast) — the first bridge in this file that is NOT a pure
+   token override. Read this whole block before touching it.
+
+   *** THE ARCHITECTURE MISMATCH ***
+   PrimeNG's Toast design (real dt() tokens confirmed by reading
+   node_modules/@primeuix/styles/dist/toast/index.mjs, defaults confirmed in
+   node_modules/@primeuix/themes/dist/aura/toast/index.mjs) gives EVERY
+   severity (normal/info/warn/error/success/secondary/contrast) its OWN
+   distinct background + border-color + color + detail-color + shadow — e.g.
+   Aura's `success` is a mint-tinted card (`color-mix(... {green.50} ...)`
+   background, `{green.200}` border, `{green.600}` text), `error` is a
+   red-tinted card, etc. The whole design is "solid colored card per
+   severity."
+
+   weoc-ui's own toast (`.wui-toast` etc., CSS/weoc-ui/weoc-feedback.css,
+   repo root, section 5, read in full to confirm) is designed the opposite
+   way: EVERY severity shares the exact SAME neutral card —
+   `.wui-toast { background: var(--color-30); border: 1px solid
+   var(--color-border); }` — with no severity-specific background or border
+   rule anywhere. Severity is expressed only by
+   `border-inline-start: var(--border-sm) solid var(--_accent, ...)` (a
+   colored left accent rail, `--_accent` set per severity class, e.g.
+   `.wui-toast.success { --_accent: var(--color-success-text); }`) plus the
+   icon color reusing the same `--_accent`. Title/message text color
+   (`.wui-toast-title` / `.wui-toast-msg`) is ALSO the same neutral pair for
+   every severity — `var(--color-text-primary)` / `var(--color-text-
+   secondary)` — never tinted.
+
+   A pure token override cannot reproduce this by itself: dt('toast.
+   success.*') and dt('toast.error.*') etc. are independent slots, and
+   setting them all to the same neutral value (Tier 1, below) removes the
+   tinting but ALSO removes any severity differentiation at all, since
+   PrimeNG has no separate token for "the accent rail" — that visual element
+   simply does not exist in PrimeNG's own design. So this bridge is split
+   into two tiers, per the task's design conversation ("if weoc-ui has a
+   visual detail PrimeNG's token surface can't express, write a small
+   override CSS block targeting PrimeNG's own selectors" — the same
+   legitimate escape hatch already used nowhere else in this file until now,
+   because every prior component's weoc-ui design happened to fit PrimeNG's
+   token surface 1:1. Toast is the first one that genuinely doesn't):
+
+   TIER 1 (below, inside :root, exactly like every block above it): override
+   every severity's background/border.color/color/detail.color/shadow to the
+   SAME neutral values, plus the shared (non-per-severity) structural tokens.
+   This alone gets weoc-ui's "neutral card" look but loses severity
+   differentiation.
+
+   TIER 2 (the plain CSS rule block further below, NOT inside :root): add
+   back the ONE thing Tier 1 structurally cannot express — the colored
+   left accent rail — by targeting PrimeNG's own real CSS classes directly.
+   Confirmed by reading node_modules/primeng/fesm2022/primeng-toast.mjs
+   (ToastClasses, ~line 38-44): PrimeNG applies `.p-toast-message-normal` /
+   `-info` / `-warn` / `-error` / `-success` / `-secondary` / `-contrast` to
+   each rendered message, and `.p-toast-message-content` (PrimeNG's own inner
+   wrapper class) is exactly where `.wui-toast`'s own
+   `border-inline-start` rail rule would land if weoc-ui's markup were
+   reused verbatim. No `!important` is needed here (unlike Tier 1) because
+   these are brand new selectors this stylesheet introduces, not a fight
+   against PrimeNG's runtime-injected `:root { --p-* }` rule — there is
+   nothing already targeting `.p-toast-message-content` to out-cascade.
+
+   `.wui-toast.secondary` / `.wui-toast.contrast` do not exist in weoc-ui —
+   skipped entirely below, same "no weoc-ui equivalent" pattern already
+   established for button.help/contrast/link etc. earlier in this file.
+   PrimeNG's `normal` severity (its default / no-severity-set case) is mapped
+   to weoc-ui's `.wui-toast.primary` equivalent (`--color-10`), since that is
+   weoc-ui's own default/primary accent tone.
+
+   All tokens named below were confirmed to already exist in the ported
+   angular/packages/weoc-ui-css/tokens/agency-theme.css (--color-success-
+   text, --color-danger-text, --color-warning-text, --color-info-text,
+   --border-sm, --color-10, --color-text-ui all present) — NONE needed
+   porting from the original repo-root agency-theme.css for this task.
+
+   Real weoc-ui source values below, all read directly from
+   CSS/weoc-ui/weoc-feedback.css section 5 (.wui-toast / -icon / -body /
+   -title / -msg / -close), not guessed:
+     .wui-toast            { gap: var(--space-3); padding: var(--space-3)
+                              var(--space-4); background: var(--color-30);
+                              border: 1px solid var(--color-border);
+                              border-radius: var(--border-radius);
+                              box-shadow: var(--shadow-lg); }
+     .wui-toast-icon        { font-size: var(--text-lg); margin-top: 1px; }
+     .wui-toast-body        { gap: 2px; }
+     .wui-toast-title       { font-size: var(--text-xs);
+                               font-weight: var(--font-semibold);
+                               color: var(--color-text-primary); }
+     .wui-toast-msg         { font-size: var(--text-xs);
+                               font-weight: var(--font-medium);
+                               color: var(--color-text-secondary); }
+     .wui-toast-close       { width/height: var(--icon-lg);
+                               border-radius: var(--radius-sm); }
+     .wui-toast-close .material-symbols-outlined { font-size: var(--icon-sm); }
+
+   toast.border.width maps to `.wui-toast`'s own base `1px solid` border
+   (its EVERY-side border, distinct from the thicker `--border-sm`
+   inline-start rail added on top of it) — confirmed literal `1px`, not
+   `--border-sm`; `--border-sm` is reserved for the Tier 2 rail below only.
+
+   *** Explicitly OUT of scope, left at Aura defaults (deliberate, not an
+   oversight) ***
+     - toast.secondary.*, toast.contrast.*   (no weoc-ui equivalent, see above)
+     - toast.width, toast.blur               (weoc-ui's card has a fully
+       opaque `--color-30` background, so `backdrop-filter: blur(...)` has no
+       visible effect regardless of value — not worth bridging)
+     - toast.{severity}.close.button.hover.background,
+       toast.{severity}.close.button.focus.ring.*  (per-severity close-button
+       interaction states; weoc-ui's own `.wui-toast-close:hover` uses a
+       single neutral `--color-hover` for every severity with no distinct
+       per-severity source to justify five separate overrides here — left at
+       Aura's defaults, out of scope for this task's token list)
+
+   Same !important justification as every Tier 1 block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  /* ── Shared (not per-severity) ── */
+  --p-toast-border-radius: var(--border-radius) !important;
+  --p-toast-border-width: 1px !important;
+  --p-toast-content-gap: var(--space-3) !important;
+  --p-toast-content-padding: var(--space-3) var(--space-4) !important;
+  /* Literal, matches .wui-toast-icon's own `margin-top: 1px` (no left/right
+     margin — inter-element spacing is handled by the flex `gap` above). */
+  --p-toast-icon-margin: 1px 0 0 0 !important;
+  --p-toast-icon-size: var(--text-lg) !important;
+  /* Bonus exact match beyond the task's explicit list: .wui-toast-body's own
+     `gap: 2px` between title and message, sourced directly, not guessed. */
+  --p-toast-text-gap: 2px !important;
+  --p-toast-summary-font-size: var(--text-xs) !important;
+  --p-toast-summary-font-weight: var(--font-semibold) !important;
+  --p-toast-detail-font-size: var(--text-xs) !important;
+  --p-toast-detail-font-weight: var(--font-medium) !important;
+  --p-toast-close-button-width: var(--icon-lg) !important;
+  --p-toast-close-button-height: var(--icon-lg) !important;
+  --p-toast-close-button-border-radius: var(--radius-sm) !important;
+  --p-toast-close-icon-size: var(--icon-sm) !important;
+
+  /* ── Per-severity — INTENTIONALLY IDENTICAL across all five, matching
+     weoc-ui's "one neutral card, no severity-tinted background" design.
+     This is the opposite of Aura's per-severity tinted defaults — that
+     inversion is the entire point of this bridge, not a mistake. Severity
+     differentiation is restored below via the Tier 2 accent-rail rule,
+     which is the ONLY place these severities visually differ. ── */
+  --p-toast-normal-background: var(--color-30) !important;
+  --p-toast-normal-border-color: var(--color-border) !important;
+  --p-toast-normal-color: var(--color-text-primary) !important;
+  --p-toast-normal-detail-color: var(--color-text-secondary) !important;
+  --p-toast-normal-shadow: var(--shadow-lg) !important;
+
+  --p-toast-info-background: var(--color-30) !important;
+  --p-toast-info-border-color: var(--color-border) !important;
+  --p-toast-info-color: var(--color-text-primary) !important;
+  --p-toast-info-detail-color: var(--color-text-secondary) !important;
+  --p-toast-info-shadow: var(--shadow-lg) !important;
+
+  --p-toast-warn-background: var(--color-30) !important;
+  --p-toast-warn-border-color: var(--color-border) !important;
+  --p-toast-warn-color: var(--color-text-primary) !important;
+  --p-toast-warn-detail-color: var(--color-text-secondary) !important;
+  --p-toast-warn-shadow: var(--shadow-lg) !important;
+
+  --p-toast-error-background: var(--color-30) !important;
+  --p-toast-error-border-color: var(--color-border) !important;
+  --p-toast-error-color: var(--color-text-primary) !important;
+  --p-toast-error-detail-color: var(--color-text-secondary) !important;
+  --p-toast-error-shadow: var(--shadow-lg) !important;
+
+  --p-toast-success-background: var(--color-30) !important;
+  --p-toast-success-border-color: var(--color-border) !important;
+  --p-toast-success-color: var(--color-text-primary) !important;
+  --p-toast-success-detail-color: var(--color-text-secondary) !important;
+  --p-toast-success-shadow: var(--shadow-lg) !important;
+
+  /* toast.secondary.* / toast.contrast.* intentionally NOT set — no
+     weoc-ui equivalent, see scope note in the header comment above. */
+}
+
+/* ── Tier 2: the accent rail Tier 1's token surface cannot express ──
+   Targets PrimeNG's own real `.p-toast-message-{severity}
+   .p-toast-message-content` selectors directly (confirmed in
+   node_modules/primeng/fesm2022/primeng-toast.mjs). No !important: these
+   are new selectors, not a fight against PrimeNG's runtime-injected :root
+   rule. `var(--border-sm)` matches `.wui-toast`'s own rail thickness
+   exactly; the accent colors match each `.wui-toast.{severity}`'s own
+   `--_accent` value read directly from weoc-feedback.css. */
+.p-toast-message-success .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-success-text); }
+.p-toast-message-error .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-danger-text); }
+.p-toast-message-warn .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-warning-text); }
+.p-toast-message-info .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-info-text); }
+.p-toast-message-normal .p-toast-message-content { border-inline-start: var(--border-sm) solid var(--color-10); }
+
+/* =============================================
+   Tabs (primeng/tabs) — the composable `Tabs` / `TabList` / `Tab` /
+   `TabPanels` / `TabPanel` API (exported from `primeng/tabs`, selectors
+   `p-tabs` / `p-tablist` / `p-tab` / `p-tabpanels` / `p-tabpanel` — confirmed
+   by reading node_modules/primeng/fesm2022/primeng-tabs.mjs). This is NOT
+   the older `TabView`/`primeng/tabview`. Real global tokens confirmed by
+   grepping every dt('tabs.*') call in
+   node_modules/@primeuix/styles/dist/tabs/index.mjs; the CSS-variable name
+   for each dotted/camelCase token path (e.g. `tabs.tablist.borderWidth`,
+   `tabs.activeBar.background`, `tabs.navButton.hoverColor`) is confirmed by
+   cross-referencing the flattened token list in
+   node_modules/@primeuix/themes/tokens/index.mjs against the naming pattern
+   already established by every `--p-*` variable used elsewhere in this file
+   (dashed component + dashed remaining path).
+
+   *** Simpler than Button/Toast — no per-severity multiplication ***
+   Tabs has exactly one visual identity, not Button's six severities x three
+   variants or Toast's five tinted-vs-neutral severities. Every token below
+   is set exactly once, and (unlike Toast) every one of them lands cleanly
+   on weoc-ui's own real tab-strip markup with no architecture mismatch —
+   see the two exceptions called out below, neither of which needed a
+   targeted CSS override.
+
+   Mapped against weoc-ui's real components, read directly: `.wui-hdr-tabs`
+   (the tablist) and `.wui-hdr-tab` (an individual tab), both in
+   CSS/weoc-ui/weoc-navigation.css (repo root); `.wui-tab-panel` (the panel
+   body), in CSS/weoc-ui/weoc-layout.css (repo root).
+
+   *** tabs.active.bar.* — a clean pure-token translation, NO override
+   needed (contrast with Toast, which genuinely needed one) ***
+   PrimeNG's active-tab indicator is a real, separate sliding DOM element
+   (`.p-tablist-active-bar`) — a structurally different mechanism from
+   weoc-ui's `.wui-hdr-tab.active`, which has no separate indicator at all:
+   it just flips its own `border-bottom-color` from transparent to
+   `var(--color-10)` on the tab element itself, no slide, no extra element.
+   Despite that structural difference, PrimeNG's own token model already has
+   a slot that expresses the exact visual result weoc-ui wants —
+   `tabs.active.bar.background` (color) and `tabs.active.bar.height`
+   (thickness) reproduce weoc-ui's colored underline with pure tokens alone.
+   This is the opposite situation from Toast's accent rail, where PrimeNG's
+   token surface had NO slot for the visual element at all and a targeted
+   CSS override into `.p-toast-message-content` was required — here the slot
+   already exists, so no override is written. `tabs.active.bar.bottom` has
+   no literal weoc-ui source (there is no separate indicator element to read
+   an offset from) and is set to `0` so the bar sits flush with the tab's own
+   bottom edge, matching where weoc-ui's `border-bottom` actually sits —
+   NOT Aura's own default `-1px` (confirmed in
+   node_modules/@primeuix/themes/dist/aura/tabs/index.mjs), which exists
+   only to hide the seam against Aura's own tablist-border overlap trick, a
+   trick weoc-ui's design does not use (its tab border and tablist border
+   are visually independent, per `.wui-hdr-tabs`/`.wui-hdr-tab` above).
+
+   *** tabs.nav.button.* — no weoc-ui equivalent, left unset ***
+   These style the prev/next scroll-arrow buttons PrimeNG shows when a
+   tablist's content overflows (`.p-tablist-nav-button`). weoc-ui's own
+   `.wui-hdr-tabs` has no such control: it is plain `overflow-x: auto` with
+   `scrollbar-width: none` (drag/swipe/trackpad scroll only — confirmed by
+   reading the rule directly above). The `.wui-fab.tabs-scroll-left/-right`
+   buttons also present in weoc-navigation.css are a separate, opt-in
+   feature bolted on by board-specific JS on top of the base tab-strip, not
+   part of its default style, and have no dt() token to map to regardless.
+   Left unset, same "no weoc-ui equivalent" pattern already used for
+   button.help/.contrast/.link/.badge in the Button block above — not an
+   oversight.
+
+   *** tabs.tabpanel.focus.ring.* — also no weoc-ui equivalent, left unset ***
+   `.wui-tab-panel` (weoc-layout.css) carries no `:focus-visible` rule of its
+   own — confirmed by grepping every `:focus-visible` selector across
+   CSS/weoc-ui/; it is a content region, not an interactive control, and
+   nothing in the library applies a focus ring to a panel container. Left
+   unset for the same "no weoc-ui equivalent" reason as nav.button above.
+
+   *** tabs.tab.focus.ring.* — extrapolated from weoc-ui's ONE global
+   focus-visible convention, not a literal per-tab source ***
+   `.wui-hdr-tab` itself has no `:focus-visible` rule of its own (also
+   confirmed by that same grep). The values below instead extend weoc-ui's
+   single general-purpose focus convention, read directly in
+   CSS/weoc-ui/weoc-reset.css: `button:focus-visible { outline: 2px solid
+   var(--color-10); outline-offset: 2px; }` — the same convention this
+   file's Button block already relied on for its own focus-ring
+   extrapolation (mismatch #2 in the Button section above). `focus.ring.
+   shadow` is set to `none`, matching that outline-only convention (no
+   box-shadow anywhere in weoc-ui's focus treatment, same exact-match
+   reasoning as Button's `focus.ring.shadow: none` above).
+
+   tabs.tab.background / .hover.background / .active.background are all set
+   to `transparent` — a hard-sourced fact, not a soft default: `.wui-hdr-tab`
+   (resting), `:hover`, and `.active` (read in full above) never set a
+   background property in ANY state, only `color` and `border-bottom-color`
+   change. Likewise tabs.tabpanel.background is `transparent`: `.wui-tab-
+   panel` sets no background property at all — same absence-is-the-fact
+   pattern, confirmed by reading weoc-layout.css directly.
+
+   tabs.tab.border.width uses the bottom-only shorthand `0 0 2px 0`, mirroring
+   the exact shorthand pattern Aura's own default uses (`"0 0 1px 0"`,
+   confirmed in aura/tabs/index.mjs) to match `.wui-hdr-tab`'s real
+   `border-bottom: 2px solid transparent`. tabs.tab.margin is `0` — a
+   hard-sourced absence, not a filler default: `.wui-hdr-tab` sets no margin
+   of its own (adjacent-tab spacing comes only from each tab's own padding,
+   confirmed by reading the rule directly, unlike Aura's default `"0 0 -1px
+   0"` which exists purely for its own border-overlap trick, not relevant
+   here). tabs.transition.duration is the literal `0.15s`, matching
+   `.wui-hdr-tab`'s own `transition: all 0.15s` — weoc-ui-css has no
+   dedicated `--duration-*` token to reference instead (same reasoning as
+   `--p-button-transition-duration` above).
+
+   All weoc-ui-css tokens referenced below (--color-30, --color-border,
+   --border-radius is NOT used here — tabs has no tablist.border.radius
+   token at all, confirmed absent from the dt() list — --space-sm, --space-3,
+   --text-xs, --font-bold, --space-2, --color-text-secondary, --color-text-
+   primary, --color-10) were all confirmed present in
+   angular/packages/weoc-ui-css/tokens/agency-theme.css before use.
+
+   Same !important justification as every block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  /* ── Tablist (.wui-hdr-tabs) ── */
+  --p-tabs-tablist-background: var(--color-30) !important;
+  --p-tabs-tablist-border-color: var(--color-border) !important;
+  /* Literal, .wui-hdr-tabs's own `border: 1px solid ...` — no dedicated
+     weoc-ui border-width token to reference instead. */
+  --p-tabs-tablist-border-width: 1px !important;
+
+  /* ── Tab (.wui-hdr-tab) ── */
+  --p-tabs-tab-background: transparent !important;
+  --p-tabs-tab-color: var(--color-text-secondary) !important;
+  --p-tabs-tab-border-color: transparent !important;
+  --p-tabs-tab-border-width: 0 0 2px 0 !important;
+  --p-tabs-tab-padding: var(--space-sm) var(--space-3) !important;
+  --p-tabs-tab-margin: 0 !important;
+  --p-tabs-tab-gap: var(--space-2) !important;
+  --p-tabs-tab-font-size: var(--text-xs) !important;
+  --p-tabs-tab-font-weight: var(--font-bold) !important;
+  --p-tabs-tab-hover-background: transparent !important;
+  --p-tabs-tab-hover-color: var(--color-text-primary) !important;
+  /* .wui-hdr-tab:hover only changes color, never border-bottom-color (that
+     is .active's job) — hard-sourced, not a copy of the resting value. */
+  --p-tabs-tab-hover-border-color: transparent !important;
+  --p-tabs-tab-active-background: transparent !important;
+  --p-tabs-tab-active-color: var(--color-10) !important;
+  --p-tabs-tab-active-border-color: var(--color-10) !important;
+
+  /* Tab focus ring — extrapolated from weoc-ui's single global
+     button:focus-visible convention (weoc-reset.css), see header note. */
+  --p-tabs-tab-focus-ring-width: 2px !important;
+  --p-tabs-tab-focus-ring-style: solid !important;
+  --p-tabs-tab-focus-ring-color: var(--color-10) !important;
+  --p-tabs-tab-focus-ring-offset: 2px !important;
+  --p-tabs-tab-focus-ring-shadow: none !important;
+
+  /* Active bar — pure-token translation of a structurally different
+     indicator mechanism, see header note. No CSS override needed. */
+  --p-tabs-active-bar-background: var(--color-10) !important;
+  --p-tabs-active-bar-height: 2px !important;
+  --p-tabs-active-bar-bottom: 0 !important;
+
+  /* ── Tab panel (.wui-tab-panel) ── */
+  --p-tabs-tabpanel-background: transparent !important;
+  --p-tabs-tabpanel-color: var(--color-text-primary) !important;
+  --p-tabs-tabpanel-padding: 0 !important;
+
+  /* Literal, .wui-hdr-tab's own `transition: all 0.15s` — no dedicated
+     weoc-ui --duration-* token to reference instead (same reasoning as
+     --p-button-transition-duration above). */
+  --p-tabs-transition-duration: 0.15s !important;
+
+  /* tabs.nav.button.* and tabs.tabpanel.focus.ring.* intentionally NOT
+     set — no weoc-ui equivalent, see header notes above. */
+}
+
+/* =============================================
+   Menu (primeng/menu) — the Dropdown equivalent. weoc-ui has no separate
+   "Select-style dropdown menu" component distinct from a popover-anchored
+   action list, so PrimeNG's `Menu` (selector `p-menu`, confirmed by reading
+   node_modules/primeng/fesm2022/primeng-menu.mjs directly — inputs `model`
+   and `popup` and method `toggle(event)` all confirmed present there, same
+   toggle-via-template-ref pattern already used for Popover above) is mapped
+   onto weoc-ui's real `.wui-dropdown` / `.wui-dropdown-item` /
+   `.wui-dropdown-item-icon` component (CSS/weoc-ui/weoc-overlays.css,
+   section 2, read in full to confirm every value below).
+
+   Real global tokens confirmed by grepping every dt('menu.*') call in
+   node_modules/@primeuix/styles/dist/menu/index.mjs, and their generated
+   CSS custom-property names confirmed independently by reading @primeuix/
+   styled's own dt()/getVariableName implementation
+   (node_modules/@primeuix/styled/dist/index.mjs): it generically lowercases
+   and dash-joins ANY dotted token path and prefixes `--p-`, so e.g.
+   `menu.item.icon.size` -> `--p-menu-item-icon-size` regardless of whether
+   that exact path is pre-registered in @primeuix/themes' token catalog
+   (some of the item/label/submenu paths used below are NOT listed in
+   node_modules/@primeuix/themes/tokens/index.mjs, which only catalogues a
+   subset — but the dt() calls literally appear in the shipped menu CSS, and
+   the generic conversion function confirms the resulting variable name is
+   still exactly what dt() would emit).
+
+   Direct 1:1 mappings, hard-sourced from weoc-overlays.css's `.wui-dropdown`
+   rule:
+     menu.background        -> `.wui-dropdown { background: var(--color-30) }`
+     menu.border.color      -> `.wui-dropdown { border: 1px solid var(--color-border) }`
+     menu.border.radius     -> `.wui-dropdown { border-radius: var(--border-radius) }`
+     menu.shadow            -> `.wui-dropdown { box-shadow: var(--shadow-md) }`
+                                (same --shadow-md elevation as Popover above —
+                                confirmed intentional: weoc-ui's dropdown and
+                                popover share one card-elevation level, unlike
+                                Dialog's --shadow-xl / Drawer's --shadow-lg)
+     menu.list.padding      -> `.wui-dropdown { padding: var(--space-1) 0 }`
+     menu.item.padding      -> `.wui-dropdown-item { padding: var(--space-2) var(--space-4) }`
+     menu.item.gap          -> `.wui-dropdown-item { gap: var(--space-2) }`
+                                (gap between the item's own icon and label)
+     menu.item.label.font.size -> `.wui-dropdown-item { font-size: var(--text-sm) }`
+     menu.item.icon.size     -> `.wui-dropdown-item-icon { font-size: var(--text-md) }`
+
+   *** menu.item.label.font.weight -> inferred default, same pattern as
+   ConfirmDialog's message-font-weight above *** `.wui-dropdown-item` sets no
+   `font-weight` of its own (confirmed by re-reading the rule in full), and
+   neither does `body` in CSS/weoc-ui/weoc-reset.css — no font-weight reset
+   exists anywhere in the cascade reaching it. The browser's normal-weight
+   default is what actually renders. `--font-regular` (400) is confirmed
+   present in agency-theme.css and matches that rendered weight — inferred
+   from the absence of any overriding rule, not copied from an explicit
+   source.
+     menu.item.color         -> `.wui-dropdown-item { color: var(--color-text-primary) }`
+     menu.item.icon.color    -> `.wui-dropdown-item-icon { color: var(--color-text-primary) }`
+     menu.item.focus.background -> `.wui-dropdown-item:hover { background: var(--color-10-light) }`
+     menu.item.focus.color      -> `.wui-dropdown-item:hover { color: var(--color-10) }`
+     menu.item.icon.focus.color -> `.wui-dropdown-item:hover .wui-dropdown-item-icon { color: var(--color-10) }`
+       (weoc-ui's dropdown item has no separate keyboard-focus rule, only
+       `:hover` — but this is not an extrapolation: PrimeNG's own menu CSS
+       applies `menu.item.focus.*` to BOTH `.p-menu-item.p-focus` (keyboard)
+       AND the plain `:hover` selector, confirmed by reading the
+       `dist/menu/index.mjs` style string directly — so weoc-ui's single
+       hover rule is already the correct, complete 1:1 source for this
+       token, not a partial one.)
+     menu.transition.duration -> `.wui-dropdown-item { transition: background 0.12s }`
+       (literal 0.12s — distinct from Button/Tabs' 0.15s transition,
+       confirmed by re-reading this rule rather than assumed identical)
+     menu.color -> not set by `.wui-dropdown` itself (the container has no
+       own `color` rule), but every item already carries its own explicit
+       `color`, so this is set to the same `--color-text-primary` value for
+       consistency/inheritance safety (e.g. a custom item template with no
+       color of its own) rather than left at Aura's default.
+
+   *** menu.list.gap -> 0, hard-sourced absence, not a filler default ***
+   `.wui-dropdown-item` rules stack with only their own padding — there is no
+   separate inter-item gap property anywhere in the dropdown rule set
+   (confirmed by reading the full section). Aura's own default is a nonzero
+   gap; weoc-ui's real rendered spacing between adjacent items is zero, so
+   this is set to literal `0` to match actual behavior, not omitted.
+
+   *** menu.item.border.radius -> 0, soft default ***
+   `.wui-dropdown-item` has no `border-radius` of its own (confirmed absent
+   from the rule) — items are full-width rows with only their host
+   `.wui-dropdown`'s own radius (already handled by menu.border.radius plus
+   its `overflow` clipping the corners). There is no per-item radius to
+   source, so this is soft-defaulted to `0` rather than left at Aura's
+   default reasoning.
+
+   *** menu.separator.border.color -> soft default, no separator exists ***
+   weoc-ui's dropdown has NO separator/divider element at all (grepped,
+   confirmed absent from weoc-overlays.css section 2 in full). There is
+   nothing to source a divider color from. Soft-defaulted to
+   `var(--color-border)` (the same neutral divider token every other bridged
+   overlay in this file already reuses for its own internal dividers) rather
+   than left at Aura's default, since a visible separator IS added to this
+   demo's PrimeNG menu model (`{ separator: true }`) and needs to look
+   at-home even without a literal weoc-ui rule to copy.
+
+   *** menu.submenu.* group -> entirely unset, no weoc-ui equivalent ***
+   weoc-ui's dropdown has NO submenu/nested-menu concept at all (grepped,
+   confirmed absent). The task brief refers to this group informally as
+   "submenu.*", but the real generated CSS variables are namespaced under
+   the Menu component itself (`--p-menu-submenu-*`, e.g.
+   `--p-menu-submenu-icon-color`, `--p-menu-submenu-label-font-size`) — NOT
+   a standalone `--p-submenu-*` prefix. All eight of them
+   (icon.color/.focus.color/.icon.size/.label.background/.label.color/
+   .label.font.size/.label.font.weight/.label.padding) are left unset, same
+   "no weoc-ui equivalent" pattern already used for Button's help/contrast
+   and Tabs' nav.button.* / tabpanel.focus.ring.* — not an oversight.
+
+   All weoc-ui-css tokens referenced below (--color-30, --color-border,
+   --border-radius, --shadow-md, --space-1, --space-2, --space-4, --text-sm,
+   --text-md, --color-text-primary, --color-10-light, --color-10) were
+   confirmed present in angular/packages/weoc-ui-css/tokens/agency-theme.css
+   before use.
+
+   Same !important justification as every block above: PrimeNG's
+   ThemeService injects its own :root { --p-* } rule at runtime, after this
+   stylesheet, so a plain override loses the cascade. */
+:root {
+  --p-menu-background: var(--color-30) !important;
+  --p-menu-color: var(--color-text-primary) !important;
+  --p-menu-border-color: var(--color-border) !important;
+  --p-menu-border-radius: var(--border-radius) !important;
+  --p-menu-shadow: var(--shadow-md) !important;
+  --p-menu-transition-duration: 0.12s !important;
+
+  --p-menu-list-padding: var(--space-1) 0 !important;
+  /* Hard-sourced absence, not a filler default — see header note. */
+  --p-menu-list-gap: 0 !important;
+
+  --p-menu-item-padding: var(--space-2) var(--space-4) !important;
+  --p-menu-item-gap: var(--space-2) !important;
+  --p-menu-item-color: var(--color-text-primary) !important;
+  --p-menu-item-icon-color: var(--color-text-primary) !important;
+  --p-menu-item-icon-size: var(--text-md) !important;
+  --p-menu-item-label-font-size: var(--text-sm) !important;
+  /* Inferred default, no font-weight rule anywhere in the cascade — see
+     header note. */
+  --p-menu-item-label-font-weight: var(--font-regular) !important;
+  --p-menu-item-focus-background: var(--color-10-light) !important;
+  --p-menu-item-focus-color: var(--color-10) !important;
+  --p-menu-item-icon-focus-color: var(--color-10) !important;
+  /* Soft default, no per-item radius exists in the source — see header note. */
+  --p-menu-item-border-radius: 0 !important;
+
+  /* Soft default, no separator element exists in weoc-ui's dropdown to
+     source from — see header note. */
+  --p-menu-separator-border-color: var(--color-border) !important;
+
+  /* menu.submenu.* (real vars --p-menu-submenu-*) intentionally NOT set —
+     no weoc-ui equivalent, see header note above. */
+}

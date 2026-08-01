@@ -1,0 +1,531 @@
+/* =============================================
+   weoc-grid.css
+   Grid system, flex utilities, and row/col layout.
+   Loaded via weoc-ui.css barrel after weoc-layout.
+   Requires: agency-theme.css (tokens).
+   ============================================= */
+
+/*
+  ┌─────────────────────────────────────────────┐
+  │  1. ROW / COL SYSTEM                        │
+  │     Bootstrap-compatible API, CSS Grid core  │
+  │  2. CSS GRID UTILITIES                       │
+  │     .wui-grid + column-count helpers         │
+  │  3. FLEX UTILITIES                           │
+  │     direction, wrap, justify, align, grow    │
+  │  4. GAP UTILITIES                            │
+  │     .wui-gap-{0-8}                           │
+  └─────────────────────────────────────────────┘
+*/
+
+/* ═══════════════════════════════════════════════
+   §0  CONTAINER
+   Centered, responsive max-width content column
+   (Bootstrap-compatible breakpoints). .wui-container
+   for stepped widths; .wui-container-fluid for full
+   width with the same side gutters.
+   ═══════════════════════════════════════════════ */
+
+.wui-container,
+.wui-container-fluid {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+  box-sizing: border-box;
+}
+
+@media (min-width: 576px)  { .wui-container { max-width: 540px; } }
+@media (min-width: 768px)  { .wui-container { max-width: 720px; } }
+@media (min-width: 992px)  { .wui-container { max-width: 960px; } }
+@media (min-width: 1200px) { .wui-container { max-width: 1140px; } }
+
+/* ═══════════════════════════════════════════════
+   §1  ROW / COL SYSTEM
+   ═══════════════════════════════════════════════
+
+   Usage:
+     <div class="wui-row">
+       <div class="wui-col-8">main</div>
+       <div class="wui-col-4">sidebar</div>
+     </div>
+
+   Responsive (mobile-first, stacks at small screens):
+     <div class="wui-row">
+       <div class="wui-col-12 wui-col-md-8">main</div>
+       <div class="wui-col-12 wui-col-md-4">sidebar</div>
+     </div>
+
+   Breakpoints match Bootstrap:
+     sm  ≥ 576px
+     md  ≥ 768px
+     lg  ≥ 992px
+     xl  ≥ 1200px
+*/
+
+.wui-row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-3);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Gap modifiers on .wui-row */
+.wui-row.g-0 { gap: 0; }
+.wui-row.g-1 { gap: var(--space-1); }
+.wui-row.g-2 { gap: var(--space-2); }
+.wui-row.g-3 { gap: var(--space-3); }
+.wui-row.g-4 { gap: var(--space-4); }
+.wui-row.g-5 { gap: var(--space-5); }
+
+/* Column x-gap only (column-gap) */
+.wui-row.gx-0 { column-gap: 0; }
+.wui-row.gx-1 { column-gap: var(--space-1); }
+.wui-row.gx-2 { column-gap: var(--space-2); }
+.wui-row.gx-3 { column-gap: var(--space-3); }
+.wui-row.gx-4 { column-gap: var(--space-4); }
+.wui-row.gx-5 { column-gap: var(--space-5); }
+
+/* Column y-gap only (row-gap) */
+.wui-row.gy-0 { row-gap: 0; }
+.wui-row.gy-1 { row-gap: var(--space-1); }
+.wui-row.gy-2 { row-gap: var(--space-2); }
+.wui-row.gy-3 { row-gap: var(--space-3); }
+.wui-row.gy-4 { row-gap: var(--space-4); }
+.wui-row.gy-5 { row-gap: var(--space-5); }
+
+/* Align row items vertically */
+.wui-row.align-start   { align-items: start; }
+.wui-row.align-center  { align-items: center; }
+.wui-row.align-end     { align-items: end; }
+.wui-row.align-stretch { align-items: stretch; }
+
+/* ── Base columns (no breakpoint — always applied) ── */
+
+.wui-col      { grid-column: span 1; }   /* default: 1 of 12 */
+.wui-col-auto { grid-column: auto; width: max-content; }
+
+.wui-col-1  { grid-column: span 1;  }
+.wui-col-2  { grid-column: span 2;  }
+.wui-col-3  { grid-column: span 3;  }
+.wui-col-4  { grid-column: span 4;  }
+.wui-col-5  { grid-column: span 5;  }
+.wui-col-6  { grid-column: span 6;  }
+.wui-col-7  { grid-column: span 7;  }
+.wui-col-8  { grid-column: span 8;  }
+.wui-col-9  { grid-column: span 9;  }
+.wui-col-10 { grid-column: span 10; }
+.wui-col-11 { grid-column: span 11; }
+.wui-col-12 { grid-column: span 12; }
+
+/* Full-width shorthand */
+.wui-col-full { grid-column: 1 / -1; }
+
+/* Offsets — push a column right by N */
+.wui-offset-1  { grid-column-start: 2;  }
+.wui-offset-2  { grid-column-start: 3;  }
+.wui-offset-3  { grid-column-start: 4;  }
+.wui-offset-4  { grid-column-start: 5;  }
+.wui-offset-5  { grid-column-start: 6;  }
+.wui-offset-6  { grid-column-start: 7;  }
+
+/* ── sm: ≥ 576px ── */
+@media (min-width: 576px) {
+  .wui-col-sm      { grid-column: span 1; }
+  .wui-col-sm-auto { grid-column: auto; width: max-content; }
+  .wui-col-sm-1    { grid-column: span 1;  }
+  .wui-col-sm-2    { grid-column: span 2;  }
+  .wui-col-sm-3    { grid-column: span 3;  }
+  .wui-col-sm-4    { grid-column: span 4;  }
+  .wui-col-sm-5    { grid-column: span 5;  }
+  .wui-col-sm-6    { grid-column: span 6;  }
+  .wui-col-sm-7    { grid-column: span 7;  }
+  .wui-col-sm-8    { grid-column: span 8;  }
+  .wui-col-sm-9    { grid-column: span 9;  }
+  .wui-col-sm-10   { grid-column: span 10; }
+  .wui-col-sm-11   { grid-column: span 11; }
+  .wui-col-sm-12   { grid-column: span 12; }
+  .wui-col-sm-full { grid-column: 1 / -1; }
+}
+
+/* ── md: ≥ 768px ── */
+@media (min-width: 768px) {
+  .wui-col-md      { grid-column: span 1; }
+  .wui-col-md-auto { grid-column: auto; width: max-content; }
+  .wui-col-md-1    { grid-column: span 1;  }
+  .wui-col-md-2    { grid-column: span 2;  }
+  .wui-col-md-3    { grid-column: span 3;  }
+  .wui-col-md-4    { grid-column: span 4;  }
+  .wui-col-md-5    { grid-column: span 5;  }
+  .wui-col-md-6    { grid-column: span 6;  }
+  .wui-col-md-7    { grid-column: span 7;  }
+  .wui-col-md-8    { grid-column: span 8;  }
+  .wui-col-md-9    { grid-column: span 9;  }
+  .wui-col-md-10   { grid-column: span 10; }
+  .wui-col-md-11   { grid-column: span 11; }
+  .wui-col-md-12   { grid-column: span 12; }
+  .wui-col-md-full { grid-column: 1 / -1; }
+}
+
+/* ── lg: ≥ 992px ── */
+@media (min-width: 992px) {
+  .wui-col-lg      { grid-column: span 1; }
+  .wui-col-lg-auto { grid-column: auto; width: max-content; }
+  .wui-col-lg-1    { grid-column: span 1;  }
+  .wui-col-lg-2    { grid-column: span 2;  }
+  .wui-col-lg-3    { grid-column: span 3;  }
+  .wui-col-lg-4    { grid-column: span 4;  }
+  .wui-col-lg-5    { grid-column: span 5;  }
+  .wui-col-lg-6    { grid-column: span 6;  }
+  .wui-col-lg-7    { grid-column: span 7;  }
+  .wui-col-lg-8    { grid-column: span 8;  }
+  .wui-col-lg-9    { grid-column: span 9;  }
+  .wui-col-lg-10   { grid-column: span 10; }
+  .wui-col-lg-11   { grid-column: span 11; }
+  .wui-col-lg-12   { grid-column: span 12; }
+  .wui-col-lg-full { grid-column: 1 / -1; }
+}
+
+/* ── xl: ≥ 1200px ── */
+@media (min-width: 1200px) {
+  .wui-col-xl      { grid-column: span 1; }
+  .wui-col-xl-auto { grid-column: auto; width: max-content; }
+  .wui-col-xl-1    { grid-column: span 1;  }
+  .wui-col-xl-2    { grid-column: span 2;  }
+  .wui-col-xl-3    { grid-column: span 3;  }
+  .wui-col-xl-4    { grid-column: span 4;  }
+  .wui-col-xl-5    { grid-column: span 5;  }
+  .wui-col-xl-6    { grid-column: span 6;  }
+  .wui-col-xl-7    { grid-column: span 7;  }
+  .wui-col-xl-8    { grid-column: span 8;  }
+  .wui-col-xl-9    { grid-column: span 9;  }
+  .wui-col-xl-10   { grid-column: span 10; }
+  .wui-col-xl-11   { grid-column: span 11; }
+  .wui-col-xl-12   { grid-column: span 12; }
+  .wui-col-xl-full { grid-column: 1 / -1; }
+}
+
+
+/* ═══════════════════════════════════════════════
+   §2  CSS GRID UTILITIES
+   ═══════════════════════════════════════════════
+
+   For quick fixed-column grids without span bookkeeping.
+
+   Usage:
+     <div class="wui-grid wui-grid-3 wui-gap-4">
+       <div>...</div>
+       <div>...</div>
+       <div>...</div>
+     </div>
+
+   Auto-responsive (wraps when columns < min-width):
+     <div class="wui-grid wui-grid-auto wui-gap-3" style="--wui-col-min:240px">
+*/
+
+.wui-grid {
+  display: grid;
+  gap: var(--space-3);
+  box-sizing: border-box;
+}
+
+.wui-grid-1  { grid-template-columns: 1fr; }
+.wui-grid-2  { grid-template-columns: repeat(2,  1fr); }
+.wui-grid-3  { grid-template-columns: repeat(3,  1fr); }
+.wui-grid-4  { grid-template-columns: repeat(4,  1fr); }
+.wui-grid-5  { grid-template-columns: repeat(5,  1fr); }
+.wui-grid-6  { grid-template-columns: repeat(6,  1fr); }
+
+/* Responsive auto-fill (wraps columns when they'd be narrower than --wui-col-min) */
+.wui-grid-auto {
+  grid-template-columns: repeat(auto-fill, minmax(var(--wui-col-min, 200px), 1fr));
+}
+
+/* Responsive auto-fit (stretches last row to fill) */
+.wui-grid-fit {
+  grid-template-columns: repeat(auto-fit, minmax(var(--wui-col-min, 200px), 1fr));
+}
+
+/* Align-items override on any .wui-grid */
+.wui-grid.align-start   { align-items: start; }
+.wui-grid.align-center  { align-items: center; }
+.wui-grid.align-end     { align-items: end; }
+.wui-grid.align-stretch { align-items: stretch; }
+
+/* Span helpers — use inside any .wui-grid */
+.wui-span-2 { grid-column: span 2; }
+.wui-span-3 { grid-column: span 3; }
+.wui-span-4 { grid-column: span 4; }
+.wui-span-full { grid-column: 1 / -1; }
+
+/* Row span helpers */
+.wui-row-span-2 { grid-row: span 2; }
+.wui-row-span-3 { grid-row: span 3; }
+.wui-row-span-4 { grid-row: span 4; }
+
+/* More column spans (use inside any .wui-grid / .wui-bento) */
+.wui-span-5 { grid-column: span 5; }
+.wui-span-6 { grid-column: span 6; }
+
+/* ── Explicit ROWS — fixed-height / bento grids. minmax(0,1fr) so rows
+   distribute the container height instead of overflowing. ── */
+.wui-grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }
+.wui-grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.wui-grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.wui-grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+.wui-grid-rows-5 { grid-template-rows: repeat(5, minmax(0, 1fr)); }
+.wui-grid-rows-6 { grid-template-rows: repeat(6, minmax(0, 1fr)); }
+
+/* Dense packing — backfill holes left by spanning items (ideal for bento maps) */
+.wui-grid-dense { grid-auto-flow: row dense; }
+
+/* Fill the parent's height so the rows share it (non-scrolling single-page grids).
+   Needs min-height:0 on the ancestors up the chain. */
+.wui-grid-fill-h { height: 100%; min-height: 0; }
+
+/* ── Explicit placement — for precise bento maps ── */
+.wui-col-start-1 { grid-column-start: 1; }
+.wui-col-start-2 { grid-column-start: 2; }
+.wui-col-start-3 { grid-column-start: 3; }
+.wui-col-start-4 { grid-column-start: 4; }
+.wui-col-start-5 { grid-column-start: 5; }
+.wui-col-start-6 { grid-column-start: 6; }
+.wui-row-start-1 { grid-row-start: 1; }
+.wui-row-start-2 { grid-row-start: 2; }
+.wui-row-start-3 { grid-row-start: 3; }
+.wui-row-start-4 { grid-row-start: 4; }
+
+/* Let a grid/flex child shrink below its content (companion to .wui-min-w-0) —
+   the missing piece that stops tall content forcing a fixed grid to scroll. */
+.wui-min-h-0 { min-height: 0 !important; }
+
+
+/* ═══════════════════════════════════════════════
+   §3  FLEX UTILITIES
+   ═══════════════════════════════════════════════
+
+   Display utilities:
+     wui-d-none         → display: none
+     wui-d-block        → display: block
+     wui-d-inline       → display: inline
+     wui-d-inline-block → display: inline-block
+
+   Usage:
+     <div class="wui-flex wui-items-center wui-justify-between wui-gap-3">
+       <span>left</span>
+       <button>right</button>
+     </div>
+*/
+
+/* ── Display ── */
+.wui-d-none         { display: none !important; }
+.wui-d-block        { display: block !important; }
+.wui-d-inline       { display: inline !important; }
+.wui-d-inline-block { display: inline-block !important; }
+
+/* Container */
+.wui-flex        { display: flex !important; }
+.wui-inline-flex { display: inline-flex !important; }
+
+/* ── Direction ── */
+.wui-flex-row         { flex-direction: row !important; }
+.wui-flex-row-reverse { flex-direction: row-reverse !important; }
+.wui-flex-col         { flex-direction: column !important; }
+.wui-flex-col-reverse { flex-direction: column-reverse !important; }
+
+/* ── Wrap ── */
+.wui-flex-wrap   { flex-wrap: wrap !important; }
+.wui-flex-nowrap { flex-wrap: nowrap !important; }
+
+/* ── Justify content ── */
+.wui-justify-start   { justify-content: flex-start !important; }
+.wui-justify-end     { justify-content: flex-end !important; }
+.wui-justify-center  { justify-content: center !important; }
+.wui-justify-between { justify-content: space-between !important; }
+.wui-justify-around  { justify-content: space-around !important; }
+.wui-justify-evenly  { justify-content: space-evenly !important; }
+
+/* ── Align items ── */
+.wui-items-start    { align-items: flex-start !important; }
+.wui-items-end      { align-items: flex-end !important; }
+.wui-items-center   { align-items: center !important; }
+.wui-items-stretch  { align-items: stretch !important; }
+.wui-items-baseline { align-items: baseline !important; }
+
+/* ── Align self (on children) ── */
+.wui-self-auto     { align-self: auto !important; }     /* inherit container's align-items */
+.wui-self-start    { align-self: flex-start !important; }
+.wui-self-end      { align-self: flex-end !important; }
+.wui-self-center   { align-self: center !important; }
+.wui-self-stretch  { align-self: stretch !important; }
+.wui-self-baseline { align-self: baseline !important; }
+
+/* ── Flex child sizing ── */
+.wui-flex-1        { flex: 1 1 0% !important; }       /* grow + shrink, zero basis */
+.wui-flex-auto     { flex: 1 1 auto !important; }     /* grow + shrink, natural size */
+.wui-flex-none     { flex: none !important; }         /* rigid — don't grow or shrink */
+.wui-flex-grow     { flex-grow: 1 !important; }       /* grow only */
+.wui-flex-shrink-0 { flex-shrink: 0 !important; }    /* prevent shrinking */
+.wui-min-w-0       { min-width: 0 !important; }       /* allow shrinking below content size */
+
+/* ── Width shortcuts for flex children ── */
+.wui-w-full  { width: 100% !important; }
+.wui-w-auto  { width: auto !important; }
+.wui-w-max   { width: max-content !important; }
+
+/* ── Height shortcuts ── */
+.wui-h-full  { height: 100% !important; }
+.wui-h-auto  { height: auto !important; }
+
+
+/* ═══════════════════════════════════════════════
+   §4  GAP UTILITIES
+   ═══════════════════════════════════════════════
+
+   Works on both .wui-flex and .wui-grid containers,
+   and on .wui-row as standalone modifiers.
+
+   Scale matches the space token scale in agency-theme:
+     wui-gap-xs  →  --space-xs   (~2px)
+     wui-gap-sm  →  --space-sm   (~4px)
+     wui-gap-0   →  0
+     wui-gap-1   →  --space-1    (~4px)
+     wui-gap-2   →  --space-2    (~8px)
+     wui-gap-3   →  --space-3    (~12px)   ← default in most layouts
+     wui-gap-4   →  --space-4    (~16px)
+     wui-gap-5   →  --space-5    (~20px)
+     wui-gap-6   →  --space-6    (~24px)
+     wui-gap-8   →  --space-8    (~32px)
+*/
+
+.wui-gap-0  { gap: 0 !important; }
+.wui-gap-xs { gap: var(--space-xs) !important; }
+.wui-gap-sm { gap: var(--space-sm) !important; }
+.wui-gap-1  { gap: var(--space-1) !important; }
+.wui-gap-2  { gap: var(--space-2) !important; }
+.wui-gap-3  { gap: var(--space-3) !important; }
+.wui-gap-4  { gap: var(--space-4) !important; }
+.wui-gap-5  { gap: var(--space-5) !important; }
+.wui-gap-6  { gap: var(--space-6) !important; }
+.wui-gap-8  { gap: var(--space-8) !important; }
+
+/* Column-gap only */
+.wui-gap-x-0  { column-gap: 0 !important; }
+.wui-gap-x-1  { column-gap: var(--space-1) !important; }
+.wui-gap-x-2  { column-gap: var(--space-2) !important; }
+.wui-gap-x-3  { column-gap: var(--space-3) !important; }
+.wui-gap-x-4  { column-gap: var(--space-4) !important; }
+.wui-gap-x-5  { column-gap: var(--space-5) !important; }
+
+/* Row-gap only */
+.wui-gap-y-0  { row-gap: 0 !important; }
+.wui-gap-y-1  { row-gap: var(--space-1) !important; }
+.wui-gap-y-2  { row-gap: var(--space-2) !important; }
+.wui-gap-y-3  { row-gap: var(--space-3) !important; }
+.wui-gap-y-4  { row-gap: var(--space-4) !important; }
+.wui-gap-y-5  { row-gap: var(--space-5) !important; }
+
+
+/* ═══════════════════════════════════════════════
+   §5  BENTO  (tile / widget dashboard)
+   ═══════════════════════════════════════════════
+
+   A configurable dashboard grid — set EVERYTHING with classes (the vars still
+   work inline for a one-off value).
+
+   Container — .wui-bento + modifiers:
+     .cols-1 … .cols-8            column count
+     .rows-1 … .rows-6            row count (only consumed by .is-page)
+     .is-page                     fixed height, NON-scrolling — rows share the height
+     .cell-sm / .cell-md / .cell-lg   flow auto-row height (ignored when .is-page)
+     gap → reuse .wui-gap-*
+     (one-offs: --wui-bento-cols / --wui-bento-rows / --wui-bento-gap / --wui-bento-row)
+
+   Widgets — a tile is just PLACEMENT (size it with .wui-w-{cols}x{rows}); it holds
+   ONE component. Two ways to make a tile:
+     • the component IS the tile:   <div class="wui-card wui-w-2x2"> … </div>
+     • a bare WRAPPER tile:          <div class="wui-bento-tile wui-w-2x2"> <component/> </div>
+   .wui-bento-tile is transparent and stretches whatever you drop in to fill the cell —
+   use it for things that don't stretch themselves (charts, maps, lists, images).
+   Sizes: .wui-w-1x1/2x1/3x1/4x1 · 1x2/2x2/3x2/4x2 · 1x3/2x3. For a full-WIDTH tile use
+   the existing .wui-span-full; other placements: .wui-row-span-* / .wui-col-start-*.
+
+     <div class="wui-bento cols-4 rows-3 is-page wui-gap-3">
+       <div class="wui-bento-tile wui-w-2x2"><div class="wui-card"> hero </div></div>
+       <div class="wui-card wui-w-1x1"> kpi (component as tile) </div>
+       <div class="wui-bento-tile wui-span-full"><canvas> chart </canvas></div>
+     </div>
+*/
+
+.wui-bento {
+  display: grid;
+  grid-template-columns: repeat(var(--wui-bento-cols, 4), minmax(0, 1fr));
+  grid-auto-rows: var(--wui-bento-row, minmax(140px, auto));
+  grid-auto-flow: row dense;
+  gap: var(--wui-bento-gap, var(--space-4));
+  box-sizing: border-box;
+}
+
+/* ── Column count ── */
+.wui-bento.cols-1 { --wui-bento-cols: 1; }
+.wui-bento.cols-2 { --wui-bento-cols: 2; }
+.wui-bento.cols-3 { --wui-bento-cols: 3; }
+.wui-bento.cols-4 { --wui-bento-cols: 4; }
+.wui-bento.cols-5 { --wui-bento-cols: 5; }
+.wui-bento.cols-6 { --wui-bento-cols: 6; }
+.wui-bento.cols-8 { --wui-bento-cols: 8; }
+
+/* ── Row count (consumed by .is-page) ── */
+.wui-bento.rows-1 { --wui-bento-rows: 1; }
+.wui-bento.rows-2 { --wui-bento-rows: 2; }
+.wui-bento.rows-3 { --wui-bento-rows: 3; }
+.wui-bento.rows-4 { --wui-bento-rows: 4; }
+.wui-bento.rows-5 { --wui-bento-rows: 5; }
+.wui-bento.rows-6 { --wui-bento-rows: 6; }
+
+/* ── Flow auto-row height (non-is-page) ── */
+.wui-bento.cell-sm { --wui-bento-row: minmax(90px, auto); }
+.wui-bento.cell-md { --wui-bento-row: minmax(140px, auto); }
+.wui-bento.cell-lg { --wui-bento-row: minmax(200px, auto); }
+
+/* ── Fixed single-screen: fill height, rows distribute it, nothing scrolls ── */
+.wui-bento.is-page {
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: repeat(var(--wui-bento-rows, 4), minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+}
+
+/* Tiles can shrink instead of overflowing the track */
+.wui-bento > * { min-width: 0; min-height: 0; }
+/* …and in the fixed single-page form, clip locally so a full tile never forces scroll */
+.wui-bento.is-page > * { overflow: hidden; }
+
+/* ── Tile WRAPPER — a transparent placement container. Drop ANY component inside
+   (card, chart, map, list, image) and it stretches to fill the cell. Decouples
+   WHERE a thing sits (the tile + .wui-w-*) from WHAT it is (the component).
+   Single child via grid → fills both axes. ── */
+.wui-bento-tile {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+}
+
+.wui-bento-tile > * {
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ── Widget sizes — .wui-w-{cols}x{rows} (work in any grid, not just bento) ── */
+.wui-w-1x1 { grid-column: span 1; grid-row: span 1; }
+.wui-w-2x1 { grid-column: span 2; grid-row: span 1; }
+.wui-w-3x1 { grid-column: span 3; grid-row: span 1; }
+.wui-w-4x1 { grid-column: span 4; grid-row: span 1; }
+.wui-w-1x2 { grid-column: span 1; grid-row: span 2; }
+.wui-w-2x2 { grid-column: span 2; grid-row: span 2; }
+.wui-w-3x2 { grid-column: span 3; grid-row: span 2; }
+.wui-w-4x2 { grid-column: span 4; grid-row: span 2; }
+.wui-w-1x3 { grid-column: span 1; grid-row: span 3; }
+.wui-w-2x3 { grid-column: span 2; grid-row: span 3; }
+/* full-WIDTH tile → use the existing .wui-span-full (§2). No .wui-w-full here: that
+   name is already the flex width utility above (width: 100%). */

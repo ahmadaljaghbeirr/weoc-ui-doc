@@ -28,9 +28,21 @@
    fit 1-2 columns per row inside a card-width container. Loading order
    inside this file doesn't matter since both live in the same selector's
    declaration block, not a separate utility fighting a later import. */
-.wui-card-group.cols-3 { grid-template-columns: repeat(3, 1fr); }
-.wui-card-group.cols-4 { grid-template-columns: repeat(4, 1fr); }
-.wui-card-group.cols-8 { grid-template-columns: repeat(8, 1fr); }
+.wui-card-group.cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.wui-card-group.cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.wui-card-group.cols-8 {
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.wui-card-group.cols-7 {
+  grid-template-columns: repeat(7, 1fr);
+}
 
 /* ── Option wrapper ─────────────────────────────────────────── */
 .wui-card-option {
@@ -158,9 +170,12 @@
    halo that didn't track the card's rounded corners — dropped rather than
    fought. */
 @keyframes wui-card-option-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     border-color: var(--_pulse-muted);
   }
+
   50% {
     border-color: var(--_pulse-full);
   }
@@ -168,8 +183,8 @@
 
 /* primary ─────────────────────────────────────────────────── */
 .wui-card-group:not(.is-display) .wui-card-option.primary:hover .wui-card-content,
-.wui-card-option.primary input[type="radio"]:checked + .wui-card-content,
-.wui-card-option.primary input[type="checkbox"]:checked + .wui-card-content,
+.wui-card-option.primary input[type="radio"]:checked+.wui-card-content,
+.wui-card-option.primary input[type="checkbox"]:checked+.wui-card-content,
 .wui-card-option.primary.is-active .wui-card-content {
   border-color: var(--color-10);
   background: var(--color-10-light);
@@ -177,10 +192,10 @@
 
 .wui-card-group:not(.is-display) .wui-card-option.primary:hover .wui-card-content .material-symbols-outlined,
 .wui-card-group:not(.is-display) .wui-card-option.primary:hover .wui-card-label,
-.wui-card-option.primary input[type="radio"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.primary input[type="radio"]:checked + .wui-card-content .wui-card-label,
-.wui-card-option.primary input[type="checkbox"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.primary input[type="checkbox"]:checked + .wui-card-content .wui-card-label,
+.wui-card-option.primary input[type="radio"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.primary input[type="radio"]:checked+.wui-card-content .wui-card-label,
+.wui-card-option.primary input[type="checkbox"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.primary input[type="checkbox"]:checked+.wui-card-content .wui-card-label,
 .wui-card-option.primary.is-active .wui-card-content .material-symbols-outlined,
 .wui-card-option.primary.is-active .wui-card-content .wui-card-label {
   color: var(--color-10);
@@ -188,8 +203,8 @@
 
 /* secondary ────────────────────────────────────────────────── */
 .wui-card-group:not(.is-display) .wui-card-option.secondary:hover .wui-card-content,
-.wui-card-option.secondary input[type="radio"]:checked + .wui-card-content,
-.wui-card-option.secondary input[type="checkbox"]:checked + .wui-card-content,
+.wui-card-option.secondary input[type="radio"]:checked+.wui-card-content,
+.wui-card-option.secondary input[type="checkbox"]:checked+.wui-card-content,
 .wui-card-option.secondary.is-active .wui-card-content {
   border-color: var(--color-secondary);
   background: var(--color-secondary-light);
@@ -197,10 +212,10 @@
 
 .wui-card-group:not(.is-display) .wui-card-option.secondary:hover .wui-card-content .material-symbols-outlined,
 .wui-card-group:not(.is-display) .wui-card-option.secondary:hover .wui-card-label,
-.wui-card-option.secondary input[type="radio"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.secondary input[type="radio"]:checked + .wui-card-content .wui-card-label,
-.wui-card-option.secondary input[type="checkbox"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.secondary input[type="checkbox"]:checked + .wui-card-content .wui-card-label,
+.wui-card-option.secondary input[type="radio"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.secondary input[type="radio"]:checked+.wui-card-content .wui-card-label,
+.wui-card-option.secondary input[type="checkbox"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.secondary input[type="checkbox"]:checked+.wui-card-content .wui-card-label,
 .wui-card-option.secondary.is-active .wui-card-content .material-symbols-outlined,
 .wui-card-option.secondary.is-active .wui-card-content .wui-card-label {
   color: var(--color-secondary);
@@ -208,8 +223,8 @@
 
 /* info ─────────────────────────────────────────────────────── */
 .wui-card-group:not(.is-display) .wui-card-option.info:hover .wui-card-content,
-.wui-card-option.info input[type="radio"]:checked + .wui-card-content,
-.wui-card-option.info input[type="checkbox"]:checked + .wui-card-content,
+.wui-card-option.info input[type="radio"]:checked+.wui-card-content,
+.wui-card-option.info input[type="checkbox"]:checked+.wui-card-content,
 .wui-card-option.info.is-active .wui-card-content {
   border-color: var(--color-info);
   background: var(--color-info-light);
@@ -217,10 +232,10 @@
 
 .wui-card-group:not(.is-display) .wui-card-option.info:hover .wui-card-content .material-symbols-outlined,
 .wui-card-group:not(.is-display) .wui-card-option.info:hover .wui-card-label,
-.wui-card-option.info input[type="radio"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.info input[type="radio"]:checked + .wui-card-content .wui-card-label,
-.wui-card-option.info input[type="checkbox"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.info input[type="checkbox"]:checked + .wui-card-content .wui-card-label,
+.wui-card-option.info input[type="radio"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.info input[type="radio"]:checked+.wui-card-content .wui-card-label,
+.wui-card-option.info input[type="checkbox"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.info input[type="checkbox"]:checked+.wui-card-content .wui-card-label,
 .wui-card-option.info.is-active .wui-card-content .material-symbols-outlined,
 .wui-card-option.info.is-active .wui-card-content .wui-card-label {
   color: var(--color-info-text);
@@ -228,8 +243,8 @@
 
 /* success ──────────────────────────────────────────────────── */
 .wui-card-group:not(.is-display) .wui-card-option.success:hover .wui-card-content,
-.wui-card-option.success input[type="radio"]:checked + .wui-card-content,
-.wui-card-option.success input[type="checkbox"]:checked + .wui-card-content,
+.wui-card-option.success input[type="radio"]:checked+.wui-card-content,
+.wui-card-option.success input[type="checkbox"]:checked+.wui-card-content,
 .wui-card-option.success.is-active .wui-card-content {
   border-color: var(--color-success);
   background: var(--color-success-light);
@@ -237,10 +252,10 @@
 
 .wui-card-group:not(.is-display) .wui-card-option.success:hover .wui-card-content .material-symbols-outlined,
 .wui-card-group:not(.is-display) .wui-card-option.success:hover .wui-card-label,
-.wui-card-option.success input[type="radio"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.success input[type="radio"]:checked + .wui-card-content .wui-card-label,
-.wui-card-option.success input[type="checkbox"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.success input[type="checkbox"]:checked + .wui-card-content .wui-card-label,
+.wui-card-option.success input[type="radio"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.success input[type="radio"]:checked+.wui-card-content .wui-card-label,
+.wui-card-option.success input[type="checkbox"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.success input[type="checkbox"]:checked+.wui-card-content .wui-card-label,
 .wui-card-option.success.is-active .wui-card-content .material-symbols-outlined,
 .wui-card-option.success.is-active .wui-card-content .wui-card-label {
   color: var(--color-success-text);
@@ -248,8 +263,8 @@
 
 /* warning ──────────────────────────────────────────────────── */
 .wui-card-group:not(.is-display) .wui-card-option.warning:hover .wui-card-content,
-.wui-card-option.warning input[type="radio"]:checked + .wui-card-content,
-.wui-card-option.warning input[type="checkbox"]:checked + .wui-card-content,
+.wui-card-option.warning input[type="radio"]:checked+.wui-card-content,
+.wui-card-option.warning input[type="checkbox"]:checked+.wui-card-content,
 .wui-card-option.warning.is-active .wui-card-content {
   border-color: var(--color-warning);
   background: var(--color-warning-light);
@@ -257,10 +272,10 @@
 
 .wui-card-group:not(.is-display) .wui-card-option.warning:hover .wui-card-content .material-symbols-outlined,
 .wui-card-group:not(.is-display) .wui-card-option.warning:hover .wui-card-label,
-.wui-card-option.warning input[type="radio"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.warning input[type="radio"]:checked + .wui-card-content .wui-card-label,
-.wui-card-option.warning input[type="checkbox"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.warning input[type="checkbox"]:checked + .wui-card-content .wui-card-label,
+.wui-card-option.warning input[type="radio"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.warning input[type="radio"]:checked+.wui-card-content .wui-card-label,
+.wui-card-option.warning input[type="checkbox"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.warning input[type="checkbox"]:checked+.wui-card-content .wui-card-label,
 .wui-card-option.warning.is-active .wui-card-content .material-symbols-outlined,
 .wui-card-option.warning.is-active .wui-card-content .wui-card-label {
   color: var(--color-warning-text);
@@ -268,8 +283,8 @@
 
 /* danger ───────────────────────────────────────────────────── */
 .wui-card-group:not(.is-display) .wui-card-option.danger:hover .wui-card-content,
-.wui-card-option.danger input[type="radio"]:checked + .wui-card-content,
-.wui-card-option.danger input[type="checkbox"]:checked + .wui-card-content,
+.wui-card-option.danger input[type="radio"]:checked+.wui-card-content,
+.wui-card-option.danger input[type="checkbox"]:checked+.wui-card-content,
 .wui-card-option.danger.is-active .wui-card-content {
   border-color: var(--color-danger);
   background: var(--color-danger-light);
@@ -277,10 +292,10 @@
 
 .wui-card-group:not(.is-display) .wui-card-option.danger:hover .wui-card-content .material-symbols-outlined,
 .wui-card-group:not(.is-display) .wui-card-option.danger:hover .wui-card-label,
-.wui-card-option.danger input[type="radio"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.danger input[type="radio"]:checked + .wui-card-content .wui-card-label,
-.wui-card-option.danger input[type="checkbox"]:checked + .wui-card-content .material-symbols-outlined,
-.wui-card-option.danger input[type="checkbox"]:checked + .wui-card-content .wui-card-label,
+.wui-card-option.danger input[type="radio"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.danger input[type="radio"]:checked+.wui-card-content .wui-card-label,
+.wui-card-option.danger input[type="checkbox"]:checked+.wui-card-content .material-symbols-outlined,
+.wui-card-option.danger input[type="checkbox"]:checked+.wui-card-content .wui-card-label,
 .wui-card-option.danger.is-active .wui-card-content .material-symbols-outlined,
 .wui-card-option.danger.is-active .wui-card-content .wui-card-label {
   color: var(--color-danger-text);
@@ -293,53 +308,54 @@
    .is-active rules above, so it wins wherever both are present. */
 .wui-card-option.primary.pulse.is-active .wui-card-content {
   --_pulse-muted: var(--color-10-muted);
-  --_pulse-full:  var(--color-10);
-  --_pulse-glow:  var(--color-10-glow);
+  --_pulse-full: var(--color-10);
+  --_pulse-glow: var(--color-10-glow);
   border-color: var(--_pulse-muted);
   animation: wui-card-option-pulse 2.4s ease-in-out infinite;
 }
 
 .wui-card-option.secondary.pulse.is-active .wui-card-content {
   --_pulse-muted: var(--color-secondary-muted);
-  --_pulse-full:  var(--color-secondary);
-  --_pulse-glow:  var(--color-secondary-glow);
+  --_pulse-full: var(--color-secondary);
+  --_pulse-glow: var(--color-secondary-glow);
   border-color: var(--_pulse-muted);
   animation: wui-card-option-pulse 2.4s ease-in-out infinite;
 }
 
 .wui-card-option.info.pulse.is-active .wui-card-content {
   --_pulse-muted: var(--color-info-muted);
-  --_pulse-full:  var(--color-info);
-  --_pulse-glow:  var(--color-info-glow);
+  --_pulse-full: var(--color-info);
+  --_pulse-glow: var(--color-info-glow);
   border-color: var(--_pulse-muted);
   animation: wui-card-option-pulse 2.4s ease-in-out infinite;
 }
 
 .wui-card-option.success.pulse.is-active .wui-card-content {
   --_pulse-muted: var(--color-success-muted);
-  --_pulse-full:  var(--color-success);
-  --_pulse-glow:  var(--color-success-glow);
+  --_pulse-full: var(--color-success);
+  --_pulse-glow: var(--color-success-glow);
   border-color: var(--_pulse-muted);
   animation: wui-card-option-pulse 2.4s ease-in-out infinite;
 }
 
 .wui-card-option.warning.pulse.is-active .wui-card-content {
   --_pulse-muted: var(--color-warning-muted);
-  --_pulse-full:  var(--color-warning);
-  --_pulse-glow:  var(--color-warning-glow);
+  --_pulse-full: var(--color-warning);
+  --_pulse-glow: var(--color-warning-glow);
   border-color: var(--_pulse-muted);
   animation: wui-card-option-pulse 2.4s ease-in-out infinite;
 }
 
 .wui-card-option.danger.pulse.is-active .wui-card-content {
   --_pulse-muted: var(--color-danger-muted);
-  --_pulse-full:  var(--color-danger);
-  --_pulse-glow:  var(--color-danger-glow);
+  --_pulse-full: var(--color-danger);
+  --_pulse-glow: var(--color-danger-glow);
   border-color: var(--_pulse-muted);
   animation: wui-card-option-pulse 2.4s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   /* !important: the per-color .pulse.is-active rules above are 4 classes
      deep (color + pulse + is-active + wui-card-option) and would otherwise
      out-specificity a plain 3-class override here. --_pulse-full is
@@ -385,7 +401,8 @@
 
 .wui-checkbox,
 .wui-radio {
-  --_size: 1.125rem;                 /* control box edge */
+  --_size: 1.125rem;
+  /* control box edge */
   --_accent: var(--color-10);
   --_accent-light: var(--color-10-light);
   display: inline-flex;
@@ -399,19 +416,52 @@
 }
 
 /* size modifiers */
-.wui-checkbox.sm, .wui-radio.sm { --_size: 0.95rem; font-size: var(--text-xs); }
-.wui-checkbox.lg, .wui-radio.lg { --_size: 1.35rem; font-size: var(--text-base); }
+.wui-checkbox.sm,
+.wui-radio.sm {
+  --_size: 0.95rem;
+  font-size: var(--text-xs);
+}
+
+.wui-checkbox.lg,
+.wui-radio.lg {
+  --_size: 1.35rem;
+  font-size: var(--text-base);
+}
 
 /* accent variants */
-.wui-checkbox.success, .wui-radio.success     { --_accent: var(--color-success);   --_accent-light: var(--color-success-light); }
-.wui-checkbox.danger,  .wui-radio.danger      { --_accent: var(--color-danger);    --_accent-light: var(--color-danger-light); }
-.wui-checkbox.warning, .wui-radio.warning     { --_accent: var(--color-warning);   --_accent-light: var(--color-warning-light); }
-.wui-checkbox.info,    .wui-radio.info        { --_accent: var(--color-info);      --_accent-light: var(--color-info-light); }
-.wui-checkbox.secondary, .wui-radio.secondary { --_accent: var(--color-secondary); --_accent-light: var(--color-secondary-light); }
+.wui-checkbox.success,
+.wui-radio.success {
+  --_accent: var(--color-success);
+  --_accent-light: var(--color-success-light);
+}
+
+.wui-checkbox.danger,
+.wui-radio.danger {
+  --_accent: var(--color-danger);
+  --_accent-light: var(--color-danger-light);
+}
+
+.wui-checkbox.warning,
+.wui-radio.warning {
+  --_accent: var(--color-warning);
+  --_accent-light: var(--color-warning-light);
+}
+
+.wui-checkbox.info,
+.wui-radio.info {
+  --_accent: var(--color-info);
+  --_accent-light: var(--color-info-light);
+}
+
+.wui-checkbox.secondary,
+.wui-radio.secondary {
+  --_accent: var(--color-secondary);
+  --_accent-light: var(--color-secondary-light);
+}
 
 /* hide the native input but keep it focusable + in the a11y tree */
-.wui-checkbox > input,
-.wui-radio > input {
+.wui-checkbox>input,
+.wui-radio>input {
   position: absolute;
   opacity: 0;
   width: 0;
@@ -432,8 +482,13 @@
   transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
-.wui-checkbox .wui-control-box { border-radius: var(--radius-sm); }
-.wui-radio .wui-control-box    { border-radius: 50%; }
+.wui-checkbox .wui-control-box {
+  border-radius: var(--radius-sm);
+}
+
+.wui-radio .wui-control-box {
+  border-radius: 50%;
+}
 
 /* checkmark (checkbox) — CSS-drawn tick */
 .wui-checkbox .wui-control-box::after {
@@ -465,30 +520,32 @@
 }
 
 /* checked */
-.wui-checkbox > input:checked + .wui-control-box {
+.wui-checkbox>input:checked+.wui-control-box {
   background: var(--_accent);
   border-color: var(--_accent);
 }
-.wui-checkbox > input:checked + .wui-control-box::after {
+
+.wui-checkbox>input:checked+.wui-control-box::after {
   transform: translate(-50%, -55%) rotate(45deg) scale(1);
 }
 
-.wui-radio > input:checked + .wui-control-box {
+.wui-radio>input:checked+.wui-control-box {
   border-color: var(--_accent);
 }
-.wui-radio > input:checked + .wui-control-box::after {
+
+.wui-radio>input:checked+.wui-control-box::after {
   transform: translate(-50%, -50%) scale(1);
 }
 
 /* hover */
-.wui-checkbox:hover > input:not(:disabled) + .wui-control-box,
-.wui-radio:hover > input:not(:disabled) + .wui-control-box {
+.wui-checkbox:hover>input:not(:disabled)+.wui-control-box,
+.wui-radio:hover>input:not(:disabled)+.wui-control-box {
   border-color: var(--_accent);
 }
 
 /* keyboard focus ring (focus-visible only) */
-.wui-checkbox > input:focus-visible + .wui-control-box,
-.wui-radio > input:focus-visible + .wui-control-box {
+.wui-checkbox>input:focus-visible+.wui-control-box,
+.wui-radio>input:focus-visible+.wui-control-box {
   box-shadow: 0 0 0 3px var(--_accent-light);
 }
 
@@ -501,7 +558,9 @@
   cursor: not-allowed;
 }
 
-.wui-control-label { min-width: 0; }
+.wui-control-label {
+  min-width: 0;
+}
 
 /* optional grouping wrapper */
 .wui-check-group {
@@ -509,6 +568,7 @@
   flex-direction: column;
   gap: var(--space-2);
 }
+
 .wui-check-group.is-row {
   flex-direction: row;
   flex-wrap: wrap;

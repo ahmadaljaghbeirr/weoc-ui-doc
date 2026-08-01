@@ -1,0 +1,24 @@
+/* =============================================================================
+   weoc-i18n — direction + Arabic font.
+
+   Base layout already uses logical properties, so most RTL mirroring happens
+   automatically under [dir="rtl"]. These rules cover the physical exceptions
+   (directional glyphs) and bind the Arabic (Cairo) font for the AR locale.
+   ============================================================================= */
+
+:root[lang="ar"],
+[dir="rtl"] {
+  font-family: var(--font-cairo, inherit);
+}
+
+/* Directional glyphs that must not auto-mirror via logical properties.
+   Blanket-applied to every material-symbols-outlined icon rather than an
+   opt-in class — most Material Symbols are visually near-symmetric, so
+   mirroring the handful that aren't (arrows, chevrons, trucks) is worth
+   not having to tag every icon by hand. .wui-chevron kept as an explicit
+   hook for non-icon-font chevrons (e.g. an SVG/CSS-drawn caret) that
+   still want the same flip. */
+[dir="rtl"] .wui-chevron,
+[dir="rtl"] .material-symbols-outlined {
+  transform: scaleX(-1);
+}

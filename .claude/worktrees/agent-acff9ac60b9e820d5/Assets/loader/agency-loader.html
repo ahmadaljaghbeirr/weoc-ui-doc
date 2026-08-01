@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.atlascrisis.com/atlas-nexus-demo/AtlasSuit/EOC/Shared/css/weoc-ui/weoc-loader.css"
+    />
+    <script
+      src="https://cdn.atlascrisis.com/atlas-nexus-demo/AtlasSuit/EOC/Shared/js/weoc-loader.js"
+      defer="true"
+    ></script>
+  </head>
+  <body>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400">
+      <defs>
+        <linearGradient
+          id="grad-1"
+          x1="100"
+          y1="260"
+          x2="165"
+          y2="140"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" style="stop-color: var(--wui-loader-peach)"></stop>
+          <stop
+            offset="0.5"
+            style="stop-color: var(--wui-loader-orange)"
+          ></stop>
+        </linearGradient>
+
+        <linearGradient
+          id="grad-2"
+          x1="265"
+          y1="145"
+          x2="340"
+          y2="260"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0.1" style="stop-color: var(--wui-loader-peach)"></stop>
+          <stop
+            offset="0.5"
+            style="stop-color: var(--wui-loader-orange)"
+          ></stop>
+        </linearGradient>
+
+        <linearGradient
+          id="grad-3"
+          x1="440"
+          y1="145"
+          x2="520"
+          y2="265"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0.1" style="stop-color: var(--wui-loader-peach)"></stop>
+          <stop
+            offset="0.5"
+            style="stop-color: var(--wui-loader-orange)"
+          ></stop>
+        </linearGradient>
+
+        <radialGradient
+          id="grad-4"
+          cx="650"
+          cy="200"
+          r="48"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0.1" style="stop-color: var(--wui-loader-peach)"></stop>
+          <stop
+            offset="0.5"
+            style="stop-color: var(--wui-loader-orange)"
+          ></stop>
+        </radialGradient>
+
+        <g id="letters">
+          <path id="t" d="M90 130H190V154H152V270H128V154H90Z" />
+          <path
+            id="a"
+            fill-rule="evenodd"
+            d="M310 130L360 270H260Z M310 172L328 228H292Z"
+          />
+          <path
+            id="q"
+            fill-rule="evenodd"
+            d="M432 200A48 48 0 1 0 528 200A48 48 0 1 0 432 200Z M453 200A27 27 0 1 0 507 200A27 27 0 1 0 453 200Z M506 226L530 250L520 260L494 234Z"
+          />
+          <path
+            id="a2"
+            fill-rule="evenodd"
+            d="M650 130L700 270H600Z M650 172L668 228H632Z"
+          />
+        </g>
+      </defs>
+
+      <!-- Lightning bolt: electricity -->
+      <polygon
+        id="bolt"
+        fill="url(#grad-1)"
+        points="155,140 120,205 142,205 125,260 165,195 143,195"
+      />
+
+      <!-- Flame: gas / power generation -->
+      <path
+        id="flame"
+        fill="url(#grad-2)"
+        d="M310,145 C330,175 335,195 320,215 C336,205 340,225 320,245 C300,260 275,245 280,215 C265,225 270,190 290,175 C295,190 300,175 310,145 Z"
+      />
+
+      <!-- Water droplet: desalination / water -->
+      <path
+        id="drop"
+        fill="url(#grad-3)"
+        d="M480,145 C505,180 520,205 520,225 A40,40 0 1 1 440,225 C440,205 455,180 480,145 Z"
+      />
+
+      <!-- Wind turbine: renewable / generation -->
+      <path
+        id="turbine"
+        fill="url(#grad-4)"
+        d="M650,200 C666,185 666,165 650,154 C634,165 634,185 650,200 Z M650,200 C655,221.4 672.3,231.4 689.8,223 C688.3,203.6 671,193.6 650,200 Z M650,200 C629,193.6 611.7,203.6 610.2,223 C627.7,231.4 645,221.4 650,200 Z M636,200A14,14 0 1,0 664,200A14,14 0 1,0 636,200Z"
+      />
+    </svg>
+
+    <div id="loader-text">Please wait<span class="dots"></span></div>
+  </body>
+</html>

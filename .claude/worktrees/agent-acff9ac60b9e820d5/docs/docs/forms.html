@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>weoc-ui — Text Inputs &amp; Fields</title>
+  <script src="../../JS/weoc-ui.js"></script>
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-ui-core.css">
+  <link rel="stylesheet" href="../../CSS/weoc-ui/weoc-forms.css">
+  <link rel="stylesheet" href="../docs-style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../../CSS/material-symbols-outlined/material-symbols-outlined.css?v=eoc1">
+</head>
+<body class="wui-body-shell">
+  <div id="docs-hdr"></div>
+  <div class="wui-split panel-start" id="docs-split" data-barba="wrapper">
+    <div class="wui-split-panel" id="docs-sidebar"></div>
+    <div class="wui-split-main wui-scroll-area" id="docs-main" data-barba="container" data-barba-namespace="forms">
+      <div class="docs-page">
+
+        <div class="docs-hero">
+          <div class="docs-hero-eyebrow" data-wui-i18n="docs_forms_1">Inputs</div>
+          <div class="docs-hero-title" data-wui-i18n="docs_forms_2">Text Inputs &amp; Fields</div>
+          <div class="docs-hero-sub" data-wui-i18n-html="docs_forms_3">Input-view primitives from <code>weoc-forms.css</code>: the <code>form-control</code> input/textarea, the <code>wui-fieldset</code> group, the <code>field-row</code>/<code>field-item</code> grid, helper text, and the <code>wui-ftr-*</code> form footer. Every state and layout is shown below with its exact markup.</div>
+        </div>
+
+        <div class="wui-callout info">
+          <span class="material-symbols-outlined">info</span>
+          <div class="wui-callout-body">
+            <div class="wui-callout-title" data-wui-i18n="docs_forms_4">Add-on module — load weoc-forms.css on input views</div>
+            <span data-wui-i18n-html="docs_forms_5">Forms are not in <code>weoc-ui-core.css</code>. Add <code>&lt;link rel="stylesheet" href="weoc-forms.css"&gt;</code> after the core barrel on input-style views. Checkboxes, radios, and card options live in <code>weoc-card-group.css</code> (see <a class="wui-link" href="./cards.html">Cards &amp; Forms</a>); TomSelect and Flatpickr have their own pages.</span>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ form-control ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_forms_6"><span class="material-symbols-outlined">text_fields</span>form-control</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_7">Base class for text inputs and textareas (<code>height: 2.5rem</code>, transparent background, bordered). Focus draws a primary ring. <code>textarea.form-control</code> auto-grows in height and is vertically resizable (<code>min-height: 90px</code>). Readonly and disabled states are documented in their own sections below.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_8">Text input — default &amp; focus</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Placeholder -->
+              <input type="text" class="form-control" placeholder="Type here…">
+              <!-- With value -->
+              <input type="text" class="form-control" value="Incident at Terminal 3">
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n-html="docs_forms_9">Input types — <code>form-control</code> applies to all text-family inputs</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_10"><code>form-control</code> is type-agnostic: apply it to any single-line <code>&lt;input&gt;</code>. These render identically to a text field but keep their native keyboards and validation. Number fields get a themed stepper — see <code>wui-number</code> below.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Email -->
+              <input type="email" class="form-control" placeholder="name@agency.gov">
+              <!-- Tel -->
+              <input type="tel" class="form-control" placeholder="+971 50 000 0000">
+              <!-- URL -->
+              <input type="url" class="form-control" placeholder="https://…">
+              <!-- Password -->
+              <input type="password" class="form-control" value="secret123">
+              <!-- Search -->
+              <input type="search" class="form-control" placeholder="Search records…">
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_11">Textarea</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Empty textarea -->
+              <textarea class="form-control" placeholder="Brief description of the incident…"></textarea>
+              <!-- Textarea with value -->
+              <textarea class="form-control">Situation assessed at 08:00. No immediate life safety risk. Monitoring ongoing.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-number (themed stepper) ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_forms_12"><span class="material-symbols-outlined">123</span>wui-number — themed stepper</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_13">Browsers render native <code>type="number"</code> spinners in their own chrome that cannot be recoloured to match the theme (WebKit exposes almost nothing; Firefox nothing). <code>wui-number</code> wraps the input, hides the native spinners, and adds token-driven <code>+</code>/<code>−</code> buttons that follow light and dark automatically. <code>weoc-ui.js</code> binds <code>data-wui-step</code> and steps the input with the native <code>stepUp()</code>/<code>stepDown()</code>, so <code>min</code>, <code>max</code>, and <code>step</code> are honoured and <code>input</code>/<code>change</code> events still fire. The input stays keyboard-steppable (arrow keys); the buttons are <code>tabindex="-1"</code> mouse aids. Requires <code>weoc-ui.js</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_14">Default — with value, min / max / step</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Default (step 1, min 0, max 999) -->
+              <div class="wui-number">
+                <input type="number" class="form-control" value="12" min="0" max="999" step="1">
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+              <!-- Placeholder, no value -->
+              <div class="wui-number">
+                <input type="number" class="form-control" placeholder="Casualty count" min="0">
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+              <!-- Decimal step -->
+              <div class="wui-number">
+                <input type="number" class="form-control" value="1.5" min="0" max="10" step="0.5">
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_15">Readonly &amp; disabled — stepper hidden, padding reclaimed</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Readonly -->
+              <div class="wui-number">
+                <input type="number" class="form-control" value="42" readonly>
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+              <!-- Disabled -->
+              <div class="wui-number">
+                <input type="number" class="form-control" value="7" disabled>
+                <div class="wui-number-btns" aria-hidden="true">
+                  <button type="button" class="wui-number-step" data-wui-step="up" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_up</span></button>
+                  <button type="button" class="wui-number-step" data-wui-step="down" tabindex="-1"><span class="material-symbols-outlined">keyboard_arrow_down</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-fieldset ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_forms_16"><span class="material-symbols-outlined">tune</span>wui-fieldset</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_17">A titled section grouping field rows. <code>wui-fieldset-legend</code> (optional icon) sits at the top, an optional <code>wui-fieldset-sub</code> description tucks under it, and <code>wui-fieldset-body</code> holds the <code>field-row</code> groups. Works on a real <code>&lt;fieldset&gt;</code>/<code>&lt;legend&gt;</code> or plain divs. Add <code>plain</code> to drop the surface chrome (background, border, padding).</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_18">Standard fieldset (legend + sub + body)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Fieldset with legend, sub, and body -->
+              <fieldset class="wui-fieldset">
+                <legend class="wui-fieldset-legend">
+                  <span class="material-symbols-outlined">person</span>
+                  Reporting Officer
+                </legend>
+                <p class="wui-fieldset-sub">Who is filing this incident report.</p>
+                <div class="wui-fieldset-body">
+                  <div class="field-row">
+                    <div class="field-item">
+                      <label class="field-label">First name <span class="required">*</span></label>
+                      <input type="text" class="form-control" placeholder="Jordan">
+                    </div>
+                    <div class="field-item">
+                      <label class="field-label">Last name <span class="required">*</span></label>
+                      <input type="text" class="form-control" placeholder="Rivera">
+                    </div>
+                  </div>
+                  <div class="field-row full">
+                    <div class="field-item">
+                      <label class="field-label">Summary</label>
+                      <textarea class="form-control" placeholder="Brief description of the incident…"></textarea>
+                      <div class="field-hint">Max 500 characters.</div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_19">Plain (no chrome)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Plain fieldset — titled group with no surface -->
+              <fieldset class="wui-fieldset plain">
+                <legend class="wui-fieldset-legend">
+                  <span class="material-symbols-outlined">tune</span>
+                  Filters
+                </legend>
+                <div class="field-row">
+                  <div class="field-item">
+                    <label class="field-label">Keyword</label>
+                    <input type="text" class="form-control" placeholder="Search text…">
+                  </div>
+                  <div class="field-item">
+                    <label class="field-label">Reference</label>
+                    <input type="text" class="form-control" placeholder="AUTO-0001">
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ field grid ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_forms_20"><span class="material-symbols-outlined">grid_view</span>Field grid — field-row / field-item</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_21"><code>field-row</code> is a CSS grid. By default it is 2 columns; add <code>full</code> for 1 column, <code>three</code> for 3, or <code>four</code> for 4. Each <code>field-item</code> is a vertical stack of <code>field-label</code> → control → optional <code>field-hint</code>. <code>field-label .required</code> renders a danger-colored asterisk. A label may carry a leading <code>material-symbols-outlined</code> icon (tinted primary).</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_22">field-row — 2 columns (default)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Two columns -->
+              <div class="field-row">
+                <div class="field-item">
+                  <label class="field-label">First name</label>
+                  <input type="text" class="form-control" placeholder="Jordan">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">Last name</label>
+                  <input type="text" class="form-control" placeholder="Rivera">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_23">field-row full — 1 column</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Single full-width column -->
+              <div class="field-row full">
+                <div class="field-item">
+                  <label class="field-label">Summary</label>
+                  <input type="text" class="form-control" placeholder="One field spanning the full width">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_24">field-row three — 3 columns</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Three columns -->
+              <div class="field-row three">
+                <div class="field-item">
+                  <label class="field-label">City</label>
+                  <input type="text" class="form-control" placeholder="City">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">State</label>
+                  <input type="text" class="form-control" placeholder="State">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">ZIP</label>
+                  <input type="text" class="form-control" placeholder="00000">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_25">field-row four — 4 columns</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Four columns -->
+              <div class="field-row four">
+                <div class="field-item">
+                  <label class="field-label">Day</label>
+                  <input type="text" class="form-control" placeholder="DD">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">Month</label>
+                  <input type="text" class="form-control" placeholder="MM">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">Year</label>
+                  <input type="text" class="form-control" placeholder="YYYY">
+                </div>
+                <div class="field-item">
+                  <label class="field-label">Zone</label>
+                  <input type="text" class="form-control" placeholder="UTC">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_26">field-label — required marker &amp; icon</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Required marker -->
+              <div class="field-row">
+                <div class="field-item">
+                  <label class="field-label">Incident ID <span class="required">*</span></label>
+                  <input type="text" class="form-control" placeholder="AUTO-0001">
+                </div>
+                <!-- Label with leading icon -->
+                <div class="field-item">
+                  <label class="field-label"><span class="material-symbols-outlined">location_on</span> Location</label>
+                  <input type="text" class="form-control" placeholder="Terminal 3">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_27">field-hint — helper text</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Muted helper text below the control -->
+              <div class="field-item">
+                <label class="field-label">Email</label>
+                <input type="text" class="form-control" placeholder="name@agency.gov">
+                <div class="field-hint">We only use this to send status updates.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ readonly ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_forms_28"><span class="material-symbols-outlined">lock</span>Readonly fields</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_29">Use the native <code>[readonly]</code> attribute or the <code>.is-readonly</code> class on the control for fields that display existing data and must not be edited. Both selectors produce the same look: a dashed border and a muted secondary-light surface. The text stays copyable and the field is still focusable. Wrapping <code>field-item</code> in <code>is-readonly</code> also dims the label. (Readonly is not disabled — see the callout below.)</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_30">[readonly] attribute vs .is-readonly class</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Native readonly attribute -->
+              <div class="field-item is-readonly">
+                <label class="field-label">Created by</label>
+                <input type="text" class="form-control" readonly value="J. Rivera (WebEOC)">
+              </div>
+              <!-- Class-only readonly (e.g. custom controls) -->
+              <div class="field-item is-readonly">
+                <label class="field-label">Status</label>
+                <input type="text" class="form-control is-readonly" value="Monitoring">
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_31">Readonly textarea (resize disabled)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Readonly textarea — resize handle removed -->
+              <div class="field-item is-readonly">
+                <label class="field-label">Prior assessment</label>
+                <textarea class="form-control" readonly>Situation assessed at 08:00. No immediate life safety risk. Monitoring ongoing.</textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_32">Editable vs readonly — side by side</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Editable + readonly in one row -->
+              <div class="field-row">
+                <div class="field-item">
+                  <label class="field-label">Editable field <span class="required">*</span></label>
+                  <input type="text" class="form-control" placeholder="Type here…">
+                  <div class="field-hint">Normal editable control.</div>
+                </div>
+                <div class="field-item is-readonly">
+                  <label class="field-label">Readonly field</label>
+                  <input type="text" class="form-control" readonly value="Computed by system">
+                  <div class="field-hint">Set by the system — not editable.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wui-callout warning">
+            <span class="material-symbols-outlined">visibility</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_forms_33">Readonly ≠ disabled</div>
+              <span data-wui-i18n-html="docs_forms_34">Readonly fields are still focusable and the text is copyable. If the control must be completely inert (no tab stop, grayed out), use the <code>disabled</code> attribute instead (next section).</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ disabled ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_forms_35"><span class="material-symbols-outlined">block</span>Disabled fields</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_36">The native <code>disabled</code> attribute renders inert controls. <code>form-control</code> inherits the browser's default disabled treatment (reduced contrast, no focus, no tab stop). Use disabled when the field should not be interactive at all; use readonly when its value should still be selectable and copyable.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_37">Disabled input &amp; textarea</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Disabled input -->
+              <input type="text" class="form-control" disabled value="Locked value">
+              <!-- Disabled empty input -->
+              <input type="text" class="form-control" disabled placeholder="Unavailable">
+              <!-- Disabled textarea -->
+              <textarea class="form-control" disabled>Disabled textarea content.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ form-section ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_forms_38"><span class="material-symbols-outlined">view_agenda</span>form-section</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_39">A carded surface with a titled header, used to break a long form into labelled blocks. <code>form-section-title</code> is an underlined heading with an optional leading icon (tinted primary). Similar to <code>wui-fieldset</code> but without a semantic <code>&lt;legend&gt;</code>; use it for lighter visual grouping.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_40">Titled section</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Carded section with underlined title -->
+              <div class="form-section">
+                <div class="form-section-title">
+                  <span class="material-symbols-outlined">description</span>
+                  Incident Details
+                </div>
+                <div class="field-row">
+                  <div class="field-item">
+                    <label class="field-label">Title <span class="required">*</span></label>
+                    <input type="text" class="form-control" placeholder="Short incident title">
+                  </div>
+                  <div class="field-item">
+                    <label class="field-label">Reference</label>
+                    <input type="text" class="form-control" placeholder="AUTO-0001">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ wui-ftr-wrap (form footer) ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" data-wui-i18n-html="docs_forms_41"><span class="material-symbols-outlined">dock_to_bottom</span>wui-ftr-wrap — form footer</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_42">Sticky action bar for input views. <code>wui-ftr-wrap</code> → <code>wui-ftr-inner</code> → <code>wui-ftr-body</code> lays out a left meta zone (<code>wui-ftr-left</code> / <code>wui-ftr-meta</code>) and a right action zone (<code>wui-ftr-right</code> or <code>wui-ftr-actions</code>). <code>wui-ftr-meta</code> takes a status modifier (<code>primary</code> / <code>success</code> / <code>warning</code> / <code>danger</code>) that tints its icon, and <code>&lt;strong&gt;</code> inside it is emphasized. Add <code>centered</code> to the wrap for a max-width carded footer, or <code>actions-only</code> to the body when there is no meta zone so the buttons stay right-aligned.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_43">Default footer — meta status colors</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Success meta -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta success">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <strong>3 fields</strong>&nbsp;ready to submit
+                      </div>
+                    </div>
+                    <div class="wui-ftr-actions">
+                      <button type="button" class="wui-btn ghost secondary wui-btn-sm"><span class="material-symbols-outlined">close</span> Cancel</button>
+                      <button type="button" class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">save</span> Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_44">Meta modifiers — primary / warning / danger</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Primary meta -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta primary">
+                        <span class="material-symbols-outlined">info</span>
+                        <strong>Draft</strong>&nbsp;autosaved a moment ago
+                      </div>
+                    </div>
+                    <div class="wui-ftr-right">
+                      <button type="button" class="wui-btn primary wui-btn-sm">Continue</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Warning meta -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta warning">
+                        <span class="material-symbols-outlined">warning</span>
+                        <strong>1 field</strong>&nbsp;needs review
+                      </div>
+                    </div>
+                    <div class="wui-ftr-right">
+                      <button type="button" class="wui-btn warning wui-btn-sm">Review</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Danger meta -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta danger">
+                        <span class="material-symbols-outlined">error</span>
+                        <strong>2 errors</strong>&nbsp;must be fixed
+                      </div>
+                    </div>
+                    <div class="wui-ftr-right">
+                      <button type="button" class="wui-btn danger wui-btn-sm">Fix</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_45">Centered — carded footer</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Centered variant: transparent wrap, carded inner -->
+              <div class="wui-ftr-wrap centered">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body">
+                    <div class="wui-ftr-left">
+                      <div class="wui-ftr-meta">
+                        <span class="material-symbols-outlined">schedule</span>
+                        Last edited 2 minutes ago
+                      </div>
+                    </div>
+                    <div class="wui-ftr-actions">
+                      <button type="button" class="wui-btn ghost secondary wui-btn-sm">Cancel</button>
+                      <button type="button" class="wui-btn primary wui-btn-sm">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n-html="docs_forms_46">Actions only — <code>actions-only</code> body (no meta)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Buttons alone: actions-only keeps them right-aligned with no left meta zone -->
+              <div class="wui-ftr-wrap">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body actions-only">
+                    <div class="wui-ftr-actions">
+                      <button type="button" class="wui-btn ghost secondary wui-btn-sm">Cancel</button>
+                      <button type="button" class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">save</span> Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Composes with centered for a carded, buttons-only footer -->
+              <div class="wui-ftr-wrap centered">
+                <div class="wui-ftr-inner">
+                  <div class="wui-ftr-body actions-only">
+                    <div class="wui-ftr-actions">
+                      <button type="button" class="wui-btn ghost secondary wui-btn-sm">Discard</button>
+                      <button type="button" class="wui-btn primary wui-btn-sm"><span class="material-symbols-outlined">send</span> Submit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  <script src="../docs-shell.js"></script>
+  <script>DocShell.init('forms');</script>
+</body>
+</html>
