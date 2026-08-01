@@ -33,14 +33,8 @@
     {
       group: 'Inputs',
       items: [
-        { key: 'forms', label: 'Text Inputs & Fields', file: 'forms.html', kw: 'textinput input textarea fieldset field-row form-control readonly label' },
+        { key: 'forms', label: 'Text Inputs & Fields', file: 'forms.html', kw: 'textinput input textarea fieldset field-row form-control readonly label flatpickr datepicker date time datetime range calendar tomselect select combobox multiselect autocomplete tags dropdown pill' },
         { key: 'cards', label: 'Controls', file: 'cards.html', kw: 'checkbox radio switch slider segmented card-option card-group toggle' }
-      ]
-    },
-    {
-      group: 'Combobox',
-      items: [
-        { key: 'combobox', label: 'Select (TomSelect)', file: 'combobox.html', kw: 'select combobox multiselect autocomplete tags tomselect dropdown pill' }
       ]
     },
     {
@@ -80,12 +74,6 @@
         { key: 'avatars', label: 'Avatars', file: 'avatars.html', kw: 'avatar identity initials icon avatar-sm avatar-lg avatar-xl' },
         { key: 'tables', label: 'Tables', file: 'tables.html', kw: 'table standard cards log row column sticky sortable' },
         { key: 'heatmap', label: 'Heatmap', file: 'heatmap.html', kw: 'heatmap risk matrix grid cell severity tooltip' }
-      ]
-    },
-    {
-      group: 'Dates',
-      items: [
-        { key: 'dates', label: 'Date & Time (Flatpickr)', file: 'dates.html', kw: 'date datepicker datetime time range flatpickr calendar input' }
       ]
     },
     {

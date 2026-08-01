@@ -18,7 +18,81 @@
   <div class="wui-split panel-start" id="docs-split">
     <div class="wui-split-panel" id="docs-sidebar"></div>
     <div class="wui-split-main wui-scroll-area" id="docs-main">
-      <div class="docs-page">
+      <div class="docs-page" x-data="formsPage()">
+        <script>
+        (function () {
+          function registerFormsPage() {
+            Alpine.data('formsPage', function () {
+              return {
+                init: function () {
+                  window.DocShell.ready.then(function () {
+                    // Flatpickr demos (Date & Time section) ---------------------
+                    if (window.FlatpickrFactory) {
+                      FlatpickrFactory.init();
+                      var ro = document.getElementById('fp-readonly');
+                      if (ro && ro._flatpickr) {
+                        ro.classList.add('is-readonly');
+                        ro._flatpickr.set('clickOpens', false);
+                      }
+                    }
+
+                    // TomSelect demos (Select / Combobox section) ----------------
+                    if (window.TomSelectFactory) {
+                      // Custom renderer — register BEFORE init so data-render="DocsPersonTmpl" resolves.
+                      TomSelectFactory.registerTemplate('DocsPersonTmpl', {
+                        option: function (data) {
+                          return '<div class="ts-person-option">' +
+                            '<div class="ts-person-name">' + data.text + '</div>' +
+                            '<div class="ts-person-meta">' + (data.role || '') +
+                              (data.dept ? ' · ' + data.dept : '') + '</div>' +
+                          '</div>';
+                        },
+                        item: function (data) { return '<div>' + data.text + '</div>'; }
+                      });
+
+                      // Dependent select: rebuild child options from the parent value, then resync.
+                      window.docsFilterChild = function (value) {
+                        var child = document.getElementById('cb-child');
+                        if (!child) return;
+                        var map = {
+                          hazmat: [['chem-spill', 'Chemical Spill'], ['radiation', 'Radiation'], ['gas-leak', 'Gas Leak']],
+                          fire:   [['structure', 'Structure Fire'], ['wildfire', 'Wildfire'], ['vehicle', 'Vehicle Fire']],
+                          flood:  [['flash', 'Flash Flood'], ['river', 'River Flood'], ['storm', 'Storm Surge']]
+                        };
+                        var pairs = map[value] || [];
+                        while (child.options.length > 1) child.remove(1);
+                        pairs.forEach(function (p) {
+                          var o = document.createElement('option');
+                          o.value = p[0]; o.text = p[1]; child.appendChild(o);
+                        });
+                        var ts = TomSelectFactory.get('cb-child');
+                        if (ts) { ts.clearOptions(); ts.sync(); ts.clear(true); }
+                      };
+
+                      // Change-callback readout.
+                      window.docsLevelChange = function (value) {
+                        var out = document.getElementById('cb-onchange-out');
+                        if (out) out.textContent = value || 'none';
+                      };
+
+                      // Binds every select.tomselect on the page (single, multi, tags, remote,
+                      // optgroups, person renderer, parent/child, slots, on-change, dropdown-parent,
+                      // disabled, readonly). mountDropdownSlots + wireDependentSelect run inside init.
+                      TomSelectFactory.init();
+
+                      // Readonly is a post-init class on the wrapper.
+                      var rd = TomSelectFactory.get('cb-readonly');
+                      if (rd && rd.wrapper) rd.wrapper.classList.add('is-readonly');
+                    }
+                  });
+                }
+              };
+            });
+          }
+          if (window.Alpine) registerFormsPage();
+          else document.addEventListener('alpine:init', registerFormsPage);
+        })();
+        </script>
 
         <div class="docs-hero">
           <div class="docs-hero-eyebrow" data-wui-i18n="docs_forms_1">Inputs</div>
@@ -550,6 +624,674 @@
           </div>
         </div>
 
+        <!-- ══════════════════════════ Date & Time (Flatpickr) ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="date-time-flatpickr" data-wui-i18n-html="docs_forms_47"><span class="material-symbols-outlined">calendar_month</span>Date &amp; Time (Flatpickr)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_48">Date, time, datetime, and range pickers powered by <code>flatpickr-factory.js</code>. Add <code>data-fp-preset</code> to any <code>&lt;input&gt;</code> and the factory auto-inits it, styling it with <code>flatpickr-input</code> and the <code>flat-date</code> / <code>flat-time</code> / <code>flat-range-*</code> skins. Vendor CSS/JS are loaded globally by the docs shell.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_49">How the factory binds</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_50">The factory exposes the global <code>window.FlatpickrFactory</code> with <code>init(scope)</code>, <code>PRESETS</code>, and <code>FMT</code>. On load it calls <code>FlatpickrFactory.init()</code>, which runs <code>querySelectorAll('[data-fp-preset]')</code> over the scope and initializes every matching input (already-initialized inputs carry <code>_flatpickr</code> and are skipped). Every input dispatches a bubbling <code>fp:change</code> CustomEvent (<code>e.detail.dateStr</code>) on selection.</p>
+
+          <div class="wui-callout info" style="margin-top:var(--space-4)">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_forms_51">Re-init after SPA navigation</div>
+              <span data-wui-i18n-html="docs_forms_52">These demos are initialized by this page's own <code>Alpine.data('formsPage', ...)</code> component (which calls <code>FlatpickrFactory.init()</code> from inside <code>window.DocShell.ready</code>), so they re-bind on every navigation to this page. The classes <code>flat-date</code> / <code>flat-time</code> / <code>flat-range-start</code> / <code>flat-range-end</code> are cosmetic only; binding is driven entirely by <code>data-fp-preset</code>.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Date only ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="date-only" data-wui-i18n-html="docs_forms_53"><span class="material-symbols-outlined">calendar_today</span>Date only</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_54">Calendar picker, no time. <code>date</code> renders ISO <code>Y-m-d</code>; <code>date-dmy</code> renders <code>d/m/Y</code>.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_55">date / date-dmy</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- ISO date (Y-m-d) -->
+              <input id="fp-date" class="flatpickr-input flat-date" data-fp-preset="date" placeholder="YYYY-MM-DD">
+              <!-- DMY date (d/m/Y) -->
+              <input id="fp-date-dmy" class="flatpickr-input flat-date" data-fp-preset="date-dmy" placeholder="DD/MM/YYYY">
+            </div>
+            <template class="wui-demo-js">
+// Auto-bound by FlatpickrFactory.init() over [data-fp-preset]:
+//   &lt;input class="flatpickr-input flat-date" data-fp-preset="date"&gt;      // YYYY-MM-DD
+//   &lt;input class="flatpickr-input flat-date" data-fp-preset="date-dmy"&gt;  // DD/MM/YYYY
+FlatpickrFactory.init();
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Time only ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="time-only" data-wui-i18n-html="docs_forms_56"><span class="material-symbols-outlined">schedule</span>Time only</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_57"><code>noCalendar</code> presets — the time spinner with no date. <code>time</code> is 24hr (<code>H:i</code>); <code>time-12</code> is 12hr with AM/PM (<code>h:i K</code>).</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_58">time / time-12</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- 24hr time -->
+              <input id="fp-time" class="flatpickr-input flat-time" data-fp-preset="time" placeholder="HH:MM">
+              <!-- 12hr time (AM/PM) -->
+              <input id="fp-time-12" class="flatpickr-input flat-time" data-fp-preset="time-12" placeholder="HH:MM AM/PM">
+            </div>
+            <template class="wui-demo-js">
+// noCalendar presets — time spinner only:
+//   &lt;input class="flatpickr-input flat-time" data-fp-preset="time"&gt;     // 24hr H:i
+//   &lt;input class="flatpickr-input flat-time" data-fp-preset="time-12"&gt;  // 12hr h:i K
+FlatpickrFactory.init();
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Date + time ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="date-time" data-wui-i18n-html="docs_forms_59"><span class="material-symbols-outlined">event</span>Date + time</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_60"><code>enableTime</code> presets combining calendar and clock. Format and 12/24hr vary per preset; <code>datetime-seconds</code> adds a seconds spinner.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_61">datetime / datetime-dmy / datetime-12 / datetime-seconds</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Datetime 24hr (Y-m-d H:i) -->
+              <input id="fp-datetime" class="flatpickr-input flat-date" data-fp-preset="datetime" placeholder="YYYY-MM-DD HH:MM">
+              <!-- Datetime DMY 24hr (d/m/Y H:i) -->
+              <input id="fp-datetime-dmy" class="flatpickr-input flat-date" data-fp-preset="datetime-dmy" placeholder="DD/MM/YYYY HH:MM">
+              <!-- Datetime DMY 12hr (d/m/Y h:i K) -->
+              <input id="fp-datetime-12" class="flatpickr-input flat-date" data-fp-preset="datetime-12" placeholder="DD/MM/YYYY h:MM AM/PM">
+              <!-- Datetime + seconds (Y-m-d H:i:S) -->
+              <input id="fp-datetime-seconds" class="flatpickr-input flat-date" data-fp-preset="datetime-seconds" placeholder="YYYY-MM-DD HH:MM:SS">
+            </div>
+            <template class="wui-demo-js">
+//   &lt;input data-fp-preset="datetime"&gt;          // YYYY-MM-DD HH:MM, 24hr
+//   &lt;input data-fp-preset="datetime-dmy"&gt;      // DD/MM/YYYY HH:MM, 24hr
+//   &lt;input data-fp-preset="datetime-12"&gt;       // DD/MM/YYYY h:MM AM/PM
+//   &lt;input data-fp-preset="datetime-seconds"&gt;  // YYYY-MM-DD HH:MM:SS
+FlatpickrFactory.init();
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Future / Past bounded ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="future-only-past-only" data-wui-i18n-html="docs_forms_62"><span class="material-symbols-outlined">history_toggle_off</span>Future-only &amp; past-only</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_63">Bounded presets that clamp the selectable range against <em>now</em>. The min/max is refreshed in an <code>onOpen</code> hook so the boundary stays accurate across a long-lived page. <code>past-datetime</code> also adds 12hr time + seconds.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_64">future-date / past-date</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Future date only (no past dates) -->
+              <input id="fp-future-date" class="flatpickr-input flat-date" data-fp-preset="future-date" placeholder="From today onward">
+              <!-- Past date only (no future dates) -->
+              <input id="fp-past-date" class="flatpickr-input flat-date" data-fp-preset="past-date" placeholder="Up to today">
+            </div>
+            <template class="wui-demo-js">
+//   &lt;input data-fp-preset="future-date"&gt;  // no past dates; min refreshed on open
+//   &lt;input data-fp-preset="past-date"&gt;    // no future dates
+FlatpickrFactory.init();
+            </template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_65">future-datetime / past-datetime</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Future date + 24hr time -->
+              <input id="fp-future-datetime" class="flatpickr-input flat-date" data-fp-preset="future-datetime" placeholder="From now onward">
+              <!-- Past date + 12hr time + seconds -->
+              <input id="fp-past-datetime" class="flatpickr-input flat-date" data-fp-preset="past-datetime" placeholder="Up to now">
+            </div>
+            <template class="wui-demo-js">
+//   &lt;input data-fp-preset="future-datetime"&gt;  // date + 24hr time, future only
+//   &lt;input data-fp-preset="past-datetime"&gt;    // date + 12hr time + seconds, past only
+FlatpickrFactory.init();
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Date range (paired) ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="date-range-paired" data-wui-i18n-html="docs_forms_66"><span class="material-symbols-outlined">date_range</span>Date range (paired)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_67">Two inputs that constrain each other: both share a <code>data-fp-range-group</code>, with <code>data-fp-range-role="start"</code> on one and <code>"end"</code> on the other. The start's selection becomes the end's minimum and vice-versa. Wrap the pair in <code>wui-date-range-wrap</code> for the tight flex row.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_68">range-start + range-end</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <div class="wui-date-range-wrap">
+                <!-- Range start (Y-m-d H:i:S, 24hr) -->
+                <input id="fp-range-start" class="flatpickr-input flat-range-start" data-fp-preset="range-start" data-fp-range-group="docs-window" data-fp-range-role="start" placeholder="Start">
+                <span class="material-symbols-outlined">arrow_forward</span>
+                <!-- Range end (Y-m-d H:i:S, 24hr) -->
+                <input id="fp-range-end" class="flatpickr-input flat-range-end" data-fp-preset="range-end" data-fp-range-group="docs-window" data-fp-range-role="end" placeholder="End">
+              </div>
+            </div>
+            <template class="wui-demo-js">
+//   &lt;input data-fp-preset="range-start"
+//          data-fp-range-group="incident-window"
+//          data-fp-range-role="start"&gt;
+//   &lt;input data-fp-preset="range-end"
+//          data-fp-range-group="incident-window"
+//          data-fp-range-role="end"&gt;
+FlatpickrFactory.init();  // pairs resolve by shared range-group
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Inline (no popup) ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="inline-calendar" data-wui-i18n-html="docs_forms_69"><span class="material-symbols-outlined">calendar_month</span>Inline calendar</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_70"><code>data-fp-inline="true"</code> embeds the calendar permanently in place instead of opening a popup. Works with any preset; useful for date panels and dashboard filter widgets.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_71">date · inline</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Inline date calendar -->
+              <input id="fp-inline" class="flatpickr-input flat-date" data-fp-preset="date" data-fp-inline="true">
+            </div>
+            <template class="wui-demo-js">
+//   &lt;input data-fp-preset="date" data-fp-inline="true"&gt;
+//   &lt;input data-fp-preset="datetime" data-fp-inline="true"&gt;
+FlatpickrFactory.init();
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Overrides ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="per-input-overrides" data-wui-i18n-html="docs_forms_72"><span class="material-symbols-outlined">tune</span>Per-input overrides</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_73">Any preset can be tuned inline with <code>data-fp-*</code> overrides: <code>data-fp-format</code> (a <code>Y-m-d</code> string or an alias like <code>dmy-hi</code>), <code>data-fp-min-date</code> / <code>data-fp-max-date</code>, <code>data-fp-enable-time</code>, <code>data-fp-24hr</code>, <code>data-fp-seconds</code>, <code>data-fp-allow-input</code>, <code>data-fp-week-numbers</code>, <code>data-fp-mode</code> (<code>single</code>/<code>multiple</code>/<code>range</code>), <code>data-fp-position</code>, <code>data-fp-default-date</code>, and <code>data-fp-on-change</code> (name of a global handler).</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_74">Override examples</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Manual text entry + week numbers -->
+              <input id="fp-ov-input" class="flatpickr-input flat-date" data-fp-preset="date" data-fp-allow-input="true" data-fp-week-numbers="true" placeholder="Type or pick">
+              <!-- Bounded window via min/max -->
+              <input id="fp-ov-bounds" class="flatpickr-input flat-date" data-fp-preset="date" data-fp-min-date="2026-01-01" data-fp-max-date="2026-12-31" placeholder="2026 only">
+              <!-- Native multi-select mode -->
+              <input id="fp-ov-multiple" class="flatpickr-input flat-date" data-fp-preset="date" data-fp-mode="multiple" placeholder="Pick several dates">
+              <!-- Format alias override (dmy-hi = d/m/Y H:i) -->
+              <input id="fp-ov-format" class="flatpickr-input flat-date" data-fp-preset="datetime" data-fp-format="dmy-hi" placeholder="DD/MM/YYYY HH:MM">
+            </div>
+            <template class="wui-demo-js">
+//   data-fp-allow-input="true" data-fp-week-numbers="true"  // type-in + ISO week col
+//   data-fp-min-date="2026-01-01" data-fp-max-date="2026-12-31"
+//   data-fp-mode="multiple"                                 // native multi-select
+//   data-fp-format="dmy-hi"                                 // alias -> d/m/Y H:i
+FlatpickrFactory.init();
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Readonly display ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="readonly-display" data-wui-i18n-html="docs_forms_75"><span class="material-symbols-outlined">lock</span>Readonly display</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_76">Flatpickr always sets <code>[readonly]</code> internally. For a true display-only field, add <code>.is-readonly</code> to the input and disable opening with <code>fp.set('clickOpens', false)</code>. The dashed border and muted surface match the form-control readonly language.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_77">Editable vs readonly</div>
+          <div class="wui-demo" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Editable date -->
+              <input id="fp-editable" class="flatpickr-input flat-date" data-fp-preset="date" placeholder="YYYY-MM-DD">
+              <!-- Readonly display date -->
+              <input id="fp-readonly" class="flatpickr-input flat-date is-readonly" data-fp-preset="date" data-fp-default-date="2026-06-24">
+            </div>
+            <template class="wui-demo-js">
+// Bind both, then lock the readonly one open-less:
+FlatpickrFactory.init();
+var ro = document.getElementById('fp-readonly');
+if (ro &amp;&amp; ro._flatpickr) {
+  ro.classList.add('is-readonly');
+  ro._flatpickr.set('clickOpens', false);
+}
+            </template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Select / Combobox (TomSelect) ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="select-combobox-tomselect" data-wui-i18n-html="docs_forms_78"><span class="material-symbols-outlined">arrow_drop_down_circle</span>Select / Combobox (TomSelect)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_79">The <code>tom-select-factory.js</code> combobox. Add <code>class="tomselect"</code> to any <code>&lt;select&gt;</code>, drive every behavior through <code>data-*</code> attributes, and call <code>TomSelectFactory.init()</code>. The factory injects a blank placeholder option, resyncs dependent cascades, mounts pinned dropdown header/footer slots, and follows the agency theme. Every capability is demoed below with the exact markup and the exact init call.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_80">How it initializes</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_81">The factory binds every <code>&lt;select class="tomselect"&gt;</code> in scope. Call <code>TomSelectFactory.init()</code> once after the DOM is ready. It also starts a <code>MutationObserver</code>, so late-injected selects (WebEOC repeat regions, modals) initialize automatically. Retrieve a live instance with <code>TomSelectFactory.get('idOrName')</code>; drive it with <code>refresh</code>, <code>destroy</code>, <code>enable</code>, <code>disable</code>.</p>
+
+          <div class="wui-callout info">
+            <span class="material-symbols-outlined">info</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_forms_82">Load order</div>
+              <span data-wui-i18n-html="docs_forms_83"><code>tom-select.min.css</code> → <code>tom-select-agency.css</code> in <code>&lt;head&gt;</code>, then <code>tom-select.complete.min.js</code> → <code>tom-select-factory.js</code>. On this docs site the vendor CSS/JS is loaded site-wide by the shell; you only call <code>TomSelectFactory.init()</code>.</span>
+            </div>
+          </div>
+
+          <div class="wui-callout" style="margin-top:var(--space-3)">
+            <span class="material-symbols-outlined">key</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_forms_84">Instance key</div>
+              <span data-wui-i18n-html="docs_forms_85">The key is the select's <code>id</code>, or its <code>name</code> if there is no id (an auto <code>data-ts-key</code> is stamped only when both are absent). Use that key with <code>TomSelectFactory.get()</code> / <code>enable()</code> / <code>disable()</code> / <code>destroy()</code> / <code>refresh()</code>.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Single select ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="single-select" data-wui-i18n-html="docs_forms_86"><span class="material-symbols-outlined">arrow_drop_down_circle</span>Single select</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_87">One item, with a built-in dropdown search field (<code>dropdown_input</code> plugin). The factory injects a blank placeholder option, so a fresh record shows the placeholder rather than auto-selecting the first real option. <code>data-placeholder</code> sets the placeholder text.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_88">Basic single (required — placeholder only)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_89">Without <code>data-allow-empty</code>, the placeholder shows on load but the user cannot re-select blank once a value is chosen. This is the correct pattern for required fields.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Single select, required — placeholder shows on load, no re-clear -->
+              <select id="cb-single" class="tomselect" data-placeholder="Select priority…">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init(); // binds every select.tomselect on the page
+</template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_90">Clearable single (data-allow-empty)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_91"><code>data-allow-empty="true"</code> keeps the empty option selectable in the dropdown, so the user can actively re-clear the field. The clear-all "×" also appears once a value is chosen.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Clearable single — user can re-select blank from the dropdown -->
+              <select id="cb-clearable" class="tomselect" data-allow-empty="true" data-placeholder="Optional — can clear…">
+                <option value="active">Active</option>
+                <option value="monitoring">Monitoring</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_92">Preselected value (edit mode)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_93">An <code>&lt;option selected&gt;</code> carrying the native <code>selected</code> attribute is honored — the factory only force-clears when no option has an explicit <code>selected</code> attribute (a browser default), so saved records repopulate correctly.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Preselected — the explicit `selected` attribute survives placeholder injection -->
+              <select id="cb-preselected" class="tomselect" data-allow-empty="true" data-placeholder="Select severity…">
+                <option value="sev1">Severity 1 — Catastrophic</option>
+                <option value="sev2" selected>Severity 2 — Critical</option>
+                <option value="sev3">Severity 3 — Moderate</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Multi-select ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="multi-select" data-wui-i18n-html="docs_forms_94"><span class="material-symbols-outlined">checklist</span>Multi-select</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_95">Add <code>multiple</code> (or <code>data-multi="true"</code>). Selections render as removable chips (the <code>remove_button</code> plugin adds a per-chip "×"), and an inline search field is always visible. The right-rail plus icon replaces the chevron. In a WebEOC edit view, restore comma-separated values with <code>repopulateMultiSelect('FieldName', xslValue)</code> — WebEOC does not restore multi-select natively.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_96">Multiple (chips + remove)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Multi-select — chips with per-chip remove, always-on search -->
+              <select id="cb-multi" class="tomselect" multiple data-placeholder="Select agencies…">
+                <option value="fire">Fire Department</option>
+                <option value="police">Police</option>
+                <option value="ems">EMS</option>
+                <option value="eoc">EOC</option>
+                <option value="public-works">Public Works</option>
+                <option value="utilities">Utilities</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_97">data-multi="true" (attribute form)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_98"><code>data-multi="true"</code> is equivalent to the native <code>multiple</code> attribute. Useful when the markup is generated by a system that will not emit a bare boolean attribute.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Multi via data-multi (no native `multiple` attribute) -->
+              <select id="cb-multi-attr" class="tomselect" data-multi="true" data-placeholder="Select resources…">
+                <option value="truck">Fire Truck</option>
+                <option value="ambulance">Ambulance</option>
+                <option value="helicopter">Helicopter</option>
+                <option value="boat">Rescue Boat</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_99">Multi with preselected chips (edit mode)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_100">Options carrying <code>selected</code> render as chips on load. For WebEOC, the page-level <code>repopulateMultiSelect</code> helper splits the saved comma-separated string, sets the native value, then calls <code>.sync()</code>.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Two options preselected — render as chips on init -->
+              <select id="cb-multi-preselected" class="tomselect" multiple data-placeholder="Select agencies…">
+                <option value="fire" selected>Fire Department</option>
+                <option value="ems" selected>EMS</option>
+                <option value="police">Police</option>
+                <option value="eoc">EOC</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Creatable / tags ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="creatable-tags" data-wui-i18n-html="docs_forms_101"><span class="material-symbols-outlined">new_label</span>Creatable / tags</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_102"><code>data-create="true"</code> lets the user type a new value and add it with Enter or Tab. The factory also enables <code>createOnBlur</code>, so tabbing away commits the typed entry automatically. Works on both single and multi selects; multi is the common "tags" pattern.</p>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_103">Creatable multi (tags)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Creatable tags — type + Enter/Tab to add a new value -->
+              <select id="cb-tags" class="tomselect" multiple data-create="true" data-placeholder="Type to add tags…">
+                <option value="urgent">Urgent</option>
+                <option value="life-safety">Life Safety</option>
+                <option value="infrastructure">Infrastructure</option>
+                <option value="comms">Communications</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_104">Creatable single</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_105">The same <code>data-create</code> flag on a single select lets the user commit one free-text value that is not in the option list.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Creatable single — accepts one free-text value -->
+              <select id="cb-create-single" class="tomselect" data-create="true" data-allow-empty="true" data-placeholder="Pick or type a location…">
+                <option value="eoc">EOC</option>
+                <option value="field">Field Command Post</option>
+                <option value="staging">Staging Area</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Remote / autocomplete ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="remote-autocomplete-data-src-api" data-wui-i18n-html="docs_forms_106"><span class="material-symbols-outlined">cloud_download</span>Remote / autocomplete (data-src="api")</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_107"><code>data-src="api"</code> turns the control into a remote autocomplete. The factory fetches <code>data-url?&lt;data-url-param&gt;=&lt;query&gt;</code> and maps each row through <code>data-value-field</code> / <code>data-label-field</code>. <code>data-preload="true"</code> loads once immediately; <code>data-preload="focus"</code> loads on first focus; omit to load only on keystroke. Placeholder injection and force-clear are skipped for API selects (options arrive asynchronously).</p>
+
+          <div class="wui-callout warning">
+            <span class="material-symbols-outlined">warning</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_forms_108">Live endpoint required</div>
+              <span data-wui-i18n-html="docs_forms_109">This demo points at a placeholder <code>data-url</code>. With no reachable endpoint the control renders and searches, but returns no rows. Point <code>data-url</code> at a real JSON endpoint that echoes an array of <code>{ id, text }</code> objects to see results.</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_110">Remote search — load on keystroke</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Remote autocomplete — fetches /api/users?q=<query>, maps id/text -->
+              <select id="cb-remote" class="tomselect"
+                      data-src="api"
+                      data-url="/api/users"
+                      data-url-param="q"
+                      data-value-field="id"
+                      data-label-field="text"
+                      data-placeholder="Search users…"></select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_111">Remote — preload on focus</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_112"><code>data-preload="focus"</code> fetches the initial result set the first time the control is focused, so an empty query already shows options.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Remote autocomplete — preload on first focus -->
+              <select id="cb-remote-preload" class="tomselect"
+                      data-src="api"
+                      data-url="/api/facilities"
+                      data-url-param="term"
+                      data-value-field="id"
+                      data-label-field="name"
+                      data-preload="focus"
+                      data-placeholder="Search facilities…"></select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Optgroups ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="optgroups" data-wui-i18n-html="docs_forms_113"><span class="material-symbols-outlined">segment</span>Optgroups</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_114">Native <code>&lt;optgroup label="…"&gt;</code> elements are honored — Tom Select renders each group with a pinned <code>optgroup-header</code>. Works with single and multi. No extra attributes are needed.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Optgroups — native <optgroup> renders grouped headers -->
+              <select id="cb-optgroups" class="tomselect" data-allow-empty="true" data-placeholder="Assign to unit…">
+                <optgroup label="Command">
+                  <option value="ic">Incident Commander</option>
+                  <option value="deputy">Deputy IC</option>
+                </optgroup>
+                <optgroup label="Operations">
+                  <option value="ops-chief">Operations Chief</option>
+                  <option value="staging">Staging Manager</option>
+                </optgroup>
+                <optgroup label="Logistics">
+                  <option value="log-chief">Logistics Chief</option>
+                  <option value="supply">Supply Unit</option>
+                </optgroup>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Custom renderers ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="custom-option-item-renderers" data-wui-i18n-html="docs_forms_115"><span class="material-symbols-outlined">palette</span>Custom option / item renderers</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_116">Register a render template with <code>TomSelectFactory.registerTemplate(name, def)</code> <strong>before</strong> <code>init()</code>, then point a select at it with <code>data-render="name"</code>. Tom Select copies every <code>data-*</code> attribute from each <code>&lt;option&gt;</code> into the option data object, so the template can render rich rows. Supported keys: <code>option</code>, <code>item</code>, <code>option_create</code>, <code>no_results</code>, <code>not_loading</code>, <code>optgroup</code>, <code>optgroup_header</code>, <code>loading</code>, <code>dropdown</code>. The agency CSS ships <code>.ts-person-option</code> / <code>.ts-person-name</code> / <code>.ts-person-meta</code> for this pattern.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Custom renderer — two-line person rows from data-* on each option -->
+              <select id="cb-person" class="tomselect" data-allow-empty="true" data-placeholder="Assign officer…" data-render="DocsPersonTmpl">
+                <option value="jr" data-role="Incident Commander" data-dept="EOC">J. Rivera</option>
+                <option value="am" data-role="Operations Chief" data-dept="Fire">A. Martinez</option>
+                <option value="tp" data-role="Logistics Chief" data-dept="EOC">T. Park</option>
+                <option value="sb" data-role="Safety Officer" data-dept="EMS">S. Brown</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+// Register the template BEFORE init so data-render="DocsPersonTmpl" resolves.
+TomSelectFactory.registerTemplate('DocsPersonTmpl', {
+  option: function (data) {
+    return '&lt;div class="ts-person-option"&gt;' +
+      '&lt;div class="ts-person-name"&gt;' + data.text + '&lt;/div&gt;' +
+      '&lt;div class="ts-person-meta"&gt;' + (data.role || '') +
+        (data.dept ? ' · ' + data.dept : '') + '&lt;/div&gt;' +
+    '&lt;/div&gt;';
+  },
+  item: function (data) { return '&lt;div&gt;' + data.text + '&lt;/div&gt;'; }
+});
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Dependent / cascading ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="dependent-cascading-selects" data-wui-i18n-html="docs_forms_117"><span class="material-symbols-outlined">account_tree</span>Dependent / cascading selects</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_118">Two wiring styles. In WebEOC the board engine swaps the child's <code>&lt;option&gt;</code> list when the parent changes — mark the child with <code>data-parent="ParentName"</code> (or <code>parent="…"</code>) and the factory rebuilds the child from the currently visible native options. Outside WebEOC, wire <code>data-on-change="GlobalFn"</code> on the parent to a function that rebuilds the child options and calls <code>TomSelectFactory.get('child').clearOptions()</code> then <code>.sync()</code>. The live demo below uses the <code>data-on-change</code> style.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Parent — fires data-on-change (window.docsFilterChild) with the value -->
+              <select id="cb-parent" name="cb-category" class="tomselect" data-allow-empty="true" data-placeholder="Select category…" data-on-change="docsFilterChild">
+                <option value="hazmat">Hazmat</option>
+                <option value="fire">Fire</option>
+                <option value="flood">Flood</option>
+              </select>
+              <!-- Child — data-parent triggers auto-resync under WebEOC; here it is rebuilt by the handler -->
+              <select id="cb-child" name="cb-subcategory" class="tomselect" data-parent="cb-category" data-allow-empty="true" data-placeholder="Select category first…"></select>
+            </div>
+            <template class="wui-demo-js">
+// window.docsFilterChild rebuilds the child options from the parent value,
+// then resyncs the child instance. Registered by the page on load.
+window.docsFilterChild = function (value) {
+  var child = document.getElementById('cb-child');
+  if (!child) return;
+  var map = {
+    hazmat: [['chem-spill', 'Chemical Spill'], ['radiation', 'Radiation'], ['gas-leak', 'Gas Leak']],
+    fire:   [['structure', 'Structure Fire'], ['wildfire', 'Wildfire'], ['vehicle', 'Vehicle Fire']],
+    flood:  [['flash', 'Flash Flood'], ['river', 'River Flood'], ['storm', 'Storm Surge']]
+  };
+  var pairs = map[value] || [];
+  while (child.options.length &gt; 1) child.remove(1);
+  pairs.forEach(function (p) {
+    var o = document.createElement('option');
+    o.value = p[0]; o.text = p[1]; child.appendChild(o);
+  });
+  var ts = TomSelectFactory.get('cb-child');
+  if (ts) { ts.clearOptions(); ts.sync(); ts.clear(true); }
+};
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Dropdown slots ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="dropdown-slots-header-footer" data-wui-i18n-html="docs_forms_119"><span class="material-symbols-outlined">vertical_split</span>Dropdown slots (header / footer)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_120">Mount arbitrary markup as a pinned header and/or footer inside the dropdown. Stage a hidden <code>&lt;div class="ts-dropdown-slot"&gt;</code> in the page and point the select at it with <code>data-dropdown-header="#id"</code> / <code>data-dropdown-footer="#id"</code>. The factory <em>moves</em> the node (not a clone, so ids stay unique) into the dropdown and shields it from Tom Select's select/close handlers, so controls inside the slot stay interactive. Pair with <code>data-stay-open="true"</code> so picking an option does not close the dropdown while the user is also using the slot controls. Slots are also mountable manually via <code>TomSelectFactory.mountDropdownSlots(ts, el)</code>.</p>
+
+          <div class="wui-callout warning">
+            <span class="material-symbols-outlined">warning</span>
+            <div class="wui-callout-body">
+              <div class="wui-callout-title" data-wui-i18n="docs_forms_121">Mount once</div>
+              <span data-wui-i18n="docs_forms_122">The slot node is consumed into the dropdown, so a select that is destroyed and re-initialized loses its slot. Mount already-initialized controls.</span>
+            </div>
+          </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_forms_123">Header slot + footer slot (stay-open)</div>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Select with a pinned dropdown header + footer; stays open on select -->
+              <select id="cb-slots" class="tomselect"
+                      data-allow-empty="true"
+                      data-stay-open="true"
+                      data-dropdown-header="#cb-slot-head"
+                      data-dropdown-footer="#cb-slot-foot"
+                      data-placeholder="Pick field, then sort…">
+                <option value="created">Date created</option>
+                <option value="updated">Date updated</option>
+                <option value="priority">Priority</option>
+                <option value="status">Status</option>
+              </select>
+              <!-- Staged header slot (hidden by .ts-dropdown-slot until mounted) -->
+              <div id="cb-slot-head" class="ts-dropdown-slot">
+                <div class="field-label" style="margin:0 0 var(--space-1)">Sort direction</div>
+                <div class="wui-check-group is-row">
+                  <label class="wui-radio sm"><input type="radio" name="cb-sort-dir" value="asc" checked><span class="wui-control-box"></span><span class="wui-control-label">Ascending</span></label>
+                  <label class="wui-radio sm"><input type="radio" name="cb-sort-dir" value="desc"><span class="wui-control-box"></span><span class="wui-control-label">Descending</span></label>
+                </div>
+              </div>
+              <!-- Staged footer slot -->
+              <div id="cb-slot-foot" class="ts-dropdown-slot">
+                <button type="button" class="wui-btn ghost primary wui-btn-sm block">Manage sort presets</button>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+// data-dropdown-header / -footer point at staged .ts-dropdown-slot nodes;
+// the factory mounts them during init. data-stay-open keeps the menu open
+// so field + direction can both be set without reopening.
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Change callback ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="change-callback-data-on-change" data-wui-i18n-html="docs_forms_124"><span class="material-symbols-outlined">bolt</span>Change callback (data-on-change)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_125"><code>data-on-change="GlobalFn"</code> calls <code>window.GlobalFn(value, key, instance)</code> on every change — the value, the instance key, and the live Tom Select instance. Use it to drive dependent UI without touching the factory internals.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- On-change callback writes the picked value into the readout below -->
+              <select id="cb-onchange" class="tomselect" data-allow-empty="true" data-placeholder="Set incident level…" data-on-change="docsLevelChange">
+                <option value="1">Level 1 — Full activation</option>
+                <option value="2">Level 2 — Partial activation</option>
+                <option value="3">Level 3 — Monitoring</option>
+              </select>
+              <div class="field-hint">Selected level: <strong id="cb-onchange-out">none</strong></div>
+            </div>
+            <template class="wui-demo-js">
+window.docsLevelChange = function (value, key, instance) {
+  var out = document.getElementById('cb-onchange-out');
+  if (out) out.textContent = value || 'none';
+};
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ Dropdown parent ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="dropdown-parent-data-dropdown-parent" data-wui-i18n-html="docs_forms_126"><span class="material-symbols-outlined">open_in_full</span>Dropdown parent (data-dropdown-parent)</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_127">The dropdown teleports to <code>&lt;body&gt;</code> by default so it is never clipped by an <code>overflow:hidden</code> ancestor. Override the mount target with <code>data-dropdown-parent="&lt;selector&gt;"</code> when the dropdown must live inside a specific scroll container or modal.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Dropdown mounted to <body> (default) — stated explicitly for clarity -->
+              <select id="cb-dropdown-parent" class="tomselect" data-allow-empty="true" data-dropdown-parent="body" data-placeholder="Select zone…">
+                <option value="north">North Zone</option>
+                <option value="south">South Zone</option>
+                <option value="east">East Zone</option>
+                <option value="west">West Zone</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+</template>
+          </div>
+        </div>
+
+        <!-- ══════════════════════════ States: disabled & readonly ══════════════════════════ -->
+        <div class="docs-section">
+          <div class="docs-section-title" id="states-disabled-readonly" data-wui-i18n-html="docs_forms_128"><span class="material-symbols-outlined">block</span>States — disabled &amp; readonly</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_forms_129">Disabled (native <code>disabled</code> attribute, or <code>TomSelectFactory.disable('key')</code>) renders at reduced opacity, fully inert with no tab stop. Readonly (add <code>.is-readonly</code> to the <code>.ts-wrapper</code> after init) matches the form-control readonly style: dashed border, muted surface, text still selectable and copyable, and no dropdown opens.</p>
+          <div class="wui-demo stacked" data-wui-demo>
+            <div class="wui-demo-preview">
+              <!-- Disabled — native attribute; inert, no tab stop -->
+              <select id="cb-disabled" class="tomselect" disabled>
+                <option value="active" selected>Active Monitoring</option>
+              </select>
+              <!-- Readonly — .is-readonly added to the wrapper by this page's Alpine component after init -->
+              <select id="cb-readonly" class="tomselect">
+                <option value="monitoring" selected>Monitoring</option>
+              </select>
+            </div>
+            <template class="wui-demo-js">
+TomSelectFactory.init();
+// Readonly is a post-init class on the wrapper:
+var rd = TomSelectFactory.get('cb-readonly');
+if (rd) rd.wrapper.classList.add('is-readonly');
+// Programmatic disable/enable:
+// TomSelectFactory.disable('cb-disabled');
+// TomSelectFactory.enable('cb-disabled');
+</template>
+          </div>
+        </div>
 
       </div>
     </div>
