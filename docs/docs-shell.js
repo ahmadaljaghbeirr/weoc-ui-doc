@@ -706,11 +706,21 @@
   /* First-load entrance — stagger the hero + sections. One-shot; subsequent
      htmx-boosted navigations use the GSAP curtain wipe instead (coverIn/
      revealOut below). gsap.from so nothing gets stuck hidden if gsap
-     somehow fails. */
+     somehow fails.
+     clearProps:'transform' — GSAP's .from() leaves an inline
+     `transform: translate(0px, 0px)` on the element after the tween ends
+     (the animated-FROM value settles at its identity, but the inline style
+     itself is never removed). A non-`none` transform on any ancestor,
+     identity or not, creates a new CSS containing block for `position:fixed`
+     descendants — this broke overlays.html's modal/drawer (backdrop and
+     panel positioned relative to the `.docs-section` instead of the
+     viewport) since every section on that page carried this leftover style.
+     clearProps strips the inline transform once the tween completes,
+     restoring "no transform at all" with zero visual difference. */
   function entranceAnimate() {
     if (reduceMotion || !window.gsap) return;
     window.gsap.from('.docs-hero, .docs-section', {
-      y: 14, opacity: 0, duration: 0.4, ease: 'power2.out', stagger: 0.05
+      y: 14, opacity: 0, duration: 0.4, ease: 'power2.out', stagger: 0.05, clearProps: 'transform'
     });
   }
 
