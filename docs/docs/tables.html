@@ -242,6 +242,87 @@
               </div>
             </div>
           </div>
+
+          <div class="docs-subsection-title" data-wui-i18n="docs_tables_51">Reorder demo — drag rows by the handle</div>
+          <p class="docs-desc" data-wui-i18n-html="docs_tables_52">Live native HTML5 drag-and-drop, restricted to the <code>drag-handle</code> grip (grabbing anywhere else on the row selects text instead). Applies the same <code>is-dragging</code>/<code>is-dragover</code> classes documented above while a drag is in progress, then reorders the real <code>&lt;tr&gt;</code> elements on drop.</p>
+          <div class="wui-demo stacked" data-wui-demo data-wui-demo-run>
+            <div class="wui-demo-preview">
+              <div class="wui-table-wrap">
+                <table class="wui-table-standard" id="reorder-demo-table">
+                  <thead>
+                    <tr>
+                      <th class="wui-col-sm"></th>
+                      <th class="wui-col-primary">Incident</th>
+                      <th>Priority</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><span class="material-symbols-outlined drag-handle">drag_indicator</span></td><td>Power Outage — Tower B</td><td><span class="wui-badge danger wui-badge-sm">Critical</span></td></tr>
+                    <tr><td><span class="material-symbols-outlined drag-handle">drag_indicator</span></td><td>Water Leak — Level 3</td><td><span class="wui-badge warning wui-badge-sm">High</span></td></tr>
+                    <tr><td><span class="material-symbols-outlined drag-handle">drag_indicator</span></td><td>Comms Degraded — Sector 7</td><td><span class="wui-badge primary wui-badge-sm">Medium</span></td></tr>
+                    <tr><td><span class="material-symbols-outlined drag-handle">drag_indicator</span></td><td>Evacuation Drill — Annex</td><td><span class="wui-badge secondary wui-badge-sm">Low</span></td></tr>
+                    <tr><td><span class="material-symbols-outlined drag-handle">drag_indicator</span></td><td>Perimeter Breach — Gate 9</td><td><span class="wui-badge warning wui-badge-sm">High</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <template class="wui-demo-js">
+(function () {
+  var table = document.getElementById('reorder-demo-table');
+  if (!table || table._reorderBound) return;
+  table._reorderBound = true;
+  var tbody = table.querySelector('tbody');
+  var dragSrc = null;
+
+  function clearDragover() {
+    tbody.querySelectorAll('.is-dragover').forEach(function (r) { r.classList.remove('is-dragover'); });
+  }
+  function resetDraggable() {
+    tbody.querySelectorAll('tr[draggable="true"]').forEach(function (r) { r.draggable = false; });
+  }
+
+  // draggable is only switched on while the mouse is held on the handle, so
+  // the row itself stays selectable/clickable everywhere else -- matches
+  // "Use the drag-handle element as the reorder grip" above.
+  tbody.querySelectorAll('.drag-handle').forEach(function (handle) {
+    handle.addEventListener('mousedown', function () {
+      handle.closest('tr').draggable = true;
+    });
+  });
+  document.addEventListener('mouseup', function () {
+    if (!dragSrc) resetDraggable();
+  });
+
+  tbody.querySelectorAll('tr').forEach(function (row) {
+    row.addEventListener('dragstart', function (e) {
+      dragSrc = row;
+      row.classList.add('is-dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', ''); // required by Firefox for drag to start
+    });
+    row.addEventListener('dragover', function (e) {
+      if (!dragSrc || row === dragSrc) return;
+      e.preventDefault();
+      if (!row.classList.contains('is-dragover')) { clearDragover(); row.classList.add('is-dragover'); }
+    });
+    row.addEventListener('dragleave', function () { row.classList.remove('is-dragover'); });
+    row.addEventListener('drop', function (e) {
+      e.preventDefault();
+      if (!dragSrc || row === dragSrc) return;
+      var rows = Array.prototype.slice.call(tbody.children);
+      if (rows.indexOf(dragSrc) < rows.indexOf(row)) row.after(dragSrc); else row.before(dragSrc);
+      clearDragover();
+    });
+    row.addEventListener('dragend', function () {
+      row.classList.remove('is-dragging');
+      clearDragover();
+      resetDraggable();
+      dragSrc = null;
+    });
+  });
+})();
+            </template>
+          </div>
         </div>
 
         <!-- ══════════════════════════ wui-table-cards ══════════════════════════ -->
