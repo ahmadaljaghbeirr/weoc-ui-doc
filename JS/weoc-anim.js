@@ -212,7 +212,19 @@
         : (opts.counter instanceof Element ? opts.counter : getPctEl(el));
 
       if (ctrEl) {
-        var proxy = { val: fromPct };
+        // Reuse one proxy object per counter element (instead of a fresh
+        // literal every call) so gsap.killTweensOf can find and cancel a
+        // still-running prior tween on it. fill/el are already stable,
+        // reused targets, so GSAP's own auto-overwrite handles those
+        // correctly on repeated calls -- only this counter proxy needs
+        // help, because a brand-new plain object is untrackable by GSAP's
+        // target-based overwrite (this was silently letting two counter
+        // tweens run concurrently -- e.g. a Reset-then-Play cycle before
+        // the prior tween settled -- both writing ctrEl.textContent and
+        // producing nonsensical interleaved values like "103%").
+        var proxy = ctrEl._wuiCounterProxy || (ctrEl._wuiCounterProxy = {});
+        gsap.killTweensOf(proxy);
+        proxy.val = fromPct;
         tl.to(proxy, {
           val: toPct,
           duration: dur,
@@ -401,11 +413,17 @@
       // Step 3 — settle back with elastic bounce
       tl.to(el, { scale: 1, duration: 0.30, ease: EASE.elastic });
 
-      // Counter runs in parallel with the ring sweep
+      // Counter runs in parallel with the ring sweep. Same fresh-proxy /
+      // gsap.killTweensOf fix as WUIAnim.ring above -- reuse one proxy per
+      // counter element so a still-running prior tween (e.g. this function
+      // called again, or ring()'s Reset, before the last one settled) gets
+      // cancelled instead of racing the new one and corrupting the text.
       if (opts.counter !== false) {
         var ctrEl = getPctEl(el);
         if (ctrEl) {
-          var proxy = { val: fromPct };
+          var proxy = ctrEl._wuiCounterProxy || (ctrEl._wuiCounterProxy = {});
+          gsap.killTweensOf(proxy);
+          proxy.val = fromPct;
           tl.to(proxy, {
             val: 100,
             duration: dur,
@@ -436,7 +454,12 @@
         return;
       }
 
-      var proxy = { val: from };
+      // Same fresh-proxy fix as WUIAnim.ring/completion above -- reuse one
+      // proxy per element so a still-in-flight prior call gets cancelled
+      // instead of racing the new one on the same text node.
+      var proxy = el._wuiCounterProxy || (el._wuiCounterProxy = {});
+      gsap.killTweensOf(proxy);
+      proxy.val = from;
       return gsap.to(proxy, {
         val: to,
         duration: opts.duration !== undefined ? opts.duration : DUR.base,
