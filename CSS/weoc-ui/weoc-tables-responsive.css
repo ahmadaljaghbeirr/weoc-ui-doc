@@ -1,31 +1,40 @@
 /* =============================================
    weoc-tables-responsive.css
-   Supplementary module — always load after weoc-tables.css.
+   Imported automatically by weoc-tables.css (bottom of its own @import —
+   no board stylesheet needs to load this file itself).
    Requires .wui-table-wrap's container-type: inline-size (weoc-tables.css).
 
-   Declarative column-hide hook for standard (non-cards) wui-table-standard
-   tables: mark a <th>/<td> pair `data-wui-hide-below="sm|md|lg|xl"` and the
-   cell hides once the table's OWN wrapper (.wui-table-wrap) shrinks past
-   that named breakpoint — not the browser viewport. That distinction is the
-   entire point: a details/split panel opening squeezes the table without
-   ever resizing the window, and a viewport @media query would miss it
-   completely (the exact failure mode two boards already hand-rolled and
+   Declarative column-hide hook for ANY table variant living inside a
+   .wui-table-wrap: mark a <th>/<td> pair `data-wui-hide-below="sm|md|lg|xl"`
+   and the cell hides once the table's OWN wrapper (.wui-table-wrap) shrinks
+   past that named breakpoint — not the browser viewport. That distinction
+   is the entire point: a details/split panel opening squeezes the table
+   without ever resizing the window, and a viewport @media query would miss
+   it completely (the exact failure mode two boards already hand-rolled and
    hit — see the design spec).
+
+   Scoped to `.wui-table-wrap [data-wui-hide-below]` rather than enumerating
+   .wui-table-standard/.wui-table-cards/.wui-table-log individually — every
+   variant lives inside .wui-table-wrap by convention (weoc-tables.css §1),
+   so this works on all of them today and on any future variant without
+   editing this file again.
 
    Breakpoint scale matches wui-col-sm/md + the grid system exactly
    (weoc-grid.css: sm 576 / md 768 / lg 992 / xl 1200) — no new vocabulary.
 
-   Scoped to .wui-table-standard only. .wui-table-cards already has its own
-   narrow-width behavior (§11 in weoc-tables.css: shrinks wui-col-primary/
-   index/actions) — this hook is additive to the standard variant, which
-   today relies purely on horizontal scroll.
+   .wui-table-cards ALSO has its own separate narrow-width behavior (§11 in
+   weoc-tables.css: shrinks wui-col-primary/index/actions below 560px/380px)
+   — that's an unrelated, size-triggered mechanism for 3 specific structural
+   columns, not a replacement for this attribute-driven hook on arbitrary
+   data columns. The two are additive, not conflicting (different selectors,
+   different breakpoints, same container).
 
    Not paired by JS: each cell hides itself independently off its own
    attribute. An unrecognized value (typo) simply matches no rule — the
    column stays visible always, a silent no-op, not a crash.
    ============================================= */
 
-@container (max-width: 1200px) { .wui-table-standard [data-wui-hide-below="xl"] { display: none; } }
-@container (max-width: 992px)  { .wui-table-standard [data-wui-hide-below="lg"] { display: none; } }
-@container (max-width: 768px)  { .wui-table-standard [data-wui-hide-below="md"] { display: none; } }
-@container (max-width: 576px)  { .wui-table-standard [data-wui-hide-below="sm"] { display: none; } }
+@container (max-width: 1200px) { .wui-table-wrap [data-wui-hide-below="xl"] { display: none; } }
+@container (max-width: 992px)  { .wui-table-wrap [data-wui-hide-below="lg"] { display: none; } }
+@container (max-width: 768px)  { .wui-table-wrap [data-wui-hide-below="md"] { display: none; } }
+@container (max-width: 576px)  { .wui-table-wrap [data-wui-hide-below="sm"] { display: none; } }

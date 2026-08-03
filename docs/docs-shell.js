@@ -389,6 +389,9 @@
 
   function ensureGlobalAssets(root) {
     var shared = root + '../';
+    // weoc-tables-responsive.css is no longer listed here: weoc-tables.css now
+    // @imports it directly (bundled, not board/page-specific), so ensuring
+    // weoc-tables.css itself is sufficient.
     ['weoc-tables.css', 'weoc-maps.css', 'weoc-forms.css'].forEach(function (f) {
       ensureCSS(shared + 'CSS/weoc-ui/' + f);
     });

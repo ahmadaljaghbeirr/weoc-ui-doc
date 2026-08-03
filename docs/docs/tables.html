@@ -891,7 +891,7 @@
         <!-- ══════════════════════════ Responsive column hiding ══════════════════════════ -->
         <div class="docs-section">
           <div class="docs-section-title" id="responsive-column-hiding" data-wui-i18n-html="docs_tables_40"><span class="material-symbols-outlined">view_week</span>Responsive column hiding</div>
-          <p class="docs-desc" data-wui-i18n-html="docs_tables_41">Mark a <code>&lt;th&gt;</code>/<code>&lt;td&gt;</code> pair <code>data-wui-hide-below="sm|md|lg|xl"</code> and the column hides once the table's own <code>wui-table-wrap</code> shrinks past that breakpoint &mdash; a real container query against the table's rendered width, not the browser viewport. That is the whole point: a details panel or split view squeezing the table triggers the hide even when the window itself never resizes, which a <code>@media</code> query cannot see. Same <code>sm/md/lg/xl</code> scale as <code>wui-col-sm</code>/<code>wui-col-md</code> and the grid system (576/768/992/1200) &mdash; no new vocabulary. Zero JS: each cell hides itself off its own attribute, nothing pairs the header to its column. Requires loading <code>weoc-tables-responsive.css</code> after <code>weoc-tables.css</code>. Standard table (<code>wui-table-standard</code>) only &mdash; <code>wui-table-cards</code> already has its own narrow-width behavior.</p>
+          <p class="docs-desc" data-wui-i18n-html="docs_tables_41">Mark a <code>&lt;th&gt;</code>/<code>&lt;td&gt;</code> pair <code>data-wui-hide-below="sm|md|lg|xl"</code> and the column hides once the table's own <code>wui-table-wrap</code> shrinks past that breakpoint &mdash; a real container query against the table's rendered width, not the browser viewport. That is the whole point: a details panel or split view squeezing the table triggers the hide even when the window itself never resizes, which a <code>@media</code> query cannot see. Same <code>sm/md/lg/xl</code> scale as <code>wui-col-sm</code>/<code>wui-col-md</code> and the grid system (576/768/992/1200) &mdash; no new vocabulary. Zero JS: each cell hides itself off its own attribute, nothing pairs the header to its column. Bundled automatically by <code>weoc-tables.css</code> (no separate stylesheet import needed) and works on every table variant &mdash; <code>wui-table-standard</code>, <code>wui-table-cards</code>, <code>wui-table-log</code> &mdash; since all of them live inside <code>wui-table-wrap</code>. Cards' own separate narrow-width behavior (shrinking the primary/index/actions columns below 560px/380px) is unrelated and additive.</p>
 
           <div class="docs-subsection-title" data-wui-i18n="docs_tables_42">Live example &mdash; resize the wrapper, not the window</div>
           <p class="docs-desc" data-wui-i18n-html="docs_tables_43">Two columns below are marked <code>data-wui-hide-below</code>: <code>Created By</code> hides under the <code>md</code> breakpoint (768px), <code>Created At</code> hides under <code>sm</code> (576px). Drag the handle in the demo box's bottom-right corner, or use the width presets, to see each threshold cross independently of the browser window.</p>
@@ -979,30 +979,38 @@
           <div class="wui-callout info">
             <span class="material-symbols-outlined">info</span>
             <div class="wui-callout-body">
-              <div class="wui-callout-title" data-wui-i18n="docs_tables_48">Opt-in module &mdash; load weoc-tables-responsive.css after weoc-tables.css</div>
-              <span data-wui-i18n-html="docs_tables_49">The hide hook ships in its own file. Add <code>&lt;link rel="stylesheet" href="../../CSS/weoc-ui/weoc-tables-responsive.css"&gt;</code> <em>after</em> <code>weoc-tables.css</code> on any table view. It reuses the <code>container-type: inline-size</code> context <code>weoc-tables.css</code> already establishes on <code>wui-table-wrap</code> &mdash; no extra markup beyond the wrapper you already use.</span>
+              <div class="wui-callout-title" data-wui-i18n="docs_tables_48">Bundled module &mdash; no separate stylesheet import needed</div>
+              <span data-wui-i18n-html="docs_tables_49">The hide hook ships in its own file (<code>weoc-tables-responsive.css</code>), but <code>weoc-tables.css</code> <code>@import</code>s it directly &mdash; any board/view that already loads <code>weoc-tables.css</code> gets this hook for free, no board-specific stylesheet needs its own import. It reuses the <code>container-type: inline-size</code> context <code>weoc-tables.css</code> already establishes on <code>wui-table-wrap</code> &mdash; no extra markup beyond the wrapper you already use.</span>
             </div>
           </div>
         </div>
 
+        <!-- Runs on first load AND on every htmx-boosted nav to this page: it's
+             a descendant of #docs-main's swapped child (docs-page), so
+             hx-select="#docs-main > *" carries it along and htmx re-executes
+             it after each swap (site-wide inline-script convention — see the
+             Alpine.data(...) registrations on other docs pages, e.g.
+             charts.html). A script placed AFTER #docs-main closes, like the
+             DocShell.init() bootstrap call below, is never selected and so
+             never runs again after the first load. -->
+        <script>
+          (function () {
+            var box = document.getElementById('tables-hide-demo');
+            var btns = document.querySelectorAll('[data-hide-demo-width]');
+            if (!box || !btns.length) return;
+            for (var i = 0; i < btns.length; i++) {
+              btns[i].addEventListener('click', function (e) {
+                var btn = e.currentTarget;
+                box.style.width = btn.getAttribute('data-hide-demo-width') + 'px';
+                for (var j = 0; j < btns.length; j++) btns[j].classList.toggle('is-active', btns[j] === btn);
+              });
+            }
+          })();
+        </script>
       </div>
     </div>
   </div>
   <script src="../docs-shell.js"></script>
   <script>DocShell.init('tables');</script>
-  <script>
-    (function () {
-      var box = document.getElementById('tables-hide-demo');
-      var btns = document.querySelectorAll('[data-hide-demo-width]');
-      if (!box || !btns.length) return;
-      for (var i = 0; i < btns.length; i++) {
-        btns[i].addEventListener('click', function (e) {
-          var btn = e.currentTarget;
-          box.style.width = btn.getAttribute('data-hide-demo-width') + 'px';
-          for (var j = 0; j < btns.length; j++) btns[j].classList.toggle('is-active', btns[j] === btn);
-        });
-      }
-    })();
-  </script>
 </body>
 </html>

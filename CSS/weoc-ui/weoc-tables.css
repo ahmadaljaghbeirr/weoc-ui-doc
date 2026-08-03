@@ -11,7 +11,11 @@
    - .drag-handle (row reorder affordance)
    - .wui-table-actions + .wui-table-action-btn (+ .primary/.success/.danger/.warning/.secondary)
    - density + state + column utility classes
+   - data-wui-hide-below column-hiding hook (weoc-tables-responsive.css, imported below —
+     bundled automatically, no board-specific stylesheet needs its own import)
    ============================================= */
+
+@import url("weoc-tables-responsive.css");
 
 /* ============================================================
       1) WRAPPER
